@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.Adapter;
 using System.Net;
+using System.Net.Http;
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 
@@ -30,12 +31,19 @@ namespace BH.Adapter.CarbonQueryDatabase
 
         public CarbonQueryDatabaseAdapter(string username = "", string password = "")
         {
+            //Insert login auth request and return token to m_bearerKey
 
-        System.Net.ServicePointManager.SecurityProtocol =
+            System.Net.ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Ssl3 |
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls;
         }
+
+        /***************************************************/
+        /*** Private Fields                              ***/
+        /***************************************************/
+
+        private static string m_bearerKey = null;
     }
 }
