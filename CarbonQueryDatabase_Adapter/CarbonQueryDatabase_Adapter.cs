@@ -51,7 +51,7 @@ namespace BH.Adapter.CarbonQueryDatabase
             HttpResponseMessage response = client.SendAsync(request).Result;
 
             string responseAuthString = response.Content.ReadAsStringAsync().Result;
-
+            responseAuth = responseAuthString;
 
         }
 
@@ -61,5 +61,6 @@ namespace BH.Adapter.CarbonQueryDatabase
 
         private static string m_bearerKey = null;
         private static string m_apiAddress = "https://etl-api.cqd.io/api/rest-auth/login";
+        public string responseAuth { get; set; } = "";
     }
 }
