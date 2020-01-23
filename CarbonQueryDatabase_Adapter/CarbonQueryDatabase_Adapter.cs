@@ -31,13 +31,28 @@ namespace BH.Adapter.CarbonQueryDatabase
 
         public CarbonQueryDatabaseAdapter(string username = "", string password = "")
         {
-            //Insert login auth request and return token to m_bearerKey
-
             System.Net.ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Ssl3 |
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls;
+
+            HttpClient client= new HttpClient();
+
+            //Add headers per api auth requirements
+            client.DefaultRequestHeaders.Add("accept", "application/json");
+
+            //Post login auth request and return token to m_bearerKey
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, m_apiAddress);
+
+            string loginString = "{\"username\":\""+username+"\",\"password\":\""+password+"\"}";
+            request.Content = new StringContent(loginString, Encoding.UTF8, "application/json");     
+
+            HttpResponseMessage response = client.SendAsync(request).Result;
+
+            string responseAuthString = response.Content.ReadAsStringAsync().Result;
+
+
         }
 
         /***************************************************/
@@ -45,5 +60,6 @@ namespace BH.Adapter.CarbonQueryDatabase
         /***************************************************/
 
         private static string m_bearerKey = null;
+        private static string m_apiAddress = "https://etl-api.cqd.io/api/rest-auth/login";
     }
 }

@@ -26,6 +26,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
+using BH.oM.HTTP;
+using System.Net.Http;
+using BH.Engine.Reflection;
 
 namespace BH.Adapter.CarbonQueryDatabase
 {
@@ -38,6 +41,49 @@ namespace BH.Adapter.CarbonQueryDatabase
         public override IEnumerable<object> Pull(IRequest request, Dictionary<string, object> config = null)
         {
             return Pull(request as dynamic, config);
+        }
+
+
+        /***************************************************/
+        /**** Fallback Case                             ****/
+        /***************************************************/
+
+        public IEnumerable<object> Pull(object request, Dictionary<string, object> config = null)
+        {
+            Engine.Reflection.Compute.RecordError($"Unknown request type {request.GetType()}.\n" +
+                "If you are making a GET request, please use the BH.oM.HTTP.GetRequest object to specify the request.");
+            return null;
+        }
+
+
+
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        public IEnumerable<object> Pull(GetRequest request, Dictionary<string, object> config = null)
+        {
+            //string requestString = m_apiAddress + request.BaseUrl;
+
+            //if (response == null)
+            //    return new List<BHoMObject>();
+
+            //BHoMObject obj = Engine.Serialiser.Convert.FromJson(response) as BHoMObject;
+            //if (obj == null)
+            //{
+            //    // in case the response is not a valid json, wrap it around a CustomObject
+            //    return new List<BHoMObject>
+            //    {
+            //        new CustomObject()
+            //        {
+            //            CustomData = new Dictionary<string, object>() { { "Response", response } }
+            //        }
+            //    };
+            //}
+
+            //return new List<BHoMObject> { obj }; // This is at least a CustomObject
+
+            return null;
         }
     }
 }
