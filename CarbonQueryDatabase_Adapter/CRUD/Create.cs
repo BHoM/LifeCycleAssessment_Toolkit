@@ -21,6 +21,9 @@
  */
 
 using System.Collections.Generic;
+using BH.oM.Adapter;
+using BH.oM.Base;
+using BH.oM.Data.Requests;
 
 namespace BH.Adapter.CarbonQueryDatabase
 {
@@ -30,7 +33,7 @@ namespace BH.Adapter.CarbonQueryDatabase
         /**** Public Methods                            ****/
         /***************************************************/
 
-        protected override bool Create<T>(IEnumerable<T> objects)
+        protected override bool ICreate<T>(IEnumerable<T> objects, ActionConfig actionConfig = null)
         {
             return false;
         }

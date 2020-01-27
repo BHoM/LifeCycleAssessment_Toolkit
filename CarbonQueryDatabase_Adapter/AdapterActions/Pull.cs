@@ -29,6 +29,7 @@ using BH.oM.Data.Requests;
 using BH.oM.HTTP;
 using System.Net.Http;
 using BH.Engine.Reflection;
+using BH.oM.Adapter;
 
 namespace BH.Adapter.CarbonQueryDatabase
 {
@@ -38,9 +39,9 @@ namespace BH.Adapter.CarbonQueryDatabase
         /**** Interface Methods                         ****/
         /***************************************************/
 
-        public override IEnumerable<object> Pull(IRequest request, Dictionary<string, object> config = null)
+        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            return Pull(request as dynamic, config);
+            return Pull(request as dynamic, pullType, actionConfig);
         }
 
 

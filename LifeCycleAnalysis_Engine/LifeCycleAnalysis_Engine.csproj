@@ -58,7 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\Class1.cs" />
+    <Compile Include="Compute\BearerToken.cs" />
     <Compile Include="Create\CarbonQueryDatabaseRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
