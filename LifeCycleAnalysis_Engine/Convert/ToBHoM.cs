@@ -33,7 +33,7 @@ namespace BH.Engine.LifeCycleAnalysis
 
                 plant = obj.PropertyValue("plant.name")?.ToString() ?? "",
 
-                postalCode = int.TryParse(obj.PropertyValue("plant.postal_code").ToString(), out result) ? result : 0,
+                postalCode = int.TryParse(obj.PropertyValue("plant.postal_code")?.ToString() ?? "", out result) ? result : 0,
 
                 density = obj.PropertyValue("density")?.ToString() ?? "",
 
