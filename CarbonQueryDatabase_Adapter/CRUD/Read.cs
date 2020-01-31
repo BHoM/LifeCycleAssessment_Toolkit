@@ -40,11 +40,10 @@ namespace BH.Adapter.CarbonQueryDatabase
         /***************************************************/
         protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
         {
-
             dynamic elems = null;
             //Choose what to pull out depending on the type. Also see example methods below for pulling out bars and dependencies
-            if (type == typeof(CQDData))
-                elems = ReadCQDData(ids as dynamic);
+            if (type == typeof(EPDData))
+                elems = ReadEPDData(ids as dynamic);
 
             return elems;
         }
@@ -58,10 +57,14 @@ namespace BH.Adapter.CarbonQueryDatabase
 
         //The List<string> in the methods below can be changed to a list of any type of identification more suitable for the toolkit
 
-        private List<CQDData> ReadCQDData(List<string> ids = null)
+        private List<EPDData> ReadEPDData(List<string> ids = null)
         {
-            return null;
+            //create get Request
+            //Add BearerTokenHeader
+            //MakeRequest
+            //ConvertResponse
 
+            return null;
         }
 
             /***************************************************/

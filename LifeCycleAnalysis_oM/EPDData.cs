@@ -25,7 +25,7 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAnalysis
 {
-    public class CQDData : BHoMObject
+    public class EPDData : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
