@@ -19,9 +19,11 @@ namespace BH.Engine.LifeCycleAnalysis
         [Input("password", "Your password for the system - case sensitive, do not share scripts with this saved")]
         [Input("apiAddress", "The API address to connect to, default to ETL-API")]
         [Output("bearerToken", "The bearer token to use the database system or the full response string if there was an error")]
-        public static string BearerToken(string username, string password, string apiAddress = "https://etl-api.cqd.io/api/rest-auth/login")
+        public static string CQDBearerToken(string username, string password)
         {
-            System.Net.ServicePointManager.SecurityProtocol =
+            string apiAddress = "https://etl-api.cqd.io/api/rest-auth/login";
+                
+                System.Net.ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Ssl3 |
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11 |

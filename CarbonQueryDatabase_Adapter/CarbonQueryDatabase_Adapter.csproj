@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BH.Adapter.CarbonQueryDatabase</RootNamespace>
     <AssemblyName>CarbonQueryDatabase_Adapter</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,6 +47,10 @@
     <Reference Include="HTTP_oM">
       <HintPath>..\..\HTTP_Toolkit\Build\HTTP_oM.dll</HintPath>
     </Reference>
+    <Reference Include="LifeCycleAnalysis_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Build\LifeCycleAnalysis_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
     </Reference>
@@ -66,6 +71,7 @@
     <Compile Include="AdapterActions\Pull.cs" />
     <Compile Include="CarbonQueryDatabase_Adapter.cs" />
     <Compile Include="CRUD\Create.cs" />
+    <Compile Include="CRUD\Read.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

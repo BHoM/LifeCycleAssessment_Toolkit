@@ -59,7 +59,6 @@ namespace BH.Adapter.CarbonQueryDatabase
         /*** Private Fields                              ***/
         /***************************************************/
 
-        private static string m_bearerKey = null;
         private static string m_apiAddress = "https://etl-api.cqd.io/api/rest-auth/login";
         public string responseAuth { get; set; } = "";
     }

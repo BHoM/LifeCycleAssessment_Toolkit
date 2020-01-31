@@ -19,11 +19,11 @@ namespace BH.Engine.LifeCycleAnalysis
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static EC3Data ToBHoMObject(this CustomObject obj)
+        public static CQDData ToBHoMObject(this CustomObject obj)
         {
             int result = 0;
 
-            EC3Data data = new EC3Data
+            CQDData data = new CQDData
             {
                 id = obj.PropertyValue("id")?.ToString() ?? "",
 

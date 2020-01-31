@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using System.Collections.Generic;
 using BH.oM.LifeCycleAnalysis;
+using BH.oM.HTTP;
 
 namespace BH.Engine.LifeCycleAnalysis
 {
@@ -34,34 +35,17 @@ namespace BH.Engine.LifeCycleAnalysis
 
         /***************************************************/
 
-        public static CarbonQueryDatabaseRequest CarbonQueryDatabaseRequest(string uri, string username)
+        public static GetRequest CQDGetRequest(string apiCommand, string bearerToken, CustomObject parameters = null)
         {
-            return new CarbonQueryDatabaseRequest
+            return new BH.oM.HTTP.GetRequest
             {
-                Uri = "-H " + "Authorization: Bearer " + username + uri,
-            };
-        }
-
-        /***************************************************/
-
-        public static CarbonQueryDatabaseRequest CarbonQueryDatabaseRequest0(string uri, string username, string password)
-        {
-            return new CarbonQueryDatabaseRequest
-            {
-                Uri = "curl - X POST " + "https://etl-api.cqd.io/api/rest-auth/login" + " - H " + "accept: application/json" + " - H " + "Content - Type: application / json" + " - d " + "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}",
-            };
-        }
-
-        /***************************************************/
-
-        public static CarbonQueryDatabaseRequest CarbonQueryDatabaseRequest(string uri, CustomObject headers = null, CustomObject parameters = null)
-        {
-            return new CarbonQueryDatabaseRequest
-            {
-                Uri = uri,
-                Headers = headers?.CustomData,
+                BaseUrl = "https://etl-api.cqd.io/api/" + apiCommand,
+                Headers = new Dictionary<string, object>()
+                {
+                    { "Authorization", "Bearer " +  bearerToken }
+                },
                 Parameters = parameters?.CustomData
-            };
+        };
         }
 
         /***************************************************/

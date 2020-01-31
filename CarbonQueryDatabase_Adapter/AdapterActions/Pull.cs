@@ -27,7 +27,6 @@ using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.HTTP;
-using System.Net.Http;
 using BH.Engine.Reflection;
 using BH.oM.Adapter;
 

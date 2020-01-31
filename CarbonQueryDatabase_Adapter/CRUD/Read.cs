@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2018, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,19 +20,52 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using BH.oM.Data.Requests;
+using System.Linq;
+using BH.oM.Adapter;
+using BH.oM.Base;
 using BH.oM.HTTP;
-namespace BH.oM.LifeCycleAnalysis
+using BH.oM.LifeCycleAnalysis;
+using BH.Adapter;
+
+
+namespace BH.Adapter.CarbonQueryDatabase
 {
-    public class CarbonQueryDatabaseRequest : GetRequest
+    public partial class CarbonQueryDatabase : BHoMAdapter
     {
         /***************************************************/
-        /**** Properties                                ****/
+        /**** Adapter overload method                   ****/
+        /***************************************************/
+        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
+        {
+
+            dynamic elems = null;
+            //Choose what to pull out depending on the type. Also see example methods below for pulling out bars and dependencies
+            if (type == typeof(CQDData))
+                elems = ReadCQDData(ids as dynamic);
+
+            return elems;
+        }
+
+
         /***************************************************/
 
-        public string Uri { get; set; } = "";
-
         /***************************************************/
-    }
+        /**** Private specific read methods             ****/
+        /***************************************************/
+
+        //The List<string> in the methods below can be changed to a list of any type of identification more suitable for the toolkit
+
+        private List<CQDData> ReadCQDData(List<string> ids = null)
+        {
+            return null;
+
+        }
+
+            /***************************************************/
+
+        }
+
 }
