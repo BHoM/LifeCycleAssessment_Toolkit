@@ -25,22 +25,20 @@ namespace BH.Engine.LifeCycleAnalysis
 
             EPDData data = new EPDData
             {
-                id = obj.PropertyValue("id")?.ToString() ?? "",
+                Id = obj.PropertyValue("id")?.ToString() ?? "",
 
-                name = obj.PropertyValue("name")?.ToString() ?? "",
+                Name = obj.PropertyValue("name")?.ToString() ?? "",
 
-                manufacturer = obj.PropertyValue("manufacturer.name")?.ToString() ?? "",
+                Manufacturer = obj.PropertyValue("manufacturer.name")?.ToString() ?? "",
 
-                plant = obj.PropertyValue("plant.name")?.ToString() ?? "",
+                Plant = obj.PropertyValue("plant.name")?.ToString() ?? "",
 
-                postalCode = int.TryParse(obj.PropertyValue("plant.postal_code")?.ToString() ?? "", out result) ? result : 0,
+                PostalCode = int.TryParse(obj.PropertyValue("plant.postal_code")?.ToString() ?? "", out result) ? result : 0,
 
-                density = obj.PropertyValue("density")?.ToString() ?? "",
+                Density = obj.PropertyValue("density")?.ToString() ?? "",
 
-                gwpPerKG = obj.PropertyValue("gwp_per_kg")?.ToString() ?? "",
+                GwpPerKG = obj.PropertyValue("gwp_per_kg")?.ToString() ?? "",
             };
-                      
-            
             return data;
         }
     }

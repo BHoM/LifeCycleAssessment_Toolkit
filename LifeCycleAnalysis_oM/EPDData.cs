@@ -31,19 +31,19 @@ namespace BH.oM.LifeCycleAnalysis
         /**** Properties                                ****/
         /***************************************************/
 
-        public string id { get; set; } = "";
+        public string Id { get; set; } = "";
 
-        public string name { get; set; } = "";
+        public string Name { get; set; } = "";
 
-        public string manufacturer { get; set; } = "";
+        public string Manufacturer { get; set; } = "";
 
-        public string plant { get; set; } = "";
+        public string Plant { get; set; } = "";
 
-        public int postalCode { get; set; } = 0;
+        public int PostalCode { get; set; } = 0;
 
-        public string density { get; set; } = "";
+        public string Density { get; set; } = "";
 
-        public string gwpPerKG { get; set; } = "";
+        public string GwpPerKG { get; set; } = "";
 
         /***************************************************/
     }
