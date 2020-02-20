@@ -19,7 +19,7 @@ namespace BH.oM.LifeCycleAnalysis
         public double BiogenicEmbodiedCarbon { get; set; } = double.NaN;
         public string DeclaredUnit { get; set; } = "";
         public string Description { get; set; } = "";
-        public List<string> IndustryStandards { get; set; } = new List<string>();
+        public List<string> IndustryStandards { get; set; } = new List<string>(); //returns blank lists
 
         /***************************************************/
     }
