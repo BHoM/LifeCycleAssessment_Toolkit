@@ -23,7 +23,7 @@ namespace BH.Engine.LifeCycleAnalysis
         {
             int result = 0;
 
-            List<string> standards = new List<string>();
+            List<string> standards = new List<string>(); //need to look into how this data is being deserialized so we know how to store it.
             if (obj.PropertyValue("industry_standards") != null)
                 standards = obj.PropertyValue("industry_standards") as List<string>;
 
@@ -49,7 +49,7 @@ namespace BH.Engine.LifeCycleAnalysis
 
                 Description = obj.PropertyValue("description")?.ToString() ?? "",
 
-                IndustryStandards = standards,
+                IndustryStandards = standards, //currently returns blank lists.
             };
             return data;
         }
