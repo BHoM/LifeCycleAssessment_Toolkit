@@ -3,14 +3,14 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAnalysis
 {
-    public class ProductEPD : EPDData
+    public class SectorEPD : EPDData
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
 
-        public string Publisher { get; set; } = "";
-        public string Jurisdiction { get; set; } = "";
+        public List<string> Publisher { get; set; } = new List<string>();
+        public List<string> Jurisdiction { get; set; } = new List<string>();
 
         /***************************************************/
     }

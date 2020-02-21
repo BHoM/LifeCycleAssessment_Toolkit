@@ -3,7 +3,7 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAnalysis
 {
-    public class SectorEPD : EPDData
+    public class ProductEPD : EPDData
     {
         /***************************************************/
         /**** Properties                                ****/
