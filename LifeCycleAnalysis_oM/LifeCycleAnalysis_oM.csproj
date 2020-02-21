@@ -44,8 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SectorEPD.cs" />
     <Compile Include="ProductEPD.cs" />
+    <Compile Include="SectorEPD.cs" />
     <Compile Include="EPDData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
