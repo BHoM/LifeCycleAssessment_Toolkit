@@ -23,13 +23,13 @@ namespace BH.oM.LifeCycleAnalysis
         public double AcidificationPotential { get; set; } = double.NaN;
         public double EutrophicationPotential { get; set; } = double.NaN;
         public double DepletionOfAbioticResourcesFossilFuels { get; set; } = double.NaN;
-        public double GlobalWarmingPotentialEOL { get; set; }
-        public double OzoneDepletionPotentialEOL { get; set; }
-        public double PhotochemicalOzoneCreationPotentialEOL { get; set; }
-        public double AcidificationPotentialEOL { get; set; }
-        public double EutrophicationPotentialEOL { get; set; }
-        public double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; }
-        public string TreatmentEOL { get; set; }
+        public double GlobalWarmingPotentialEOL { get; set; } = double.NaN;
+        public double OzoneDepletionPotentialEOL { get; set; } = double.NaN;
+        public double PhotochemicalOzoneCreationPotentialEOL { get; set; } = double.NaN;
+        public double AcidificationPotentialEOL { get; set; } = double.NaN;
+        public double EutrophicationPotentialEOL { get; set; } = double.NaN;
+        public double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; } = double.NaN;
+        public string TreatmentEOL { get; set; } = "";
 
         /***************************************************/
     }
