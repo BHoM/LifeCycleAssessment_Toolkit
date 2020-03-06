@@ -8,7 +8,6 @@ namespace BH.oM.LifeCycleAnalysis
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-
         string Id { get; set; }
         string Density { get; set; }
         string GwpPerKG { get; set; }
@@ -29,8 +28,7 @@ namespace BH.oM.LifeCycleAnalysis
         double AcidificationPotentialEOL { get; set; }
         double EutrophicationPotentialEOL { get; set; }
         double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; }
-        string TreatmentEOL { get; set; }
-
+        string TreatmentEOL { get; set; }    
         /***************************************************/
     }
 }

@@ -8,7 +8,6 @@ namespace BH.oM.LifeCycleAnalysis
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-
         public string Manufacturer { get; set; } = "";
         public string Plant { get; set; } = "";
         public int PostalCode { get; set; } = 0;
@@ -34,7 +33,6 @@ namespace BH.oM.LifeCycleAnalysis
         public double EutrophicationPotentialEOL { get; set; } = double.NaN;
         public double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; } = double.NaN;
         public string TreatmentEOL { get; set; } = "";
-
         /***************************************************/
     }
 }
