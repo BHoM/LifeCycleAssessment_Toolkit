@@ -15,32 +15,33 @@ namespace BH.Engine.LifeCycleAnalysis
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static ProductEPD ToHpdData(this CustomObject obj)
+        public static HPDData ToHpdData(this CustomObject obj)
         {
-            ProductEPD epd = new ProductEPD
+            HPDData epd = new HPDData
             {
-                Id = obj.PropertyValue("_id")?.ToString() ?? "",
-                Name = obj.PropertyValue("name")?.ToString() ?? "",
-                EutrophicationPotentialEOL = obj.PropertyValue("EutrophicationPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("EutrophicationPotentialEOL")) : double.NaN,
-                AcidificationPotentialEOL = obj.PropertyValue("AcidificationPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("AcidificationPotentialEOL")) : double.NaN,
-                PhotochemicalOzoneCreationPotentialEOL = obj.PropertyValue("PhotochemicalOzoneCreationPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("PhotochemicalOzoneCreationPotentialEOL")) : double.NaN,
-                OzoneDepletionPotentialEOL = obj.PropertyValue("OzoneDepletionPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("OzoneDepletionPotentialEOL")) : double.NaN,
-                GlobalWarmingPotentialEOL = obj.PropertyValue("GlobalWarmingPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotentialEOL")) : double.NaN,
-                DepletionOfAbioticResourcesFossilFuelsEOL = obj.PropertyValue("DepletionOfAbioticResourcesFossilFuelsEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("DepletionOfAbioticResourcesFossilFuelsEOL")) : double.NaN,
-                DepletionOfAbioticResourcesFossilFuels = obj.PropertyValue("DepletionOfAbioticResourcesFossilFuels") != null ? System.Convert.ToDouble(obj.PropertyValue("DepletionOfAbioticResourcesFossilFuels")) : double.NaN,
-                EutrophicationPotential = obj.PropertyValue("EutrophicationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("EutrophicationPotential")) : double.NaN,
-                AcidificationPotential = obj.PropertyValue("AcidificationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("AcidificationPotential")) : double.NaN,
-                PhotochemicalOzoneCreationPotential = obj.PropertyValue("PhotochemicalOzoneCreationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("PhotochemicalOzoneCreationPotential")) : double.NaN,
-                OzoneDepletionPotential = obj.PropertyValue("OzoneDepletionPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("OzoneDepletionPotential")) : double.NaN,
-                GlobalWarmingPotential = obj.PropertyValue("GlobalWarmingPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotential")) : double.NaN,
-                EPDScope = obj.PropertyValue("EPDScope")?.ToString() ?? "",
-                Description = obj.PropertyValue("Description")?.ToString() ?? "",
-                DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
-                BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
-                GwpPerDeclaredUnit = obj.PropertyValue("GwpPerDeclaredUnit")?.ToString() ?? "",
-                GwpPerKG = obj.PropertyValue("GwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
-                Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
-                TreatmentEOL = obj.PropertyValue("TreatmentEOL")?.ToString() ?? "",
+                Cpid = obj.PropertyValue("cpid")?.ToString() ?? "",
+                Version = obj.PropertyValue("version")?.ToString() ?? "",
+                MasterFormat = obj.PropertyValue("masterformat")?.ToString() ?? "",
+                Uniformats = obj.PropertyValue("uniformats")?.ToString() ?? "",
+                CancerOrange = obj.PropertyValue("cancerOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("cancerOrange")) : double.NaN,
+                DevelopmentalOrange = obj.PropertyValue("developmentalOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("developmentalOrange")) : double.NaN,
+                EndocrineOrange = obj.PropertyValue("endocrineOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("endocrineOrange")) : double.NaN,
+                EyeIrritationOrange = obj.PropertyValue("eyeIrritationOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("eyeIrritationOrange")) : double.NaN,
+                MammalianOrange = obj.PropertyValue("mammalianOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("mammalianOrange")) : double.NaN,
+                MutagenicityOrange = obj.PropertyValue("mutagenicityOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("mutagenicityOrange")) : double.NaN,
+                NeurotoxicityOrange = obj.PropertyValue("neurotoxicityOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("neurotoxicityOrange")) : double.NaN,
+                OrganToxicantOrange = obj.PropertyValue("organToxicantOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("organToxicantOrange")) : double.NaN,
+                ReproductiveOrange = obj.PropertyValue("reproductiveOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("reproductiveOrange")) : double.NaN,
+                RespiratoryOrange = obj.PropertyValue("respiratoryOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("respiratoryOrange")) : double.NaN,
+                RespiratoryOccupationalOnlyOrange = obj.PropertyValue("respiratoryOccupationalOnlyOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("respiratoryOccupationalOnlyOrange")) : double.NaN,
+                SkinSensitizationOrange = obj.PropertyValue("skinSensitizationOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("skinSensitizationOrange")) : double.NaN,
+                CancerRed = obj.PropertyValue("cancerRed") != null ? System.Convert.ToDouble(obj.PropertyValue("cancerRed")) : double.NaN,
+                CancerOccupationalOnlyRed = obj.PropertyValue("cancerOccupationalOnlyRed") != null ? System.Convert.ToDouble(obj.PropertyValue("cancerOccupationalOnlyRed")) : double.NaN,
+                DevelopmentalRed = obj.PropertyValue("developmentalRed") != null ? System.Convert.ToDouble(obj.PropertyValue("developmentalRed")) : double.NaN,
+                MutagenicityRed = obj.PropertyValue("mutagenicityRed") != null ? System.Convert.ToDouble(obj.PropertyValue("mutagenicityRed")) : double.NaN,
+                PbtRed = obj.PropertyValue("pbtRed") != null ? System.Convert.ToDouble(obj.PropertyValue("pbtRed")) : double.NaN,
+                RespiratoryRed = obj.PropertyValue("respiratoryRed") != null ? System.Convert.ToDouble(obj.PropertyValue("respiratoryRed")) : double.NaN,
+                PbtPurple = obj.PropertyValue("pbtPurple") != null ? System.Convert.ToDouble(obj.PropertyValue("pbtPurple")) : double.NaN,
             };
             return epd;
         }

@@ -10,10 +10,8 @@ namespace BH.oM.LifeCycleAnalysis
         /***************************************************/
         string Id { get; set; }
         string Density { get; set; }
-        string GwpPerKG { get; set; }
-        string GwpPerDeclaredUnit { get; set; }
         double BiogenicEmbodiedCarbon { get; set; }
-        string DeclaredUnit { get; set; }
+        string DeclaredUnit { get; set; } // <---- make sure this is always populated 
         string Description { get; set; }
         string EPDScope { get; set; }
         double GlobalWarmingPotential { get; set; }
