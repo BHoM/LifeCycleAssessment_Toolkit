@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BH.oM.Base;
 
-namespace BH.oM.LifeCycleAnalysis
+namespace BH.oM.LifeCycleAssessment
 {
     public class SectorEnvironmentalProductDeclaration : BHoMObject, IEnvironmentalProductDeclarationData
     {

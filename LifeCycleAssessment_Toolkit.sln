@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCycleAnalysis_oM", "LifeCycleAnalysis_oM\LifeCycleAnalysis_oM.csproj", "{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCycleAssessment_oM", "LifeCycleAnalysis_oM\LifeCycleAssessment_oM.csproj", "{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCycleAnalysis_Engine", "LifeCycleAnalysis_Engine\LifeCycleAnalysis_Engine.csproj", "{75BC936E-7B41-453E-A219-C0817EB35676}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCycleAssessment_Engine", "LifeCycleAnalysis_Engine\LifeCycleAssessment_Engine.csproj", "{75BC936E-7B41-453E-A219-C0817EB35676}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C423264A-9870-473D-BF1C-F1DD2D707B01}
 	EndGlobalSection
 EndGlobal

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base;
-using BH.oM.LifeCycleAnalysis;
+using BH.oM.LifeCycleAssessment;
 using BH.Engine.Reflection;
 
-namespace BH.Engine.LifeCycleAnalysis
+namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Convert
     {
