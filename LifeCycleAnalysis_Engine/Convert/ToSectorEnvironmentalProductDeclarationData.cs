@@ -15,12 +15,14 @@ namespace BH.Engine.LifeCycleAnalysis
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static ProductEPD ToEpdData(this CustomObject obj)
+        public static SectorEnvironmentalProductDeclaration ToSectorEnvironmentalProductDeclarationData(this CustomObject obj)
         {
-            ProductEPD epd = new ProductEPD
+            SectorEnvironmentalProductDeclaration epd = new SectorEnvironmentalProductDeclaration
             {
                 Id = obj.PropertyValue("_id")?.ToString() ?? "",
-                Name = obj.PropertyValue("name")?.ToString() ?? "",
+                Density = obj.PropertyValue("Density")?.ToString() ?? "",
+                BiogenicEmbodiedCarbon = obj.PropertyValue("biogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("biogenicEmbodiedCarbon")) : double.NaN,
+                DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
                 EutrophicationPotentialEOL = obj.PropertyValue("EutrophicationPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("EutrophicationPotentialEOL")) : double.NaN,
                 AcidificationPotentialEOL = obj.PropertyValue("AcidificationPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("AcidificationPotentialEOL")) : double.NaN,
                 PhotochemicalOzoneCreationPotentialEOL = obj.PropertyValue("PhotochemicalOzoneCreationPotentialEOL") != null ? System.Convert.ToDouble(obj.PropertyValue("PhotochemicalOzoneCreationPotentialEOL")) : double.NaN,
@@ -35,11 +37,8 @@ namespace BH.Engine.LifeCycleAnalysis
                 GlobalWarmingPotential = obj.PropertyValue("GlobalWarmingPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotential")) : double.NaN,
                 EPDScope = obj.PropertyValue("EPDScope")?.ToString() ?? "",
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
-                DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
-                BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
                 GwpPerDeclaredUnit = obj.PropertyValue("GwpPerDeclaredUnit")?.ToString() ?? "",
                 GwpPerKG = obj.PropertyValue("GwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
-                Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
                 TreatmentEOL = obj.PropertyValue("TreatmentEOL")?.ToString() ?? "",
             };
             return epd;

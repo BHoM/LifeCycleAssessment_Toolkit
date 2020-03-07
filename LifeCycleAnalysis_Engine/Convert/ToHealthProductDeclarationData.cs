@@ -15,9 +15,9 @@ namespace BH.Engine.LifeCycleAnalysis
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static HPDData ToHpdData(this CustomObject obj)
+        public static HealthProductDeclarationData ToHealthProductDeclarationData(this CustomObject obj)
         {
-            HPDData epd = new HPDData
+            HealthProductDeclarationData epd = new HealthProductDeclarationData
             {
                 Cpid = obj.PropertyValue("cpid")?.ToString() ?? "",
                 Version = obj.PropertyValue("version")?.ToString() ?? "",

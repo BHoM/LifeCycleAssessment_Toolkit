@@ -44,10 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HPDData.cs" />
-    <Compile Include="IEPDData.cs" />
-    <Compile Include="ProductEPD.cs" />
-    <Compile Include="SectorEPD.cs" />
+    <Compile Include="HealthProductDeclarationData.cs" />
+    <Compile Include="IEnvironmentalProductDeclarationData.cs" />
+    <Compile Include="ProductEnvironmentalProductDeclaration.cs" />
+    <Compile Include="SectorEnvironmentalProductDeclaration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
