@@ -17,20 +17,20 @@ namespace BH.oM.LifeCycleAnalysis
         public double BiogenicEmbodiedCarbon { get; set; } = double.NaN;
         public string DeclaredUnit { get; set; } = "";
         public string Description { get; set; } = "";
-        public string EPDScope { get; set; } = "";
+        public string Scope { get; set; } = "";
         public double GlobalWarmingPotential { get; set; } = double.NaN;
         public double OzoneDepletionPotential { get; set; } = double.NaN;
         public double PhotochemicalOzoneCreationPotential { get; set; } = double.NaN;
         public double AcidificationPotential { get; set; } = double.NaN;
         public double EutrophicationPotential { get; set; } = double.NaN;
         public double DepletionOfAbioticResourcesFossilFuels { get; set; } = double.NaN;
-        public double GlobalWarmingPotentialEOL { get; set; } = double.NaN;
-        public double OzoneDepletionPotentialEOL { get; set; } = double.NaN;
-        public double PhotochemicalOzoneCreationPotentialEOL { get; set; } = double.NaN;
-        public double AcidificationPotentialEOL { get; set; } = double.NaN;
-        public double EutrophicationPotentialEOL { get; set; } = double.NaN;
-        public double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; } = double.NaN;
-        public string TreatmentEOL { get; set; } = "";
+        public double GlobalWarmingPotentialEndOfLife { get; set; } = double.NaN;
+        public double OzoneDepletionPotentialEndOfLife { get; set; } = double.NaN;
+        public double PhotochemicalOzoneCreationPotentialEndOfLife { get; set; } = double.NaN;
+        public double AcidificationPotentialEndOfLife { get; set; } = double.NaN;
+        public double EutrophicationPotentialEndOfLife { get; set; } = double.NaN;
+        public double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; } = double.NaN;
+        public string EndOfLifeTreatment { get; set; } = "";
 
         /***************************************************/
     }

@@ -15,9 +15,9 @@ namespace BH.Engine.LifeCycleAnalysis
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static SectorEnvironmentalProductDeclaration ToSectorEnvironmentalProductDeclarationData(this CustomObject obj)
+        public static EnvironmentalProductDeclaration ToEnvironmentalProductDeclarationData(this CustomObject obj)
         {
-            SectorEnvironmentalProductDeclaration epd = new SectorEnvironmentalProductDeclaration
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration
             {
                 Id = obj.PropertyValue("_id")?.ToString() ?? "",
                 Name = obj.PropertyValue("name")?.ToString() ?? "",
@@ -41,8 +41,6 @@ namespace BH.Engine.LifeCycleAnalysis
                 GwpPerKG = obj.PropertyValue("gwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
                 Density = obj.PropertyValue("density")?.ToString() ?? "", //additional converts needed because this type is string not double.
                 EndOfLifeTreatment = obj.PropertyValue("eolTreatment")?.ToString() ?? "",
-                //Add publisher
-                //Add jurisdiction 
             };
             return epd;
         }

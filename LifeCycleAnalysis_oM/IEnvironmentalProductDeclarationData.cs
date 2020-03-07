@@ -13,20 +13,20 @@ namespace BH.oM.LifeCycleAnalysis
         double BiogenicEmbodiedCarbon { get; set; }
         string DeclaredUnit { get; set; } // <---- make sure this is always populated 
         string Description { get; set; }
-        string EPDScope { get; set; }
+        string Scope { get; set; }
         double GlobalWarmingPotential { get; set; }
         double OzoneDepletionPotential { get; set; }
         double PhotochemicalOzoneCreationPotential { get; set; }
         double AcidificationPotential { get; set; }
         double EutrophicationPotential { get; set; }
         double DepletionOfAbioticResourcesFossilFuels { get; set; }
-        double GlobalWarmingPotentialEOL { get; set; }
-        double OzoneDepletionPotentialEOL { get; set; }
-        double PhotochemicalOzoneCreationPotentialEOL { get; set; }
-        double AcidificationPotentialEOL { get; set; }
-        double EutrophicationPotentialEOL { get; set; }
-        double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; }
-        string TreatmentEOL { get; set; }    
+        double GlobalWarmingPotentialEndOfLife { get; set; }
+        double OzoneDepletionPotentialEndOfLife { get; set; }
+        double PhotochemicalOzoneCreationPotentialEndOfLife { get; set; }
+        double AcidificationPotentialEndOfLife { get; set; }
+        double EutrophicationPotentialEndOfLife { get; set; }
+        double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; }
+        string EndOfLifeTreatment { get; set; } 
         /***************************************************/
     }
 }
