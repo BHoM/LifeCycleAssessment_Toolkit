@@ -3,7 +3,7 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAnalysis
 {
-    public class HPDData : BHoMObject
+    public class HealthProductDeclarationData : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/

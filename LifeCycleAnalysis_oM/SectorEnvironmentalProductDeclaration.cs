@@ -3,15 +3,13 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAnalysis
 {
-    public class ProductEPD : BHoMObject, IEPDData
+    public class SectorEnvironmentalProductDeclaration : BHoMObject, IEnvironmentalProductDeclarationData
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public string Manufacturer { get; set; } = "";
-        public string Plant { get; set; } = "";
-        public int PostalCode { get; set; } = 0;
-        public List<string> IndustryStandards { get; set; } = new List<string>();
+        public List<string> Publisher { get; set; } = new List<string>();
+        public List<string> Jurisdiction { get; set; } = new List<string>();
         public string Id { get; set; } = "";
         public string Density { get; set; } = "";
         public string GwpPerKG { get; set; } = "";
@@ -33,6 +31,7 @@ namespace BH.oM.LifeCycleAnalysis
         public double EutrophicationPotentialEOL { get; set; } = double.NaN;
         public double DepletionOfAbioticResourcesFossilFuelsEOL { get; set; } = double.NaN;
         public string TreatmentEOL { get; set; } = "";
+
         /***************************************************/
     }
 }

@@ -3,7 +3,7 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAnalysis
 {
-    public interface IEPDData : IBHoMObject
+    public interface IEnvironmentalProductDeclarationData : IBHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
