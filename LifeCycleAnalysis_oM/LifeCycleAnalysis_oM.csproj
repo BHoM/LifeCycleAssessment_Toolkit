@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="HealthProductDeclarationData.cs" />
     <Compile Include="IEnvironmentalProductDeclarationData.cs" />
-    <Compile Include="ProductEnvironmentalProductDeclaration.cs" />
+    <Compile Include="EnvironmentalProductDeclaration.cs" />
     <Compile Include="SectorEnvironmentalProductDeclaration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

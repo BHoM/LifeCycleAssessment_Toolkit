@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
-    <Compile Include="Convert\ToProductEnvironmentalProductDeclarationData.cs" />
+    <Compile Include="Convert\ToEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
