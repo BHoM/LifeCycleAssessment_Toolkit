@@ -8,7 +8,6 @@ namespace BH.oM.LifeCycleAnalysis
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-
         public List<string> Publisher { get; set; } = new List<string>();
         public List<string> Jurisdiction { get; set; } = new List<string>();
         public string Id { get; set; } = "";

@@ -8,30 +8,30 @@ namespace BH.oM.LifeCycleAnalysis
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        string Cpid { get; set; } = "";
-        string Version { get; set; } = "";
-        string MasterFormat { get; set; } = "";
-        string Uniformats { get; set; } = "";
-        double CancerOrange { get; set; } = double.NaN;
-        double DevelopmentalOrange { get; set; } = double.NaN;
-        double EndocrineOrange { get; set; } = double.NaN;
-        double EyeIrritationOrange { get; set; } = double.NaN;
-        double MammalianOrange { get; set; } = double.NaN;
-        double MutagenicityOrange { get; set; } = double.NaN;
-        double NeurotoxicityOrange { get; set; } = double.NaN;
-        double OrganToxicantOrange { get; set; } = double.NaN;
-        double ReproductiveOrange { get; set; } = double.NaN;
-        double RespiratoryOrange { get; set; } = double.NaN;
-        double RespiratoryOccupationalOnlyOrange { get; set; } = double.NaN;
-        double SkinSensitizationOrange { get; set; } = double.NaN;
-        double CancerRed { get; set; } = double.NaN;
-        double CancerOccupationalOnlyRed { get; set; } = double.NaN;
-        double DevelopmentalRed { get; set; } = double.NaN;
-        double MutagenicityRed { get; set; } = double.NaN;
-        double PbtRed { get; set; } = double.NaN;
-        double ReproductiveRed { get; set; } = double.NaN;
-        double RespiratoryRed { get; set; } = double.NaN;
-        double PbtPurple { get; set; } = double.NaN;
+        public string Cpid { get; set; } = "";
+        public string Version { get; set; } = "";
+        public string MasterFormat { get; set; } = "";
+        public string Uniformats { get; set; } = "";
+        public double CancerOrange { get; set; } = double.NaN;
+        public double DevelopmentalOrange { get; set; } = double.NaN;
+        public double EndocrineOrange { get; set; } = double.NaN;
+        public double EyeIrritationOrange { get; set; } = double.NaN;
+        public double MammalianOrange { get; set; } = double.NaN;
+        public double MutagenicityOrange { get; set; } = double.NaN;
+        public double NeurotoxicityOrange { get; set; } = double.NaN;
+        public double OrganToxicantOrange { get; set; } = double.NaN;
+        public double ReproductiveOrange { get; set; } = double.NaN;
+        public double RespiratoryOrange { get; set; } = double.NaN;
+        public double RespiratoryOccupationalOnlyOrange { get; set; } = double.NaN;
+        public double SkinSensitizationOrange { get; set; } = double.NaN;
+        public double CancerRed { get; set; } = double.NaN;
+        public double CancerOccupationalOnlyRed { get; set; } = double.NaN;
+        public double DevelopmentalRed { get; set; } = double.NaN;
+        public double MutagenicityRed { get; set; } = double.NaN;
+        public double PbtRed { get; set; } = double.NaN;
+        public double ReproductiveRed { get; set; } = double.NaN;
+        public double RespiratoryRed { get; set; } = double.NaN;
+        public double PbtPurple { get; set; } = double.NaN;
         /***************************************************/
     }
 }
