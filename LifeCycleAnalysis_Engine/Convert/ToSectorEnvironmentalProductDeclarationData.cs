@@ -21,26 +21,26 @@ namespace BH.Engine.LifeCycleAnalysis
             {
                 Id = obj.PropertyValue("_id")?.ToString() ?? "",
                 Name = obj.PropertyValue("name")?.ToString() ?? "",
-                EutrophicationPotentialEndOfLife = obj.PropertyValue("eutrophicationPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("eutrophicationPotentialEol")) : double.NaN,
-                AcidificationPotentialEndOfLife = obj.PropertyValue("acidificationPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("acidificationPotentialEol")) : double.NaN,
-                PhotochemicalOzoneCreationPotentialEndOfLife = obj.PropertyValue("smogPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("smogPotentialEol")) : double.NaN,
-                OzoneDepletionPotentialEndOfLife = obj.PropertyValue("ozoneDepletionPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("ozoneDepletionPotentialEol")) : double.NaN,
-                GlobalWarmingPotentialEndOfLife = obj.PropertyValue("globalWarmingPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("globalWarmingPotentialEol")) : double.NaN,
-                DepletionOfAbioticResourcesFossilFuelsEndOfLife = obj.PropertyValue("primaryEnergyDemandEol") != null ? System.Convert.ToDouble(obj.PropertyValue("primaryEnergyDemandEol")) : double.NaN,
-                DepletionOfAbioticResourcesFossilFuels = obj.PropertyValue("primaryEnergyDemand") != null ? System.Convert.ToDouble(obj.PropertyValue("primaryEnergyDemand")) : double.NaN,
-                EutrophicationPotential = obj.PropertyValue("eutrophicationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("eutrophicationPotential")) : double.NaN,
-                AcidificationPotential = obj.PropertyValue("acidificationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("acidificationPotential")) : double.NaN,
-                PhotochemicalOzoneCreationPotential = obj.PropertyValue("smogPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("smogPotential")) : double.NaN,
-                OzoneDepletionPotential = obj.PropertyValue("ozoneDepletionPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("ozoneDepletionPotential")) : double.NaN,
-                GlobalWarmingPotential = obj.PropertyValue("globalWarmingPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("globalWarmingPotential")) : double.NaN,
-                Scope = obj.PropertyValue("scope")?.ToString() ?? "",
-                Description = obj.PropertyValue("description")?.ToString() ?? "",
-                DeclaredUnit = obj.PropertyValue("declaredUnit")?.ToString() ?? "",
-                BiogenicEmbodiedCarbon = obj.PropertyValue("biogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("biogenicEmbodiedCarbon")) : double.NaN,
-                GwpPerDeclaredUnit = obj.PropertyValue("gwpPerDeclaredUnit")?.ToString() ?? "",
-                GwpPerKG = obj.PropertyValue("gwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
-                Density = obj.PropertyValue("density")?.ToString() ?? "", //additional converts needed because this type is string not double.
-                EndOfLifeTreatment = obj.PropertyValue("eolTreatment")?.ToString() ?? "",
+                EutrophicationPotentialEndOfLife = obj.PropertyValue("EutrophicationPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("EutrophicationPotentialEol")) : double.NaN,
+                AcidificationPotentialEndOfLife = obj.PropertyValue("AcidificationPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("AcidificationPotentialEol")) : double.NaN,
+                PhotochemicalOzoneCreationPotentialEndOfLife = obj.PropertyValue("SmogPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("SmogPotentialEol")) : double.NaN,
+                OzoneDepletionPotentialEndOfLife = obj.PropertyValue("OzoneDepletionPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("OzoneDepletionPotentialEol")) : double.NaN,
+                GlobalWarmingPotentialEndOfLife = obj.PropertyValue("GlobalWarmingPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotentialEol")) : double.NaN,
+                DepletionOfAbioticResourcesFossilFuelsEndOfLife = obj.PropertyValue("PrimaryEnergyDemandEol") != null ? System.Convert.ToDouble(obj.PropertyValue("PrimaryEnergyDemandEol")) : double.NaN,
+                DepletionOfAbioticResourcesFossilFuels = obj.PropertyValue("PrimaryEnergyDemand") != null ? System.Convert.ToDouble(obj.PropertyValue("PrimaryEnergyDemand")) : double.NaN,
+                EutrophicationPotential = obj.PropertyValue("EutrophicationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("EutrophicationPotential")) : double.NaN,
+                AcidificationPotential = obj.PropertyValue("AcidificationPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("AcidificationPotential")) : double.NaN,
+                PhotochemicalOzoneCreationPotential = obj.PropertyValue("SmogPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("SmogPotential")) : double.NaN,
+                OzoneDepletionPotential = obj.PropertyValue("OzoneDepletionPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("OzoneDepletionPotential")) : double.NaN,
+                GlobalWarmingPotential = obj.PropertyValue("GlobalWarmingPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotential")) : double.NaN,
+                Scope = obj.PropertyValue("Scope")?.ToString() ?? "",
+                Description = obj.PropertyValue("Description")?.ToString() ?? "",
+                DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
+                BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
+                GwpPerDeclaredUnit = obj.PropertyValue("GwpPerDeclaredUnit")?.ToString() ?? "",
+                GwpPerKG = obj.PropertyValue("GwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
+                Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
+                EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
                 //Add publisher
                 //Add jurisdiction 
             };
