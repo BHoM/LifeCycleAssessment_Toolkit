@@ -7,8 +7,8 @@
     <ProjectGuid>{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BH.oM.LifeCycleAnalysis</RootNamespace>
-    <AssemblyName>LifeCycleAnalysis_oM</AssemblyName>
+    <RootNamespace>BH.oM.LifeCycleAssessment</RootNamespace>
+    <AssemblyName>LifeCycleAssessment_oM</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
