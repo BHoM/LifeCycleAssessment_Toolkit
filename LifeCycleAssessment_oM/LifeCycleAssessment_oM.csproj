@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HealthProductDeclarationData.cs" />
+    <Compile Include="HealthProductDeclaration.cs" />
     <Compile Include="IEnvironmentalProductDeclarationData.cs" />
     <Compile Include="EnvironmentalProductDeclaration.cs" />
     <Compile Include="SectorEnvironmentalProductDeclaration.cs" />

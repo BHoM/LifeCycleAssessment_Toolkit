@@ -37,12 +37,13 @@ namespace BH.Engine.LifeCycleAssessment
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static HealthProductDeclarationData ToHealthProductDeclarationData(this CustomObject obj)
+        public static HealthProductDeclaration ToHealthProductDeclarationData(this CustomObject obj)
         {
-            HealthProductDeclarationData epd = new HealthProductDeclarationData
+            HealthProductDeclaration epd = new HealthProductDeclaration
             {
                 //Cpid = obj.PropertyValue("cpid")?.ToString() ?? "",
                 //Version = obj.PropertyValue("version")?.ToString() ?? "",
+                Name = obj.PropertyValue("name")?.ToString() ?? "",
                 MasterFormat = obj.PropertyValue("Masterformat")?.ToString() ?? "",
                 Uniformats = obj.PropertyValue("Uniformats")?.ToString() ?? "",
                 CancerOrange = obj.PropertyValue("CancerOrange") != null ? System.Convert.ToDouble(obj.PropertyValue("CancerOrange")) : double.NaN,
@@ -64,6 +65,7 @@ namespace BH.Engine.LifeCycleAssessment
                 PersistantBioaccumulativeToxicantRed = obj.PropertyValue("PersistantBioaccumulativeToxicantRed") != null ? System.Convert.ToDouble(obj.PropertyValue("PersistantBioaccumulativeToxicantRed")) : double.NaN,
                 RespiratoryRed = obj.PropertyValue("RespiratoryRed") != null ? System.Convert.ToDouble(obj.PropertyValue("RespiratoryRed")) : double.NaN,
                 PersistantBioaccumulativeToxicantPurple = obj.PropertyValue("PersistantBioaccumulativeToxicantPurple") != null ? System.Convert.ToDouble(obj.PropertyValue("PersistantBioaccumulativeToxicantPurple")) : double.NaN,
+                Source = obj,
             };
             return epd;
         }

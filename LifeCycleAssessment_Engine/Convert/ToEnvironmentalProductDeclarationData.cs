@@ -63,6 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
                 GwpPerKG = obj.PropertyValue("GwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
                 Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
                 EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
+                Source = obj,
             };
             return epd;
         }

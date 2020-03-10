@@ -53,7 +53,7 @@ namespace BH.oM.LifeCycleAssessment
         public double EutrophicationPotentialEndOfLife { get; set; } = double.NaN;
         public double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; } = double.NaN;
         public string EndOfLifeTreatment { get; set; } = "";
-
+        public BHoMObject Source { get; set; } = null;
         /***************************************************/
     }
 }
