@@ -10,10 +10,10 @@ pool:
   vmImage: 'vs2017-win2016'
 
 variables:
-  solution: '**/LifeCycleAnalysis_Toolkit.sln'
+  solution: '**/LifeCycleAssessment_Toolkit.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  projectName: 'LifeCycleAnalysis_Toolkit'
+  projectName: 'LifeCycleAssessment_Toolkit'
 
 steps:
 - checkout: self
