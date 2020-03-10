@@ -58,7 +58,7 @@ namespace BH.oM.LifeCycleAssessment
         public string Masterformat { get; set; } = "";
         public string PostConsumerRecycledContent { get; set; } = "";
         public int ReferenceYear { get; set; } = 0;
-
+        public BHoMObject Source { get; set; } = null;
         /***************************************************/
     }
 }
