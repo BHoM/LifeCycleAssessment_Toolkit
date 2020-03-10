@@ -8,8 +8,8 @@ namespace BH.oM.LifeCycleAnalysis
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public string Cpid { get; set; } = "";
-        public string Version { get; set; } = "";
+        //public string Cpid { get; set; } = "";
+        //public string Version { get; set; } = "";
         public string MasterFormat { get; set; } = "";
         public string Uniformats { get; set; } = "";
         public double CancerOrange { get; set; } = double.NaN;
@@ -28,10 +28,10 @@ namespace BH.oM.LifeCycleAnalysis
         public double CancerOccupationalOnlyRed { get; set; } = double.NaN;
         public double DevelopmentalRed { get; set; } = double.NaN;
         public double MutagenicityRed { get; set; } = double.NaN;
-        public double PbtRed { get; set; } = double.NaN;
+        public double PersistantBioaccumulativeToxicantRed { get; set; } = double.NaN;
         public double ReproductiveRed { get; set; } = double.NaN;
         public double RespiratoryRed { get; set; } = double.NaN;
-        public double PbtPurple { get; set; } = double.NaN;
+        public double PersistantBioaccumulativeToxicantPurple { get; set; } = double.NaN;
         /***************************************************/
     }
 }

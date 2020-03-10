@@ -68,9 +68,9 @@
     <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\LifeCycleAnalysis_oM\LifeCycleAnalysis_oM.csproj">
+    <ProjectReference Include="..\LifeCycleAnalysis_oM\LifeCycleAssessment_oM.csproj">
       <Project>{0f693e7c-1a4e-42ad-a3d8-d6ce16acae5c}</Project>
-      <Name>LifeCycleAnalysis_oM</Name>
+      <Name>LifeCycleAssessment_oM</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
