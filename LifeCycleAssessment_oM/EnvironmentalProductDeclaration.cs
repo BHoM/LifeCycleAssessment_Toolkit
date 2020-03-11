@@ -38,7 +38,7 @@ namespace BH.oM.LifeCycleAssessment
         public string Density { get; set; } = "";
         public string GwpPerKG { get; set; } = "";
         public string GwpPerDeclaredUnit { get; set; } = "";
-        public double BiogenicEmbodiedCarbon { get; set; } = double.NaN;
+        public string BiogenicEmbodiedCarbon { get; set; } = "";
         public string DeclaredUnit { get; set; } = "";
         public string Description { get; set; } = "";
         public string Scope { get; set; } = "";
@@ -58,7 +58,7 @@ namespace BH.oM.LifeCycleAssessment
         public string Masterformat { get; set; } = "";
         public string PostConsumerRecycledContent { get; set; } = "";
         public int ReferenceYear { get; set; } = 0;
-        public BHoMObject Source { get; set; } = null;
+        public Data.Library.Source Source { get; set; } = null;
         /***************************************************/
     }
 }

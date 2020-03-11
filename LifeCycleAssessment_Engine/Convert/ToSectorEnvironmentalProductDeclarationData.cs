@@ -58,12 +58,12 @@ namespace BH.Engine.LifeCycleAssessment
                 Scope = obj.PropertyValue("Scope")?.ToString() ?? "",
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
                 DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
-                BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
+                BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon")?.ToString() ?? "",
                 GwpPerDeclaredUnit = obj.PropertyValue("GwpPerDeclaredUnit")?.ToString() ?? "",
                 GwpPerKG = obj.PropertyValue("GwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
                 Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
                 EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
-                Source = obj,
+                Source = obj.PropertyValue("Source") as BH.oM.Data.Library.Source,
                 //Add publisher
                 //Add jurisdiction 
             };
