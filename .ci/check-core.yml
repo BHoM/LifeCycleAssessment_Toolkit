@@ -35,14 +35,14 @@ steps:
 - task: NuGetToolInstaller@1
 
 - task: PowerShell@2
-  displayName: 'Clone and Build Test Toolkit'
+  displayName: 'Clone Test Toolkit'
   inputs:
     filePath: '.ci/CloneTest.ps1'
 
 - task: PowerShell@2
   displayName: 'Clone and Build Dependencies'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/CloneAndBuildDependencies.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/CloneAndBuildDependencies.ps1'
 
 - task: NuGetCommand@2
   displayName: 'Restore NuGets for Primary Solution'
@@ -52,9 +52,9 @@ steps:
 - task: PowerShell@2
   displayName: 'Build Primary Solution'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/BuildPrimarySolution.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/BuildPrimarySolution.ps1'
 
 - task: PowerShell@2
-  displayName: 'Clone and Build Dependants'
+  displayName: 'Clone and Build Core Dependencies'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/CloneAndBuildDependants.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/CloneAndBuildCore.ps1'
