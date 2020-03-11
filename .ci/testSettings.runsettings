@@ -45,8 +45,8 @@
   <!-- Parameters used by tests at runtime -->
   <TestRunParameters>
     <Parameter name="projectName" value="LifeCycleAssessment_Toolkit" />
-    <Parameter name="oMName" value="LifeCycleAssessment_oM" />
-    <Parameter name="engineName" value="LifeCycleAssessment_Engine" />
+    <Parameter name="oMName" value="null" />
+    <Parameter name="engineName" value="null" />
     <Parameter name="adapterName" value="null" />
   </TestRunParameters>
 

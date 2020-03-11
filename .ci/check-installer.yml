@@ -33,11 +33,11 @@ steps:
     filePath: '.ci/CloneTest.ps1'
 
 - task: PowerShell@2
-  displayName: 'Clone BuroHappold_Installer'
+  displayName: 'Clone BHoM_Installer'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/CloneInstaller.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/CloneInstaller.ps1'
 
 - task: PowerShell@2
-  displayName: 'Run BuroHappold_Installer tasks'
+  displayName: 'Run BHoM_Installer tasks'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/BuildInstaller.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/BuildInstaller.ps1'

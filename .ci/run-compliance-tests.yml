@@ -42,20 +42,20 @@ steps:
 - task: PowerShell@2
   displayName: 'Clone and Build Dependencies'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/CloneAndBuildDependencies.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/CloneAndBuildDependencies.ps1'
 
 - task: PowerShell@2
   displayName: 'Build Test Toolkit'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/BuildTest.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/BuildTest.ps1'
 
 - task: PowerShell@2
   displayName: 'Copy changed files'
   inputs:
-    filePath: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/MovePRFiles.ps1'
+    filePath: '$(Build.SourcesDirectory)/Test_Toolkit/MovePRFiles.ps1'
 
 - task: VSTest@2
   inputs:
     testSelector: 'testAssemblies'
-    testAssemblyVer2: '$(Build.SourcesDirectory)/BuroHappold_Test_Toolkit/Build/CodeComplianceTest_Test.dll'
+    testAssemblyVer2: '$(Build.SourcesDirectory)/Test_Toolkit/Build/CodeComplianceTest_Test.dll'
     runSettingsFile: '.ci/testSettings.runsettings'
