@@ -56,16 +56,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\EvaluateEnvironmentalProductDeclaration.cs" />
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
     <Compile Include="Convert\ToEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\QueryEnvironmentalProductDeclaration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Compute\" />
     <Folder Include="Create\" />
     <Folder Include="Modify\" />
-    <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LifeCycleAssessment_oM\LifeCycleAssessment_oM.csproj">

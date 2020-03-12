@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\EnvironmentalProductDeclarationField.cs" />
     <Compile Include="HealthProductDeclaration.cs" />
     <Compile Include="IEnvironmentalProductDeclarationData.cs" />
     <Compile Include="EnvironmentalProductDeclaration.cs" />
