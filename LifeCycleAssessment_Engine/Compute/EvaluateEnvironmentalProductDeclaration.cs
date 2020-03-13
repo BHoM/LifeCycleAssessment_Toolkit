@@ -28,6 +28,8 @@ using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.Quantities.Attributes;
+using BH.Engine.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -38,186 +40,153 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the quantity of any selected metric within an Environmental Product Declaration by extracting the declared unit of the selected material and multiplying the objects Volume * Density * EnvironmentalProductDeclarationField criteria. Please view the EnvironmentalProductDeclarationField Enum to explore current evaluation metric options.")]
-        [Input("BHoM CustomObject", "This is a BHoM CustomObject made with CreateCustom. The method expects Volume and Density properties. Density will be extracted from the dataset if possible prior to extracting from the object itself.")]
+        [Input("BHoM Object", "This is a BHoM Object to calculate EPD off of. The method requires a volume property on the BHoM Object. Density is required if the chosen EPD is on a per mass basis, and will be extracted from the dataset if possible prior to extracting from the object itself.")]
         [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
         [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclaration(CustomObject obj = null, EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //default to globalWarmingPotential evaluation
+        public static double EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj = null, EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //default to globalWarmingPotential evaluation
         {
             if (obj != null)
             {
-                //if declared unit from EnvironmentalProductDeclaration is kg (standard unit).
-                if (environmentalProductDeclaration.DeclaredUnit != null && environmentalProductDeclaration.DeclaredUnit.Equals("kg", StringComparison.InvariantCultureIgnoreCase))
+                //First check validity of inputs
+                object vol = obj.PropertyValue("Volume");
+                if (vol == null)
                 {
-                    try
-                    {
-                        double volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
-                        double constant = environmentalProductDeclaration.queryEnvironmentalProductDeclaration(environmentalProductDeclarationField);
-                        try
-                        {
-                            if (System.Convert.ToDouble(environmentalProductDeclaration.Density) != 0)
-                            {
-                                BH.Engine.Reflection.Compute.RecordNote("This method is using Density supplied by the EnvironmentalProductDeclaration to calculate Mass.");
-                                double density = System.Convert.ToDouble(environmentalProductDeclaration.Density);
-                                return volume * density * constant;
-                            }
-                        }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordNote("Unable to extract Density from the EnvironmentalProductDeclaration to calculate Mass. The method will attempt to extract the Density value from the object.");
-                        } //Try to extract density from the dataset.
-                        try
-                        {
-                            BH.Engine.Reflection.Compute.RecordNote("This method is using Density supplied by the CustomObject to calculate Mass. Please verify that you are supplying accurate values for Density.");
-                            double density = System.Convert.ToDouble(obj.CustomData["Density"]);
-                            return volume * density * constant;
-                        }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordError("This method requires an object to function. Please provide a BHoM CustomObject with Volume and Density properties stored in CustomData");
-                        } //Try to extract the density from the object.
-                    }
-                    catch
-                    {
-                        BH.Engine.Reflection.Compute.RecordError("The CustomObject must have Volume and Density properties within CustomData for this method to work.");
-                    } //Extract Density and Volume properties from available sources. 
+                    BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
+                    return 0;
                 }
-                else
+                double volume = System.Convert.ToDouble(vol);
+                if (volume == 0)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("This method requires a BHoM CustomObject with Volume and Density properties to function.Please verify these values and SetProperty to resume calculation.");
+                    BH.Engine.Reflection.Compute.RecordError("The input object's Volume value is invalid. Volume should be in m3 in numerical format.");
+                    return 0;
                 }
 
-                //if declared unit from EnvironmentalProductDeclaration is t (tonne).
-                if (environmentalProductDeclaration.DeclaredUnit != null && environmentalProductDeclaration.DeclaredUnit.Equals("t", StringComparison.InvariantCultureIgnoreCase))
+                //Check the epd declared unit type to determine whether to calculate by mass, volume, or neither
+                string declaredUnitType = environmentalProductDeclaration.DeclaredUnitType();
+
+                if (declaredUnitType == "Volume")
                 {
-                    BH.Engine.Reflection.Compute.RecordError("The declared unit of the EnvironmentalProductDeclaration is t (tonne). Because this is not standard practice, you should verify all units and data to ensure consistant results. Units will be converted from kgCO2/tonne to kgCO2/kg.");
-                    try
-                    {
-                        double volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
-                        double constant = environmentalProductDeclaration.queryEnvironmentalProductDeclaration(environmentalProductDeclarationField) / 1000; //<---convert to kg. this convert is temporary until iElementM is functional.
-                        try
-                        {
-                            if (System.Convert.ToDouble(environmentalProductDeclaration.Density) != 0)
-                            {
-                                BH.Engine.Reflection.Compute.RecordNote("This method is using Density supplied by the EnvironmentalProductDeclaration to calculate Mass.");
-                                double density = System.Convert.ToDouble(environmentalProductDeclaration.Density);
-                                return volume * density * constant;
-                            }
-                        }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordNote("Unable to extract Density from the EnvironmentalProductDeclaration to calculate Mass. The method will attempt to extract the Density value from the object.");
-                        } //Try to extract density from the dataset.
-                        try
-                        {
-                            BH.Engine.Reflection.Compute.RecordNote("This method is using Density supplied by the CustomObject to calculate Mass. Please verify that you are supplying accurate values for Density.");
-                            double density = System.Convert.ToDouble(obj.CustomData["Density"]);
-                            return volume * density * constant;
-                        }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordError("This method requires an object to function. Please provide a BHoM CustomObject with Volume and Density properties stored in CustomData");
-                        } //Try to extract the density from the object.
-                    }
-                    catch
-                    {
-                        BH.Engine.Reflection.Compute.RecordError("The CustomObject must have Volume and Density properties within CustomData for this method to work.");
-                    } //Extract Density and Volume properties from available sources. 
-                }
-                else
-                {
-                    BH.Engine.Reflection.Compute.RecordError("This method requires a BHoM CustomObject with Volume and Density properties to function.Please verify these values and SetProperty to resume calculation.");
+                    return EvaluateEnvironmentalProductDeclarationByVolume(environmentalProductDeclaration, environmentalProductDeclarationField, volume);
                 }
 
-                //if declared unit from EnvironmentalProductDeclaration is m2 (surface area).
-                if (environmentalProductDeclaration.DeclaredUnit != null && environmentalProductDeclaration.DeclaredUnit.Equals("m2", StringComparison.InvariantCultureIgnoreCase))
+                else if (declaredUnitType == "Mass")
                 {
-                    BH.Engine.Reflection.Compute.RecordError("The declared unit of the EnvironmentalProductDeclaration is area based (m2). You must therefore multiply the result by the surface area of the material you wish to evaluate.");
-                    try
+                    double density = 0;
+                    if (System.Convert.ToDouble(environmentalProductDeclaration.Density) != 0)
                     {
-                        double volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
-                        double constant = environmentalProductDeclaration.queryEnvironmentalProductDeclaration(environmentalProductDeclarationField); //Prompt the user to multiply the value by the m2 of material being evaluated.
-                        try
-                        {
-                            if (System.Convert.ToDouble(environmentalProductDeclaration.Density) != 0)
-                            {
-                                BH.Engine.Reflection.Compute.RecordNote("This method is using Density supplied by the EnvironmentalProductDeclaration to calculate Mass.");
-                                double density = System.Convert.ToDouble(environmentalProductDeclaration.Density);
-                                return volume * density * constant;
-                            }
-                        }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordNote("Unable to extract Density from the EnvironmentalProductDeclaration to calculate Mass. The method will attempt to extract the Density value from the object.");
-                        } //Try to extract density from the dataset.
-                        try
-                        {
-                            BH.Engine.Reflection.Compute.RecordNote("This method is using Density supplied by the CustomObject to calculate Mass. Please verify that you are supplying accurate values for Density.");
-                            double density = System.Convert.ToDouble(obj.CustomData["Density"]);
-                            return volume * density * constant;
-                        }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordError("This method requires an object to function. Please provide a BHoM CustomObject with Volume and Density properties stored in CustomData");
-                        } //Try to extract the density from the object.
+                        density = System.Convert.ToDouble(environmentalProductDeclaration.Density);
+                        BH.Engine.Reflection.Compute.RecordNote(String.Format("This method is using a density of {0} supplied by the EnvironmentalProductDeclaration to calculate Mass.", density));
                     }
-                    catch
+                    else if (obj.PropertyValue("Density") == null)
                     {
-                        BH.Engine.Reflection.Compute.RecordError("The CustomObject must have Volume and Density properties within CustomData for this method to work.");
-                    } //Extract Density and Volume properties from available sources. 
+                        BH.Engine.Reflection.Compute.RecordNote("The EnvironmentalProductDeclaration and input object do not have density information. The epd is mass-based. Please add density data to the input object.");
+                        return 0;
+                    }
+                    else if (System.Convert.ToDouble(obj.PropertyValue("Density")) == 0)
+                    {
+                        BH.Engine.Reflection.Compute.RecordNote("The input object's Density value is invalid. Density should be in kg/m3 in numerical format.");
+                        return 0;
+                    }
+                    else
+                    {
+                        density = System.Convert.ToDouble(obj.PropertyValue("Density"));
+                    }
+                    double mass = density * volume;
+
+                    return EvaluateEnvironmentalProductDeclarationByMass(environmentalProductDeclaration, environmentalProductDeclarationField, mass);
+                }
+
+                else if (declaredUnitType == "Area")
+                {
+                    object ar = obj.PropertyValue("Area");
+                    if (ar == null)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("The EnvironmentalProductDeclaration supplied uses an area based declared unit, so the input object requires an Area property. ");
+                        return 0;
+                    }
+                    double area = System.Convert.ToDouble(ar);
+                    if (area == 0)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("The input object's Area value is invalid. Area should be in m2 in numerical format.");
+                        return 0;
+                    }
+                    return EvaluateEnvironmentalProductDeclarationByArea(environmentalProductDeclaration, environmentalProductDeclarationField, area);
                 }
                 else
                 {
-                    BH.Engine.Reflection.Compute.RecordError("This method requires a BHoM CustomObject with Volume and Density properties to function.Please verify these values and SetProperty to resume calculation.");
+                    BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not supported.");
+                    return 0;
                 }
             }
-            else 
+            else
             {
-                BH.Engine.Reflection.Compute.RecordError("This method requires a BHoM CustomObject and mass to function. Mass = Volume * Density: Please provide both Volume and Density properties within CustomData to resume calculation.");
+                return 0;
             }
-            return 0;
         }
 
         /***************************************************/
 
-        //<-----Additional method in progress to work with any geometry----->//
-
-        /*[Description("Calculates the acidification potential of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("volume", "Volume in m^2 as a double. This method does not extract the Volume of an object and should be provided manually. The property may be extracted from an EPDData Object.")]
-        [Input("density", "Density in kg/m^3 as a double. This method does not extract the Density of an object and should be provided manually. The property may be extracted from an EPDData Object.")]
-        [Input("epdData", "BHoM EPDData object containing values for typical metrics within Environmental Product Declarations.")]
-        [Input("environmentalProductDeclarationField", "BHoM environmentalProductDeclarationField Enum to select Environmental Product Declaration metric for evaluation.")]
-        [Output("quantity", "The quantity of the specified EPD metric within a given geometry.")]
-        public static double EvaluateEPD(double volume = 0, double density = 0, EPDData epdData = null, environmentalProductDeclarationField environmentalProductDeclarationField = environmentalProductDeclarationField.GlobalWarmingPotential)
+        [Description("This method calculates the quantity of a supplied metric per a supplied EPD and mass.")]
+        [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with a mass-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
+        [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
+        [Input("mass", "The total mass to calculate the total quantity of the input metric for.",typeof(Mass))]
+        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
+        public static double EvaluateEnvironmentalProductDeclarationByMass(EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
         {
-            double calcDensity = double.NaN;
-
-            if (density != 0)
+            if (environmentalProductDeclaration.DeclaredUnitType() != "Mass")
             {
-                calcDensity = density;
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Mass. Please supply a Mass-based epd or try a different method.");
+                return 0;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordNote("Density value is either zero or is being derived from the epdData. Please verify the correct value within the dataset before continuing by using the explode component.");
-
-                if (System.Convert.ToDouble(epdData.Density) != 0)
-                {
-                    try
-                    {
-                        calcDensity = System.Convert.ToDouble(epdData.Density);
-                    }
-                    catch (Exception e)
-                    {
-                        BH.Engine.Reflection.Compute.RecordError("An error occurred in converting the custom data key Density to a valid number (double) - error was: " + e.ToString());
-                    }
-                }
-                if ((calcDensity == 0 || double.IsNaN(calcDensity)) && (density == 0 || double.IsNaN(density)))
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"Results cannot be calculated. Please check your input values for Density, Volume, and {environmentalProductDeclarationField}");
-                    return double.NaN;
-                }
+                double declaredUnit = environmentalProductDeclaration.DeclaredUnitValueInSI();
+                return mass * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField) / declaredUnit;
             }
-            return (volume * calcDensity) * CompileEPD(epdData, environmentalProductDeclarationField);
-        }*/
+        }
+
+        /***************************************************/
+
+        [Description("This method calculates the quantity of a supplied metric per a supplied EPD and volume.")]
+        [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with a volume-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
+        [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
+        [Input("volume", "The total volume to calculate the total quantity of the input metric for.", typeof(Volume))]
+        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
+        public static double EvaluateEnvironmentalProductDeclarationByVolume(EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
+        {
+            if (environmentalProductDeclaration.DeclaredUnitType() != "Volume")
+            {
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Volume. Please supply a Volume-based epd or try a different method.");
+                return 0;
+            }
+            else
+            {
+                double declaredUnit = environmentalProductDeclaration.DeclaredUnitValueInSI();
+                return volume * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField) / declaredUnit;
+            }
+        }
+
+        /***************************************************/
+
+        [Description("This method calculates the quantity of a supplied metric per a supplied EPD and area.")]
+        [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with an area-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
+        [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
+        [Input("area", "The total area to calculate the total quantity of the input metric for.", typeof(Area))]
+        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
+        public static double EvaluateEnvironmentalProductDeclarationByArea(EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)
+        {
+            if (environmentalProductDeclaration.DeclaredUnitType() != "Area")
+            {
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Area. Please supply an Area-based epd or try a different method.");
+                return 0;
+            }
+            else
+            {
+                double declaredUnit = environmentalProductDeclaration.DeclaredUnitValueInSI();
+                return area * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField) / declaredUnit;
+            }
+        }
+
     }
 }
