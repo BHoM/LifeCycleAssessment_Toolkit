@@ -34,6 +34,10 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Quantities_oM">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Quantities_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
@@ -61,7 +65,9 @@
     <Compile Include="Convert\ToEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\QueryEnvironmentalProductDeclaration.cs" />
+    <Compile Include="Query\DeclaredUnitType.cs" />
+    <Compile Include="Query\DeclaredUnitInSI.cs" />
+    <Compile Include="Query\EnvironmentalProductDeclaration.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Create\" />

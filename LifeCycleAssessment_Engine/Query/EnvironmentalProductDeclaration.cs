@@ -32,12 +32,12 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
-        public static double queryEnvironmentalProductDeclaration(this EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field)
+        public static double EnvironmentalProductDeclaration(this EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field)
         {
             switch(field)
             {
                 case EnvironmentalProductDeclarationField.GlobalWarmingPotential:
-                    return epd.GlobalWarmingPotential;
+                    return epd.GlobalWarmingPotential; // need to return per gwp available
                 case EnvironmentalProductDeclarationField.OzoneDepletionPotential:
                     return epd.OzoneDepletionPotential;
                 case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotential:
