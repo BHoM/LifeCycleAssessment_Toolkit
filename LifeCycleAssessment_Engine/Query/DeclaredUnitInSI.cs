@@ -52,8 +52,10 @@ namespace BH.Engine.LifeCycleAssessment
                     case "1 m2":
                         return 1;
                     case "1 ft2":
+                    case "1 sqft":
                         return 0.092903;
                     case "1000 ft2":
+                    case "1000 sqft":
                         return 9.2903;
                     default:
                         return double.NaN;

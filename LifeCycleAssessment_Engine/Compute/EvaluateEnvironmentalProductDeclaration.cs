@@ -44,7 +44,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
         [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj = null, EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //default to globalWarmingPotential evaluation
+        public static double EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj, EnvironmentalProductDeclaration environmentalProductDeclaration, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //default to globalWarmingPotential evaluation
         {
             if (obj != null)
             {
@@ -73,9 +73,11 @@ namespace BH.Engine.LifeCycleAssessment
                 else if (declaredUnitType == "Mass")
                 {
                     double density = 0;
-                    if (System.Convert.ToDouble(environmentalProductDeclaration.Density) != 0)
+                    string epdDensity = environmentalProductDeclaration.Density.ToString() ?? "";
+                    double densityVal = System.Convert.ToDouble(epdDensity.Substring(0, epdDensity.IndexOf(" ")));
+                    if (System.Convert.ToDouble(densityVal) != 0)
                     {
-                        density = System.Convert.ToDouble(environmentalProductDeclaration.Density);
+                        density = densityVal;
                         BH.Engine.Reflection.Compute.RecordNote(String.Format("This method is using a density of {0} supplied by the EnvironmentalProductDeclaration to calculate Mass.", density));
                     }
                     else if (obj.PropertyValue("Density") == null)

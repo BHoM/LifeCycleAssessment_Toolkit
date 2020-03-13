@@ -48,7 +48,9 @@ namespace BH.Engine.LifeCycleAssessment
                         return "Volume";
                     case "1 m2":
                     case "1 ft2":
+                    case "1 sqft":
                     case "1000 ft2":
+                    case "1000 sqft":
                         return "Area";
                     case "1 m":
                     case "1 ft":
