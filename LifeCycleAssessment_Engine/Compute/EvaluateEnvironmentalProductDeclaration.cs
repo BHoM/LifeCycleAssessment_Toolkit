@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
         [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj, EnvironmentalProductDeclaration environmentalProductDeclaration, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //default to globalWarmingPotential evaluation
+        public static double EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj, IEnvironmentalProductDeclarationData environmentalProductDeclaration, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //default to globalWarmingPotential evaluation
         {
             if (obj != null)
             {
@@ -135,7 +135,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
         [Input("mass", "The total mass to calculate the total quantity of the input metric for.",typeof(Mass))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationByMass(EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
+        public static double EvaluateEnvironmentalProductDeclarationByMass(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
         {
             if (environmentalProductDeclaration.DeclaredUnitType() != "Mass")
             {
@@ -156,7 +156,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
         [Input("volume", "The total volume to calculate the total quantity of the input metric for.", typeof(Volume))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationByVolume(EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
+        public static double EvaluateEnvironmentalProductDeclarationByVolume(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
         {
             if (environmentalProductDeclaration.DeclaredUnitType() != "Volume")
             {
@@ -177,7 +177,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
         [Input("area", "The total area to calculate the total quantity of the input metric for.", typeof(Area))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationByArea(EnvironmentalProductDeclaration environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)
+        public static double EvaluateEnvironmentalProductDeclarationByArea(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)
         {
             if (environmentalProductDeclaration.DeclaredUnitType() != "Area")
             {

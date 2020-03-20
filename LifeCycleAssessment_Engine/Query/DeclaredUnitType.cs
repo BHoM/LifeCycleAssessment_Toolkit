@@ -32,7 +32,7 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
-        public static string DeclaredUnitType(this EnvironmentalProductDeclaration epd)
+        public static string DeclaredUnitType(this IEnvironmentalProductDeclarationData epd)
         {
             //Temporary method to be replaced by epd.DeclaredUnit convert to volume or mass using IMatter
             if (epd.DeclaredUnit != null)
