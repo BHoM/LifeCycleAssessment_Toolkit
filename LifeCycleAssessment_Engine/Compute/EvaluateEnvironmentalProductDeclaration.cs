@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-//using BH.oM.Structure; <--This was used for IMass calc. Remove when IelementM is implemented.
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
@@ -55,10 +54,11 @@ namespace BH.Engine.LifeCycleAssessment
                     BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
                     return 0;
                 }
+
                 double volume = System.Convert.ToDouble(vol);
-                if (volume == 0)
+                if (volume <= 0)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("The input object's Volume value is invalid. Volume should be in m3 in numerical format.");
+                    BH.Engine.Reflection.Compute.RecordError("The input object's Volume value is invalid or negative. Volume should be in m3 in numerical format.");
                     return 0;
                 }
 
@@ -69,23 +69,23 @@ namespace BH.Engine.LifeCycleAssessment
                 {
                     return EvaluateEnvironmentalProductDeclarationByVolume(environmentalProductDeclaration, environmentalProductDeclarationField, volume);
                 }
-
                 else if (declaredUnitType == "Mass")
                 {
-                    double density = 0;
-                    string epdDensity = environmentalProductDeclaration.Density.ToString() ?? "";
-                    double densityVal = System.Convert.ToDouble(epdDensity.Substring(0, epdDensity.IndexOf(" ")));
-                    if (System.Convert.ToDouble(densityVal) != 0)
+                    //double density = 0;
+                    string epdDensity = environmentalProductDeclaration.Density != null ? environmentalProductDeclaration.Density.ToString() : "";
+                    double density = System.Convert.ToDouble(epdDensity.Substring(0, epdDensity.IndexOf(" "))); //substring required to parse density string. This is temporary until IElementM is integrated.
+                    
+                    if (System.Convert.ToDouble(density) != 0)
                     {
-                        density = densityVal;
+                        //density = density;
                         BH.Engine.Reflection.Compute.RecordNote(String.Format("This method is using a density of {0} supplied by the EnvironmentalProductDeclaration to calculate Mass.", density));
                     }
                     else if (obj.PropertyValue("Density") == null)
                     {
-                        BH.Engine.Reflection.Compute.RecordNote("The EnvironmentalProductDeclaration and input object do not have density information. The epd is mass-based. Please add density data to the input object.");
+                        BH.Engine.Reflection.Compute.RecordNote("The EnvironmentalProductDeclaration and input object do not have density information. The EPD is mass-based. Please add density data to the input object.");
                         return 0;
                     }
-                    else if (System.Convert.ToDouble(obj.PropertyValue("Density")) == 0)
+                    else if (System.Convert.ToDouble(obj.PropertyValue("Density")) <= 0)
                     {
                         BH.Engine.Reflection.Compute.RecordNote("The input object's Density value is invalid. Density should be in kg/m3 in numerical format.");
                         return 0;
@@ -94,21 +94,22 @@ namespace BH.Engine.LifeCycleAssessment
                     {
                         density = System.Convert.ToDouble(obj.PropertyValue("Density"));
                     }
+                    
                     double mass = density * volume;
 
                     return EvaluateEnvironmentalProductDeclarationByMass(environmentalProductDeclaration, environmentalProductDeclarationField, mass);
                 }
-
                 else if (declaredUnitType == "Area")
                 {
                     object ar = obj.PropertyValue("Area");
                     if (ar == null)
                     {
-                        BH.Engine.Reflection.Compute.RecordError("The EnvironmentalProductDeclaration supplied uses an area based declared unit, so the input object requires an Area property. ");
+                        BH.Engine.Reflection.Compute.RecordError("The EnvironmentalProductDeclaration supplied uses an area based declared unit, so the input object requires an Area property.");
                         return 0;
                     }
+                    
                     double area = System.Convert.ToDouble(ar);
-                    if (area == 0)
+                    if (area <= 0)
                     {
                         BH.Engine.Reflection.Compute.RecordError("The input object's Area value is invalid. Area should be in m2 in numerical format.");
                         return 0;
@@ -138,7 +139,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (environmentalProductDeclaration.DeclaredUnitType() != "Mass")
             {
-                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Mass. Please supply a Mass-based epd or try a different method.");
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Mass. Please supply a Mass-based EPD or try a different method.");
                 return 0;
             }
             else
@@ -159,7 +160,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (environmentalProductDeclaration.DeclaredUnitType() != "Volume")
             {
-                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Volume. Please supply a Volume-based epd or try a different method.");
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Volume. Please supply a Volume-based EPD or try a different method.");
                 return 0;
             }
             else
@@ -180,7 +181,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (environmentalProductDeclaration.DeclaredUnitType() != "Area")
             {
-                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Area. Please supply an Area-based epd or try a different method.");
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Area. Please supply an Area-based EPD or try a different method.");
                 return 0;
             }
             else

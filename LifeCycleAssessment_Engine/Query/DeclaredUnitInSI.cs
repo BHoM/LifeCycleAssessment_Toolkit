@@ -61,7 +61,7 @@ namespace BH.Engine.LifeCycleAssessment
                         return double.NaN;
                 }
             }
-            else { return double.NaN; }         
+            return double.NaN;      
         }
     }
 }
