@@ -32,7 +32,7 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
-        public static double EnvironmentalProductDeclaration(this EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field)
+        public static double EnvironmentalProductDeclaration(this IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
         {
             switch(field)
             {
