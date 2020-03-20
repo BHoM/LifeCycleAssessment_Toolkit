@@ -20,8 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.ComponentModel;
+
 namespace BH.oM.LifeCycleAssessment
 {
+    [Description("This enum provides several evaluation fields that are commonly assessed within standard Environmental Product Declarations. You may provide single or multiple EPD Field selections for evaluation within the EvaluateEnvironmentalProductDeclaration compute method.")]
     public enum EnvironmentalProductDeclarationField
     {
         GlobalWarmingPotential,

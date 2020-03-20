@@ -59,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
                         return "Unrecognized";
                 }
             }
-            else { return null; }         
+            return null;        
         }
     }
 }
