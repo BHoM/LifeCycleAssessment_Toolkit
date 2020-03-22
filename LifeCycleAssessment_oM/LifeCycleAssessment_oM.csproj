@@ -45,6 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\EnvironmentalProductDeclarationField.cs" />
+    <Compile Include="Enum\LifeCycleAssessmentPhases.cs" />
+    <Compile Include="Enum\PrimaryStructuralMaterial.cs" />
+    <Compile Include="Enum\LevelOfDesign.cs" />
+    <Compile Include="Enum\ProjectType.cs" />
+    <Compile Include="Enum\ProjectArea.cs" />
+    <Compile Include="LifeCycleAssessmentScope.cs" />
     <Compile Include="HealthProductDeclaration.cs" />
     <Compile Include="IEnvironmentalProductDeclarationData.cs" />
     <Compile Include="EnvironmentalProductDeclaration.cs" />
