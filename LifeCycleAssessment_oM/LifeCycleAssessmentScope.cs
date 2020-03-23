@@ -38,11 +38,6 @@ namespace BH.oM.LifeCycleAssessment
         public string ContactName { get; set; } = "";
         [Description("The Actual Project Area denotes the more precise project area (m2) which will allow assessment of kgCO2eq/m2 metrics")]
         public double ActualProjectArea { get; set; } = double.NaN;
-        //public enum ProjectArea { };
-        //public enum ProjectType { };
-        //public enum LevelOfDevelopment { };
-        //public enum LifeCycleAssessmentPhases { };
-        //public enum PrimaryStructuralMaterial { };
         [Description("Biogenic Carbon is a true/false that indicates that the project contains materials that originated from a biological source (trees, soil), these materials have the ability sequester/store carbon.")]
         public bool BiogenicCarbon { get; set; } = false;
         [Description("Zip Code is the means of tracking the project's location")]
@@ -71,7 +66,7 @@ namespace BH.oM.LifeCycleAssessment
         public BHoMObject FoundationsPiles { get; set; } = null;
         [Description("Foundation walls are structural walls built below-grade")]
         public BHoMObject FoundationsWalls { get; set; } = null;
-        [Description("Foundation walls are structural walls built below-grade.")]
+        [Description("Foundation slabs are structural slabs upon which the building is constructed. This category expects any type of slab, but assumes no construction properties.")]
         public BHoMObject FoundationsSlabs { get; set; } = null;
         [Description("MEP Equipment is a machine that processes mechanical, electrical or plumbing loads (eg Fan, Electrical Panel, Pump")]
         public BHoMObject MEPEquipment { get; set; } = null;
@@ -89,9 +84,9 @@ namespace BH.oM.LifeCycleAssessment
         public BHoMObject MEPPiping { get; set; } = null;
         [Description("MEP Batties are energy storage devices (eg photovoltaic panels)")]
         public BHoMObject MEPBatteries { get; set; } = null;
-        [Description("TenantImprovementCeiling is a material that creates an additional upper interior surface in a room")]
+        [Description("Tenant Improvement Ceiling is a material that creates an additional upper interior surface in a room")]
         public BHoMObject TenantImprovementsCeiling { get; set; } = null;
-        [Description("TenantImprovementsFlooring  is inclusive of the flooring materials placed on top of the structural floor (eg carpet, tile)")]
+        [Description("Tenant Improvements Flooring  is inclusive of the flooring materials placed on top of the structural floor (eg carpet, tile)")]
         public BHoMObject TenantImprovementsFlooring { get; set; } = null;
         [Description("Tenant Improvements Finishes is inclusive of finishes (eg paint)")]
         public BHoMObject TenantImprovementsFinishes { get; set; } = null;
