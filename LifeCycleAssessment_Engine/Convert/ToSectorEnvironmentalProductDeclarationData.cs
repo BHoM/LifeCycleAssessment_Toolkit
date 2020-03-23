@@ -59,8 +59,6 @@ namespace BH.Engine.LifeCycleAssessment
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
                 DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
                 BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
-                GwpPerDeclaredUnit = obj.PropertyValue("GwpPerDeclaredUnit")?.ToString() ?? "",
-                GwpPerKG = obj.PropertyValue("GwpPerKG")?.ToString() ?? "", //needs string splitting to extract units and convert to double.
                 Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
                 EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
                 Source = obj,
