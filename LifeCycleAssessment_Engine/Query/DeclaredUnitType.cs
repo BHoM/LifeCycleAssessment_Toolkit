@@ -40,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
                 switch (epd.DeclaredUnit)
                 {
                     case "1 kg":
+                    case "kg":
                     case "1 lbs":
                     case "1 t":
                         return "Mass";
