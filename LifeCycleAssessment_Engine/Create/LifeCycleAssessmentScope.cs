@@ -1,4 +1,26 @@
-﻿using System;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,76 +75,76 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("tenantImprovementsPartitionWalls", "Tenant Improvements Partition Walls includes walls in the interior of the building")]
         [Output("lifeCycleAssessment", "A lifeCycleAssessment object for capturing and comparing additional studies. This object can be passed directly to a database for storage and further study.")]
         public static LifeCycleAssessmentScope LifeCycleAssessmentScope(ProjectArea projectArea, ProjectType projectType, LevelOfDevelopment levelOfDevelopment, LifeCycleAssessmentPhases lifeCycleAssessmentPhases, PrimaryStructuralMaterial primaryStructuralMaterial,
-            string ProjectName = "",
-            string ContactName = "",
-            double ActualProjectArea = 0,
-            bool BiogenicCarbon = false,
-            int ZipCode = 00000,
-            string AdditionalNotes = "",
-            BHoMObject StructuresSlabs = null,
-            BHoMObject StructuresCoreWalls = null,
-            BHoMObject StructuresBeams = null,
-            BHoMObject StructuresColumns = null,
-            BHoMObject EnclosuresWalls = null,
-            BHoMObject EnclosuresCurtainWalls = null,
-            BHoMObject EnclosuresWindows = null,
-            BHoMObject EnclosuresDoors = null,
-            BHoMObject FoundationsFootings = null,
-            BHoMObject FoundationsPiles = null,
-            BHoMObject FoundationsWalls = null,
-            BHoMObject FoundationsSlabs = null,
-            BHoMObject MEPEquipment = null,
-            BHoMObject MEPDuctwork = null,
-            BHoMObject MEPGenerators = null,
-            BHoMObject MEPConduit = null,
-            BHoMObject MEPWiring = null,
-            BHoMObject MEPLighting = null,
-            BHoMObject MEPPiping = null,
-            BHoMObject MEPBatteries = null,
-            BHoMObject TenantImprovementsCeiling = null,
-            BHoMObject TenantImprovementsFlooring = null,
-            BHoMObject TenantImprovementsFinishes = null,
-            BHoMObject TenantImprovementsInteriorGlazing = null,
-            BHoMObject TenantImprovementsFurniture = null,
-            BHoMObject TenantImprovementsInteriorDoors = null,
-            BHoMObject TenantImprovementsPartitionWalls = null
+            string projectName = "",
+            string contactName = "",
+            double actualProjectArea = 0,
+            bool biogenicCarbon = false,
+            int zipCode = 00000,
+            string additionalNotes = "",
+            BHoMObject structuresSlabs = null,
+            BHoMObject structuresCoreWalls = null,
+            BHoMObject structuresBeams = null,
+            BHoMObject structuresColumns = null,
+            BHoMObject enclosuresWalls = null,
+            BHoMObject enclosuresCurtainWalls = null,
+            BHoMObject enclosuresWindows = null,
+            BHoMObject enclosuresDoors = null,
+            BHoMObject foundationsFootings = null,
+            BHoMObject foundationsPiles = null,
+            BHoMObject foundationsWalls = null,
+            BHoMObject foundationsSlabs = null,
+            BHoMObject mepEquipment = null,
+            BHoMObject mepDuctwork = null,
+            BHoMObject mepGenerators = null,
+            BHoMObject mepConduit = null,
+            BHoMObject mepWiring = null,
+            BHoMObject mepLighting = null,
+            BHoMObject mepPiping = null,
+            BHoMObject mepBatteries = null,
+            BHoMObject tenantImprovementsCeiling = null,
+            BHoMObject tenantImprovementsFlooring = null,
+            BHoMObject tenantImprovementsFinishes = null,
+            BHoMObject tenantImprovementsInteriorGlazing = null,
+            BHoMObject tenantImprovementsFurniture = null,
+            BHoMObject tenantImprovementsInteriorDoors = null,
+            BHoMObject tenantImprovementsPartitionWalls = null
         )
         {
             return new oM.LifeCycleAssessment.LifeCycleAssessmentScope
             {
-                ProjectName = ProjectName,
-                ContactName = ContactName,
-                ActualProjectArea = ActualProjectArea,
-                BiogenicCarbon = BiogenicCarbon,
-                ZipCode = ZipCode,
-                AdditionalNotes = AdditionalNotes,
-                StructuresSlabs = StructuresSlabs,
-                StructuresCoreWalls = StructuresCoreWalls,
-                StructuresBeams = StructuresBeams,
-                StructuresColumns = StructuresColumns,
-                EnclosuresCurtainWalls = EnclosuresCurtainWalls,
-                EnclosuresWalls = EnclosuresWalls,
-                EnclosuresWindows = EnclosuresWindows,
-                EnclosuresDoors = EnclosuresDoors,
-                FoundationsFootings = FoundationsFootings,
-                FoundationsPiles = FoundationsPiles,
-                FoundationsSlabs = FoundationsSlabs,
-                FoundationsWalls = FoundationsWalls,
-                MEPEquipment = MEPEquipment,
-                MEPDuctwork = MEPDuctwork, 
-                MEPGenerators = MEPGenerators,
-                MEPConduit = MEPConduit,
-                MEPWiring = MEPWiring,
-                MEPLighting = MEPLighting,
-                MEPPiping = MEPPiping,
-                MEPBatteries = MEPBatteries,
-                TenantImprovementsCeiling = TenantImprovementsCeiling,
-                TenantImprovementsFlooring = TenantImprovementsFlooring,
-                TenantImprovementsFinishes = TenantImprovementsFinishes,
-                TenantImprovementsInteriorGlazing =TenantImprovementsInteriorGlazing,
-                TenantImprovementsFurniture = TenantImprovementsFurniture,
-                TenantImprovementsInteriorDoors = TenantImprovementsInteriorDoors,
-                TenantImprovementsPartitionWalls = TenantImprovementsPartitionWalls
+                ProjectName = projectName,
+                ContactName = contactName,
+                ActualProjectArea = actualProjectArea,
+                BiogenicCarbon = biogenicCarbon,
+                ZipCode = zipCode,
+                AdditionalNotes = additionalNotes,
+                StructuresSlabs = structuresSlabs,
+                StructuresCoreWalls = structuresCoreWalls,
+                StructuresBeams = structuresBeams,
+                StructuresColumns = structuresColumns,
+                EnclosuresCurtainWalls = enclosuresCurtainWalls,
+                EnclosuresWalls = enclosuresWalls,
+                EnclosuresWindows = enclosuresWindows,
+                EnclosuresDoors = enclosuresDoors,
+                FoundationsFootings = foundationsFootings,
+                FoundationsPiles = foundationsPiles,
+                FoundationsSlabs = foundationsSlabs,
+                FoundationsWalls = foundationsWalls,
+                MEPEquipment = mepEquipment,
+                MEPDuctwork = mepDuctwork, 
+                MEPGenerators = mepGenerators,
+                MEPConduit = mepConduit,
+                MEPWiring = mepWiring,
+                MEPLighting = mepLighting,
+                MEPPiping = mepPiping,
+                MEPBatteries = mepBatteries,
+                TenantImprovementsCeiling = tenantImprovementsCeiling,
+                TenantImprovementsFlooring = tenantImprovementsFlooring,
+                TenantImprovementsFinishes = tenantImprovementsFinishes,
+                TenantImprovementsInteriorGlazing =tenantImprovementsInteriorGlazing,
+                TenantImprovementsFurniture = tenantImprovementsFurniture,
+                TenantImprovementsInteriorDoors = tenantImprovementsInteriorDoors,
+                TenantImprovementsPartitionWalls = tenantImprovementsPartitionWalls
             };
         }
     }
