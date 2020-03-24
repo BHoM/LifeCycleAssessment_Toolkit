@@ -2,6 +2,7 @@
 {
     public enum ProjectType
     {
+        Unidefined,
         Stadium,
         Office,
         Residential,

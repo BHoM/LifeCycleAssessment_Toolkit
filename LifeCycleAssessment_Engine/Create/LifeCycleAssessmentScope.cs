@@ -13,11 +13,11 @@ namespace BH.Engine.LifeCycleAssessment
     public static partial class Create
     {
         [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
-        [Input("projectArea", "Enum - Enter description here!")]
-        [Input("projectType", "Enum - Enter description here!")]
-        [Input("levelOfDesign", "Enum - Enter description here!")]
-        [Input("lifeCycleAssessmentPhases", "Enum - Enter description here!")]
-        [Input("primaryStructuralMaterial", "Enum - Enter description here!")]
+        [Input("projectArea", "This is an Enum of project areas to help categorize your project Life Cycle Assessment.")]
+        [Input("projectType", "This is an Enum listing the overall type of functional program that takes place throughout the project.")]
+        [Input("levelOfDevelopment", "This is an Enum listing the level of development of your project. This is commonly refered to as LOD100, LOD200 etc. Also known as project phase.")]
+        [Input("lifeCycleAssessmentPhases", "This is an Enum listing the phases encorporated within your Life Cycle Assessment.")]
+        [Input("primaryStructuralMaterial", "This is an Enum listing the primary structural material for the project.")]
         [Input("projectName", "The Project Name denotes the name of the project (eg Mercedes-Benz Stadium)")]
         [Input("contactName", "The Contact Name denotes the person/people who performed the LCA study")]
         [Input("actualProjectArea", "The Actual Project Area denotes the more precise project area (m2) which will allow assessment of kgCO2eq/m2 metrics")]

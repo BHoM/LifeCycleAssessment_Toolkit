@@ -2,6 +2,7 @@
 {
     public enum PrimaryStructuralMaterial
     {
+        Undefined,
         Steel,
         Concrete,
         Masonry,

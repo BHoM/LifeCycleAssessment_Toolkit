@@ -2,6 +2,7 @@
 {
     public enum LevelOfDevelopment
     {
+        Undefined,
         LOD100,
         LOD200,
         LOD300,

@@ -2,6 +2,7 @@
 {
     public enum LifeCycleAssessmentPhases
     {
+        Undefined,
         A1,
         A2,
         A3,
