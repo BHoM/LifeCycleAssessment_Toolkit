@@ -65,7 +65,6 @@ namespace BH.Engine.LifeCycleAssessment
                 PersistantBioaccumulativeToxicantRed = obj.PropertyValue("PersistantBioaccumulativeToxicantRed") != null ? System.Convert.ToDouble(obj.PropertyValue("PersistantBioaccumulativeToxicantRed")) : double.NaN,
                 RespiratoryRed = obj.PropertyValue("RespiratoryRed") != null ? System.Convert.ToDouble(obj.PropertyValue("RespiratoryRed")) : double.NaN,
                 PersistantBioaccumulativeToxicantPurple = obj.PropertyValue("PersistantBioaccumulativeToxicantPurple") != null ? System.Convert.ToDouble(obj.PropertyValue("PersistantBioaccumulativeToxicantPurple")) : double.NaN,
-                Source = obj,
             };
             return epd;
         }
