@@ -42,7 +42,7 @@ namespace BH.Engine.LifeCycleAssessment
             EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration
             {
                 Id = obj.PropertyValue("_id")?.ToString() ?? "",
-                Name = obj.PropertyValue("name")?.ToString() ?? "",
+                Name = obj.PropertyValue("Name")?.ToString() ?? "",
                 EutrophicationPotentialEndOfLife = obj.PropertyValue("EutrophicationPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("EutrophicationPotentialEol")) : double.NaN,
                 AcidificationPotentialEndOfLife = obj.PropertyValue("AcidificationPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("AcidificationPotentialEol")) : double.NaN,
                 PhotochemicalOzoneCreationPotentialEndOfLife = obj.PropertyValue("SmogPotentialEol") != null ? System.Convert.ToDouble(obj.PropertyValue("SmogPotentialEol")) : double.NaN,
@@ -59,9 +59,8 @@ namespace BH.Engine.LifeCycleAssessment
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
                 DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
                 BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
-                Density = obj.PropertyValue("Density")?.ToString() ?? "", //additional converts needed because this type is string not double.
+                Density = obj.PropertyValue("Density")?.ToString() ?? "",
                 EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
-                Source = obj,
             };
             return epd;
         }

@@ -34,8 +34,6 @@ namespace BH.oM.LifeCycleAssessment
         public List<string> Jurisdiction { get; set; } = new List<string>();
         public string Id { get; set; } = "";
         public string Density { get; set; } = "";
-        public string GwpPerKG { get; set; } = "";
-        public string GwpPerDeclaredUnit { get; set; } = "";
         public double BiogenicEmbodiedCarbon { get; set; } = double.NaN;
         public string DeclaredUnit { get; set; } = "";
         public string Description { get; set; } = "";
@@ -53,7 +51,6 @@ namespace BH.oM.LifeCycleAssessment
         public double EutrophicationPotentialEndOfLife { get; set; } = double.NaN;
         public double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; } = double.NaN;
         public string EndOfLifeTreatment { get; set; } = "";
-        public BHoMObject Source { get; set; } = null;
         /***************************************************/
     }
 }

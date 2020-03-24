@@ -54,7 +54,6 @@ namespace BH.oM.LifeCycleAssessment
         public double ReproductiveRed { get; set; } = double.NaN;
         public double RespiratoryRed { get; set; } = double.NaN;
         public double PersistantBioaccumulativeToxicantPurple { get; set; } = double.NaN;
-        public BHoMObject Source { get; set; } = null;
         /***************************************************/
     }
 }
