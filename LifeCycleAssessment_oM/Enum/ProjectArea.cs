@@ -2,7 +2,8 @@
 {
     public enum ProjectArea
     {
-        LessThan1000, //need better enum functionality
+        Undefined,
+        LessThan1000,
         Between1000and2500,
         Between2500and5000,
         Between5000and10000,
