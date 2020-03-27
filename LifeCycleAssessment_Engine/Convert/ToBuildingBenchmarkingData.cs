@@ -37,7 +37,7 @@ namespace BH.Engine.LifeCycleAssessment
         /****           Public Methods                  ****/
         /***************************************************/
 
-        public static BuildingBenchmarkingData buildingBenchmarkingData(this CustomObject obj)
+        public static BuildingBenchmarkingData BuildingBenchmarkingData(this CustomObject obj)
         {
             BuildingBenchmarkingData benchmark = new BuildingBenchmarkingData
             {
