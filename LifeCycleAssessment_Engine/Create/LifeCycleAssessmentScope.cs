@@ -40,39 +40,13 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("levelOfDevelopment", "This is an Enum listing the level of development of your project. This is commonly refered to as LOD100, LOD200 etc. Also known as project phase.")]
         [Input("lifeCycleAssessmentPhases", "This is an Enum listing the phases encorporated within your Life Cycle Assessment.")]
         [Input("primaryStructuralMaterial", "This is an Enum listing the primary structural material for the project.")]
+        [Input("environmentalProductDeclarationField", "This is an Enum listing all possible Environmental Product Declaration metrics for potential evaluation. Please check that your dataset contains the desired metric.")]
         [Input("projectName", "The Project Name denotes the name of the project (eg Mercedes-Benz Stadium)")]
         [Input("contactName", "The Contact Name denotes the person/people who performed the LCA study")]
         [Input("actualProjectArea", "The Actual Project Area denotes the more precise project area (m2) which will allow assessment of kgCO2eq/m2 metrics")]
         [Input("zipCode", "Zip Code is the means of tracking the project's location")]
         [Input("biogenicCarbon", "Biogenic Carbon is a true / false that indicates that the project contains materials that originated from a biological source(trees, soil), these materials have the ability sequester / store carbon.")]
         [Input("additionalNotes", "Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon")]
-        [Input("structuresSlabs", "Structural slabs are inclusive of the above-grade structural floors in a building")]
-        [Input("structuresCoreWalls", "Structural core walls are inclusive of the above-grade, structural-grade walls surrounding the core (elevators, building services)")]
-        [Input("structuresBeams", "Structural beams are typically horizontal elements that carry the load of floors, roofs, and ceilings")]
-        [Input("structuresColumns", "Structural columns are typically vertical elements that carry the load of floors, roofs, and ceilings")]
-        [Input("enclosuresWalls", "Enclosure walls are inclusive of the opaque exterior wall assemblies of a building")]
-        [Input("enclosuresCurtainWalls", "Enclosure curtain walls are large sheets of transparent glazing on the building exterior")]
-        [Input("enclosuresWindows", "Enclosure windows are are openings in the building exterior, which consist of framing and glazing")]
-        [Input("enclosuresDoors", "Enclosure doors are are openings in the building exterior, which consist of framing and panels")]
-        [Input("foundationsFootings", "Foundation footings (or pile caps) are mats below the buildings piles that help to distribute the load from the structure above")]
-        [Input("foundationsPiles", "Foundation piles are structural supports that are driven into the ground below a building to support the building structure")]
-        [Input("foundationsWalls", "Foundation walls are structural walls built below-grade")]
-        [Input("foundationsSlabs", "Foundation slabs are structural slabs upon which the building is constructed. This category expects any type of slab, but assumes no construction properties.")]
-        [Input("mepEquipment", "MEP Equipment is a machine that processes mechanical, electrical or plumbing loads (eg Fan, Electrical Panel, Pump")]
-        [Input("mepDuctwork", "MEP Ductwork is a material (eg sheet metal) that helps to convey airflow from heating, ventilation or cooling systems")]
-        [Input("mepGenerators", "MEP Generators are devices that convert mechanical energy to electrical power")]
-        [Input("mepConduit", "MEP Conduit is a tube used to route electrical wiring")]
-        [Input("mepWiring", "MEP Wiring is a flexible conductor of electricity")]
-        [Input("mepLighting", "MEP Lighting is inclusive of all light fixtures")]
-        [Input("mepPiping", "MEP Piping is a material (eg copper) that helps to convey fluids (eg water, waste) within a building")]
-        [Input("mepBatteries", "MEP Batties are energy storage devices (eg photovoltaic panels)")]
-        [Input("tenantImprovementsCeiling", "Tenant Improvement Ceiling is a material that creates an additional upper interior surface in a room")]
-        [Input("tenantImprovementsFlooring", "Tenant Improvements Flooring  is inclusive of the flooring materials placed on top of the structural floor (eg carpet, tile)")]
-        [Input("tenantImprovementsFinishes", "Tenant Improvements Finishes is inclusive of finishes (eg paint)")]
-        [Input("tenantImprovementsInteriorGlazing", "Tenant Improvements Interior Glazing is inclusive of windows in the interior of the building")]
-        [Input("tenantImprovementsFurniture", "Tenant Improvements Furniture includes furnishings (eg tables, chairs, desks)")]
-        [Input("tenantImprovementsInteriorDoors", "Tenant Improvements Interior Doors includes doors in the interior of the building")]
-        [Input("tenantImprovementsPartitionWalls", "Tenant Improvements Partition Walls includes walls in the interior of the building")]
         [Output("lifeCycleAssessment", "A lifeCycleAssessment object for capturing and comparing additional studies. This object can be passed directly to a database for storage and further study.")]
         public static LifeCycleAssessmentScope LifeCycleAssessmentScope(ProjectArea projectArea, ProjectType projectType, LevelOfDevelopment levelOfDevelopment, LifeCycleAssessmentPhases lifeCycleAssessmentPhases, PrimaryStructuralMaterial primaryStructuralMaterial,
             string projectName = "",
@@ -81,33 +55,13 @@ namespace BH.Engine.LifeCycleAssessment
             bool biogenicCarbon = false,
             int zipCode = 00000,
             string additionalNotes = "",
-            BHoMObject structuresSlabs = null,
-            BHoMObject structuresCoreWalls = null,
-            BHoMObject structuresBeams = null,
-            BHoMObject structuresColumns = null,
-            BHoMObject enclosuresWalls = null,
-            BHoMObject enclosuresCurtainWalls = null,
-            BHoMObject enclosuresWindows = null,
-            BHoMObject enclosuresDoors = null,
-            BHoMObject foundationsFootings = null,
-            BHoMObject foundationsPiles = null,
-            BHoMObject foundationsWalls = null,
-            BHoMObject foundationsSlabs = null,
-            BHoMObject mepEquipment = null,
-            BHoMObject mepDuctwork = null,
-            BHoMObject mepGenerators = null,
-            BHoMObject mepConduit = null,
-            BHoMObject mepWiring = null,
-            BHoMObject mepLighting = null,
-            BHoMObject mepPiping = null,
-            BHoMObject mepBatteries = null,
-            BHoMObject tenantImprovementsCeiling = null,
-            BHoMObject tenantImprovementsFlooring = null,
-            BHoMObject tenantImprovementsFinishes = null,
-            BHoMObject tenantImprovementsInteriorGlazing = null,
-            BHoMObject tenantImprovementsFurniture = null,
-            BHoMObject tenantImprovementsInteriorDoors = null,
-            BHoMObject tenantImprovementsPartitionWalls = null
+            StructuresScope structuresScope = null,
+            EnclosuresScope enclosuresScope = null,
+            FoundationsScope foundationsScope = null,
+            MEPScope mepScope = null,
+            TenantImprovementScope tenantImprovementScope = null
+            //dataSet method for extracting the data being used for each object.
+            //method for extracting the dataset from the objects being evaluated
         )
         {
             return new oM.LifeCycleAssessment.LifeCycleAssessmentScope
@@ -118,33 +72,11 @@ namespace BH.Engine.LifeCycleAssessment
                 BiogenicCarbon = biogenicCarbon,
                 ZipCode = zipCode,
                 AdditionalNotes = additionalNotes,
-                StructuresSlabs = structuresSlabs,
-                StructuresCoreWalls = structuresCoreWalls,
-                StructuresBeams = structuresBeams,
-                StructuresColumns = structuresColumns,
-                EnclosuresCurtainWalls = enclosuresCurtainWalls,
-                EnclosuresWalls = enclosuresWalls,
-                EnclosuresWindows = enclosuresWindows,
-                EnclosuresDoors = enclosuresDoors,
-                FoundationsFootings = foundationsFootings,
-                FoundationsPiles = foundationsPiles,
-                FoundationsSlabs = foundationsSlabs,
-                FoundationsWalls = foundationsWalls,
-                MEPEquipment = mepEquipment,
-                MEPDuctwork = mepDuctwork, 
-                MEPGenerators = mepGenerators,
-                MEPConduit = mepConduit,
-                MEPWiring = mepWiring,
-                MEPLighting = mepLighting,
-                MEPPiping = mepPiping,
-                MEPBatteries = mepBatteries,
-                TenantImprovementsCeiling = tenantImprovementsCeiling,
-                TenantImprovementsFlooring = tenantImprovementsFlooring,
-                TenantImprovementsFinishes = tenantImprovementsFinishes,
-                TenantImprovementsInteriorGlazing =tenantImprovementsInteriorGlazing,
-                TenantImprovementsFurniture = tenantImprovementsFurniture,
-                TenantImprovementsInteriorDoors = tenantImprovementsInteriorDoors,
-                TenantImprovementsPartitionWalls = tenantImprovementsPartitionWalls
+                StructuresScope = structuresScope,
+                EnclosuresScope = enclosuresScope,
+                FoundationsScope = foundationsScope,
+                MEPScope = mepScope,
+                TenantImprovementScope = tenantImprovementScope,
             };
         }
     }

@@ -34,6 +34,10 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Geometry_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +54,12 @@
     <Compile Include="Enum\PrimaryStructuralMaterial.cs" />
     <Compile Include="Enum\ProjectType.cs" />
     <Compile Include="Enum\ProjectArea.cs" />
+    <Compile Include="EnclosuresScope.cs" />
+    <Compile Include="MEPScope.cs" />
+    <Compile Include="FoundationsScope.cs" />
+    <Compile Include="TenantImprovementScope.cs" />
+    <Compile Include="StructuresSlabs.cs" />
+    <Compile Include="StructuresScope.cs" />
     <Compile Include="LifeCycleAssessmentScope.cs" />
     <Compile Include="HealthProductDeclaration.cs" />
     <Compile Include="IEnvironmentalProductDeclarationData.cs" />

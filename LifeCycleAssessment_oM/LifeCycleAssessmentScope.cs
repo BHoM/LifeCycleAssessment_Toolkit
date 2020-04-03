@@ -42,16 +42,16 @@ namespace BH.oM.LifeCycleAssessment
         public bool BiogenicCarbon { get; set; } = false;
         [Description("Zip Code is the means of tracking the project's location")]
         public int ZipCode { get; set; } = 00000;
+        [Description("Primary dataset used within the Life Cycle Assessment")]
+        public string Dataset { get; set; } = "";
         [Description("Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon")]
         public string AdditionalNotes { get; set; } = "";
-        [Description("Structural slabs are inclusive of the above-grade structural floors in a building")]
-        public BHoMObject StructuresSlabs { get; set; } = null;
-        [Description("Structural core walls are inclusive of the above-grade, structural-grade walls surrounding the core (elevators, building services)")]
-        public BHoMObject StructuresCoreWalls { get; set; } = null;
-        [Description("Structural beams are typically horizontal elements that carry the load of floors, roofs, and ceilings")]
-        public BHoMObject StructuresBeams { get; set; } = null;
-        [Description("Structural columns are typically vertical elements that carry the load of floors, roofs, and ceilings")]
-        public BHoMObject StructuresColumns { get; set; } = null;
+        public StructuresScope StructuresScope { get; set; } = new StructuresScope();
+        public EnclosuresScope EnclosuresScope { get; set; } = new EnclosuresScope();
+        public FoundationsScope FoundationsScope { get; set; } = new FoundationsScope();
+        public MEPScope MEPScope { get; set; } = new MEPScope();
+        public TenantImprovementScope TenantImprovementScope { get; set; } = new TenantImprovementScope();
+
         [Description("Enclosure walls are inclusive of the opaque exterior wall assemblies of a building")]
         public BHoMObject EnclosuresWalls { get; set; } = null;
         [Description("Enclosure curtain walls are large sheets of transparent glazing on the building exterior")]
