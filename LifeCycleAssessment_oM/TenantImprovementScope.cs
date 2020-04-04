@@ -33,19 +33,25 @@ namespace BH.oM.LifeCycleAssessment
         /**** Properties                                ****/
         /***************************************************/
         [Description("Tenant Improvement Ceiling is a material that creates an additional upper interior surface in a room")]
-        public BHoMObject TenantImprovementsCeiling { get; set; } = null;
+        public TenantImprovementsCeiling TenantImprovementsCeiling { get; set; } = null;
+        
         [Description("Tenant Improvements Flooring  is inclusive of the flooring materials placed on top of the structural floor (eg carpet, tile)")]
-        public BHoMObject TenantImprovementsFlooring { get; set; } = null;
+        public TenantImprovementsFlooring TenantImprovementsFlooring { get; set; } = null;
+        
         [Description("Tenant Improvements Finishes is inclusive of finishes (eg paint)")]
-        public BHoMObject TenantImprovementsFinishes { get; set; } = null;
+        public TenantImprovementsFinishes TenantImprovementsFinishes { get; set; } = null;
+        
         [Description("Tenant Improvements Interior Glazing is inclusive of windows in the interior of the building")]
-        public BHoMObject TenantImprovementsInteriorGlazing { get; set; } = null;
+        public TenantImprovementsInteriorGlazing TenantImprovementsInteriorGlazing { get; set; } = null;
+        
         [Description("Tenant Improvements Furniture includes furnishings (eg tables, chairs, desks)")]
-        public BHoMObject TenantImprovementsFurniture { get; set; } = null;
+        public TenantImprovementsFurniture TenantImprovementsFurniture { get; set; } = null;
+        
         [Description("Tenant Improvements Interior Doors includes doors in the interior of the building")]
-        public BHoMObject TenantImprovementsInteriorDoors { get; set; } = null;
+        public TenantImprovementsInteriorDoors TenantImprovementsInteriorDoors { get; set; } = null;
+        
         [Description("Tenant Improvements Partition Walls includes walls in the interior of the building")]
-        public BHoMObject TenantImprovementsPartitionWalls { get; set; } = null;
+        public TenantImprovementsPartitionWalls TenantImprovementsPartitionWalls { get; set; } = null;
 
         /***************************************************/
     }

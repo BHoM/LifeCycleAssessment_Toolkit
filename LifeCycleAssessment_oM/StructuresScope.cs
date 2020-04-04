@@ -26,20 +26,23 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
+    [Description("PLACEHOLDER DESCRIPTION")]
     public class StructuresScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
         [Description("Structural slabs are inclusive of the above-grade structural floors in a building")]
-        public BHoMObject StructuresSlabs { get; set; } = null;
+        public StructuresSlabs StructuresSlabs { get; set; } = null;
+
         [Description("Structural core walls are inclusive of the above-grade, structural-grade walls surrounding the core (elevators, building services)")]
-        public BHoMObject StructuresCoreWalls { get; set; } = null;
+        public StructuresCoreWalls StructuresCoreWalls { get; set; } = null;
+
         [Description("Structural beams are typically horizontal elements that carry the load of floors, roofs, and ceilings")]
-        public BHoMObject StructuresBeams { get; set; } = null;
+        public StructuresBeams StructuresBeams { get; set; } = null;
+
         [Description("Structural columns are typically vertical elements that carry the load of floors, roofs, and ceilings")]
-        public BHoMObject StructuresColumns { get; set; } = null;
+        public StructuresColumns StructuresColumns { get; set; } = null;
 
         /***************************************************/
     }

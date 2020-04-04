@@ -27,23 +27,28 @@ using BH.oM.Base;
 namespace BH.oM.LifeCycleAssessment
 {
     [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
-    public class FoundationsScope : BHoMObject
+    public class ProjectLifeCycleAssessment : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        
-        [Description("Foundation footings (or pile caps) are mats below the buildings piles that help to distribute the load from the structure above")]
-        public FoundationsFootings FoundationsFootings { get; set; } = null;
-        
-        [Description("Foundation piles are structural supports that are driven into the ground below a building to support the building structure")]
-        public FoundationsPiles FoundationsPiles { get; set; } = null;
-        
-        [Description("Foundation walls are structural walls built below-grade")]
-        public FoundationsWalls FoundationsWalls { get; set; } = null;
-        
-        [Description("Foundation slabs are structural slabs upon which the building is constructed. This category expects any type of slab, but assumes no construction properties.")]
-        public FoundationsSlabs FoundationsSlabs { get; set; } = null;
+        [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
+        public LifeCycleAssessmentScope LifeCycleAssessmentScope { get; set; } = new LifeCycleAssessmentScope();
+
+        [Description("PLACEHOLDER DESCRIPTION")]
+        public StructuresScope StructuresScope { get; set; } = new StructuresScope();
+
+        [Description("PLACEHOLDER DESCRIPTION")]
+        public EnclosuresScope EnclosuresScope { get; set; } = new EnclosuresScope();
+
+        [Description("PLACEHOLDER DESCRIPTION")]
+        public FoundationsScope FoundationsScope { get; set; } = new FoundationsScope();
+
+        [Description("PLACEHOLDER DESCRIPTION")]
+        public MEPScope MEPScope { get; set; } = new MEPScope();
+
+        [Description("PLACEHOLDER DESCRIPTION")]
+        public TenantImprovementScope TenantImprovementScope { get; set; } = new TenantImprovementScope();
 
         /***************************************************/
     }

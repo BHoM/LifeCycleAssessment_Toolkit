@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,19 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base;
+using BH.oM.Geometry; 
+
 namespace BH.oM.LifeCycleAssessment
 {
-    public enum ProjectType
+    [Description("MEP Piping is a material (eg copper) that helps to convey fluids (eg water, waste) within a building")]
+    public class MEPPiping : BHoMObject
     {
-        Undefined,
-        Stadium,
-        Office,
-        Residential,
-        HigherEducation,
-        Cultural,
-        Transit,
-        Healthcare,
-        Hospitality,
-        Commercial,
+        /***************************************************/
+        /**** Properties                                ****/
+        /***************************************************/
+        public BoundaryRepresentation piping { get; set; } = null;
+        public IEnvironmentalProductDeclarationData data { get; set; } = null;
+
+        /***************************************************/
     }
 }

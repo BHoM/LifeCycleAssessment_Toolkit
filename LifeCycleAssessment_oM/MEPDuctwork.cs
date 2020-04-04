@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2020, the respective contributors. All rights reserved.
  *
@@ -20,19 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base;
+using BH.oM.Geometry; 
+
 namespace BH.oM.LifeCycleAssessment
 {
-    public enum ProjectType
+    [Description("MEP Ductwork is a material (eg sheet metal) that helps to convey airflow from heating, ventilation or cooling systems")]
+    public class MEPDuctwork : BHoMObject
     {
-        Undefined,
-        Stadium,
-        Office,
-        Residential,
-        HigherEducation,
-        Cultural,
-        Transit,
-        Healthcare,
-        Hospitality,
-        Commercial,
+        /***************************************************/
+        /**** Properties                                ****/
+        /***************************************************/
+        public BoundaryRepresentation ductwork { get; set; } = null;
+        public IEnvironmentalProductDeclarationData data { get; set; } = null;
+
+        /***************************************************/
     }
 }

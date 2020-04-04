@@ -33,21 +33,28 @@ namespace BH.oM.LifeCycleAssessment
         /**** Properties                                ****/
         /***************************************************/
         [Description("MEP Equipment is a machine that processes mechanical, electrical or plumbing loads (eg Fan, Electrical Panel, Pump")]
-        public BHoMObject MEPEquipment { get; set; } = null;
+        public MEPEquipment MEPEquipment { get; set; } = null;
+        
         [Description("MEP Ductwork is a material (eg sheet metal) that helps to convey airflow from heating, ventilation or cooling systems")]
-        public BHoMObject MEPDuctwork { get; set; } = null;
+        public MEPDuctwork MEPDuctwork { get; set; } = null;
+        
         [Description("MEP Generators are devices that convert mechanical energy to electrical power")]
-        public BHoMObject MEPGenerators { get; set; } = null;
+        public MEPGenerators MEPGenerators { get; set; } = null;
+        
         [Description("MEP Conduit is a tube used to route electrical wiring")]
-        public BHoMObject MEPConduit { get; set; } = null;
+        public MEPConduit MEPConduit { get; set; } = null;
+        
         [Description("MEP Wiring is a flexible conductor of electricity")]
-        public BHoMObject MEPWiring { get; set; } = null;
+        public MEPWiring MEPWiring { get; set; } = null;
+        
         [Description("MEP Lighting is inclusive of all light fixtures")]
-        public BHoMObject MEPLighting { get; set; } = null;
+        public MEPLighting MEPLighting { get; set; } = null;
+        
         [Description("MEP Piping is a material (eg copper) that helps to convey fluids (eg water, waste) within a building")]
-        public BHoMObject MEPPiping { get; set; } = null;
+        public MEPPiping MEPPiping { get; set; } = null;
+        
         [Description("MEP Batties are energy storage devices (eg photovoltaic panels)")]
-        public BHoMObject MEPBatteries { get; set; } = null;
+        public MEPBatteries MEPBatteries { get; set; } = null;
 
         /***************************************************/
     }

@@ -48,6 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ProjectLifeCycleAssessment.cs" />
+    <Compile Include="TenantImprovementsPartitionWalls.cs" />
+    <Compile Include="TenantImprovementsInteriorDoors.cs" />
+    <Compile Include="TenantImprovementsFurniture.cs" />
+    <Compile Include="TenantImprovementsInteriorGlazing.cs" />
+    <Compile Include="TenantImprovementsFinishes.cs" />
+    <Compile Include="TenantImprovementsFlooring.cs" />
+    <Compile Include="TenantImprovementsCeiling.cs" />
+    <Compile Include="FoundationsSlabs.cs" />
+    <Compile Include="FoundationsWalls.cs" />
+    <Compile Include="FoundationsPiles.cs" />
+    <Compile Include="FoundationsFootings.cs" />
+    <Compile Include="MEPBatteries.cs" />
+    <Compile Include="MEPPiping.cs" />
+    <Compile Include="MEPLighting.cs" />
+    <Compile Include="MEPWiring.cs" />
+    <Compile Include="MEPConduit.cs" />
+    <Compile Include="MEPGenerators.cs" />
+    <Compile Include="MEPDuctwork.cs" />
+    <Compile Include="MEPEquipment.cs" />
+    <Compile Include="EnclosuresDoors.cs" />
+    <Compile Include="EnclosuresWindows.cs" />
+    <Compile Include="EnclosuresWalls.cs" />
     <Compile Include="Enums\EnvironmentalProductDeclarationField.cs" />
     <Compile Include="Enum\LevelOfDevelopment.cs" />
     <Compile Include="Enum\LifeCycleAssessmentPhases.cs" />
@@ -57,6 +80,10 @@
     <Compile Include="EnclosuresScope.cs" />
     <Compile Include="MEPScope.cs" />
     <Compile Include="FoundationsScope.cs" />
+    <Compile Include="StructuresColumns.cs" />
+    <Compile Include="StructuresBeams.cs" />
+    <Compile Include="StructuresCoreWalls.cs" />
+    <Compile Include="EnclosuresCurtainWalls.cs" />
     <Compile Include="TenantImprovementScope.cs" />
     <Compile Include="StructuresSlabs.cs" />
     <Compile Include="StructuresScope.cs" />

@@ -35,43 +35,25 @@ namespace BH.Engine.LifeCycleAssessment
     public static partial class Create
     {
         [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
-        [Input("projectArea", "This is an Enum of project areas to help categorize your project Life Cycle Assessment.")]
-        [Input("projectType", "This is an Enum listing the overall type of functional program that takes place throughout the project.")]
-        [Input("levelOfDevelopment", "This is an Enum listing the level of development of your project. This is commonly refered to as LOD100, LOD200 etc. Also known as project phase.")]
-        [Input("lifeCycleAssessmentPhases", "This is an Enum listing the phases encorporated within your Life Cycle Assessment.")]
-        [Input("primaryStructuralMaterial", "This is an Enum listing the primary structural material for the project.")]
-        [Input("environmentalProductDeclarationField", "This is an Enum listing all possible Environmental Product Declaration metrics for potential evaluation. Please check that your dataset contains the desired metric.")]
-        [Input("projectName", "The Project Name denotes the name of the project (eg Mercedes-Benz Stadium)")]
-        [Input("contactName", "The Contact Name denotes the person/people who performed the LCA study")]
-        [Input("actualProjectArea", "The Actual Project Area denotes the more precise project area (m2) which will allow assessment of kgCO2eq/m2 metrics")]
-        [Input("zipCode", "Zip Code is the means of tracking the project's location")]
-        [Input("biogenicCarbon", "Biogenic Carbon is a true / false that indicates that the project contains materials that originated from a biological source(trees, soil), these materials have the ability sequester / store carbon.")]
-        [Input("additionalNotes", "Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon")]
+        [Input("lifeCycleAssessmentScope", "PLACEHOLDER DESCRIPTION.")]
+        [Input("structuresScope", "PLACEHOLDER DESCRIPTION.")]
+        [Input("enclosuresScope", "PLACEHOLDER DESCRIPTION.")]
+        [Input("foundationsScope", "PLACEHOLDER DESCRIPTION.")]
+        [Input("MEPScope", "PLACEHOLDER DESCRIPTION.")]
+        [Input("tenantImprovementScope", "PLACEHOLDER DESCRIPTION.")]
         [Output("lifeCycleAssessment", "A lifeCycleAssessment object for capturing and comparing additional studies. This object can be passed directly to a database for storage and further study.")]
-        public static LifeCycleAssessmentScope LifeCycleAssessmentScope(ProjectArea projectArea, ProjectType projectType, LevelOfDevelopment levelOfDevelopment, LifeCycleAssessmentPhases lifeCycleAssessmentPhases, PrimaryStructuralMaterial primaryStructuralMaterial,
-            string projectName = "",
-            string contactName = "",
-            double actualProjectArea = 0,
-            bool biogenicCarbon = false,
-            int zipCode = 00000,
-            string additionalNotes = "",
+        public static ProjectLifeCycleAssessment LifeCycleAssessment(LifeCycleAssessmentScope lifeCycleAssessmentScope,
+
             StructuresScope structuresScope = null,
             EnclosuresScope enclosuresScope = null,
             FoundationsScope foundationsScope = null,
             MEPScope mepScope = null,
             TenantImprovementScope tenantImprovementScope = null
-            //dataSet method for extracting the data being used for each object.
-            //method for extracting the dataset from the objects being evaluated
         )
         {
-            return new oM.LifeCycleAssessment.LifeCycleAssessmentScope
+            return new oM.LifeCycleAssessment.ProjectLifeCycleAssessment
             {
-                ProjectName = projectName,
-                ContactName = contactName,
-                ActualProjectArea = actualProjectArea,
-                BiogenicCarbon = biogenicCarbon,
-                ZipCode = zipCode,
-                AdditionalNotes = additionalNotes,
+                LifeCycleAssessmentScope = lifeCycleAssessmentScope,
                 StructuresScope = structuresScope,
                 EnclosuresScope = enclosuresScope,
                 FoundationsScope = foundationsScope,
