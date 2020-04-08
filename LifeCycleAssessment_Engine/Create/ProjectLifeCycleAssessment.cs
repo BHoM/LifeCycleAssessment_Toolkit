@@ -39,7 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("structuresScope", "The Structures Scope object collects all structural objects being evaluated within any Life Cycle Assessment.")]
         [Input("enclosuresScope", "The Enclosures Scope object collects all enclosures objects being evaluated within any Life Cycle Assessment.")]
         [Input("foundationsScope", "The Foundations Scope object collects all foundations objects being evaluated within any Life Cycle Assessment.")]
-        [Input("MEPScope", "The MEP Scope object collects all MEP objects being evaluated within any Life Cycle Assessment.")]
+        [Input("mepScope", "The MEP Scope object collects all MEP objects being evaluated within any Life Cycle Assessment.")]
         [Input("tenantImprovementScope", "The Tenant Improvement Scope object collects all Tenant Improvement objects being evaluated within any Life Cycle Assessment.")]
         [Output("lifeCycleAssessment", "A collection of objects organized and prepared for Life Cycle Assessment evaluation.")]
         public static ProjectLifeCycleAssessment LifeCycleAssessment(LifeCycleAssessmentScope lifeCycleAssessmentScope,
