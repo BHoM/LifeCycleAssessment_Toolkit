@@ -26,35 +26,35 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
+    [Description("The MEP Scope object provides a template for expected objects to be assessed within this Life Cycle Assessments. Note that this category is not commonly assessed, but will provide for higher quality results. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
     public class MEPScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
         [Description("MEP Equipment is a machine that processes mechanical, electrical or plumbing loads (eg Fan, Electrical Panel, Pump")]
-        public MEPEquipment MEPEquipment { get; set; } = null;
+        public MEPEquipment MEPEquipment { get; set; } = new MEPEquipment();
         
         [Description("MEP Ductwork is a material (eg sheet metal) that helps to convey airflow from heating, ventilation or cooling systems")]
-        public MEPDuctwork MEPDuctwork { get; set; } = null;
+        public MEPDuctwork MEPDuctwork { get; set; } = new MEPDuctwork();
         
         [Description("MEP Generators are devices that convert mechanical energy to electrical power")]
-        public MEPGenerators MEPGenerators { get; set; } = null;
+        public MEPGenerators MEPGenerators { get; set; } = new MEPGenerators();
         
         [Description("MEP Conduit is a tube used to route electrical wiring")]
-        public MEPConduit MEPConduit { get; set; } = null;
+        public MEPConduit MEPConduit { get; set; } = new MEPConduit();
         
         [Description("MEP Wiring is a flexible conductor of electricity")]
-        public MEPWiring MEPWiring { get; set; } = null;
+        public MEPWiring MEPWiring { get; set; } = new MEPWiring();
         
         [Description("MEP Lighting is inclusive of all light fixtures")]
-        public MEPLighting MEPLighting { get; set; } = null;
+        public MEPLighting MEPLighting { get; set; } = new MEPLighting();
         
         [Description("MEP Piping is a material (eg copper) that helps to convey fluids (eg water, waste) within a building")]
-        public MEPPiping MEPPiping { get; set; } = null;
+        public MEPPiping MEPPiping { get; set; } = new MEPPiping();
         
         [Description("MEP Batties are energy storage devices (eg photovoltaic panels)")]
-        public MEPBatteries MEPBatteries { get; set; } = null;
+        public MEPBatteries MEPBatteries { get; set; } = new MEPBatteries();
 
         /***************************************************/
     }

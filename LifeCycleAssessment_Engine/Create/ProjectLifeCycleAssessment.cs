@@ -34,16 +34,15 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Create
     {
-        [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
-        [Input("lifeCycleAssessmentScope", "PLACEHOLDER DESCRIPTION.")]
-        [Input("structuresScope", "PLACEHOLDER DESCRIPTION.")]
-        [Input("enclosuresScope", "PLACEHOLDER DESCRIPTION.")]
-        [Input("foundationsScope", "PLACEHOLDER DESCRIPTION.")]
-        [Input("MEPScope", "PLACEHOLDER DESCRIPTION.")]
-        [Input("tenantImprovementScope", "PLACEHOLDER DESCRIPTION.")]
-        [Output("lifeCycleAssessment", "A lifeCycleAssessment object for capturing and comparing additional studies. This object can be passed directly to a database for storage and further study.")]
+        [Description("The Project Life Cycle Assessment object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used, their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
+        [Input("lifeCycleAssessmentScope", "The Life Cycle Assessment Scope object collects all details of the intended Life Cycle Assessment study for accurate comparison of assumptions and results. Please provide as many details about your project as possible to ensure the most accurate study.")]
+        [Input("structuresScope", "The Structures Scope object collects all structural objects being evaluated within any Life Cycle Assessment.")]
+        [Input("enclosuresScope", "The Enclosures Scope object collects all enclosures objects being evaluated within any Life Cycle Assessment.")]
+        [Input("foundationsScope", "The Foundations Scope object collects all foundations objects being evaluated within any Life Cycle Assessment.")]
+        [Input("MEPScope", "The MEP Scope object collects all MEP objects being evaluated within any Life Cycle Assessment.")]
+        [Input("tenantImprovementScope", "The Tenant Improvement Scope object collects all Tenant Improvement objects being evaluated within any Life Cycle Assessment.")]
+        [Output("lifeCycleAssessment", "A collection of objects organized and prepared for Life Cycle Assessment evaluation.")]
         public static ProjectLifeCycleAssessment LifeCycleAssessment(LifeCycleAssessmentScope lifeCycleAssessmentScope,
-
             StructuresScope structuresScope = null,
             EnclosuresScope enclosuresScope = null,
             FoundationsScope foundationsScope = null,

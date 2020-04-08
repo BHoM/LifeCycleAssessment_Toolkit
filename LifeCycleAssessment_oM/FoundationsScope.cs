@@ -26,7 +26,7 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
+    [Description("The Foundations Scope object provides a template for expected objects commonly assessed within Life Cycle Assessments. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
     public class FoundationsScope : BHoMObject
     {
         /***************************************************/
@@ -34,16 +34,16 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
         
         [Description("Foundation footings (or pile caps) are mats below the buildings piles that help to distribute the load from the structure above")]
-        public FoundationsFootings FoundationsFootings { get; set; } = null;
+        public FoundationsFootings FoundationsFootings { get; set; } = new FoundationsFootings();
         
         [Description("Foundation piles are structural supports that are driven into the ground below a building to support the building structure")]
-        public FoundationsPiles FoundationsPiles { get; set; } = null;
+        public FoundationsPiles FoundationsPiles { get; set; } = new FoundationsPiles();
         
         [Description("Foundation walls are structural walls built below-grade")]
-        public FoundationsWalls FoundationsWalls { get; set; } = null;
+        public FoundationsWalls FoundationsWalls { get; set; } = new FoundationsWalls();
         
         [Description("Foundation slabs are structural slabs upon which the building is constructed. This category expects any type of slab, but assumes no construction properties.")]
-        public FoundationsSlabs FoundationsSlabs { get; set; } = null;
+        public FoundationsSlabs FoundationsSlabs { get; set; } = new FoundationsSlabs();
 
         /***************************************************/
     }

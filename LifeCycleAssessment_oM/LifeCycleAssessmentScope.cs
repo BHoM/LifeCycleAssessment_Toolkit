@@ -39,10 +39,10 @@ namespace BH.oM.LifeCycleAssessment
         public ProjectType ProjectType { get; set; } = ProjectType.Undefined;
 
         [Description ("The Project Name denotes the name of the project (eg Mercedes-Benz Stadium)")]
-        public string ProjectName { get; set; } = "";
+        public string ProjectName { get; set; } = "Please provided a project name.";
         
-        [Description("The Contact Name denotes the person/people who performed the LCA study")]
-        public string ContactName { get; set; } = "";
+        [Description("The Contact Name denotes the person/people who performed the LCA study.")]
+        public string ContactName { get; set; } = "No contact provided.";
         
         [Description("The Actual Project Area denotes the more precise project area (m2) which will allow assessment of kgCO2eq/m2 metrics")]
         public double ActualProjectArea { get; set; } = double.NaN;
@@ -52,12 +52,9 @@ namespace BH.oM.LifeCycleAssessment
         
         [Description("Zip Code is the means of tracking the project's location")]
         public int ZipCode { get; set; } = 00000;
-        
-        //[Description("Primary dataset used within the Life Cycle Assessment")]
-        //public string Dataset { get; set; } = "";
-        
+      
         [Description("Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon")]
-        public string AdditionalNotes { get; set; } = "";
+        public string AdditionalNotes { get; set; } = "None";
 
         /***************************************************/
     }

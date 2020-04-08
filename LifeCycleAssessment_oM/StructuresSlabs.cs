@@ -33,10 +33,8 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public BoundaryRepresentation slabs { get; set; } = null;
-        public IEnvironmentalProductDeclarationData data { get; set; } = null;
-
-        //////create all objects for the methods. 
+        public BoundaryRepresentation Slabs { get; set; } = null;
+        public IEnvironmentalProductDeclarationData Data { get; set; } = null;
 
         /***************************************************/
     }

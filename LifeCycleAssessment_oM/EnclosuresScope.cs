@@ -26,7 +26,7 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    [Description("PLACEHOLDER DESCRIPTION")]
+    [Description("The Enclosures Scope object provides a template for expected objects commonly assessed within Life Cycle Assessments. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
     public class EnclosuresScope : BHoMObject
     {
         /***************************************************/
@@ -34,16 +34,16 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
 
         [Description("Enclosure walls are inclusive of the opaque exterior wall assemblies of a building")]
-        public EnclosuresCurtainWalls EnclosuresCurtainWalls { get; set; } = null;
+        public EnclosuresCurtainWalls EnclosuresCurtainWalls { get; set; } = new EnclosuresCurtainWalls();
         
         [Description("Enclosure curtain walls are large sheets of transparent glazing on the building exterior")]
-        public EnclosuresWalls EnclosuresWalls { get; set; } = null;
+        public EnclosuresWalls EnclosuresWalls { get; set; } = new EnclosuresWalls();
         
         [Description("Enclosure windows are are openings in the building exterior, which consist of framing and glazing")]
-        public EnclosuresWindows EnclosuresWindows { get; set; } = null;
+        public EnclosuresWindows EnclosuresWindows { get; set; } = new EnclosuresWindows();
         
         [Description("Enclosure doors are are openings in the building exterior, which consist of framing and panels")]
-        public EnclosuresDoors EnclosuresDoors { get; set; } = null;
+        public EnclosuresDoors EnclosuresDoors { get; set; } = new EnclosuresDoors();
 
         /***************************************************/
     }

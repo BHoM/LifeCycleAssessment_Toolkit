@@ -26,23 +26,23 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    [Description("PLACEHOLDER DESCRIPTION")]
+    [Description("The Structures Scope object provides a template for expected objects commonly assessed within Life Cycle Assessments. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
     public class StructuresScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
         [Description("Structural slabs are inclusive of the above-grade structural floors in a building")]
-        public StructuresSlabs StructuresSlabs { get; set; } = null;
+        public StructuresSlabs StructuresSlabs { get; set; } = new StructuresSlabs();
 
         [Description("Structural core walls are inclusive of the above-grade, structural-grade walls surrounding the core (elevators, building services)")]
-        public StructuresCoreWalls StructuresCoreWalls { get; set; } = null;
+        public StructuresCoreWalls StructuresCoreWalls { get; set; } = new StructuresCoreWalls();
 
         [Description("Structural beams are typically horizontal elements that carry the load of floors, roofs, and ceilings")]
-        public StructuresBeams StructuresBeams { get; set; } = null;
+        public StructuresBeams StructuresBeams { get; set; } = new StructuresBeams();
 
         [Description("Structural columns are typically vertical elements that carry the load of floors, roofs, and ceilings")]
-        public StructuresColumns StructuresColumns { get; set; } = null;
+        public StructuresColumns StructuresColumns { get; set; } = new StructuresColumns();
 
         /***************************************************/
     }

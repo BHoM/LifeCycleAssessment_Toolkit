@@ -26,32 +26,32 @@ using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    [Description("The Life Cycle Assessment Scope object intends to provide a means of reporting all of the project criteria (name, area, type, location) as well as the objects that the study encompassed (structural slabs, foundation walls, etc) along with their properties for the Enviornmental Product Declarations they used (when using SetProperty), their densities and volumes. This object may be used for studies at any stage of development and can serve as a true means of 'apples to apples' comparison when catalogued.")]
+    [Description("The Tenant Improvement Scope object provides a template for expected objects to be assessed within this Life Cycle Assessments. Note that this category is not commonly assessed, but will provide for higher quality results. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
     public class TenantImprovementScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
         [Description("Tenant Improvement Ceiling is a material that creates an additional upper interior surface in a room")]
-        public TenantImprovementsCeiling TenantImprovementsCeiling { get; set; } = null;
+        public TenantImprovementsCeiling TenantImprovementsCeiling { get; set; } = new TenantImprovementsCeiling();
         
         [Description("Tenant Improvements Flooring  is inclusive of the flooring materials placed on top of the structural floor (eg carpet, tile)")]
-        public TenantImprovementsFlooring TenantImprovementsFlooring { get; set; } = null;
+        public TenantImprovementsFlooring TenantImprovementsFlooring { get; set; } = new TenantImprovementsFlooring();
         
         [Description("Tenant Improvements Finishes is inclusive of finishes (eg paint)")]
-        public TenantImprovementsFinishes TenantImprovementsFinishes { get; set; } = null;
+        public TenantImprovementsFinishes TenantImprovementsFinishes { get; set; } = new TenantImprovementsFinishes();
         
         [Description("Tenant Improvements Interior Glazing is inclusive of windows in the interior of the building")]
-        public TenantImprovementsInteriorGlazing TenantImprovementsInteriorGlazing { get; set; } = null;
+        public TenantImprovementsInteriorGlazing TenantImprovementsInteriorGlazing { get; set; } = new TenantImprovementsInteriorGlazing();
         
         [Description("Tenant Improvements Furniture includes furnishings (eg tables, chairs, desks)")]
-        public TenantImprovementsFurniture TenantImprovementsFurniture { get; set; } = null;
+        public TenantImprovementsFurniture TenantImprovementsFurniture { get; set; } = new TenantImprovementsFurniture();
         
         [Description("Tenant Improvements Interior Doors includes doors in the interior of the building")]
-        public TenantImprovementsInteriorDoors TenantImprovementsInteriorDoors { get; set; } = null;
+        public TenantImprovementsInteriorDoors TenantImprovementsInteriorDoors { get; set; } = new TenantImprovementsInteriorDoors();
         
         [Description("Tenant Improvements Partition Walls includes walls in the interior of the building")]
-        public TenantImprovementsPartitionWalls TenantImprovementsPartitionWalls { get; set; } = null;
+        public TenantImprovementsPartitionWalls TenantImprovementsPartitionWalls { get; set; } = new TenantImprovementsPartitionWalls();
 
         /***************************************************/
     }
