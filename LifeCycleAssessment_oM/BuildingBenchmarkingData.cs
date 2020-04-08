@@ -30,12 +30,9 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public string Name { get; set; } = "";
-        public string Category { get; set; } = "";
         public double High { get; set; } = double.NaN;
         public double Average { get; set; } = double.NaN;
         public double Low { get; set; } = double.NaN;
-        public string Notes { get; set; } = "";
 
         /***************************************************/
     }

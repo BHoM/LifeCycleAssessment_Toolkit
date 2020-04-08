@@ -41,12 +41,9 @@ namespace BH.Engine.LifeCycleAssessment
         {
             BuildingBenchmarkingData benchmark = new BuildingBenchmarkingData
             {
-                Name = obj.PropertyValue("Name")?.ToString() ?? "",
-                Category = obj.PropertyValue("Category")?.ToString() ?? "",
                 High = obj.PropertyValue("High") != null ? System.Convert.ToDouble(obj.PropertyValue("High")) : double.NaN,
                 Average = obj.PropertyValue("Average") != null ? System.Convert.ToDouble(obj.PropertyValue("Average")) : double.NaN,
                 Low = obj.PropertyValue("Low") != null ? System.Convert.ToDouble(obj.PropertyValue("Low")) : double.NaN,
-                Notes = obj.PropertyValue("Notes")?.ToString() ?? "",
             };
             return benchmark;
         }
