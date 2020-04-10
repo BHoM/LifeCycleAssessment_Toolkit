@@ -71,13 +71,11 @@ namespace BH.Engine.LifeCycleAssessment
                 }
                 else if (declaredUnitType == "Mass")
                 {
-                    //double density = 0;
-                    string epdDensity = environmentalProductDeclaration.Density != null ? environmentalProductDeclaration.Density.ToString() : "";
-                    double density = System.Convert.ToDouble(epdDensity.Substring(0, epdDensity.IndexOf(" "))); //substring required to parse density string. This is temporary until IElementM is integrated.
-                    
-                    if (System.Convert.ToDouble(density) != 0)
+
+                    double density = environmentalProductDeclaration.Density;
+
+                    if (density != 0 && density != double.NaN)
                     {
-                        //density = density;
                         BH.Engine.Reflection.Compute.RecordNote(String.Format("This method is using a density of {0} supplied by the EnvironmentalProductDeclaration to calculate Mass.", density));
                     }
                     else if (obj.PropertyValue("Density") == null)
