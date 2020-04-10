@@ -33,8 +33,8 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public BoundaryRepresentation InteriorDoors { get; set; } = null;
-        public IEnvironmentalProductDeclarationData Data { get; set; } = null;
+        public virtual BoundaryRepresentation InteriorDoors { get; set; } = null;
+        public virtual IEnvironmentalProductDeclarationData Data { get; set; } = null;
 
         /***************************************************/
     }

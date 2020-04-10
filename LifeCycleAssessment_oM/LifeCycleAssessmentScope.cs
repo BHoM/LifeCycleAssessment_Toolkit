@@ -32,29 +32,29 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public LevelOfDevelopment LevelOfDevelopment { get; set; } = LevelOfDevelopment.Undefined;
-        public LifeCycleAssessmentPhases LifeCycleAssessmentPhases { get; set; } = LifeCycleAssessmentPhases.Undefined;
-        public PrimaryStructuralMaterial PrimaryStructuralMaterial { get; set; } = PrimaryStructuralMaterial.Undefined;
-        public ProjectArea ProjectArea { get; set; } = ProjectArea.Undefined;
-        public ProjectType ProjectType { get; set; } = ProjectType.Undefined;
+        public virtual LevelOfDevelopment LevelOfDevelopment { get; set; } = LevelOfDevelopment.Undefined;
+        public virtual LifeCycleAssessmentPhases LifeCycleAssessmentPhases { get; set; } = LifeCycleAssessmentPhases.Undefined;
+        public virtual PrimaryStructuralMaterial PrimaryStructuralMaterial { get; set; } = PrimaryStructuralMaterial.Undefined;
+        public virtual ProjectArea ProjectArea { get; set; } = ProjectArea.Undefined;
+        public virtual ProjectType ProjectType { get; set; } = ProjectType.Undefined;
 
         [Description ("The Project Name denotes the name of the project (eg Mercedes-Benz Stadium)")]
-        public string ProjectName { get; set; } = "Please provided a project name.";
+        public virtual string ProjectName { get; set; } = "Please provided a project name.";
         
         [Description("The Contact Name denotes the person/people who performed the LCA study.")]
-        public string ContactName { get; set; } = "No contact provided.";
+        public virtual string ContactName { get; set; } = "No contact provided.";
         
         [Description("The Actual Project Area denotes the more precise project area (m2) which will allow assessment of kgCO2eq/m2 metrics")]
-        public double ActualProjectArea { get; set; } = double.NaN;
+        public virtual double ActualProjectArea { get; set; } = double.NaN;
         
         [Description("Biogenic Carbon is a true/false that indicates that the project contains materials that originated from a biological source (trees, soil), these materials have the ability sequester/store carbon.")]
-        public bool BiogenicCarbon { get; set; } = false;
+        public virtual bool BiogenicCarbon { get; set; } = false;
         
         [Description("Zip Code is the means of tracking the project's location")]
-        public int ZipCode { get; set; } = 00000;
+        public virtual int ZipCode { get; set; } = 00000;
       
         [Description("Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon")]
-        public string AdditionalNotes { get; set; } = "None";
+        public virtual string AdditionalNotes { get; set; } = "None";
 
         /***************************************************/
     }

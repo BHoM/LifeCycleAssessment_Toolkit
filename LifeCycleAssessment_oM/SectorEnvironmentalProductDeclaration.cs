@@ -33,7 +33,7 @@ namespace BH.oM.LifeCycleAssessment
         public virtual List<string> Publisher { get; set; } = new List<string>();
         public virtual List<string> Jurisdiction { get; set; } = new List<string>();
         public virtual string Id { get; set; } = "";
-        public virtual string Density { get; set; } = "";
+        public virtual double Density { get; set; } = double.NaN;
         public virtual double BiogenicEmbodiedCarbon { get; set; } = double.NaN;
         public virtual string DeclaredUnit { get; set; } = "";
         public virtual string Description { get; set; } = "";

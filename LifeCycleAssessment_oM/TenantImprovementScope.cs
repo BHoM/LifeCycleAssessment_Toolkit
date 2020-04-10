@@ -33,25 +33,25 @@ namespace BH.oM.LifeCycleAssessment
         /**** Properties                                ****/
         /***************************************************/
         [Description("Tenant Improvement Ceiling is a material that creates an additional upper interior surface in a room")]
-        public TenantImprovementsCeiling TenantImprovementsCeiling { get; set; } = new TenantImprovementsCeiling();
+        public virtual TenantImprovementsCeiling TenantImprovementsCeiling { get; set; } = new TenantImprovementsCeiling();
         
         [Description("Tenant Improvements Flooring  is inclusive of the flooring materials placed on top of the structural floor (eg carpet, tile)")]
-        public TenantImprovementsFlooring TenantImprovementsFlooring { get; set; } = new TenantImprovementsFlooring();
+        public virtual TenantImprovementsFlooring TenantImprovementsFlooring { get; set; } = new TenantImprovementsFlooring();
         
         [Description("Tenant Improvements Finishes is inclusive of finishes (eg paint)")]
-        public TenantImprovementsFinishes TenantImprovementsFinishes { get; set; } = new TenantImprovementsFinishes();
+        public virtual TenantImprovementsFinishes TenantImprovementsFinishes { get; set; } = new TenantImprovementsFinishes();
         
         [Description("Tenant Improvements Interior Glazing is inclusive of windows in the interior of the building")]
-        public TenantImprovementsInteriorGlazing TenantImprovementsInteriorGlazing { get; set; } = new TenantImprovementsInteriorGlazing();
+        public virtual TenantImprovementsInteriorGlazing TenantImprovementsInteriorGlazing { get; set; } = new TenantImprovementsInteriorGlazing();
         
         [Description("Tenant Improvements Furniture includes furnishings (eg tables, chairs, desks)")]
-        public TenantImprovementsFurniture TenantImprovementsFurniture { get; set; } = new TenantImprovementsFurniture();
+        public virtual TenantImprovementsFurniture TenantImprovementsFurniture { get; set; } = new TenantImprovementsFurniture();
         
         [Description("Tenant Improvements Interior Doors includes doors in the interior of the building")]
-        public TenantImprovementsInteriorDoors TenantImprovementsInteriorDoors { get; set; } = new TenantImprovementsInteriorDoors();
+        public virtual TenantImprovementsInteriorDoors TenantImprovementsInteriorDoors { get; set; } = new TenantImprovementsInteriorDoors();
         
         [Description("Tenant Improvements Partition Walls includes walls in the interior of the building")]
-        public TenantImprovementsPartitionWalls TenantImprovementsPartitionWalls { get; set; } = new TenantImprovementsPartitionWalls();
+        public virtual TenantImprovementsPartitionWalls TenantImprovementsPartitionWalls { get; set; } = new TenantImprovementsPartitionWalls();
 
         /***************************************************/
     }

@@ -34,16 +34,16 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
 
         [Description("Enclosure walls are inclusive of the opaque exterior wall assemblies of a building")]
-        public EnclosuresCurtainWalls EnclosuresCurtainWalls { get; set; } = new EnclosuresCurtainWalls();
+        public virtual EnclosuresCurtainWalls EnclosuresCurtainWalls { get; set; } = new EnclosuresCurtainWalls();
         
         [Description("Enclosure curtain walls are large sheets of transparent glazing on the building exterior")]
-        public EnclosuresWalls EnclosuresWalls { get; set; } = new EnclosuresWalls();
+        public virtual EnclosuresWalls EnclosuresWalls { get; set; } = new EnclosuresWalls();
         
         [Description("Enclosure windows are are openings in the building exterior, which consist of framing and glazing")]
-        public EnclosuresWindows EnclosuresWindows { get; set; } = new EnclosuresWindows();
+        public virtual EnclosuresWindows EnclosuresWindows { get; set; } = new EnclosuresWindows();
         
         [Description("Enclosure doors are are openings in the building exterior, which consist of framing and panels")]
-        public EnclosuresDoors EnclosuresDoors { get; set; } = new EnclosuresDoors();
+        public virtual EnclosuresDoors EnclosuresDoors { get; set; } = new EnclosuresDoors();
 
         /***************************************************/
     }
