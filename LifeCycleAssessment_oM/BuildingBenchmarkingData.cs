@@ -30,9 +30,9 @@ namespace BH.oM.LifeCycleAssessment
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        public double High { get; set; } = double.NaN;
-        public double Average { get; set; } = double.NaN;
-        public double Low { get; set; } = double.NaN;
+        public virtual double High { get; set; } = double.NaN;
+        public virtual double Average { get; set; } = double.NaN;
+        public virtual double Low { get; set; } = double.NaN;
 
         /***************************************************/
     }
