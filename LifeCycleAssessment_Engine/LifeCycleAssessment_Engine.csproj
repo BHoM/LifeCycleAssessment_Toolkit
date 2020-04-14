@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclaration.cs" />
+    <Compile Include="Convert\ToBuildingBenchmarkingData.cs" />
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
     <Compile Include="Convert\ToEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />

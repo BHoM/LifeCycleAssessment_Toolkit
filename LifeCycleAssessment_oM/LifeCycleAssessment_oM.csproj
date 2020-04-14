@@ -72,6 +72,7 @@
     <Compile Include="EnclosuresDoors.cs" />
     <Compile Include="EnclosuresWindows.cs" />
     <Compile Include="EnclosuresWalls.cs" />
+    <Compile Include="BuildingBenchmarkingData.cs" />
     <Compile Include="Enums\EnvironmentalProductDeclarationField.cs" />
     <Compile Include="Enum\LevelOfDevelopment.cs" />
     <Compile Include="Enum\LifeCycleAssessmentPhases.cs" />
