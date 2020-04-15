@@ -62,15 +62,12 @@ namespace BH.Engine.LifeCycleAssessment
                     return 0;
                 }
 
-                //Check the epd declared unit type to determine whether to calculate by mass, volume, or neither
-                string declaredUnitType = environmentalProductDeclaration.DeclaredUnitType();
-
-                if (declaredUnitType == "Volume")
+                if (environmentalProductDeclaration.QuantityType == QuantityType.Volume)
                 {
                     return EvaluateEnvironmentalProductDeclarationByVolume(environmentalProductDeclaration, environmentalProductDeclarationField, volume);
                 }
-                else if (declaredUnitType == "Mass")
-                {
+                else if (environmentalProductDeclaration.QuantityType == QuantityType.Mass)
+                    {
 
                     double density = environmentalProductDeclaration.Density;
 
@@ -97,7 +94,7 @@ namespace BH.Engine.LifeCycleAssessment
 
                     return EvaluateEnvironmentalProductDeclarationByMass(environmentalProductDeclaration, environmentalProductDeclarationField, mass);
                 }
-                else if (declaredUnitType == "Area")
+                else if (environmentalProductDeclaration.QuantityType == QuantityType.Area)
                 {
                     object ar = obj.PropertyValue("Area");
                     if (ar == null)
@@ -135,15 +132,14 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByMass(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
         {
-            if (environmentalProductDeclaration.DeclaredUnitType() != "Mass")
+            if (environmentalProductDeclaration.QuantityType != QuantityType.Mass)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Mass. Please supply a Mass-based EPD or try a different method.");
                 return 0;
             }
             else
             {
-                double declaredUnit = environmentalProductDeclaration.DeclaredUnitValueInSI();
-                return mass * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField) / declaredUnit;
+                return mass * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField);
             }
         }
 
@@ -156,15 +152,14 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByVolume(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
         {
-            if (environmentalProductDeclaration.DeclaredUnitType() != "Volume")
+            if (environmentalProductDeclaration.QuantityType != QuantityType.Volume)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Volume. Please supply a Volume-based EPD or try a different method.");
                 return 0;
             }
             else
             {
-                double declaredUnit = environmentalProductDeclaration.DeclaredUnitValueInSI();
-                return volume * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField) / declaredUnit;
+                return volume * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField);
             }
         }
 
@@ -177,15 +172,14 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByArea(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)
         {
-            if (environmentalProductDeclaration.DeclaredUnitType() != "Area")
+            if (environmentalProductDeclaration.QuantityType != QuantityType.Area)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Area. Please supply an Area-based EPD or try a different method.");
                 return 0;
             }
             else
             {
-                double declaredUnit = environmentalProductDeclaration.DeclaredUnitValueInSI();
-                return area * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField) / declaredUnit;
+                return area * environmentalProductDeclaration.EnvironmentalProductDeclaration(environmentalProductDeclarationField);
             }
         }
 

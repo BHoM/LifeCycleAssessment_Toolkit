@@ -57,7 +57,6 @@ namespace BH.Engine.LifeCycleAssessment
                 GlobalWarmingPotential = obj.PropertyValue("GlobalWarmingPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotential")) : double.NaN,
                 Scope = obj.PropertyValue("Scope")?.ToString() ?? "",
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
-                DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
                 BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
                 Density = obj.PropertyValue("Density") != null ? System.Convert.ToDouble(obj.PropertyValue("Density")) : double.NaN,
                 EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
