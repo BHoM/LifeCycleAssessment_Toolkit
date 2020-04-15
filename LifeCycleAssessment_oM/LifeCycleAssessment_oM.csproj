@@ -30,71 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BHoM">
-      <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Geometry_oM">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EnclosuresCurtainWalls.cs" />
-    <Compile Include="EnclosuresDoors.cs" />
-    <Compile Include="EnclosuresWalls.cs" />
-    <Compile Include="EnclosuresWindows.cs" />
-    <Compile Include="FoundationsFootings.cs" />
-    <Compile Include="FoundationsPiles.cs" />
-    <Compile Include="FoundationsSlabs.cs" />
-    <Compile Include="FoundationsWalls.cs" />
-    <Compile Include="MEPBatteries.cs" />
-    <Compile Include="MEPConduit.cs" />
-    <Compile Include="MEPDuctwork.cs" />
-    <Compile Include="MEPEquipment.cs" />
-    <Compile Include="MEPGenerators.cs" />
-    <Compile Include="MEPLighting.cs" />
-    <Compile Include="MEPPiping.cs" />
-    <Compile Include="MEPWiring.cs" />
-    <Compile Include="ProjectLifeCycleAssessment.cs" />
-    <Compile Include="BuildingBenchmarkingData.cs" />
-    <Compile Include="Enums\EnvironmentalProductDeclarationField.cs" />
-    <Compile Include="Enums\LevelOfDevelopment.cs" />
-    <Compile Include="Enums\LifeCycleAssessmentPhases.cs" />
-    <Compile Include="Enums\PrimaryStructuralMaterial.cs" />
-    <Compile Include="Enums\ProjectType.cs" />
-    <Compile Include="Enums\ProjectArea.cs" />
-    <Compile Include="EnclosuresScope.cs" />
-    <Compile Include="MEPScope.cs" />
-    <Compile Include="FoundationsScope.cs" />
-    <Compile Include="StructuresBeams.cs" />
-    <Compile Include="StructuresColumns.cs" />
-    <Compile Include="StructuresCoreWalls.cs" />
-    <Compile Include="StructuresSlabs.cs" />
-    <Compile Include="TenantImprovementsCeiling.cs" />
-    <Compile Include="TenantImprovementScope.cs" />
-    <Compile Include="StructuresScope.cs" />
-    <Compile Include="LifeCycleAssessmentScope.cs" />
-    <Compile Include="HealthProductDeclaration.cs" />
-    <Compile Include="IEnvironmentalProductDeclarationData.cs" />
-    <Compile Include="EnvironmentalProductDeclaration.cs" />
-    <Compile Include="SectorEnvironmentalProductDeclaration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TenantImprovementsFinishes.cs" />
-    <Compile Include="TenantImprovementsFlooring.cs" />
-    <Compile Include="TenantImprovementsFurniture.cs" />
-    <Compile Include="TenantImprovementsInteriorDoors.cs" />
-    <Compile Include="TenantImprovementsInteriorGlazing.cs" />
-    <Compile Include="TenantImprovementsPartitionWalls.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
