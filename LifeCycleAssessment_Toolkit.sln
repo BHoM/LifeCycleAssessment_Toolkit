@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Express 14 for Windows Desktop
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCycleAssessment_Engine", "LifeCycleAssessment_Engine\LifeCycleAssessment_Engine.csproj", "{75BC936E-7B41-453E-A219-C0817EB35676}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeCycleAssessment_oM", "LifeCycleAssessment_oM\LifeCycleAssessment_oM.csproj", "{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		{75BC936E-7B41-453E-A219-C0817EB35676}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75BC936E-7B41-453E-A219-C0817EB35676}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75BC936E-7B41-453E-A219-C0817EB35676}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F693E7C-1A4E-42AD-A3D8-D6CE16ACAE5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
