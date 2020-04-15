@@ -59,10 +59,8 @@ namespace BH.Engine.LifeCycleAssessment
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
                 DeclaredUnit = obj.PropertyValue("DeclaredUnit")?.ToString() ?? "",
                 BiogenicEmbodiedCarbon = obj.PropertyValue("BiogenicEmbodiedCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicEmbodiedCarbon")) : double.NaN,
-                Density = obj.PropertyValue("Density")?.ToString() ?? "",
+                Density = obj.PropertyValue("Density") != null ? System.Convert.ToDouble(obj.PropertyValue("Density")) : double.NaN,
                 EndOfLifeTreatment = obj.PropertyValue("EolTreatment")?.ToString() ?? "",
-                //Add publisher
-                //Add jurisdiction 
             };
             return epd;
         }

@@ -21,34 +21,30 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    public interface IEnvironmentalProductDeclarationData : IBHoMObject
+    [Description("The Foundations Scope object provides a template for expected objects commonly assessed within Life Cycle Assessments. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
+    public class FoundationsScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        string Id { get; set; }
-        double Density { get; set; }
-        double BiogenicEmbodiedCarbon { get; set; }
-        string DeclaredUnit { get; set; }
-        string Description { get; set; }
-        string Scope { get; set; }
-        double GlobalWarmingPotential { get; set; }
-        double OzoneDepletionPotential { get; set; }
-        double PhotochemicalOzoneCreationPotential { get; set; }
-        double AcidificationPotential { get; set; }
-        double EutrophicationPotential { get; set; }
-        double DepletionOfAbioticResourcesFossilFuels { get; set; }
-        double GlobalWarmingPotentialEndOfLife { get; set; }
-        double OzoneDepletionPotentialEndOfLife { get; set; }
-        double PhotochemicalOzoneCreationPotentialEndOfLife { get; set; }
-        double AcidificationPotentialEndOfLife { get; set; }
-        double EutrophicationPotentialEndOfLife { get; set; }
-        double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; }
-        string EndOfLifeTreatment { get; set; } 
+        
+        [Description("Foundation footings (or pile caps) are mats below the buildings piles that help to distribute the load from the structure above")]
+        public virtual FoundationsFootings FoundationsFootings { get; set; } = new FoundationsFootings();
+        
+        [Description("Foundation piles are structural supports that are driven into the ground below a building to support the building structure")]
+        public virtual FoundationsPiles FoundationsPiles { get; set; } = new FoundationsPiles();
+        
+        [Description("Foundation walls are structural walls built below-grade")]
+        public virtual FoundationsWalls FoundationsWalls { get; set; } = new FoundationsWalls();
+        
+        [Description("Foundation slabs are structural slabs upon which the building is constructed. This category expects any type of slab, but assumes no construction properties.")]
+        public virtual FoundationsSlabs FoundationsSlabs { get; set; } = new FoundationsSlabs();
+
         /***************************************************/
     }
 }

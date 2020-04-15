@@ -21,34 +21,21 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Base;
+using BH.oM.Geometry; 
 
 namespace BH.oM.LifeCycleAssessment
 {
-    public interface IEnvironmentalProductDeclarationData : IBHoMObject
+    [Description("Foundation footings (or pile caps) are mats below the buildings piles that help to distribute the load from the structure above")]
+    public class FoundationsFootings : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        string Id { get; set; }
-        double Density { get; set; }
-        double BiogenicEmbodiedCarbon { get; set; }
-        string DeclaredUnit { get; set; }
-        string Description { get; set; }
-        string Scope { get; set; }
-        double GlobalWarmingPotential { get; set; }
-        double OzoneDepletionPotential { get; set; }
-        double PhotochemicalOzoneCreationPotential { get; set; }
-        double AcidificationPotential { get; set; }
-        double EutrophicationPotential { get; set; }
-        double DepletionOfAbioticResourcesFossilFuels { get; set; }
-        double GlobalWarmingPotentialEndOfLife { get; set; }
-        double OzoneDepletionPotentialEndOfLife { get; set; }
-        double PhotochemicalOzoneCreationPotentialEndOfLife { get; set; }
-        double AcidificationPotentialEndOfLife { get; set; }
-        double EutrophicationPotentialEndOfLife { get; set; }
-        double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; }
-        string EndOfLifeTreatment { get; set; } 
+        public virtual BoundaryRepresentation Footings { get; set; } = null;
+        public virtual IEnvironmentalProductDeclarationData Data { get; set; } = null;
+
         /***************************************************/
     }
 }
