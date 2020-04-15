@@ -21,34 +21,29 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    public interface IEnvironmentalProductDeclarationData : IBHoMObject
+    [Description("The Structures Scope object provides a template for expected objects commonly assessed within Life Cycle Assessments. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
+    public class StructuresScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        string Id { get; set; }
-        double Density { get; set; }
-        double BiogenicEmbodiedCarbon { get; set; }
-        string DeclaredUnit { get; set; }
-        string Description { get; set; }
-        string Scope { get; set; }
-        double GlobalWarmingPotential { get; set; }
-        double OzoneDepletionPotential { get; set; }
-        double PhotochemicalOzoneCreationPotential { get; set; }
-        double AcidificationPotential { get; set; }
-        double EutrophicationPotential { get; set; }
-        double DepletionOfAbioticResourcesFossilFuels { get; set; }
-        double GlobalWarmingPotentialEndOfLife { get; set; }
-        double OzoneDepletionPotentialEndOfLife { get; set; }
-        double PhotochemicalOzoneCreationPotentialEndOfLife { get; set; }
-        double AcidificationPotentialEndOfLife { get; set; }
-        double EutrophicationPotentialEndOfLife { get; set; }
-        double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; }
-        string EndOfLifeTreatment { get; set; } 
+        [Description("Structural slabs are inclusive of the above-grade structural floors in a building")]
+        public virtual StructuresSlabs StructuresSlabs { get; set; } = new StructuresSlabs();
+
+        [Description("Structural core walls are inclusive of the above-grade, structural-grade walls surrounding the core (elevators, building services)")]
+        public virtual StructuresCoreWalls StructuresCoreWalls { get; set; } = new StructuresCoreWalls();
+
+        [Description("Structural beams are typically horizontal elements that carry the load of floors, roofs, and ceilings")]
+        public virtual StructuresBeams StructuresBeams { get; set; } = new StructuresBeams();
+
+        [Description("Structural columns are typically vertical elements that carry the load of floors, roofs, and ceilings")]
+        public virtual StructuresColumns StructuresColumns { get; set; } = new StructuresColumns();
+
         /***************************************************/
     }
 }

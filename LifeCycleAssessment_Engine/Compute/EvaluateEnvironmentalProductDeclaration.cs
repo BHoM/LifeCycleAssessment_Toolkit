@@ -71,13 +71,11 @@ namespace BH.Engine.LifeCycleAssessment
                 }
                 else if (declaredUnitType == "Mass")
                 {
-                    //double density = 0;
-                    string epdDensity = environmentalProductDeclaration.Density != null ? environmentalProductDeclaration.Density.ToString() : "";
-                    double density = System.Convert.ToDouble(epdDensity.Substring(0, epdDensity.IndexOf(" "))); //substring required to parse density string. This is temporary until IElementM is integrated.
-                    
-                    if (System.Convert.ToDouble(density) != 0)
+
+                    double density = environmentalProductDeclaration.Density;
+
+                    if (density != 0 && density != double.NaN)
                     {
-                        //density = density;
                         BH.Engine.Reflection.Compute.RecordNote(String.Format("This method is using a density of {0} supplied by the EnvironmentalProductDeclaration to calculate Mass.", density));
                     }
                     else if (obj.PropertyValue("Density") == null)
@@ -94,7 +92,7 @@ namespace BH.Engine.LifeCycleAssessment
                     {
                         density = System.Convert.ToDouble(obj.PropertyValue("Density"));
                     }
-                    
+
                     double mass = density * volume;
 
                     return EvaluateEnvironmentalProductDeclarationByMass(environmentalProductDeclaration, environmentalProductDeclarationField, mass);
@@ -107,7 +105,7 @@ namespace BH.Engine.LifeCycleAssessment
                         BH.Engine.Reflection.Compute.RecordError("The EnvironmentalProductDeclaration supplied uses an area based declared unit, so the input object requires an Area property.");
                         return 0;
                     }
-                    
+
                     double area = System.Convert.ToDouble(ar);
                     if (area <= 0)
                     {
@@ -133,7 +131,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("This method calculates the quantity of a supplied metric per a supplied EPD and mass.")]
         [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with a mass-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
         [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
-        [Input("mass", "The total mass to calculate the total quantity of the input metric for.",typeof(Mass))]
+        [Input("mass", "The total mass to calculate the total quantity of the input metric for.", typeof(Mass))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByMass(IEnvironmentalProductDeclarationData environmentalProductDeclaration = null, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
         {

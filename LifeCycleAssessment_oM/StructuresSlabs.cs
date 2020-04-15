@@ -20,19 +20,22 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base;
+using BH.oM.Geometry; 
+
 namespace BH.oM.LifeCycleAssessment
 {
-    public enum ProjectType
+    [Description("Structural slabs are inclusive of the above-grade structural floors in a building")]
+    public class StructuresSlabs : BHoMObject
     {
-        Unidefined,
-        Stadium,
-        Office,
-        Residential,
-        HigherEducation,
-        Cultural,
-        Transit,
-        Healthcare,
-        Hospitality,
-        Commercial,
+        /***************************************************/
+        /**** Properties                                ****/
+        /***************************************************/
+        public virtual BoundaryRepresentation Slabs { get; set; } = null;
+        public virtual IEnvironmentalProductDeclarationData Data { get; set; } = null;
+
+        /***************************************************/
     }
 }

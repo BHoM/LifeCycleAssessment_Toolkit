@@ -21,34 +21,30 @@
  */
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using BH.oM.Base;
 
 namespace BH.oM.LifeCycleAssessment
 {
-    public interface IEnvironmentalProductDeclarationData : IBHoMObject
+    [Description("The Enclosures Scope object provides a template for expected objects commonly assessed within Life Cycle Assessments. Please provide as many objects with their corresponding Environmental Product Declaration data for the most accurate Life Cycle Assessment.")]
+    public class EnclosuresScope : BHoMObject
     {
         /***************************************************/
         /**** Properties                                ****/
         /***************************************************/
-        string Id { get; set; }
-        double Density { get; set; }
-        double BiogenicEmbodiedCarbon { get; set; }
-        string DeclaredUnit { get; set; }
-        string Description { get; set; }
-        string Scope { get; set; }
-        double GlobalWarmingPotential { get; set; }
-        double OzoneDepletionPotential { get; set; }
-        double PhotochemicalOzoneCreationPotential { get; set; }
-        double AcidificationPotential { get; set; }
-        double EutrophicationPotential { get; set; }
-        double DepletionOfAbioticResourcesFossilFuels { get; set; }
-        double GlobalWarmingPotentialEndOfLife { get; set; }
-        double OzoneDepletionPotentialEndOfLife { get; set; }
-        double PhotochemicalOzoneCreationPotentialEndOfLife { get; set; }
-        double AcidificationPotentialEndOfLife { get; set; }
-        double EutrophicationPotentialEndOfLife { get; set; }
-        double DepletionOfAbioticResourcesFossilFuelsEndOfLife { get; set; }
-        string EndOfLifeTreatment { get; set; } 
+
+        [Description("Enclosure walls are inclusive of the opaque exterior wall assemblies of a building")]
+        public virtual EnclosuresCurtainWalls EnclosuresCurtainWalls { get; set; } = new EnclosuresCurtainWalls();
+        
+        [Description("Enclosure curtain walls are large sheets of transparent glazing on the building exterior")]
+        public virtual EnclosuresWalls EnclosuresWalls { get; set; } = new EnclosuresWalls();
+        
+        [Description("Enclosure windows are are openings in the building exterior, which consist of framing and glazing")]
+        public virtual EnclosuresWindows EnclosuresWindows { get; set; } = new EnclosuresWindows();
+        
+        [Description("Enclosure doors are are openings in the building exterior, which consist of framing and panels")]
+        public virtual EnclosuresDoors EnclosuresDoors { get; set; } = new EnclosuresDoors();
+
         /***************************************************/
     }
 }
