@@ -93,6 +93,7 @@
     <Compile Include="Compute\ReinforcementVolume.cs" />
     <Compile Include="Compute\GlazingVolume.cs" />
     <Compile Include="Compute\ConcreteVolume.cs" />
+    <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclaration.cs" />
     <Compile Include="Convert\ToBuildingBenchmarkingData.cs" />
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
