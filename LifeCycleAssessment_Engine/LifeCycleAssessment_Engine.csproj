@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclaration.cs" />
     <Compile Include="Convert\ToBuildingBenchmarkingData.cs" />
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
