@@ -20,8 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
-//using BH.oM.LifeCycleAssessment.MaterialFragments;
+//using BH.oM.LifeCycleAssessment.MaterialFragments
 using BH.oM.Reflection.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
@@ -37,14 +36,14 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an object's MaterialComposition.")]
-        [Input("object", "The object to return the material from.")]
-        [Output("materialComposition", "The kind of matter the object is composed of.")]
-        public static MaterialComposition MaterialComposition(this Object mat)
+        [Description("Returns an object's solid volume.")]
+        [Input("object", "The object to get the volume from.")]
+        [Output("volume", "The object's solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this Object obj)
         {
-            mat = 0;
-            return (MaterialComposition)mat;
+            return 0;
         }
         /***************************************************/
+
     }
 }
