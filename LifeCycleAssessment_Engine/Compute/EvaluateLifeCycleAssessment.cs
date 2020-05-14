@@ -39,25 +39,21 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("This method calculates the quantity of any selected metric within an Environmental Product Declaration by extracting the declared unit of the selected material and multiplying the objects Volume * Density * EnvironmentalProductDeclarationField criteria. Please view the EnvironmentalProductDeclarationField Enum to explore current evaluation metric options.")]
-        [Input("obj", "This is a BHoM Object to calculate EPD off of. The method requires a volume property on the BHoM Object. Density is required if the chosen EPD is on a per mass basis, and will be extracted from the dataset if possible prior to extracting from the object itself.")]
-        [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
+        [Description("This evaluation method will extract environmental product declaration data (EPD) from all provided geometries within each scope object. Please review the report output for a better understanding of what you have provided and what areas you can improve for the most accurate life cycle assessment..")]
+        [Input("projectLifeCycleAssessment", "A complete Project Life Cycle Assessment. ")]
         [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
-        [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
-        public static Output<string, string, double> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
+        [MultiOutput(0, "quantity", "this is the quantity.")]
+        [MultiOutput(1, "report", "this is a detailed report of your life cycle assessment.")]
+
+        public static Output<string, double> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
         {
-            Output<string, string, double> blah = new Output<string, string, double>
+            Output<string, double> report = new Output<string, double>
             {
                 Item1 = "My Quantity",
-                Item2 = "You used too much concrete cause now you're making Greta mad",
-                Item3 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField)
+                Item2 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.FoundationsScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.MEPScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.TenantImprovementScope.GetEvaluationValue(environmentalProductDeclarationField)
             };
-
-            return blah;
+            //quantity * 
+            return report;
         }
-        
-           
-
-
     }
 }
