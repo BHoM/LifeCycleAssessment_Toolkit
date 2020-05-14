@@ -29,6 +29,16 @@ namespace BH.Engine.LifeCycleAssessment
                     return epd.EutrophicationPotentialEndOfLife;
                 case EnvironmentalProductDeclarationField.GlobalWarmingPotential:
                     return epd.GlobalWarmingPotential;
+                case EnvironmentalProductDeclarationField.GlobalWarmingPotentialEndOfLife:
+                    return epd.GlobalWarmingPotentialEndOfLife;
+                case EnvironmentalProductDeclarationField.OzoneDepletionPotential:
+                    return epd.OzoneDepletionPotential;
+                case EnvironmentalProductDeclarationField.OzoneDepletionPotentialEndOfLife:
+                    return epd.OzoneDepletionPotentialEndOfLife;
+                case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotential:
+                    return epd.PhotochemicalOzoneCreationPotential;
+                case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotentialEndOfLife:
+                    return epd.PhotochemicalOzoneCreationPotentialEndOfLife;
                 default:
                     return double.NaN;
             }
@@ -38,15 +48,25 @@ namespace BH.Engine.LifeCycleAssessment
         {
             return lcaConstruction.Data.GetEvaluationValue(field);
         }
-
         public static double GetEvaluationValue(this StructuresScope structures, EnvironmentalProductDeclarationField field)
         {
-            return -1;
+            return structures.StructuresSlabs.GetEvaluationValue(field) + structures.StructuresCoreWalls.GetEvaluationValue(field) + structures.StructuresBeams.GetEvaluationValue(field) + structures.StructuresColumns.GetEvaluationValue(field);
         }
-
         public static double GetEvaluationValue(this EnclosuresScope enclosures, EnvironmentalProductDeclarationField field)
         {
             return enclosures.EnclosuresCurtainWalls.GetEvaluationValue(field) + enclosures.EnclosuresDoors.GetEvaluationValue(field) + enclosures.EnclosuresWindows.GetEvaluationValue(field) + enclosures.EnclosuresWalls.GetEvaluationValue(field);
+        }
+        public static double GetEvaluationValue(this FoundationsScope foundations, EnvironmentalProductDeclarationField field)
+        {
+            return foundations.FoundationsFootings.GetEvaluationValue(field) + foundations.FoundationsPiles.GetEvaluationValue(field) + foundations.FoundationsWalls.GetEvaluationValue(field) + foundations.FoundationsSlabs.GetEvaluationValue(field);
+        }
+        public static double GetEvaluationValue(this MEPScope mep, EnvironmentalProductDeclarationField field)
+        {
+            return mep.MEPEquipment.GetEvaluationValue(field) + mep.MEPDuctwork.GetEvaluationValue(field) + mep.MEPGenerators.GetEvaluationValue(field) + mep.MEPConduit.GetEvaluationValue(field) + mep.MEPWiring.GetEvaluationValue(field) + mep.MEPLighting.GetEvaluationValue(field) + mep.MEPPiping.GetEvaluationValue(field) + mep.MEPBatteries.GetEvaluationValue(field);
+        }
+        public static double GetEvaluationValue(this TenantImprovementScope tentant, EnvironmentalProductDeclarationField field)
+        {
+            return tentant.TenantImprovementsCeiling.GetEvaluationValue(field) + tentant.TenantImprovementsFlooring.GetEvaluationValue(field) + tentant.TenantImprovementsFinishes.GetEvaluationValue(field) + tentant.TenantImprovementsInteriorGlazing.GetEvaluationValue(field) + tentant.TenantImprovementsFurniture.GetEvaluationValue(field) + tentant.TenantImprovementsInteriorDoors.GetEvaluationValue(field) + tentant.TenantImprovementsPartitionWalls.GetEvaluationValue(field);
         }
     }
 }
