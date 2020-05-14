@@ -82,6 +82,8 @@
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Create\LifeCycleAssessmentScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\SolidVolume.cs" />
+    <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\EnvironmentalProductDeclaration.cs" />
     <Compile Include="Query\GetEvaluationValue.cs" />
   </ItemGroup>
