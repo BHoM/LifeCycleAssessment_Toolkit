@@ -28,6 +28,8 @@ using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.LifeCycleAssessment;
 using BH.Engine.Reflection;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+
 
 namespace BH.Engine.LifeCycleAssessment
 {

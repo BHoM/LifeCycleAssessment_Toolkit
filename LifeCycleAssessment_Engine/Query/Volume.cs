@@ -39,10 +39,10 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns an object's solid volume.")]
+        [Description("Returns an object's volume.")]
         [Input("object", "The object to get the volume from.")]
-        [Output("volume", "The object's solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this StructuresSlabs slabs)
+        [Output("volume", "The object's volume.", typeof(Volume))]
+        public static double Volume(this StructuresSlabs slabs)
         {
             return slabs.Slabs.ISolidVolume();
         }

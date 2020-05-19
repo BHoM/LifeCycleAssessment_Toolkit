@@ -30,6 +30,7 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Reflection;
 using BH.oM.Reflection;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -45,15 +46,16 @@ namespace BH.Engine.LifeCycleAssessment
         [MultiOutput(0, "quantity", "this is the quantity.")]
         [MultiOutput(1, "report", "this is a detailed report of your life cycle assessment.")]
 
-        public static Output<string, double> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
+        public static Output<double, string> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
         {
-            Output<string, double> report = new Output<string, double>
+            Output<double, string> report = new Output<double, string>
             {
-                Item1 = "My Quantity",
-                Item2 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.FoundationsScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.MEPScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.TenantImprovementScope.GetEvaluationValue(environmentalProductDeclarationField)
+                Item1 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.FoundationsScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.MEPScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.TenantImprovementScope.GetEvaluationValue(environmentalProductDeclarationField) * (projectLifeCycleAssessment.StructuresScope.StructuresSlabs.Slabs.ISolidVolume()),
+                Item2 = "My Report"
             };
-            //quantity * 
+            //field * volume * density 
             return report;
+
         }
     }
 }
