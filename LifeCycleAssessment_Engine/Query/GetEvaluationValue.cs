@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 
 namespace BH.Engine.LifeCycleAssessment
 {

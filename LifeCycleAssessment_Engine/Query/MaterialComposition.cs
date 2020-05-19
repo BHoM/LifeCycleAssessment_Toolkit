@@ -42,7 +42,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("materialComposition", "The kind of matter the object is composed of.")]
         public static MaterialComposition MaterialComposition(this Object mat)
         {
-            mat = 0;
             return (MaterialComposition)mat;
         }
         /***************************************************/
