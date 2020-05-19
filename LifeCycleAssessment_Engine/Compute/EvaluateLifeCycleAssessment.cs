@@ -31,6 +31,9 @@ using BH.oM.Quantities.Attributes;
 using BH.Engine.Reflection;
 using BH.oM.Reflection;
 using BH.Engine.Matter;
+using BH.Engine.Base;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -43,19 +46,21 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("This evaluation method will extract environmental product declaration data (EPD) from all provided geometries within each scope object. Please review the report output for a better understanding of what you have provided and what areas you can improve for the most accurate life cycle assessment..")]
         [Input("projectLifeCycleAssessment", "A complete Project Life Cycle Assessment. ")]
         [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
-        [MultiOutput(0, "quantity", "this is the quantity.")]
-        [MultiOutput(1, "report", "this is a detailed report of your life cycle assessment.")]
+        [MultiOutput(0, "quantity", "This is the combined total of the desired EnvironmentalProductDeclarationField.")]
+        //[MultiOutput(1, "volume", "This is the combined total of the volume being evaluated within the method.")]
+        //[MultiOutput(2, "report", "this is a detailed report of your life cycle assessment.")]
 
-        public static Output<double, string> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
+        public static Output<double, double, string> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
         {
-            Output<double, string> report = new Output<double, string>
+            Output<double, double, string> report = new Output<double, double, string>
             {
-                Item1 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.FoundationsScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.MEPScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.TenantImprovementScope.GetEvaluationValue(environmentalProductDeclarationField) * (projectLifeCycleAssessment.StructuresScope.StructuresSlabs.Slabs.ISolidVolume()),
-                Item2 = "My Report"
+            Item1 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.FoundationsScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.MEPScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.TenantImprovementScope.GetEvaluationValue(environmentalProductDeclarationField),
+            //Item2 = projectLifeCycleAssessment.StructuresScope.SolidVolume() + projectLifeCycleAssessment.FoundationsScope.SolidVolume() + projectLifeCycleAssessment.EnclosuresScope.SolidVolume() + projectLifeCycleAssessment.MEPScope.SolidVolume() + projectLifeCycleAssessment.TenantImprovementScope.SolidVolume(),
+            //Item3 = EvaluateEnvironmentalProductDeclarationPerObject(); Need to call this method for each object within the LCA
+            //Item4 = "My Report"
             };
-            //field * volume * density 
             return report;
-
         }
     }
 }
+//field * volume * density 
