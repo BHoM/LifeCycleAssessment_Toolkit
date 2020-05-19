@@ -30,6 +30,7 @@ using BH.oM.Physical.Materials;
 using BH.oM.LifeCycleAssessment;
 using BH.Engine.Geometry;
 using BH.Engine.Matter;
+using BH.oM.Base;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -42,9 +43,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns an object's volume.")]
         [Input("object", "The object to get the volume from.")]
         [Output("volume", "The object's volume.", typeof(Volume))]
-        public static double Volume(this StructuresSlabs slabs)
+        public static double Volume(this IBHoMObject obj)
         {
-            return slabs.Slabs.ISolidVolume();
+            return obj.Volume();
         }
         /***************************************************/
 

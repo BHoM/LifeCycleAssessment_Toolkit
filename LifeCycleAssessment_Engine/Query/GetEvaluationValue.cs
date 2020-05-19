@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
-
+using BH.Engine.Base;
+using BH.oM.Base;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 
@@ -14,6 +16,9 @@ namespace BH.Engine.LifeCycleAssessment
     {
         public static double GetEvaluationValue(this IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
         {
+            if (epd == null)
+                return double.NaN;
+
             switch(field)
             {
                 case EnvironmentalProductDeclarationField.AcidificationPotential:
@@ -45,29 +50,81 @@ namespace BH.Engine.LifeCycleAssessment
             }
         }
 
-        public static double GetEvaluationValue(this ILifeCycleAssessmentConstruction lcaConstruction, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValue(this IBHoMObject lcaScope, EnvironmentalProductDeclarationField field)
         {
-            return lcaConstruction.Data.GetEvaluationValue(field);
+            return lcaScope.GetEvaluationValue(field);
         }
-        public static double GetEvaluationValue(this StructuresScope structures, EnvironmentalProductDeclarationField field)
+
+        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any StructuresScope object used within a ProjectLifeCycleAssessment.")]
+        public static double GetEvaluationValue(this StructuresScope obj, EnvironmentalProductDeclarationField field)
         {
-            return structures.StructuresSlabs.GetEvaluationValue(field) + structures.StructuresCoreWalls.GetEvaluationValue(field) + structures.StructuresBeams.GetEvaluationValue(field) + structures.StructuresColumns.GetEvaluationValue(field);
+            double val = 0;
+
+            val += obj.StructuresSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.StructuresBeams.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.StructuresColumns.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.StructuresCoreWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+            return val;
         }
-        public static double GetEvaluationValue(this EnclosuresScope enclosures, EnvironmentalProductDeclarationField field)
+
+        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any FoundationsScope object used within a ProjectLifeCycleAssessment.")]
+        public static double GetEvaluationValue(this FoundationsScope obj, EnvironmentalProductDeclarationField field)
         {
-            return enclosures.EnclosuresCurtainWalls.GetEvaluationValue(field) + enclosures.EnclosuresDoors.GetEvaluationValue(field) + enclosures.EnclosuresWindows.GetEvaluationValue(field) + enclosures.EnclosuresWalls.GetEvaluationValue(field);
+            double val = 0;
+
+            val += obj.FoundationsFootings.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.FoundationsPiles.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.FoundationsSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.FoundationsWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+            return val;
         }
-        public static double GetEvaluationValue(this FoundationsScope foundations, EnvironmentalProductDeclarationField field)
+
+        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EnclosuresScope object used within a ProjectLifeCycleAssessment.")]
+        public static double GetEvaluationValue(this EnclosuresScope obj, EnvironmentalProductDeclarationField field)
         {
-            return foundations.FoundationsFootings.GetEvaluationValue(field) + foundations.FoundationsPiles.GetEvaluationValue(field) + foundations.FoundationsWalls.GetEvaluationValue(field) + foundations.FoundationsSlabs.GetEvaluationValue(field);
+            double val = 0;
+
+            val += obj.EnclosuresCurtainWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.EnclosuresDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.EnclosuresWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.EnclosuresWindows.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+            return val;
         }
-        public static double GetEvaluationValue(this MEPScope mep, EnvironmentalProductDeclarationField field)
+
+        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EnclosuresScope object used within a ProjectLifeCycleAssessment.")]
+        public static double GetEvaluationValue(this MEPScope obj, EnvironmentalProductDeclarationField field)
         {
-            return mep.MEPEquipment.GetEvaluationValue(field) + mep.MEPDuctwork.GetEvaluationValue(field) + mep.MEPGenerators.GetEvaluationValue(field) + mep.MEPConduit.GetEvaluationValue(field) + mep.MEPWiring.GetEvaluationValue(field) + mep.MEPLighting.GetEvaluationValue(field) + mep.MEPPiping.GetEvaluationValue(field) + mep.MEPBatteries.GetEvaluationValue(field);
+            double val = 0;
+
+            val += obj.MEPBatteries.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPConduit.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPDuctwork.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPEquipment.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPGenerators.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPLighting.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPPiping.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.MEPWiring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+            return val;
         }
-        public static double GetEvaluationValue(this TenantImprovementScope tentant, EnvironmentalProductDeclarationField field)
+
+        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any TenantImprovementScope object used within a ProjectLifeCycleAssessment.")]
+        public static double GetEvaluationValue(this TenantImprovementScope obj, EnvironmentalProductDeclarationField field)
         {
-            return tentant.TenantImprovementsCeiling.GetEvaluationValue(field) + tentant.TenantImprovementsFlooring.GetEvaluationValue(field) + tentant.TenantImprovementsFinishes.GetEvaluationValue(field) + tentant.TenantImprovementsInteriorGlazing.GetEvaluationValue(field) + tentant.TenantImprovementsFurniture.GetEvaluationValue(field) + tentant.TenantImprovementsInteriorDoors.GetEvaluationValue(field) + tentant.TenantImprovementsPartitionWalls.GetEvaluationValue(field);
+            double val = 0;
+
+            val += obj.TenantImprovementsCeiling.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.TenantImprovementsFinishes.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.TenantImprovementsFlooring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.TenantImprovementsFurniture.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.TenantImprovementsInteriorDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.TenantImprovementsInteriorGlazing.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+            val += obj.TenantImprovementsPartitionWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+            return val;
         }
     }
 }
