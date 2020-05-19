@@ -34,10 +34,20 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Dimensional_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Engine\Build\Dimensional_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Geometry_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Geometry_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="LifeCycleAssessment_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\LifeCycleAssessment_oM.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Matter_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Matter_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Physical_oM">
       <SpecificVersion>False</SpecificVersion>
@@ -101,6 +111,7 @@
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Create\LifeCycleAssessmentScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\EnvironmentalProductDeclaration.cs" />

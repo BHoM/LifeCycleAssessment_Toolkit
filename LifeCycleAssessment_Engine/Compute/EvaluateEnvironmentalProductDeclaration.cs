@@ -29,6 +29,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Reflection;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 
 namespace BH.Engine.LifeCycleAssessment
 {
