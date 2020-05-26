@@ -56,7 +56,7 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any StructuresScope object used within a ProjectLifeCycleAssessment.")]
-        public static double GetEvaluationValue(this StructuresScope obj, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValueStructuresScope(this StructuresScope obj, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
 
@@ -69,7 +69,7 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any FoundationsScope object used within a ProjectLifeCycleAssessment.")]
-        public static double GetEvaluationValue(this FoundationsScope obj, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValueFoundationsScope(this FoundationsScope obj, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
 
@@ -82,7 +82,7 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EnclosuresScope object used within a ProjectLifeCycleAssessment.")]
-        public static double GetEvaluationValue(this EnclosuresScope obj, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValueEnclosuresScope(this EnclosuresScope obj, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
 
@@ -95,7 +95,7 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EnclosuresScope object used within a ProjectLifeCycleAssessment.")]
-        public static double GetEvaluationValue(this MEPScope obj, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValueMEPScope(this MEPScope obj, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
 
@@ -112,7 +112,7 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any TenantImprovementScope object used within a ProjectLifeCycleAssessment.")]
-        public static double GetEvaluationValue(this TenantImprovementScope obj, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValueTenantImprovementScope(this TenantImprovementScope obj, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
 
@@ -126,5 +126,6 @@ namespace BH.Engine.LifeCycleAssessment
 
             return val;
         }
+
     }
 }
