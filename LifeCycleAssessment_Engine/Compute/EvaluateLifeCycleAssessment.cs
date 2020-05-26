@@ -33,7 +33,6 @@ using BH.oM.Reflection;
 using BH.Engine.Matter;
 using BH.Engine.Base;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using System.Security.Cryptography.X509Certificates;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -52,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         public static Output<double, double, string> EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment projectLifeCycleAssessment, EnvironmentalProductDeclarationField environmentalProductDeclarationField = EnvironmentalProductDeclarationField.GlobalWarmingPotential) //add sort method
         {
-            Output<double, double, string> report = new Output<double, double, string>
+            Output<double, double, string> report = new Output<double, double, string> // best way to output the scope objects with values and fragments // potentially object with quantity outputs. 
             {
             Item1 = projectLifeCycleAssessment.StructuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.FoundationsScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.EnclosuresScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.MEPScope.GetEvaluationValue(environmentalProductDeclarationField) + projectLifeCycleAssessment.TenantImprovementScope.GetEvaluationValue(environmentalProductDeclarationField),
             //Item2 = projectLifeCycleAssessment.StructuresScope.SolidVolume() + projectLifeCycleAssessment.FoundationsScope.SolidVolume() + projectLifeCycleAssessment.EnclosuresScope.SolidVolume() + projectLifeCycleAssessment.MEPScope.SolidVolume() + projectLifeCycleAssessment.TenantImprovementScope.SolidVolume(),

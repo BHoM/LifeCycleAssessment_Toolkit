@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
+using BH.Engine.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Quantities.Attributes;
@@ -41,6 +42,104 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("This method calculates the quantity of any selected metric within an Environmental Product Declaration by extracting the declared unit of the selected material and multiplying the objects Volume * Density * EnvironmentalProductDeclarationField criteria. Please view the EnvironmentalProductDeclarationField Enum to explore current evaluation metric options.")]
         [Input("obj", "This is a BHoM Object to calculate EPD off of. The method requires a volume property on the BHoM Object. Density is required if the chosen EPD is on a per mass basis, and will be extracted from the dataset if possible prior to extracting from the object itself.")]
+        [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
+        public static double EvaluateEnvironmentalProductDeclaration(IBHoMObject obj, EnvironmentalProductDeclarationField field) //next will be to check the LCA object
+        {
+            //Check validity of inputs.
+            if (obj != null)
+            {
+                //Look for fragments on the objects extract all IEPD data. 
+                double GetEvaluationValueStructuresScope(this StructuresScope objs, EnvironmentalProductDeclarationField field)
+                {
+                    double val = 0;
+
+                    val += objs.StructuresSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    val += objs.StructuresBeams.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    val += objs.StructuresColumns.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    val += objs.StructuresCoreWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+                    return val;
+                }
+
+                object vol = obj.PropertyValue("Volume");
+                if (vol == null)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
+                    return 0;
+                }
+
+                double volume = System.Convert.ToDouble(vol);
+                if (volume <= 0)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("The input object's Volume value is invalid or negative. Volume should be in m3 in numerical format.");
+                    return 0;
+                }
+
+                if (environmentalProductDeclaration.QuantityType == QuantityType.Volume)
+                {
+                    return EvaluateEnvironmentalProductDeclarationByVolume(environmentalProductDeclaration, environmentalProductDeclarationField, volume);
+                }
+                else if (environmentalProductDeclaration.QuantityType == QuantityType.Mass)
+                {
+
+                    double density = environmentalProductDeclaration.Density;
+
+                    if (density != 0 && density != double.NaN)
+                    {
+                        BH.Engine.Reflection.Compute.RecordNote(String.Format("This method is using a density of {0} supplied by the EnvironmentalProductDeclaration to calculate Mass.", density));
+                    }
+                    else if (obj.PropertyValue("Density") == null)
+                    {
+                        BH.Engine.Reflection.Compute.RecordNote("The EnvironmentalProductDeclaration and input object do not have density information. The EPD is mass-based. Please add density data to the input object.");
+                        return 0;
+                    }
+                    else if (System.Convert.ToDouble(obj.PropertyValue("Density")) <= 0)
+                    {
+                        BH.Engine.Reflection.Compute.RecordNote("The input object's Density value is invalid. Density should be in kg/m3 in numerical format.");
+                        return 0;
+                    }
+                    else
+                    {
+                        density = System.Convert.ToDouble(obj.PropertyValue("Density"));
+                    }
+
+                    double mass = density * volume;
+
+                    return EvaluateEnvironmentalProductDeclarationByMass(environmentalProductDeclaration, environmentalProductDeclarationField, mass);
+                }
+                else if (environmentalProductDeclaration.QuantityType == QuantityType.Area)
+                {
+                    object ar = obj.PropertyValue("Area");
+                    if (ar == null)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("The EnvironmentalProductDeclaration supplied uses an area based declared unit, so the input object requires an Area property.");
+                        return 0;
+                    }
+
+                    double area = System.Convert.ToDouble(ar);
+                    if (area <= 0)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("The input object's Area value is invalid. Area should be in m2 in numerical format.");
+                        return 0;
+                    }
+                    return EvaluateEnvironmentalProductDeclarationByArea(environmentalProductDeclaration, environmentalProductDeclarationField, area);
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not supported.");
+                    return 0;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /***************************************************/
+
+        [Description("This method calculates the quantity of any selected metric within an Environmental Product Declaration by extracting the declared unit of the selected material and multiplying the objects Volume * Density * EnvironmentalProductDeclarationField criteria. Please view the EnvironmentalProductDeclarationField Enum to explore current evaluation metric options.")]
+        [Input("obj", "This is a BHoM Object to calculate EPD off of. The method requires a volume property on the BHoM Object. Density is required if the chosen EPD is on a per mass basis, and will be extracted from the dataset if possible prior to extracting from the object itself.")]
         [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
         [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
@@ -48,7 +147,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (obj != null)
             {
-                //First check validity of inputs
+                //First check validity of inputs - 1. look for fragment on the objects extract IEPD. 
                 object vol = obj.PropertyValue("Volume");
                 if (vol == null)
                 {
