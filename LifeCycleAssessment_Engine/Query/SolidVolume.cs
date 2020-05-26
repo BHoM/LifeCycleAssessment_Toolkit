@@ -32,6 +32,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Matter;
 using BH.oM.Base;
 using BH.Engine.Reflection;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -58,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         public static double SolidVolume(this StructuresScope structuresScope)
         {
-            return SolidVolume(structuresScope.StructuresSlabs); //oM connections where possible and IBHoMObject where not possible --- volume methods should query customData for key "Volume" to start.
+            return structuresScope.StructuresSlabs.Select(x => x.SolidVolume()).Sum();
         }
 
         /***************************************************/
