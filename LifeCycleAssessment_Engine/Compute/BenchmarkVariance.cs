@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("typeWeighting", "Subjective weighting of program type benchmark results. Used in LCA to prioritize different CO2 dataset assumptions.")]
         [Input("structureWeighting", "Subjective weighting of structure type benchmark results. Used in LCA to prioritize different CO2 dataset assumptions.")]
         [Output("embodiedCarbonPercentageVariance", "Percentage variance between current project being evaluated and benchmark datasets.")]
-        public static double EmbodiedEnergyVariance(double projectEmbodiedCarbon, double projectArea, CustomObject embodiedCarbonBenchmarkTypeDataset, CustomObject embodiedCarbonBenchmarkStructureDataset, double typeWeighting, double structureWeighting)
+        public static double BenchmarkVariance(double projectEmbodiedCarbon, double projectArea, CustomObject embodiedCarbonBenchmarkTypeDataset, CustomObject embodiedCarbonBenchmarkStructureDataset, double typeWeighting, double structureWeighting)
         {
             double typeBenchmark = 0.0;
             double structureBenchmark = 0.0;
