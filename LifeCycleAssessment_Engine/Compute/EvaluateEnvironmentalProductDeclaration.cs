@@ -40,6 +40,237 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+        public static double EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment lca, EnvironmentalProductDeclarationField field)
+        {
+            //Check for object materialFragments
+            if(lca != null)
+            {
+                //Find fragments on objects and extract
+                double structuresVal = 0;
+                double structuresDensity = 0;
+                double foundationsVal = 0;
+                double foundationsDensity = 0;
+                double enclosuresVal = 0;
+                double enclosuresDensity = 0;
+                double mepVal = 0;
+                double mepDensity = 0;
+                double tiVal = 0;
+                double tiDensity = 0;
+
+                //Structures Scope MaterialFragment Values
+                if (lca.StructuresScope == null)
+                {
+                    structuresVal = double.NaN;
+                    BH.Engine.Reflection.Compute.RecordError("Scope objects do not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    return structuresVal;
+                }
+                if (lca.StructuresScope != null)
+                {
+                    //Structural Slabs
+                    structuresVal += lca.StructuresScope.StructuresSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    structuresDensity += lca.StructuresScope.StructuresSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+                    
+                    //Structural Beams
+                    structuresVal += lca.StructuresScope.StructuresBeams.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    structuresDensity += lca.StructuresScope.StructuresBeams.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Structural Columns
+                    structuresVal += lca.StructuresScope.StructuresColumns.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    structuresDensity += lca.StructuresScope.StructuresColumns.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Structural Core Walls
+                    structuresVal += lca.StructuresScope.StructuresCoreWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    structuresDensity += lca.StructuresScope.StructuresCoreWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    return structuresVal * structuresDensity;
+                }
+                
+                //Foundations Scope MaterialFragment Values
+                if(lca.FoundationsScope == null)
+                {
+                    foundationsVal = double.NaN;
+                    BH.Engine.Reflection.Compute.RecordError("FoundationsScope Object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    return foundationsVal;
+                }
+                if(lca.FoundationsScope != null)
+                {
+                    //Foundations Footings
+                    foundationsVal += lca.FoundationsScope.FoundationsFootings.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    foundationsDensity += lca.FoundationsScope.FoundationsFootings.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Foundations Piles
+                    foundationsVal += lca.FoundationsScope.FoundationsPiles.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    foundationsDensity += lca.FoundationsScope.FoundationsPiles.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Foundations Slabs
+                    foundationsVal += lca.FoundationsScope.FoundationsSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    foundationsDensity += lca.FoundationsScope.FoundationsSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Foundations Walls
+                    foundationsVal += lca.FoundationsScope.FoundationsWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    foundationsDensity += lca.FoundationsScope.FoundationsWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    return foundationsVal * foundationsDensity;
+                }
+
+                //Enclosures Scope MaterialFragment Values
+                if (lca.EnclosuresScope == null)
+                {
+                    enclosuresVal = double.NaN;
+                    BH.Engine.Reflection.Compute.RecordError("EnclosureScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    return enclosuresVal;
+                }
+                if (lca.EnclosuresScope != null)
+                {
+                    //Enclosures Curtain Walls
+                    enclosuresVal += lca.EnclosuresScope.EnclosuresCurtainWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    enclosuresDensity += lca.EnclosuresScope.EnclosuresCurtainWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Enclosures Doors
+                    enclosuresVal += lca.EnclosuresScope.EnclosuresDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    enclosuresDensity += lca.EnclosuresScope.EnclosuresDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Enclosures Walls
+                    enclosuresVal += lca.EnclosuresScope.EnclosuresWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    enclosuresDensity += lca.EnclosuresScope.EnclosuresWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Enclosures Windows
+                    enclosuresVal += lca.EnclosuresScope.EnclosuresWindows.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    enclosuresDensity += lca.EnclosuresScope.EnclosuresWindows.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    return enclosuresVal * enclosuresDensity;
+                }
+
+                //MEP Scope MaterialFragment Values
+                if (lca.MEPScope == null)
+                {
+                    mepVal = double.NaN;
+                    BH.Engine.Reflection.Compute.RecordError("MEPScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    return mepVal;
+                }
+                if (lca.MEPScope != null)
+                {
+                    //MEP Batteries
+                    mepVal += lca.MEPScope.MEPBatteries.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPBatteries.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Conduit
+                    mepVal += lca.MEPScope.MEPConduit.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPConduit.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Ductwork
+                    mepVal += lca.MEPScope.MEPDuctwork.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPDuctwork.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Equipment
+                    mepVal += lca.MEPScope.MEPEquipment.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPEquipment.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Generators
+                    mepVal += lca.MEPScope.MEPGenerators.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPGenerators.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Lighting
+                    mepVal += lca.MEPScope.MEPLighting.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPLighting.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Piping
+                    mepVal += lca.MEPScope.MEPPiping.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPPiping.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //MEP Wiring
+                    mepVal += lca.MEPScope.MEPWiring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    mepDensity += lca.MEPScope.MEPWiring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    return mepVal * mepDensity;
+                }
+
+                //Tenant Improvement Scope MaterialFragment Values
+                if (lca.TenantImprovementScope == null)
+                {
+                    tiVal = double.NaN;
+                    BH.Engine.Reflection.Compute.RecordError("TenantImprovementScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    return tiVal;
+                }
+                if (lca.TenantImprovementScope != null)
+                {
+                    //Tenant Improvements Ceiling 
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsCeiling.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsCeiling.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+                    
+                    //Tenant Improvements Finishes
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsFinishes.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsFinishes.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Tenant Improvements Flooring
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsFlooring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsFlooring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Tenant Improvements Furniture
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsFurniture.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsFurniture.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Tenant Improvements Interior Doors
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsInteriorDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsInteriorDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Tenant Improvements Interior Glazing
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsInteriorGlazing.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsInteriorGlazing.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+                    //Tenant Improvements Partition Walls
+                    tiVal += lca.TenantImprovementScope.TenantImprovementsPartitionWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                    tiDensity += lca.TenantImprovementScope.TenantImprovementsPartitionWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity()).Sum();
+
+
+                    return tiVal * tiDensity;
+                }
+
+                //Combined MaterialFragment value
+                double epdMetric = (structuresVal + foundationsVal + enclosuresVal + mepVal + tiVal);
+
+                //Get Volumes from Objects
+
+                //StructuresScope Volumes
+
+                object StructureVol = System.Convert.ToDouble(lca.StructuresScope.StructuresSlabs.PropertyValue("Volume")) 
+                    + System.Convert.ToDouble(lca.StructuresScope.StructuresCoreWalls.PropertyValue("Volume")) 
+                    + System.Convert.ToDouble(lca.StructuresScope.StructuresColumns.PropertyValue("Volume")) 
+                    + System.Convert.ToDouble(lca.StructuresScope.StructuresBeams.PropertyValue("Volume"));
+
+                if (StructureVol == null)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("The objects used within the StructuresScope must have a Volume property and value for this method to work.");
+                    return 0;
+                }
+                double volume = System.Convert.ToDouble(StructureVol);
+                if (volume <= 0)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("The input object's Volume value is invalid or negative. Volume should be in m3 in numerical format.");
+                    return 0;
+                }
+
+                //get quantityType property from MaterialFragment -- See switch case in getEvaluationValue
+                if (lca.StructuresScope == null)
+                {
+                    structuresVolume += lca.StructuresScope.StructuresSlabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentVolume()).Sum();
+                }
+
+                //Check for materialFragment Quantity type and call method
+
+                //Validity of Density
+                //Check for materialFragment Density and define value
+
+                double lifeCycleAssessmentValue = epdMetric * volume;
+
+                return lifeCycleAssessmentValue;
+            }
+
+            //Find volume on objects and extract
+            //Find density on objects and extract
+            //return constant * volume * density
+        }
+
         [Description("This method calculates the quantity of any selected metric within an Environmental Product Declaration by extracting the declared unit of the selected material and multiplying the objects Volume * Density * EnvironmentalProductDeclarationField criteria. Please view the EnvironmentalProductDeclarationField Enum to explore current evaluation metric options.")]
         [Input("obj", "This is a BHoM Object to calculate EPD off of. The method requires a volume property on the BHoM Object. Density is required if the chosen EPD is on a per mass basis, and will be extracted from the dataset if possible prior to extracting from the object itself.")]
         [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
