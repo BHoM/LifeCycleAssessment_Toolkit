@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Base;
+using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
@@ -14,6 +15,55 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
+        //public static double GetFragmentVolume(this IEnvironmentalProductDeclarationData epd)
+        //{
+        //    if(epd == null)
+        //    {
+        //        return double.NaN;
+        //    }
+        //    else
+        //    {
+        //        object volume = 0.0;
+        //        volume = System.Convert.ToDouble(epd.PropertyValue("Volume"));
+
+        //        return System.Convert.ToDouble(volume);
+        //    }
+        //}
+
+        public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
+        {
+            if(epd == null)
+            {
+                return double.NaN;
+            }
+            else
+            {
+                object density = 0.0;
+                density = System.Convert.ToDouble(epd.PropertyValue("Density"));
+
+                return System.Convert.ToDouble(density);
+            }
+        }
+
+        public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
+        {
+            if(epd == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
+            }
+            switch (epd.QuantityType)
+            {
+                case QuantityType.Area:
+                case QuantityType.Item:
+                case QuantityType.Mass:
+                case QuantityType.Length:
+                case QuantityType.Undefined:
+                case QuantityType.Volume:
+                default:
+                    return QuantityType.Undefined;
+            }
+        }
+
         public static double GetEvaluationValue(this IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
         {
             if (epd == null)
