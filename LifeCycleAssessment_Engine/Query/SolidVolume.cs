@@ -34,6 +34,8 @@ using BH.oM.Base;
 using BH.Engine.Reflection;
 using System.Linq;
 
+using BH.Engine.Matter;
+
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
@@ -59,7 +61,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         public static double SolidVolume(this StructuresScope structuresScope)
         {
-            return structuresScope.StructuresSlabs.Select(x => x.SolidVolume()).Sum();
+            return structuresScope.Slabs.Select(x => x.ISolidVolume()).Sum();
         }
 
         /***************************************************/
