@@ -49,7 +49,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         public static double EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment lca, EnvironmentalProductDeclarationField field)
         {
-            //Check for object materialFragments
+            //Check for object validity
             if(lca != null)
             {
                 //StructuresScope EPD Constant Values
