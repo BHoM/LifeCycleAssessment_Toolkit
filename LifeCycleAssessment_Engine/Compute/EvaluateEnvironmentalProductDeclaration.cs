@@ -40,6 +40,11 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+            // Questions for work session
+            //1. general structure of method is getting complex
+            //2. checking for QuantityType property and calling the correct method
+            //3. error handling 
+
         public static double EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment lca, EnvironmentalProductDeclarationField field)
         {
             //Check for object materialFragments
@@ -61,7 +66,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (lca.StructuresScope == null)
                 {
                     structuresVal = double.NaN;
-                    BH.Engine.Reflection.Compute.RecordError("Scope objects do not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Scope objects do not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
                     return structuresVal;
                 }
 
@@ -90,7 +95,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if(lca.FoundationsScope == null)
                 {
                     foundationsVal = double.NaN;
-                    BH.Engine.Reflection.Compute.RecordError("FoundationsScope Object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    BH.Engine.Reflection.Compute.RecordWarning("FoundationsScope Object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
                     return foundationsVal;
                 }
 
@@ -119,7 +124,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (lca.EnclosuresScope == null)
                 {
                     enclosuresVal = double.NaN;
-                    BH.Engine.Reflection.Compute.RecordError("EnclosureScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    BH.Engine.Reflection.Compute.RecordWarning("EnclosureScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
                     return enclosuresVal;
                 }
 
@@ -148,7 +153,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (lca.MEPScope == null)
                 {
                     mepVal = double.NaN;
-                    BH.Engine.Reflection.Compute.RecordError("MEPScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    BH.Engine.Reflection.Compute.RecordWarning("MEPScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
                     return mepVal;
                 }
 
@@ -193,7 +198,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (lca.TenantImprovementScope == null)
                 {
                     tiVal = double.NaN;
-                    BH.Engine.Reflection.Compute.RecordError("TenantImprovementScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
+                    BH.Engine.Reflection.Compute.RecordWarning("TenantImprovementScope object does not contain any information to evaluate. Please add relevant objects with their corresponding materialFragments.");
                     return tiVal;
                 }
 
@@ -232,7 +237,7 @@ namespace BH.Engine.LifeCycleAssessment
                 }
 
                 //Combined MaterialFragment value
-                double epdMetric = (structuresVal + foundationsVal + enclosuresVal + mepVal + tiVal);
+                double epdMetric = structuresVal + foundationsVal + enclosuresVal + mepVal + tiVal;
 
                 //Get Volumes from Objects
 
@@ -256,13 +261,7 @@ namespace BH.Engine.LifeCycleAssessment
                     return 0;
                 }
 
-                //get quantityType property from MaterialFragment -- See switch case in getEvaluationValue
-                /*if (lca.StructuresScope == null)
-                {
-                    structureVol += lca.StructuresScope.Slabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentVolume()).Sum();
-                }*/
-
-                //Check for materialFragment Quantity type and call method
+                //FG?---------> Check for materialFragment Quantity type and call method -- switch case method for quantity type? 
 
                 //Validity of Density
                 //Check for materialFragment Density and define value
