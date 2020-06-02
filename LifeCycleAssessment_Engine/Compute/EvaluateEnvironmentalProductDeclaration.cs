@@ -42,11 +42,6 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-            // Questions for work session
-            //1. general structure of method is getting complex
-            //2. checking for QuantityType property and calling the correct method
-            //3. error handling 
-
         public static double EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment lca, EnvironmentalProductDeclarationField field)
         {
             //Check for object validity
