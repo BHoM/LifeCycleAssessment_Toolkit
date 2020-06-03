@@ -128,42 +128,93 @@ namespace BH.Engine.LifeCycleAssessment
 
                 //Get Volumes from Objects
 
+                double structuresVol = 0;
+                double foundationsVol = 0;
+                double enclosuresVol = 0;
+                double mepVol = 0;
+                double tiVol = 0;
+
                 //StructuresScope Volumes
-                double structuresVol = lca.StructuresScope.Beams.Select(x => x.ISolidVolume()).Sum() +
-                    lca.StructuresScope.Columns.Select(x => x.ISolidVolume()).Sum() +
-                    lca.StructuresScope.CoreWalls.Select(x => x.ISolidVolume()).Sum() +
-                    lca.StructuresScope.Slabs.Select(x => x.ISolidVolume()).Sum();
+                if (lca.StructuresScope != null)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within StructuresScope are derived from its properties as an IElementM.");
+                    structuresVol = lca.StructuresScope.Beams.Select(x => x.ISolidVolume()).Sum() +
+                        lca.StructuresScope.Columns.Select(x => x.ISolidVolume()).Sum() +
+                        lca.StructuresScope.CoreWalls.Select(x => x.ISolidVolume()).Sum() +
+                        lca.StructuresScope.Slabs.Select(x => x.ISolidVolume()).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("There are no objects within StructuresScope. This Life Cycle Assessment will not contain any information for objects within the StructuresScope. Please provide IElementM objects you wish to evaluate.");
+                    structuresVol = 0;
+                }
 
                 //FoundationsScope Volumes
-                double foundationsVol = lca.FoundationsScope.Piles.Select(x => x.ISolidVolume()).Sum() +
-                    lca.FoundationsScope.Footings.Select(x => x.ISolidVolume()).Sum() +
-                    lca.FoundationsScope.Slabs.Select(x => x.ISolidVolume()).Sum() +
-                    lca.FoundationsScope.Walls.Select(x => x.ISolidVolume()).Sum();
+                if (lca.FoundationsScope != null)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within FoundationsScope are derived from its properties as an IElementM.");
+                    foundationsVol = lca.FoundationsScope.Footings.Select(x => x.ISolidVolume()).Sum() + 
+                        lca.FoundationsScope.Footings.Select(x => x.ISolidVolume()).Sum() +
+                        lca.FoundationsScope.Slabs.Select(x => x.ISolidVolume()).Sum() +
+                        lca.FoundationsScope.Walls.Select(x => x.ISolidVolume()).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("There are no objects within FoundationsScope. This Life Cycle Assessment will not contain any information for objects within the FoundationsScope. Please provide IElementM objects you wish to evaluate.");
+                    foundationsVol = 0;
+                }
 
                 //EnclosuresScope Volumes
-                double enclosuresVol = lca.EnclosuresScope.CurtainWalls.Select(x => x.ISolidVolume()).Sum() +
-                    lca.EnclosuresScope.Doors.Select(x => x.ISolidVolume()).Sum() +
-                    lca.EnclosuresScope.Walls.Select(x => x.ISolidVolume()).Sum() +
-                    lca.EnclosuresScope.Windows.Select(x => x.ISolidVolume()).Sum();
+                if (lca.EnclosuresScope != null)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within EnclosuresScope are derived from its properties as an IElementM.");
+                    enclosuresVol = lca.EnclosuresScope.CurtainWalls.Select(x => x.ISolidVolume()).Sum() +
+                        lca.EnclosuresScope.Doors.Select(x => x.ISolidVolume()).Sum() +
+                        lca.EnclosuresScope.Walls.Select(x => x.ISolidVolume()).Sum() +
+                        lca.EnclosuresScope.Windows.Select(x => x.ISolidVolume()).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("There are no objects within EnclosuresScope. This Life Cycle Assessment will not contain any information for objects within the EnclosureScope. Please provide IElementM objects you wish to evaluate.");
+                    enclosuresVol = 0;
+                }
 
                 //MEPScope Volumes
-                double mepVol = lca.MEPScope.Batteries.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Conduit.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Ductwork.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Equipment.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Generators.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Lighting.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Piping.Select(x => x.ISolidVolume()).Sum() +
-                    lca.MEPScope.Wiring.Select(x => x.ISolidVolume()).Sum();
+                if (lca.MEPScope != null)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within MEPScope are derived from its properties as an IElementM.");
+                    mepVol = lca.MEPScope.Batteries.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Conduit.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Ductwork.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Equipment.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Generators.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Lighting.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Piping.Select(x => x.ISolidVolume()).Sum() +
+                        lca.MEPScope.Wiring.Select(x => x.ISolidVolume()).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("There are no objects within MEPScope. This Life Cycle Assessment will not contain any information for objects within the MEPScope. Please provide IElementM objects you wish to evaluate.");
+                    mepVol = 0;
+                }
 
                 //TentantImprovements Volumes
-                double tiVol = lca.TenantImprovementScope.Ceiling.Select(x => x.ISolidVolume()).Sum() +
-                    lca.TenantImprovementScope.Finishes.Select(x => x.ISolidVolume()).Sum() +
-                    lca.TenantImprovementScope.Flooring.Select(x => x.ISolidVolume()).Sum() +
-                    lca.TenantImprovementScope.Furniture.Select(x => x.ISolidVolume()).Sum() +
-                    lca.TenantImprovementScope.InteriorDoors.Select(x => x.ISolidVolume()).Sum() +
-                    lca.TenantImprovementScope.InteriorGlazing.Select(x => x.ISolidVolume()).Sum() +
-                    lca.TenantImprovementScope.PartitionWalls.Select(x => x.ISolidVolume()).Sum();
+                if (lca.TenantImprovementScope != null)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within TenantImprovementScope are derived from its properties as an IElementM.");
+                    tiVol = lca.TenantImprovementScope.Ceiling.Select(x => x.ISolidVolume()).Sum() +
+                        lca.TenantImprovementScope.Finishes.Select(x => x.ISolidVolume()).Sum() +
+                        lca.TenantImprovementScope.Flooring.Select(x => x.ISolidVolume()).Sum() +
+                        lca.TenantImprovementScope.Furniture.Select(x => x.ISolidVolume()).Sum() +
+                        lca.TenantImprovementScope.InteriorDoors.Select(x => x.ISolidVolume()).Sum() +
+                        lca.TenantImprovementScope.InteriorGlazing.Select(x => x.ISolidVolume()).Sum() +
+                        lca.TenantImprovementScope.PartitionWalls.Select(x => x.ISolidVolume()).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordWarning("There are no objects within TenantImprovementScope. This Life Cycle Assessment will not contain any information for objects within the TenantImprovementScope. Please provide IElementM objects you wish to evaluate.");
+                    tiVol = 0;
+                }
 
                 double volumeVal = structuresVol + foundationsVol + enclosuresVol + mepVol + tiVol;
 
