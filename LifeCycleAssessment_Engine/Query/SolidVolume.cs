@@ -34,8 +34,6 @@ using BH.oM.Base;
 using BH.Engine.Reflection;
 using System.Linq;
 
-using BH.Engine.Matter;
-
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
@@ -47,18 +45,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns an object's solid volume.")]
         [Input("object", "The object to get the volume from.")]
         [Output("volume", "The object's solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this IBHoMObject obj) // this is where the try catch takes place for finding volume of objects. 
-        {
-            return SolidVolume(obj as dynamic);
-        }
-
-        public static double SolidVolume(this BHoMObject obj)
-        {
-            double val = 0;
-
-            return val;
-        }
-
         public static double SolidVolume(this StructuresScope structuresScope)
         {
             return structuresScope.Slabs.Select(x => x.ISolidVolume()).Sum();
