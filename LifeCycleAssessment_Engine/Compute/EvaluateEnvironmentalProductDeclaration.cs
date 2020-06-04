@@ -47,42 +47,90 @@ namespace BH.Engine.LifeCycleAssessment
             //Check for object validity
             if(lca != null)
             {
+                //Check if Scope objects contain data
+                double structuresEpd = 0;
+                double foundationsEpd = 0;
+                double enclosuresEpd = 0;
+                double mepEpd = 0;
+                double tiEpd = 0;
+
                 //StructuresScope EPD Constant Values
-                double structuresEpd = lca.StructuresScope.Beams.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.StructuresScope.Columns.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.StructuresScope.CoreWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.StructuresScope.Slabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                if (lca.StructuresScope.isValid())
+                {
+                    structuresEpd = lca.StructuresScope.Beams.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.StructuresScope.Columns.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.StructuresScope.CoreWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.StructuresScope.Slabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("No objects found within StructuresScope. Provide objects set with EnvironmentalProductDeclaration MaterialFragments if you wish to include structures within this Life Cycle Assessment.");
+                    structuresEpd = 0;
+                }
 
                 //FoundationsScope EPD Constant Values
-                double foundationsEpd = lca.FoundationsScope.Footings.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.FoundationsScope.Piles.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.FoundationsScope.Slabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.FoundationsScope.Walls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                if (lca.FoundationsScope.isValid())
+                {
+                    foundationsEpd = lca.FoundationsScope.Footings.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.FoundationsScope.Piles.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.FoundationsScope.Slabs.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.FoundationsScope.Walls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("No objects found within FoundationsScope. Provide objects set with EnvironmentalProductDeclaration MaterialFragments if you wish to include foundations within this Life Cycle Assessment.");
+                    foundationsEpd = 0;
+                }
 
                 //EnclosuresScope EPD Constant Values
-                double enclosuresEpd = lca.EnclosuresScope.CurtainWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.EnclosuresScope.Doors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.EnclosuresScope.Walls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.EnclosuresScope.Windows.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                if (lca.EnclosuresScope.isValid())
+                {
+                    enclosuresEpd = lca.EnclosuresScope.CurtainWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.EnclosuresScope.Doors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.EnclosuresScope.Walls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.EnclosuresScope.Windows.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("No objects found within EnclosuresScope. Provide objects set with EnvironmentalProductDeclaration MaterialFragments if you wish to include Enclosures within this Life Cycle Assessment.");
+                    enclosuresEpd = 0;
+                }
 
                 //MEPScope EPD Constant Values
-                double mepEpd = lca.MEPScope.Batteries.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Conduit.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Ductwork.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Equipment.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Generators.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Lighting.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Piping.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.MEPScope.Wiring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                if (lca.MEPScope.isValid())
+                {
+                    mepEpd = lca.MEPScope.Batteries.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Conduit.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Ductwork.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Equipment.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Generators.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Lighting.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Piping.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.MEPScope.Wiring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("No objects found within MEPScope. Provide objects set with EnvironmentalProductDeclaration MaterialFragments if you wish to include MEP within this Life Cycle Assessment.");
+                    mepEpd = 0;
+                }
 
                 //TentantImprovements EPD Constant Values
-                double tiEpd = lca.TenantImprovementScope.Ceiling.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.TenantImprovementScope.Finishes.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.TenantImprovementScope.Flooring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.TenantImprovementScope.Furniture.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.TenantImprovementScope.InteriorDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.TenantImprovementScope.InteriorGlazing.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
-                    lca.TenantImprovementScope.PartitionWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                if (lca.TenantImprovementScope.isValid())
+                {
+                    tiEpd = lca.TenantImprovementScope.Ceiling.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.TenantImprovementScope.Finishes.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.TenantImprovementScope.Flooring.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.TenantImprovementScope.Furniture.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.TenantImprovementScope.InteriorDoors.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.TenantImprovementScope.InteriorGlazing.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum() +
+                        lca.TenantImprovementScope.PartitionWalls.Select(x => (x as BHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field)).Sum();
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordNote("No objects found within TenantImprovementScope. Provide objects set with EnvironmentalProductDeclaration MaterialFragments if you wish to include Tenant Improvements within this Life Cycle Assessment.");
+                    tiEpd = 0;
+                }
 
                 double epdVal = structuresEpd + foundationsEpd + enclosuresEpd + mepEpd + tiEpd;
 
@@ -137,7 +185,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //StructuresScope Volumes
                 if (lca.StructuresScope != null)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within StructuresScope are derived from its properties as an IElementM.");
+                    //BH.Engine.Reflection.Compute.RecordNote("Volume for objects within StructuresScope are derived from its properties as an IElementM.");
                     structuresVol = lca.StructuresScope.Beams.Select(x => x.ISolidVolume()).Sum() +
                         lca.StructuresScope.Columns.Select(x => x.ISolidVolume()).Sum() +
                         lca.StructuresScope.CoreWalls.Select(x => x.ISolidVolume()).Sum() +
@@ -152,7 +200,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //FoundationsScope Volumes
                 if (lca.FoundationsScope != null)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within FoundationsScope are derived from its properties as an IElementM.");
+                    //BH.Engine.Reflection.Compute.RecordNote("Volume for objects within FoundationsScope are derived from its properties as an IElementM.");
                     foundationsVol = lca.FoundationsScope.Footings.Select(x => x.ISolidVolume()).Sum() + 
                         lca.FoundationsScope.Footings.Select(x => x.ISolidVolume()).Sum() +
                         lca.FoundationsScope.Slabs.Select(x => x.ISolidVolume()).Sum() +
@@ -167,7 +215,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //EnclosuresScope Volumes
                 if (lca.EnclosuresScope != null)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within EnclosuresScope are derived from its properties as an IElementM.");
+                    //BH.Engine.Reflection.Compute.RecordNote("Volume for objects within EnclosuresScope are derived from its properties as an IElementM.");
                     enclosuresVol = lca.EnclosuresScope.CurtainWalls.Select(x => x.ISolidVolume()).Sum() +
                         lca.EnclosuresScope.Doors.Select(x => x.ISolidVolume()).Sum() +
                         lca.EnclosuresScope.Walls.Select(x => x.ISolidVolume()).Sum() +
@@ -182,7 +230,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //MEPScope Volumes
                 if (lca.MEPScope != null)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within MEPScope are derived from its properties as an IElementM.");
+                    //BH.Engine.Reflection.Compute.RecordNote("Volume for objects within MEPScope are derived from its properties as an IElementM.");
                     mepVol = lca.MEPScope.Batteries.Select(x => x.ISolidVolume()).Sum() +
                         lca.MEPScope.Conduit.Select(x => x.ISolidVolume()).Sum() +
                         lca.MEPScope.Ductwork.Select(x => x.ISolidVolume()).Sum() +
@@ -201,7 +249,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //TentantImprovements Volumes
                 if (lca.TenantImprovementScope != null)
                 {
-                    BH.Engine.Reflection.Compute.RecordNote("Volume for objects within TenantImprovementScope are derived from its properties as an IElementM.");
+                    //BH.Engine.Reflection.Compute.RecordNote("Volume for objects within TenantImprovementScope are derived from its properties as an IElementM.");
                     tiVol = lca.TenantImprovementScope.Ceiling.Select(x => x.ISolidVolume()).Sum() +
                         lca.TenantImprovementScope.Finishes.Select(x => x.ISolidVolume()).Sum() +
                         lca.TenantImprovementScope.Flooring.Select(x => x.ISolidVolume()).Sum() +
