@@ -30,21 +30,6 @@ namespace BH.Engine.LifeCycleAssessment
         //    }
         //}
 
-        public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
-        {
-            if(epd == null)
-            {
-                return double.NaN;
-            }
-            else
-            {
-                object density = 0.0;
-                density = System.Convert.ToDouble(epd.PropertyValue("Density"));
-
-                return System.Convert.ToDouble(density);
-            }
-        }
-
         public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
         {
             if(epd == null)
