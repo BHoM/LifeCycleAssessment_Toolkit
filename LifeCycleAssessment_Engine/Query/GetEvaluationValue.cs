@@ -15,38 +15,13 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
-        //public static double GetFragmentVolume(this IEnvironmentalProductDeclarationData epd)
-        //{
-        //    if(epd == null)
-        //    {
-        //        return double.NaN;
-        //    }
-        //    else
-        //    {
-        //        object volume = 0.0;
-        //        volume = System.Convert.ToDouble(epd.PropertyValue("Volume"));
-
-        //        return System.Convert.ToDouble(volume);
-        //    }
-        //}
-
         public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
         {
             if(epd == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
             }
-            switch (epd.QuantityType)
-            {
-                case QuantityType.Area:
-                case QuantityType.Item:
-                case QuantityType.Mass:
-                case QuantityType.Length:
-                case QuantityType.Undefined:
-                case QuantityType.Volume:
-                default:
-                    return QuantityType.Undefined;
-            }
+            return epd.QuantityType;
         }
 
         public static double GetEvaluationValue(this IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)

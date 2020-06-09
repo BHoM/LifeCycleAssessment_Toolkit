@@ -48,6 +48,10 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Geometry_oM">
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="LifeCycleAssessment_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\LifeCycleAssessment_oM.dll</HintPath>
@@ -75,6 +79,10 @@
     <Reference Include="Reflection_oM">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\ProgramData\BHoM\Assemblies\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Spatial_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Spatial_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Structure_oM">
