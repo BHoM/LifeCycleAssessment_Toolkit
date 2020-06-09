@@ -113,8 +113,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //Check for IEPD Material Fragment
                 if(obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault() != null)
                 {
-                    //Call SolidVolume()
-                    //double vol = StructuresScope.Beams.Select(x => x.ISolidVolume()).Sum();
+                    //Call SolidVolume() - double vol = obj.StructuresScope.Beams.Select(x => x.ISolidVolume()).Sum();
                     object vol = obj.PropertyValue("Volume");
                     if (vol == null)
                     {

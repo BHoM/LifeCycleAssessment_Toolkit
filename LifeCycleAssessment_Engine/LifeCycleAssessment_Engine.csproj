@@ -120,7 +120,7 @@
     <Compile Include="Create\LifeCycleAssessmentScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\GetFragmentDensity.cs" />
-    <Compile Include="Query\isValid.cs" />
+    <Compile Include="Query\IsValid.cs" />
     <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
