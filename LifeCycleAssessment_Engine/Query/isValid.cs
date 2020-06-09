@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query a StructuresScope object to see if it contains any data.")]
         [Input("structuresScope", "The StructuresScope object used within your LCA to query.")]
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
-        public static bool isValid(this StructuresScope structuresScope)
+        public static bool IsValid(this StructuresScope structuresScope)
         {
             int val = structuresScope.Beams.Count + structuresScope.Columns.Count + structuresScope.CoreWalls.Count + structuresScope.Slabs.Count;
             if(val > 0)
@@ -59,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query a FoundationsScope object to see if it contains any data.")]
         [Input("foundationsScope", "The FoundationsScope object used within your LCA to query.")]
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
-        public static bool isValid(this FoundationsScope foundationsScope)
+        public static bool IsValid(this FoundationsScope foundationsScope)
         {
             int val = foundationsScope.Footings.Count + foundationsScope.Piles.Count + foundationsScope.Slabs.Count + foundationsScope.Walls.Count;
             if (val > 0)
@@ -75,7 +75,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query a EnclosuresScope object to see if it contains any data.")]
         [Input("enclosuresScope", "The EnclosuresScope object used within your LCA to query.")]
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
-        public static bool isValid(this EnclosuresScope enclosuresScope)
+        public static bool IsValid(this EnclosuresScope enclosuresScope)
         {
             int val = enclosuresScope.CurtainWalls.Count + enclosuresScope.Doors.Count + enclosuresScope.Walls.Count + enclosuresScope.Windows.Count;
             if (val > 0)
@@ -91,7 +91,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query a MEPScope object to see if it contains any data.")]
         [Input("mepScope", "The MEPScope object used within your LCA to query.")]
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
-        public static bool isValid(this MEPScope mepScope)
+        public static bool IsValid(this MEPScope mepScope)
         {
             int val = mepScope.Batteries.Count + mepScope.Conduit.Count + mepScope.Ductwork.Count + mepScope.Equipment.Count + mepScope.Generators.Count + mepScope.Lighting.Count + mepScope.Piping.Count + mepScope.Wiring.Count;
             if (val > 0)
@@ -107,7 +107,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query a TenantImprovementScope object to see if it contains any data.")]
         [Input("tiScope", "The TenantImprovementScope object used within your LCA to query.")]
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
-        public static bool isValid(this TenantImprovementScope tiScope)
+        public static bool IsValid(this TenantImprovementScope tiScope)
         {
             int val = tiScope.Ceiling.Count + tiScope.Finishes.Count + tiScope.Flooring.Count + tiScope.Furniture.Count + tiScope.InteriorDoors.Count + tiScope.InteriorGlazing.Count + tiScope.PartitionWalls.Count;
             if (val > 0)
