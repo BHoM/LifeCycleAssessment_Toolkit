@@ -46,9 +46,8 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the quantity of any selected metric within an Environmental Product Declaration by extracting the declared unit of the selected material and multiplying the objects Volume * Density * EnvironmentalProductDeclarationField criteria. Please view the EnvironmentalProductDeclarationField Enum to explore current evaluation metric options.")]
-        [Input("obj", "This is a BHoM Object to calculate EPD off of. The method requires a volume property on the BHoM Object. Density is required if the chosen EPD is on a per mass basis, and will be extracted from the dataset if possible prior to extracting from the object itself.")]
-        [Input("environmentalProductDeclaration", "This is LifeCycleAssessment.EnvironmentalProductDeclaration data. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
-        [Input("environmentalProductDeclarationField", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
+        [Input("obj", "This is an IElementM object used to calculate EPD metric. The method requires a BHoM Object that inherits properties of IElementM in order to run mass-based calculations. Density will be extracted from the EPD MaterialFragment, therefore insure that you have an accurate density value prior to running calculations.")]
+        [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationPerObject(IElementM obj, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
@@ -56,7 +55,6 @@ namespace BH.Engine.LifeCycleAssessment
             if (obj != null)
             {
                 //IElementM SolidVolume() if not, throw error.
-
                 if(obj.ISolidVolume() != 0)
                 {
                     //SolidVolume for objects
@@ -66,13 +64,11 @@ namespace BH.Engine.LifeCycleAssessment
                         BH.Engine.Reflection.Compute.RecordError("The object does not contain a value for solid volume. Please provide an IElementM with the expected properties to calcuate SolidVolume.");
                         return 0;
                     }
-
                     //If QuantityType = Volume, return EvalByVolume()
                     if ((obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType == QuantityType.Volume)
                     {
                         return EvaluateEnvironmentalProductDeclarationByVolume(obj, field, volume);
                     }
-
                     //elif QuantityType = Mass, return EvalByMass()
                     else if ((obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType == QuantityType.Mass)
                     {
@@ -115,8 +111,8 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the quantity of a supplied metric per a supplied EPD and mass.")]
-        [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with a mass-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
-        [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
+        [Input("obj", "This is an IElementM object used to calculate EPD metric. The method requires a BHoM Object that inherits properties of IElementM in order to run mass-based calculations. Density will be extracted from the EPD MaterialFragment, therefore insure that you have an accurate density value prior to running calculations.")]
+        [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("mass", "The total mass to calculate the total quantity of the input metric for.", typeof(Mass))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByMass(IElementM obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
@@ -136,8 +132,8 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the quantity of a supplied metric per a supplied EPD and volume.")]
-        [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with a volume-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
-        [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
+        [Input("obj", "This is an IElementM object used to calculate EPD metric. The method requires a BHoM Object that inherits properties of IElementM in order to run mass-based calculations. Density will be extracted from the EPD MaterialFragment, therefore insure that you have an accurate density value prior to running calculations.")]
+        [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("volume", "The total volume to calculate the total quantity of the input metric for.", typeof(Volume))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByVolume(IElementM obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
@@ -157,8 +153,8 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the quantity of a supplied metric per a supplied EPD and area.")]
-        [Input("environmentalProductDeclaration", "This is a LifeCycleAssessment.EnvironmentalProductDeclaration with an area-based declared unit. Please select your desired dataset and supply your material choice to the corresponding BHoM objects.")]
-        [Input("environmentalProductDeclarationField", "The metric to calculate total quantity for.")]
+        [Input("obj", "This is an IElementM object used to calculate EPD metric. The method requires a BHoM Object that inherits properties of IElementM in order to run mass-based calculations. Density will be extracted from the EPD MaterialFragment, therefore insure that you have an accurate density value prior to running calculations.")]
+        [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("area", "The total area to calculate the total quantity of the input metric for.", typeof(Area))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static double EvaluateEnvironmentalProductDeclarationByArea(IElementM obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)

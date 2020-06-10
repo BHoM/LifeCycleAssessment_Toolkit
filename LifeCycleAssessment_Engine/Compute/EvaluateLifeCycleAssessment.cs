@@ -46,7 +46,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calls the appropriate compute method per object within a Life Cycle Assessment.")]
-        [Input("lifeCycleAssessment", "This is a complete Life Cycle Assessment object for which the evaluation will occur.")]
+        [Input("lca", "This is a complete Life Cycle Assessment object with its appropriate nested scope objects for which the evaluation will occur.")]
         [Input("field", "This is the desired field you would like to evaluate. Notice that not all material datasets will contain information for all metrics. A holistic GWP evaluation is currently the only standard evaluation possible with all provided datasets.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField. This is an enum.")]
 

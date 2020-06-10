@@ -20,41 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
-using BH.oM.Quantities.Attributes;
-using System.ComponentModel;
-using System.Collections.Generic;
 using System;
-using BH.oM.Physical.Materials;
-using BH.oM.LifeCycleAssessment;
-using BH.Engine.Geometry;
-using BH.Engine.Matter;
-using BH.oM.Base;
-using BH.Engine.Reflection;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading.Tasks;
+using BH.Engine.Base;
+using BH.Engine.Reflection;
+using BH.oM.Base;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Returns a scope object's solid volume.")]
-        [Input("structuresScope", "The object to get the volume from.")]
-        [Output("volume", "The object's solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this StructuresScope structuresScope)
+        public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
         {
-            double structuresVol = structuresScope.Beams.Select(x => x.ISolidVolume()).Sum() +
-                            structuresScope.Columns.Select(x => x.ISolidVolume()).Sum() +
-                            structuresScope.CoreWalls.Select(x => x.ISolidVolume()).Sum() +
-                            structuresScope.Slabs.Select(x => x.ISolidVolume()).Sum();
-
-            return structuresVol;
+            if (epd == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
+            }
+            return epd.QuantityType;
         }
-
-        /***************************************************/
-
     }
 }

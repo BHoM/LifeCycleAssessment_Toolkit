@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Query a Scope object to see if it contains any data.")]
-        [Input("structuresScope", "The StructuresScope object used within your LCA to query.")]
+        [Input("epd", "The StructuresScope object used within your LCA to query.")]
         [Output("density", "True if the object contains data, False if the object does not contain data.")]
         public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
         {
