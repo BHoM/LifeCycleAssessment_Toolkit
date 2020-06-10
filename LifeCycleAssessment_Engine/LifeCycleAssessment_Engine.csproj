@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D6D735C8-1AA2-44B6-A77C-095DE618C6C8}</ProjectGuid>
+    <ProjectGuid>{75BC936E-7B41-453E-A219-C0817EB35676}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BH.Engine.LifeCycleAssessment</RootNamespace>
@@ -130,8 +130,6 @@
     <Compile Include="Query\GetFragmentDensity.cs" />
     <Compile Include="Query\GetFragmentQuantityType.cs" />
     <Compile Include="Query\IsValid.cs" />
-    <Compile Include="Query\SolidVolume.cs" />
-    <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\EnvironmentalProductDeclaration.cs" />
     <Compile Include="Query\GetEvaluationValue.cs" />
   </ItemGroup>
