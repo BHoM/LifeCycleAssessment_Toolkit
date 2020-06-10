@@ -49,7 +49,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
-      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="LifeCycleAssessment_oM">
@@ -82,7 +82,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Spatial_Engine">
-      <HintPath>..\..\BHoM_Engine\Build\Spatial_Engine.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Spatial_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Structure_oM">
@@ -130,7 +130,6 @@
     <Compile Include="Query\GetFragmentDensity.cs" />
     <Compile Include="Query\GetFragmentQuantityType.cs" />
     <Compile Include="Query\IsValid.cs" />
-    <Compile Include="Query\Volume.cs" />
     <Compile Include="Query\SolidVolume.cs" />
     <Compile Include="Query\MaterialComposition.cs" />
     <Compile Include="Query\EnvironmentalProductDeclaration.cs" />
