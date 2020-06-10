@@ -36,7 +36,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Returns an object's MaterialComposition.")]
-        [Input("object", "The object to return the material from.")]
+        [Input("mat", "The object to return the material from.")]
         [Output("materialComposition", "The kind of matter the object is composed of.")]
         public static MaterialComposition MaterialComposition(this Object mat)
         {

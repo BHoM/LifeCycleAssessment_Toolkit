@@ -53,7 +53,6 @@ namespace BH.Engine.LifeCycleAssessment
 
             return structuresVol;
         }
-
         /***************************************************/
 
     }
