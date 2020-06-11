@@ -56,49 +56,49 @@ namespace BH.Engine.LifeCycleAssessment
             if (lca != null)
             {
                 //Structures Scope Objects
-                double beams = lca.StructuresScope.Beams.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double columns = lca.StructuresScope.Columns.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double coreWalls = lca.StructuresScope.CoreWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double slabs = lca.StructuresScope.Slabs.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
+                double beams = lca.StructuresScope.Beams.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double columns = lca.StructuresScope.Columns.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double coreWalls = lca.StructuresScope.CoreWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double slabs = lca.StructuresScope.Slabs.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
                 double structures = beams + columns + coreWalls + slabs;
                 //create new results objects
 
                 //Foundation Scope Objects
-                double footings = lca.FoundationsScope.Footings.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double piles = lca.FoundationsScope.Piles.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double walls = lca.FoundationsScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double fndSlabs = lca.FoundationsScope.Slabs.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
+                double footings = lca.FoundationsScope.Footings.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double piles = lca.FoundationsScope.Piles.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double walls = lca.FoundationsScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double fndSlabs = lca.FoundationsScope.Slabs.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
                 double foundations = footings + piles + walls + fndSlabs;
                 //create new results objects
 
                 //Enclosure Scope Objects
-                double encWalls = lca.EnclosuresScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double curtainWalls = lca.EnclosuresScope.CurtainWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double windows = lca.EnclosuresScope.Windows.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double doors = lca.EnclosuresScope.Doors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
+                double encWalls = lca.EnclosuresScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double curtainWalls = lca.EnclosuresScope.CurtainWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double windows = lca.EnclosuresScope.Windows.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double doors = lca.EnclosuresScope.Doors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
                 double enclosures = encWalls + curtainWalls + windows + doors;
                 //create new results objects
 
                 //MEP Scope Objects
-                double batteries = lca.MEPScope.Batteries.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double conduit = lca.MEPScope.Conduit.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double ductwork = lca.MEPScope.Ductwork.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double equipment = lca.MEPScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double generators = lca.MEPScope.Generators.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double lighting = lca.MEPScope.Lighting.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double piping = lca.MEPScope.Piping.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double wiring = lca.MEPScope.Wiring.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
+                double batteries = lca.MEPScope.Batteries.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double conduit = lca.MEPScope.Conduit.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double ductwork = lca.MEPScope.Ductwork.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double equipment = lca.MEPScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double generators = lca.MEPScope.Generators.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double lighting = lca.MEPScope.Lighting.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double piping = lca.MEPScope.Piping.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double wiring = lca.MEPScope.Wiring.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
                 double mep = batteries + conduit + ductwork + equipment + generators + lighting + piping + wiring;
                 //create new results objects
 
                 //Tenant Improvement Scope Objects
-                double ceiling = lca.TenantImprovementScope.Ceiling.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double finishes = lca.TenantImprovementScope.Finishes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double flooring = lca.TenantImprovementScope.Flooring.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double furniture = lca.TenantImprovementScope.Furniture.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double intDoors = lca.TenantImprovementScope.InteriorDoors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double intGlazing = lca.TenantImprovementScope.InteriorGlazing.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
-                double partitionWalls = lca.TenantImprovementScope.PartitionWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).Sum();
+                double ceiling = lca.TenantImprovementScope.Ceiling.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double finishes = lca.TenantImprovementScope.Finishes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double flooring = lca.TenantImprovementScope.Flooring.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double furniture = lca.TenantImprovementScope.Furniture.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double intDoors = lca.TenantImprovementScope.InteriorDoors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double intGlazing = lca.TenantImprovementScope.InteriorGlazing.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
+                double partitionWalls = lca.TenantImprovementScope.PartitionWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).Sum();
                 double ti = ceiling + finishes + flooring + furniture + intDoors + intGlazing + partitionWalls;
                 //create new results objects
 
