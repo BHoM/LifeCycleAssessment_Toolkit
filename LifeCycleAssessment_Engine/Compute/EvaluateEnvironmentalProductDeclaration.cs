@@ -65,7 +65,7 @@ namespace BH.Engine.LifeCycleAssessment
                         double areaVal = System.Convert.ToDouble(areaProp);
                         if (areaProp == null)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No area values can be calculated from the provided object. Because the object's material fragment requires an Area based calculation, you must supply an object with an area.");
+                            BH.Engine.Reflection.Compute.RecordError("No area values can be calculated for object " + obj.BHoM_Guid + ". Because the object's material fragment requires an Area based calculation, you must supply an object with an area.");
                             return 0;
                         }
                         else
@@ -88,19 +88,26 @@ namespace BH.Engine.LifeCycleAssessment
                 if ((obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType == QuantityType.Volume)
                 {
                     //Check if obj is IElementM, if not then check for volume property. This is a temporary fix that will be phased out to only use IElemenM's once IElementM is fully implemented on footings, piles, etc.
-                    try
+                    IElementM elem = obj as IElementM;
+                    if (elem != null)
                     {
-                        IElementM elem = obj as IElementM;
                         //SolidVolume for objects
-                        double volume = elem.ISolidVolume();
+                        double volume = 0;
+                        try { volume = elem.ISolidVolume(); }
+                        catch
+                        {
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object " + obj.BHoM_Guid + ". Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
+                            return 0;
+                        }
+                        
                         if (volume == 0)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object" + obj.BHoM_Guid + ". Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
                             return 0;
                         }
                         return EvaluateEnvironmentalProductDeclarationByVolume(obj, field, volume);
                     }
-                    catch
+                    else
                     {
                         object vol = obj.PropertyValue("Volume");
                         double volVal = System.Convert.ToDouble(vol);
@@ -120,35 +127,43 @@ namespace BH.Engine.LifeCycleAssessment
                 //elif QuantityType = Mass, return EvalByMass()
                 else if ((obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType == QuantityType.Mass)
                 {
-                    //Check if obj is IElementM, if not then check for volume property. This is a temporary fix that will be phased out to only use IElemenM's once IElementM is fully implemented on footings, piles, etc.
                     double volume = 0;
-                    try
+                    
+                    //Check if obj is IElementM, if not then check for volume property. This is a temporary fix that will be phased out to only use IElemenM's once IElementM is fully implemented on footings, piles, etc.
+                    IElementM elem = obj as IElementM;
+                    if (elem != null)
                     {
-                        IElementM elem = obj as IElementM;
-                        volume = elem.ISolidVolume();
+                        //SolidVolume for objects
+                        try { volume = elem.ISolidVolume(); }
+                        catch
+                        {
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object " + obj.BHoM_Guid + ". Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            return 0;
+                        }
+
                         if (volume == 0)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object" + obj.BHoM_Guid + ". Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
                             return 0;
                         }
                     }
-                    catch
+                    else
                     {
                         object vol = obj.PropertyValue("Volume");
                         volume = System.Convert.ToDouble(vol);
                         if (vol == null)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
                             return 0;
                         }
                         else
                         {
-                            BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + "is not an IElementM. Its mass is being calculated based on the assigned Volume property value of " + volume.ToString() + ". Please confirm this value is accurate.");
+                            BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + "is not an IElementM. Its value is being calculated based on the assigned Volume property value of " + volume.ToString() + ". Please confirm this value is accurate.");
                         }
                     }
-                    
-                    //get Density from IEPD MaterialFragment
-                    double density = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity();
+
+                        //get Density from IEPD MaterialFragment
+                        double density = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity();
 
                     double mass = density * volume;
 
