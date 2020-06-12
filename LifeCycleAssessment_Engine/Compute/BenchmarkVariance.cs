@@ -26,6 +26,7 @@ using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -42,35 +43,17 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("embodiedCarbonBenchmarkStructureDataset", "Benchmark kgCO2/m2 per building structure based on structural benchmark dataset.")]
         [Input("typeWeighting", "Subjective weighting of program type benchmark results. Used in LCA to prioritize different CO2 dataset assumptions.")]
         [Input("structureWeighting", "Subjective weighting of structure type benchmark results. Used in LCA to prioritize different CO2 dataset assumptions.")]
-        [Output("embodiedCarbonPercentageVariance", "Percentage variance between current project being evaluated and benchmark datasets.")]
-        public static double BenchmarkVariance(double projectEmbodiedCarbon, double projectArea, CustomObject embodiedCarbonBenchmarkTypeDataset, CustomObject embodiedCarbonBenchmarkStructureDataset, double typeWeighting, double structureWeighting)
+        [Output("embodiedCarbonPercentageVariance", "Percentage variance between current project being evaluated and benchmark datasets, e.g. -30% for a building that is 30% less than the benchmark.")]
+        public static double BenchmarkVariance(double projectEmbodiedCarbon, double projectArea, BuildingBenchmarkingData embodiedCarbonBenchmarkTypeDataset, BuildingBenchmarkingData embodiedCarbonBenchmarkStructureDataset, double typeWeighting, double structureWeighting)
         {
-            double typeBenchmark = 0.0;
-            double structureBenchmark = 0.0;
-            double weightedAverage = 0.0;
 
-            try
-            {
-                typeBenchmark = System.Convert.ToDouble(embodiedCarbonBenchmarkTypeDataset.CustomData["Average"]);
-            }
-            catch
-            {
-                BH.Engine.Reflection.Compute.RecordError("Variable " + embodiedCarbonBenchmarkTypeDataset.CustomData["Average"] + " cannot be converted to a double");
-                return 0;
-            }
+            double typeBenchmark = embodiedCarbonBenchmarkTypeDataset.Average;
 
-            try
-            {
-                structureBenchmark = System.Convert.ToDouble(embodiedCarbonBenchmarkStructureDataset.CustomData["Average"]);
-            }
-            catch
-            {
-                BH.Engine.Reflection.Compute.RecordError("Variable " + embodiedCarbonBenchmarkStructureDataset.CustomData["Average"] + " cannot be converted to a double");
-                return 0;
-            }
-            weightedAverage = (((typeBenchmark * typeWeighting) + (structureBenchmark * structureWeighting)) / (typeWeighting + structureWeighting));
+            double structureBenchmark = embodiedCarbonBenchmarkStructureDataset.Average;
 
-            return (((weightedAverage - (projectEmbodiedCarbon / projectArea)) / weightedAverage) * 100);
+            double weightedAverage = (((typeBenchmark * typeWeighting) + (structureBenchmark * structureWeighting)) / (typeWeighting + structureWeighting));
+
+            return ((((projectEmbodiedCarbon / projectArea) - weightedAverage) / weightedAverage) * 100);
         }
         /***************************************************/
     }
