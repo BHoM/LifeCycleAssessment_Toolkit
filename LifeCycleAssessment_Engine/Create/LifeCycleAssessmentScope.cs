@@ -47,7 +47,8 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("biogenicCarbon", "Biogenic Carbon is a true / false that indicates that the project contains materials that originated from a biological source(trees, soil), these materials have the ability sequester / store carbon.")]
         [Input("additionalNotes", "Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon")]
         [Output("lifeCycleAssessment", "A lifeCycleAssessment object for capturing and comparing additional studies. This object can be passed directly to a database for storage and further study.")]
-        public static LifeCycleAssessmentScope LifeCycleAssessmentScope(ProjectArea projectArea, ProjectType projectType, LevelOfDevelopment levelOfDevelopment, LifeCycleAssessmentPhases lifeCycleAssessmentPhases, PrimaryStructuralMaterial primaryStructuralMaterial,
+        public static LifeCycleAssessmentScope LifeCycleAssessmentScope(ProjectArea projectArea, ProjectType projectType, LevelOfDevelopment levelOfDevelopment, List<LifeCycleAssessmentPhases> lifeCycleAssessmentPhases, PrimaryStructuralMaterial primaryStructuralMaterial,
+            
             string projectName = "",
             string contactName = "",
             double actualProjectArea = 0,
@@ -64,6 +65,9 @@ namespace BH.Engine.LifeCycleAssessment
                 BiogenicCarbon = biogenicCarbon,
                 ZipCode = zipCode,
                 AdditionalNotes = additionalNotes,
+                //
+                //match order of inputs and add all properties. 
+                //list of LCA phases
             };
         }
     }

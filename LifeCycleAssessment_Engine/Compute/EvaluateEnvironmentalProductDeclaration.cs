@@ -29,6 +29,7 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Quantities.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Elements;
 using BH.oM.Dimensional;
 
@@ -49,7 +50,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("obj", "This is an IElementM object used to calculate EPD metric. The method requires a BHoM Object that inherits properties of IElementM in order to run mass-based calculations. Density will be extracted from the EPD MaterialFragment, therefore insure that you have an accurate density value prior to running calculations.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The quantity of the desired metric provided by the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
             //Check validity of inputs
             if (obj != null)
@@ -66,7 +67,7 @@ namespace BH.Engine.LifeCycleAssessment
                         if (areaProp == null)
                         {
                             BH.Engine.Reflection.Compute.RecordError("No area values can be calculated for object " + obj.BHoM_Guid + ". Because the object's material fragment requires an Area based calculation, you must supply an object with an area.");
-                            return 0;
+                            return null;
                         }
                         else
                         {
@@ -79,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
                     if (area <= 0)
                     {
                         BH.Engine.Reflection.Compute.RecordError("The input object's Area value is invalid. Area should be in m2 in numerical format.");
-                        return 0;
+                        return null;
                     }
                     return EvaluateEnvironmentalProductDeclarationByArea(obj, field, area);
                 }
@@ -88,33 +89,26 @@ namespace BH.Engine.LifeCycleAssessment
                 if ((obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType == QuantityType.Volume)
                 {
                     //Check if obj is IElementM, if not then check for volume property. This is a temporary fix that will be phased out to only use IElemenM's once IElementM is fully implemented on footings, piles, etc.
-                    IElementM elem = obj as IElementM;
-                    if (elem != null)
+                    try
                     {
+                        IElementM elem = obj as IElementM;
                         //SolidVolume for objects
-                        double volume = 0;
-                        try { volume = elem.ISolidVolume(); }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object " + obj.BHoM_Guid + ". Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
-                            return 0;
-                        }
-                        
+                        double volume = elem.ISolidVolume();
                         if (volume == 0)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object" + obj.BHoM_Guid + ". Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
-                            return 0;
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            return null;
                         }
                         return EvaluateEnvironmentalProductDeclarationByVolume(obj, field, volume);
                     }
-                    else
+                    catch
                     {
                         object vol = obj.PropertyValue("Volume");
                         double volVal = System.Convert.ToDouble(vol);
                         if (vol == null)
                         {
                             BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
-                            return 0;
+                            return null;
                         }
                         else
                         {
@@ -127,43 +121,35 @@ namespace BH.Engine.LifeCycleAssessment
                 //elif QuantityType = Mass, return EvalByMass()
                 else if ((obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType == QuantityType.Mass)
                 {
-                    double volume = 0;
-                    
                     //Check if obj is IElementM, if not then check for volume property. This is a temporary fix that will be phased out to only use IElemenM's once IElementM is fully implemented on footings, piles, etc.
-                    IElementM elem = obj as IElementM;
-                    if (elem != null)
+                    double volume = 0;
+                    try
                     {
-                        //SolidVolume for objects
-                        try { volume = elem.ISolidVolume(); }
-                        catch
-                        {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object " + obj.BHoM_Guid + ". Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
-                            return 0;
-                        }
-
+                        IElementM elem = obj as IElementM;
+                        volume = elem.ISolidVolume();
                         if (volume == 0)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated for object" + obj.BHoM_Guid + ". Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
-                            return 0;
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            return null;
                         }
                     }
-                    else
+                    catch
                     {
                         object vol = obj.PropertyValue("Volume");
                         volume = System.Convert.ToDouble(vol);
                         if (vol == null)
                         {
-                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
-                            return 0;
+                            BH.Engine.Reflection.Compute.RecordError("No volume can be calculated from the provided object. Because the object's material fragment requires a mass-based calculation, you must supply an object with a volume.");
+                            return null;
                         }
                         else
                         {
-                            BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + "is not an IElementM. Its value is being calculated based on the assigned Volume property value of " + volume.ToString() + ". Please confirm this value is accurate.");
+                            BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + "is not an IElementM. Its mass is being calculated based on the assigned Volume property value of " + volume.ToString() + ". Please confirm this value is accurate.");
                         }
                     }
 
-                        //get Density from IEPD MaterialFragment
-                        double density = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity();
+                    //get Density from IEPD MaterialFragment
+                    double density = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity();
 
                     double mass = density * volume;
 
@@ -173,10 +159,10 @@ namespace BH.Engine.LifeCycleAssessment
                 else
                 {
                     BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not supported.");
-                    return 0;
+                    return null;
                 }
             }
-            return 0;
+            return null;
         }
 
         /***************************************************/
@@ -186,17 +172,20 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("mass", "The total mass to calculate the total quantity of the input metric for.", typeof(Mass))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationByMass(IBHoMObject obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
+        public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IBHoMObject obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double mass = 0) //default to globalWarmingPotential evaluation
         {
             if (obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType != QuantityType.Mass)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Mass. Please supply a Mass-based EPD or try a different method.");
-                return 0;
+                return null;
             }
             else
             {
                 double epdVal = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field);
-                return mass * epdVal;
+                double quantity = mass * epdVal;
+
+                //if epdfield = gwp return that else return error of not yet implemented and return null. 
+                return new GlobalWarmingPotentialResult(obj.Name, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }
         }
 
@@ -207,17 +196,18 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("volume", "The total volume to calculate the total quantity of the input metric for.", typeof(Volume))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationByVolume(IBHoMObject obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
+        public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByVolume(IBHoMObject obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double volume = 0)
         {
             if (obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType != QuantityType.Volume)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Volume. Please supply a Volume-based EPD or try a different method.");
-                return 0;
+                return null;
             }
             else
             {
                 double epdVal = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field);
-                return volume * epdVal;
+                double quantity = volume * epdVal;
+                return new GlobalWarmingPotentialResult(obj.Name, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }
         }
 
@@ -228,17 +218,19 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("area", "The total area to calculate the total quantity of the input metric for.", typeof(Area))]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static double EvaluateEnvironmentalProductDeclarationByArea(IBHoMObject obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)
+        public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByArea(IBHoMObject obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, double area = 0)
         {
             if (obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType != QuantityType.Area)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Area. Please supply an Area-based EPD or try a different method.");
-                return 0;
+                return null;
             }
             else
             {
                 double epdVal = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field);
-                return area * epdVal;
+                double quantity = area * epdVal;
+                return new GlobalWarmingPotentialResult(obj.Name, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+
             }
         }
     }
