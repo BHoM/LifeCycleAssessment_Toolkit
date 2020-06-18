@@ -44,6 +44,22 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
         public static bool IsValid(this StructuresScope structuresScope)
         {
+            if (structuresScope.Beams.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Beams.");
+            }
+            if (structuresScope.Slabs.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Slabs.");
+            }
+            if (structuresScope.Columns.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Columns.");
+            }
+            if (structuresScope.CoreWalls.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope CoreWalls.");
+            }
             int val = structuresScope.Beams.Count + structuresScope.Columns.Count + structuresScope.CoreWalls.Count + structuresScope.Slabs.Count;
             if(val > 0)
             {
@@ -60,6 +76,22 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
         public static bool IsValid(this FoundationsScope foundationsScope)
         {
+            if(foundationsScope.Footings.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationsScope Footings.");
+            }
+            if(foundationsScope.Piles.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Piles.");
+            }
+            if (foundationsScope.Slabs.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Slabs.");
+            }
+            if (foundationsScope.Walls.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Walls.");
+            }
             int val = foundationsScope.Footings.Count + foundationsScope.Piles.Count + foundationsScope.Slabs.Count + foundationsScope.Walls.Count;
             if (val > 0)
             {
@@ -76,6 +108,22 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
         public static bool IsValid(this EnclosuresScope enclosuresScope)
         {
+            if (enclosuresScope.CurtainWalls.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope CurtainWalls.");
+            }
+            if (enclosuresScope.Doors.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Doors.");
+            }
+            if (enclosuresScope.Walls.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Walls.");
+            }
+            if (enclosuresScope.Windows.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Windows.");
+            }
             int val = enclosuresScope.CurtainWalls.Count + enclosuresScope.Doors.Count + enclosuresScope.Walls.Count + enclosuresScope.Windows.Count;
             if (val > 0)
             {
@@ -92,6 +140,38 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
         public static bool IsValid(this MEPScope mepScope)
         {
+            if (mepScope.Batteries.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Batteries.");
+            }
+            if (mepScope.Conduit.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Conduit.");
+            }
+            if (mepScope.Ductwork.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Ductwork.");
+            }
+            if (mepScope.Equipment.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Equipment.");
+            }
+            if (mepScope.Generators.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Generators.");
+            }
+            if (mepScope.Lighting.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Lighting.");
+            }
+            if (mepScope.Piping.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Piping.");
+            }
+            if (mepScope.Wiring.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Wiring.");
+            }
             int val = mepScope.Batteries.Count + mepScope.Conduit.Count + mepScope.Ductwork.Count + mepScope.Equipment.Count + mepScope.Generators.Count + mepScope.Lighting.Count + mepScope.Piping.Count + mepScope.Wiring.Count;
             if (val > 0)
             {
@@ -108,6 +188,34 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
         public static bool IsValid(this TenantImprovementScope tiScope)
         {
+            if (tiScope.Ceiling.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Ceiling.");
+            }
+            if (tiScope.Finishes.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Finishes.");
+            }
+            if (tiScope.Flooring.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Flooring.");
+            }
+            if (tiScope.Furniture.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Furniture.");
+            }
+            if (tiScope.InteriorDoors.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope InteriorDoors.");
+            }
+            if (tiScope.InteriorGlazing.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope InteriorGlazing.");
+            }
+            if (tiScope.PartitionWalls.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope PartitionWalls.");
+            }
             int val = tiScope.Ceiling.Count + tiScope.Finishes.Count + tiScope.Flooring.Count + tiScope.Furniture.Count + tiScope.InteriorDoors.Count + tiScope.InteriorGlazing.Count + tiScope.PartitionWalls.Count;
             if (val > 0)
             {
