@@ -52,11 +52,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
         public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IBHoMObject obj, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            //if (obj.GetAllFragments() == null || obj.GetAllFragments().Count() <= 0)
-            //{
-            //    BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + " " + obj.GetType().ToString() + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
-            //    return null;
-            //}
             for (int x = 0; x < obj.GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Count();)
             {
                 //if obj != null and Fragment !=, EvalPerObject()
@@ -169,8 +164,8 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     }
                 }
-                BH.Engine.Reflection.Compute.RecordWarning("HEY! Object equals null, or missing EPD Fragment.");
             }
+            BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment");
             return null;
         }
 
