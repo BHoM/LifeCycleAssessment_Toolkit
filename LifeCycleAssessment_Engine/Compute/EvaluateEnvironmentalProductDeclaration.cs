@@ -114,7 +114,7 @@ namespace BH.Engine.LifeCycleAssessment
                             }
                             else
                             {
-                                BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + " " + "is not an IElementM. Its value is being calculated based on the assigned Volume property value of " + volVal.ToString() + ". This method of evaluation will not be supported passed BHoM Version 3.3.");
+                                BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + " " + "is not an IElementM. Its value is being calculated based on the assigned Volume property value of " + volVal.ToString() + ". This method of evaluation will not be supported past BHoM Version 3.3.");
                                 return EvaluateEnvironmentalProductDeclarationByVolume(obj, field, volVal);
                             }
                         }
@@ -146,7 +146,7 @@ namespace BH.Engine.LifeCycleAssessment
                             }
                             else
                             {
-                                BH.Engine.Reflection.Compute.RecordWarning("No volume can be calculated for object " + obj.BHoM_Guid + ".Because the object's material fragment requires a volume-based calculation, you must supply an object with a volume.");
+                                BH.Engine.Reflection.Compute.RecordWarning("Object " + obj.BHoM_Guid + " " + "is not an IElementM. Its value is being calculated based on the assigned Volume property value of " + volume.ToString() + ". This method of evaluation will not be supported past BHoM Version 3.3.");
                             }
                         }
 
