@@ -91,8 +91,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 beamResults[x] = new GlobalWarmingPotentialResult(beamResults[x].ObjectId, beamResults[x].ResultCase, beamResults[x].TimeStep, ObjectScope.Structure, ObjectCategory.Beam, beamResults[x].EnvironmentalProductDeclaration, (beamResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(beamResults);
             }
+            results.AddRange(beamResults);
 
             //StructuresScope Columns
             List<LifeCycleAssessmentElementResult> columnsResults = structuresScope.Columns.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -104,8 +104,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 columnsResults[x] = new GlobalWarmingPotentialResult(columnsResults[x].ObjectId, columnsResults[x].ResultCase, columnsResults[x].TimeStep, ObjectScope.Structure, ObjectCategory.Column, columnsResults[x].EnvironmentalProductDeclaration, (columnsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(columnsResults);
             }
+            results.AddRange(columnsResults);
 
             //StructuresScope Slabs
             List<LifeCycleAssessmentElementResult> slabsResults = structuresScope.Slabs.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -117,8 +117,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 slabsResults[x] = new GlobalWarmingPotentialResult(slabsResults[x].ObjectId, slabsResults[x].ResultCase, slabsResults[x].TimeStep, ObjectScope.Structure, ObjectCategory.Slab, slabsResults[x].EnvironmentalProductDeclaration, (slabsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(slabsResults);
             }
+            results.AddRange(slabsResults);
 
             //StructuresScop Core Walls
             List<LifeCycleAssessmentElementResult> coreWalls = structuresScope.CoreWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -130,8 +130,9 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 coreWalls[x] = new GlobalWarmingPotentialResult(coreWalls[x].ObjectId, coreWalls[x].ResultCase, coreWalls[x].TimeStep, ObjectScope.Structure, ObjectCategory.Wall, coreWalls[x].EnvironmentalProductDeclaration, (coreWalls[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(coreWalls);
             }
+            results.AddRange(coreWalls);
+
             return results;
         }
 
@@ -158,8 +159,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 footingsResults[x] = new GlobalWarmingPotentialResult(footingsResults[x].ObjectId, footingsResults[x].ResultCase, footingsResults[x].TimeStep, ObjectScope.Foundation, ObjectCategory.Footing, footingsResults[x].EnvironmentalProductDeclaration, (footingsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(footingsResults);
             }
+            results.AddRange(footingsResults);
 
             //FoundationsScope Piles
             List<LifeCycleAssessmentElementResult> pilesResults = foundationsScope.Piles.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -171,8 +172,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 pilesResults[x] = new GlobalWarmingPotentialResult(pilesResults[x].ObjectId, pilesResults[x].ResultCase, pilesResults[x].TimeStep, ObjectScope.Foundation, ObjectCategory.Pile, pilesResults[x].EnvironmentalProductDeclaration, (pilesResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(pilesResults);
             }
+            results.AddRange(pilesResults);
 
             //FoundationsScope Walls
             List<LifeCycleAssessmentElementResult> wallsResults = foundationsScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -184,8 +185,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 wallsResults[x] = new GlobalWarmingPotentialResult(wallsResults[x].ObjectId, wallsResults[x].ResultCase, wallsResults[x].TimeStep, ObjectScope.Foundation, ObjectCategory.Wall, wallsResults[x].EnvironmentalProductDeclaration, (wallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(wallsResults);
             }
+            results.AddRange(wallsResults);
 
             //FoundationsScope Slabs
             List<LifeCycleAssessmentElementResult> fndSlabsResults = foundationsScope.Slabs.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -197,8 +198,9 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 fndSlabsResults[x] = new GlobalWarmingPotentialResult(fndSlabsResults[x].ObjectId, fndSlabsResults[x].ResultCase, fndSlabsResults[x].TimeStep, ObjectScope.Foundation, ObjectCategory.Slab, fndSlabsResults[x].EnvironmentalProductDeclaration, (fndSlabsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(fndSlabsResults);
             }
+            results.AddRange(fndSlabsResults);
+
             return results;
         }
 
@@ -225,8 +227,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 enclWallsResults[x] = new GlobalWarmingPotentialResult(enclWallsResults[x].ObjectId, enclWallsResults[x].ResultCase, enclWallsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.Wall, enclWallsResults[x].EnvironmentalProductDeclaration, (enclWallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(enclWallsResults);
             }
+            results.AddRange(enclWallsResults);
 
             //EnclosuresScope CurtainWalls
             List<LifeCycleAssessmentElementResult> curtainWallsResults = enclosuresScope.CurtainWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -238,8 +240,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 curtainWallsResults[x] = new GlobalWarmingPotentialResult(curtainWallsResults[x].ObjectId, curtainWallsResults[x].ResultCase, curtainWallsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.CurtainWall, curtainWallsResults[x].EnvironmentalProductDeclaration, (curtainWallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(curtainWallsResults);
             }
+            results.AddRange(curtainWallsResults);
 
             //EnclosuresScope Windows
             List<LifeCycleAssessmentElementResult> windowsResults = enclosuresScope.Windows.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -251,8 +253,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 windowsResults[x] = new GlobalWarmingPotentialResult(windowsResults[x].ObjectId, windowsResults[x].ResultCase, windowsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.Window, windowsResults[x].EnvironmentalProductDeclaration, (windowsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(windowsResults);
             }
+            results.AddRange(windowsResults);
 
             //EnclosuresScope Doors
             List<LifeCycleAssessmentElementResult> doorsResults = enclosuresScope.Doors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -264,8 +266,9 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 doorsResults[x] = new GlobalWarmingPotentialResult(doorsResults[x].ObjectId, doorsResults[x].ResultCase, doorsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.Wall, doorsResults[x].EnvironmentalProductDeclaration, (doorsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(doorsResults);
             }
+            results.AddRange(doorsResults);
+
             return results;
         }
 
@@ -292,8 +295,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 batteriesResults[x] = new GlobalWarmingPotentialResult(batteriesResults[x].ObjectId, batteriesResults[x].ResultCase, batteriesResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Battery, batteriesResults[x].EnvironmentalProductDeclaration, (batteriesResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(batteriesResults);
             }
+            results.AddRange(batteriesResults);
 
             //MEPScope Conduit
             List<LifeCycleAssessmentElementResult> conduitResults = mepScope.Conduit.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -305,8 +308,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 conduitResults[x] = new GlobalWarmingPotentialResult(conduitResults[x].ObjectId, conduitResults[x].ResultCase, conduitResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Conduit, conduitResults[x].EnvironmentalProductDeclaration, (conduitResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(conduitResults);
             }
+            results.AddRange(conduitResults);
 
             //MEPScope Ductwork
             List<LifeCycleAssessmentElementResult> ductResults = mepScope.Ductwork.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -318,8 +321,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 ductResults[x] = new GlobalWarmingPotentialResult(ductResults[x].ObjectId, ductResults[x].ResultCase, ductResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Ductwork, ductResults[x].EnvironmentalProductDeclaration, (ductResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(ductResults);
             }
+            results.AddRange(ductResults);
 
             //MEPScope Equipment
             List<LifeCycleAssessmentElementResult> equipmentResults = mepScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -331,8 +334,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 equipmentResults[x] = new GlobalWarmingPotentialResult(equipmentResults[x].ObjectId, equipmentResults[x].ResultCase, equipmentResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Equipment, equipmentResults[x].EnvironmentalProductDeclaration, (equipmentResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(equipmentResults);
             }
+            results.AddRange(equipmentResults);
 
             //MEPScope Generator
             List<LifeCycleAssessmentElementResult> generatorResults = mepScope.Generators.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -344,8 +347,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 generatorResults[x] = new GlobalWarmingPotentialResult(generatorResults[x].ObjectId, generatorResults[x].ResultCase, generatorResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Generator, generatorResults[x].EnvironmentalProductDeclaration, (generatorResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(generatorResults);
             }
+            results.AddRange(generatorResults);
 
             //MEPScope Lighting
             List<LifeCycleAssessmentElementResult> lightingResults = mepScope.Lighting.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -357,8 +360,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 lightingResults[x] = new GlobalWarmingPotentialResult(lightingResults[x].ObjectId, lightingResults[x].ResultCase, lightingResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Lighting, lightingResults[x].EnvironmentalProductDeclaration, (lightingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(lightingResults);
             }
+            results.AddRange(lightingResults);
 
             //MEPScope Piping
             List<LifeCycleAssessmentElementResult> pipingResults = mepScope.Piping.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -370,8 +373,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 pipingResults[x] = new GlobalWarmingPotentialResult(pipingResults[x].ObjectId, pipingResults[x].ResultCase, pipingResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Piping, pipingResults[x].EnvironmentalProductDeclaration, (pipingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(pipingResults);
             }
+            results.AddRange(pipingResults);
 
             //MEPScope Wiring
             List<LifeCycleAssessmentElementResult> wiringResults = mepScope.Wiring.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -383,8 +386,9 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 wiringResults[x] = new GlobalWarmingPotentialResult(wiringResults[x].ObjectId, wiringResults[x].ResultCase, wiringResults[x].TimeStep, ObjectScope.MEP, ObjectCategory.Wiring, wiringResults[x].EnvironmentalProductDeclaration, (wiringResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(wiringResults);
             }
+            results.AddRange(wiringResults);
+
             return results;
         }
 
@@ -411,8 +415,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 ceilingResults[x] = new GlobalWarmingPotentialResult(ceilingResults[x].ObjectId, ceilingResults[x].ResultCase, ceilingResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.Ceiling, ceilingResults[x].EnvironmentalProductDeclaration, (ceilingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(ceilingResults);
             }
+            results.AddRange(ceilingResults);
 
             //TI Finishes
             List<LifeCycleAssessmentElementResult> finishResults = tenantImprovementScope.Finishes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -424,8 +428,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 finishResults[x] = new GlobalWarmingPotentialResult(finishResults[x].ObjectId, finishResults[x].ResultCase, finishResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.Finishes, finishResults[x].EnvironmentalProductDeclaration, (finishResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(finishResults);
             }
+            results.AddRange(finishResults);
 
             //TI Furniture
             List<LifeCycleAssessmentElementResult> furnitureResults = tenantImprovementScope.Furniture.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -437,8 +441,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 furnitureResults[x] = new GlobalWarmingPotentialResult(furnitureResults[x].ObjectId, furnitureResults[x].ResultCase, furnitureResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.Furniture, furnitureResults[x].EnvironmentalProductDeclaration, (furnitureResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(furnitureResults);
             }
+            results.AddRange(furnitureResults);
 
             //TI Interior Doors
             List<LifeCycleAssessmentElementResult> intDoorsResults = tenantImprovementScope.InteriorDoors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -450,8 +454,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 intDoorsResults[x] = new GlobalWarmingPotentialResult(intDoorsResults[x].ObjectId, intDoorsResults[x].ResultCase, intDoorsResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.InteriorDoor, intDoorsResults[x].EnvironmentalProductDeclaration, (intDoorsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(intDoorsResults);
             }
+            results.AddRange(intDoorsResults);
 
             //TI Interior Glazing
             List<LifeCycleAssessmentElementResult> intGlazingResults = tenantImprovementScope.InteriorGlazing.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -463,8 +467,8 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 intGlazingResults[x] = new GlobalWarmingPotentialResult(intGlazingResults[x].ObjectId, intGlazingResults[x].ResultCase, intGlazingResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.InteriorGlazing, intGlazingResults[x].EnvironmentalProductDeclaration, (intGlazingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(intGlazingResults);
             }
+            results.AddRange(intGlazingResults);
 
             //TI Partition Walls
             List<LifeCycleAssessmentElementResult> partWallsResults = tenantImprovementScope.PartitionWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
@@ -476,8 +480,9 @@ namespace BH.Engine.LifeCycleAssessment
                     continue;
                 }
                 partWallsResults[x] = new GlobalWarmingPotentialResult(partWallsResults[x].ObjectId, partWallsResults[x].ResultCase, partWallsResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.PartitionWall, partWallsResults[x].EnvironmentalProductDeclaration, (partWallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
-                results.AddRange(partWallsResults);
             }
+            results.AddRange(partWallsResults);
+
             return results;
         }
     }
