@@ -47,10 +47,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("density", "True if the object contains data, False if the object does not contain data.")]
         public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
         {
-            if (epd == null || epd.Density == 0 || epd.Density == double.NaN)
+            if (epd == null || epd.Density <= 0 || epd.Density == double.NaN)
             {
-                BH.Engine.Reflection.Compute.RecordError("The input object does not contain a valid EnvironmentalProductDeclaration MaterialFragment.");
-                return double.NaN;
+                BH.Engine.Reflection.Compute.RecordWarning("The Environmental Product Declaration Material Fragment does not contain a valid density.");
+                return 0;
             }
             else
             {
