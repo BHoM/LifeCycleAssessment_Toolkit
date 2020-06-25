@@ -154,6 +154,11 @@ namespace BH.Engine.LifeCycleAssessment
                         double density = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetFragmentDensity();
 
                         double mass = density * volume;
+                        if(mass == 0 || mass == double.NaN)
+                        {
+                            BH.Engine.Reflection.Compute.RecordError("Cannot derive mass from object " + obj.BHoM_Guid + "." + " Please query your EPD MaterialFragment Density, and your object's Volume property. Mass is required based on the EPD QuantityType.");
+                            return null;
+                        }
 
                         return EvaluateEnvironmentalProductDeclarationByMass(obj, field, mass);
                     }
