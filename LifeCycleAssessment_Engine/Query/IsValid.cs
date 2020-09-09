@@ -60,8 +60,16 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope CoreWalls.");
             }
-            int val = structuresScope.Beams.Count + structuresScope.Columns.Count + structuresScope.CoreWalls.Count + structuresScope.Slabs.Count;
-            if(val > 0)
+            if (structuresScope.Bracing.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Bracing.");
+            }
+            if (structuresScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
+            int val = structuresScope.Beams.Count + structuresScope.Columns.Count + structuresScope.CoreWalls.Count + structuresScope.Slabs.Count + structuresScope.Bracing.Count;
+            if(val > 0 || structuresScope.AdditionalObjects.Count > 0)
             {
                 return true;
             }
@@ -70,6 +78,8 @@ namespace BH.Engine.LifeCycleAssessment
                 return false;
             }
         }
+
+        /***************************************************/
 
         [Description("Query a FoundationsScope object to see if it contains any data.")]
         [Input("foundationsScope", "The FoundationsScope object used within your LCA to query.")]
@@ -92,8 +102,16 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Walls.");
             }
-            int val = foundationsScope.Footings.Count + foundationsScope.Piles.Count + foundationsScope.Slabs.Count + foundationsScope.Walls.Count;
-            if (val > 0)
+            if (foundationsScope.GradeBeams.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope GradeBeams.");
+            }
+            if (foundationsScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
+            int val = foundationsScope.Footings.Count + foundationsScope.Piles.Count + foundationsScope.Slabs.Count + foundationsScope.Walls.Count + foundationsScope.GradeBeams.Count;
+            if (val > 0 || foundationsScope.AdditionalObjects.Count > 0)
             {
                 return true;
             }
@@ -102,6 +120,8 @@ namespace BH.Engine.LifeCycleAssessment
                 return false;
             }
         }
+
+        /***************************************************/
 
         [Description("Query a EnclosuresScope object to see if it contains any data.")]
         [Input("enclosuresScope", "The EnclosuresScope object used within your LCA to query.")]
@@ -124,8 +144,12 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Windows.");
             }
+            if (enclosuresScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
             int val = enclosuresScope.CurtainWalls.Count + enclosuresScope.Doors.Count + enclosuresScope.Walls.Count + enclosuresScope.Windows.Count;
-            if (val > 0)
+            if (val > 0 || enclosuresScope.AdditionalObjects.Count > 0)
             {
                 return true;
             }
@@ -134,6 +158,8 @@ namespace BH.Engine.LifeCycleAssessment
                 return false;
             }
         }
+
+        /***************************************************/
 
         [Description("Query a MEPScope object to see if it contains any data.")]
         [Input("mepScope", "The MEPScope object used within your LCA to query.")]
@@ -172,8 +198,12 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Wiring.");
             }
+            if (mepScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
             int val = mepScope.Batteries.Count + mepScope.Conduit.Count + mepScope.Ductwork.Count + mepScope.Equipment.Count + mepScope.Generators.Count + mepScope.Lighting.Count + mepScope.Piping.Count + mepScope.Wiring.Count;
-            if (val > 0)
+            if (val > 0 || mepScope.AdditionalObjects.Count > 0)
             {
                 return true;
             }
@@ -182,6 +212,8 @@ namespace BH.Engine.LifeCycleAssessment
                 return false;
             }
         }
+
+        /***************************************************/
 
         [Description("Query a TenantImprovementScope object to see if it contains any data.")]
         [Input("tiScope", "The TenantImprovementScope object used within your LCA to query.")]
@@ -216,8 +248,12 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope PartitionWalls.");
             }
+            if (tiScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
             int val = tiScope.Ceiling.Count + tiScope.Finishes.Count + tiScope.Flooring.Count + tiScope.Furniture.Count + tiScope.InteriorDoors.Count + tiScope.InteriorGlazing.Count + tiScope.PartitionWalls.Count;
-            if (val > 0)
+            if (val > 0 || tiScope.AdditionalObjects.Count > 0)
             {
                 return true;
             }
@@ -227,6 +263,5 @@ namespace BH.Engine.LifeCycleAssessment
             }
         }
         /***************************************************/
-
     }
 }

@@ -44,6 +44,9 @@
       <HintPath>C:\ProgramData\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Environment_oM">
+      <HintPath>..\..\BHoM\Build\Environment_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Geometry_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_Engine.dll</HintPath>
       <Private>False</Private>
@@ -116,6 +119,7 @@
     <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\GlobalWarmingPotential.cs" />
     <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\PhotochemicalOzoneCreationPotential.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
+    <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Compute\MaterialEndOfLife.cs" />
     <Compile Include="Compute\ReinforcementVolume.cs" />
     <Compile Include="Compute\GlazingVolume.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
     <Compile Include="Convert\ToEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
+    <Compile Include="Create\LifeCycleAssessmentScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\GetFragmentDensity.cs" />
     <Compile Include="Query\GetFragmentQuantityType.cs" />
@@ -134,7 +139,6 @@
     <Compile Include="Query\TotalGlobalWarmingPotential.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Create\" />
     <Folder Include="Modify\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
