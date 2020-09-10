@@ -45,7 +45,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Environment_oM">
-      <HintPath>..\..\BHoM\Build\Environment_oM.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Environment_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Geometry_Engine.dll</HintPath>
