@@ -53,30 +53,20 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 case EnvironmentalProductDeclarationField.AcidificationPotential:
                     return epd.AcidificationPotential;
-                case EnvironmentalProductDeclarationField.AcidificationPotentialEndOfLife:
-                    return epd.AcidificationPotentialEndOfLife;
                 case EnvironmentalProductDeclarationField.DepletionOfAbioticResourcesFossilFuels:
                     return epd.DepletionOfAbioticResourcesFossilFuels;
-                case EnvironmentalProductDeclarationField.DepletionOfAbioticResourcesFossilFuelsEndOfLife:
-                    return epd.DepletionOfAbioticResourcesFossilFuelsEndOfLife;
                 case EnvironmentalProductDeclarationField.EutrophicationPotential:
                     return epd.EutrophicationPotential;
-                case EnvironmentalProductDeclarationField.EutrophicationPotentialEndOfLife:
-                    return epd.EutrophicationPotentialEndOfLife;
                 case EnvironmentalProductDeclarationField.GlobalWarmingPotential:
                     return epd.GlobalWarmingPotential;
-                case EnvironmentalProductDeclarationField.GlobalWarmingPotentialEndOfLife:
-                    return epd.GlobalWarmingPotentialEndOfLife;
                 case EnvironmentalProductDeclarationField.OzoneDepletionPotential:
                     return epd.OzoneDepletionPotential;
-                case EnvironmentalProductDeclarationField.OzoneDepletionPotentialEndOfLife:
-                    return epd.OzoneDepletionPotentialEndOfLife;
                 case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotential:
                     return epd.PhotochemicalOzoneCreationPotential;
-                case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotentialEndOfLife:
-                    return epd.PhotochemicalOzoneCreationPotentialEndOfLife;
                 default:
                     return double.NaN;
+
+                //Complete list of possible fields
             }
         }
 
