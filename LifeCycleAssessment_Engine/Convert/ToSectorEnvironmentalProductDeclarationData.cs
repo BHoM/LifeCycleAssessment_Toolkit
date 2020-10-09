@@ -51,7 +51,6 @@ namespace BH.Engine.LifeCycleAssessment
                 PhotochemicalOzoneCreationPotential = obj.PropertyValue("SmogPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("SmogPotential")) : double.NaN,
                 OzoneDepletionPotential = obj.PropertyValue("OzoneDepletionPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("OzoneDepletionPotential")) : double.NaN,
                 GlobalWarmingPotential = obj.PropertyValue("GlobalWarmingPotential") != null ? System.Convert.ToDouble(obj.PropertyValue("GlobalWarmingPotential")) : double.NaN,
-                Scope = obj.PropertyValue("Scope")?.ToString() ?? "",
                 Description = obj.PropertyValue("Description")?.ToString() ?? "",
                 BiogenicCarbon = obj.PropertyValue("BiogenicCarbon") != null ? System.Convert.ToDouble(obj.PropertyValue("BiogenicCarbon")) : double.NaN,
                 Density = obj.PropertyValue("Density") != null ? System.Convert.ToDouble(obj.PropertyValue("Density")) : 0,
