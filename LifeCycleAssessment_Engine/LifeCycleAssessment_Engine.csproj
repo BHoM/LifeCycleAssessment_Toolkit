@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analytical_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Analytical_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="BHoM">
       <HintPath>C:\ProgramData\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>False</Private>
@@ -63,6 +67,10 @@
     </Reference>
     <Reference Include="Matter_Engine">
       <HintPath>C:\ProgramData\BHoM\Assemblies\Matter_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="MEP_oM">
+      <HintPath>C:\ProgramData\BHoM\Assemblies\MEP_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Physical_oM">
