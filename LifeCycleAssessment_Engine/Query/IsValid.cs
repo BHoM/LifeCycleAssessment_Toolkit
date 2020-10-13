@@ -182,57 +182,125 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Query a MEPScope object to see if it contains any data.")]
-        [Input("mepScope", "The MEPScope object used within your LCA to query.")]
-        [Output("boolean", "True if the object contains data, False if the object does not contain data.")]
+        [Input("mepScope", "The MEPScope object to query.")]
+        [Output("boolean", "True if the object contains any data, False if the object does not contain any data.")]
         public static bool IsValid(this MEPScope mepScope)
         {
-            if (mepScope.Batteries.Count == 0)
+            //MechanicalScope
+
+            if (mepScope.MechanicalScope.Ducts.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Batteries.");
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Ducts.");
             }
 
-            if (mepScope.Conduit.Count == 0)
+            if (mepScope.MechanicalScope.Equipment.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Conduit.");
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Equipment.");
             }
 
-            if (mepScope.Ductwork.Count == 0)
+            if (mepScope.MechanicalScope.Pipes.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Ductwork.");
+                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Pipes.");
             }
 
-            if (mepScope.Equipment.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Equipment.");
-            }
-
-            if (mepScope.Generators.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Generators.");
-            }
-
-            if (mepScope.Lighting.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Lighting.");
-            }
-
-            if (mepScope.Piping.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Piping.");
-            }
-
-            if (mepScope.Wiring.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MEPScope Wiring.");
-            }
-
-            if (mepScope.AdditionalObjects.Count > 0)
+            if (mepScope.MechanicalScope.AdditionalObjects.Count > 0)
             {
                 BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
-            int val = mepScope.Batteries.Count + mepScope.Conduit.Count + mepScope.Ductwork.Count + mepScope.Equipment.Count + mepScope.Generators.Count + mepScope.Lighting.Count + mepScope.Piping.Count + mepScope.Wiring.Count;
-            if (val > 0 || mepScope.AdditionalObjects.Count > 0)
+            //ElectricalScope
+
+            if (mepScope.ElectricalScope.Batteries.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Batteries.");
+            }
+
+            if (mepScope.ElectricalScope.CableTrays.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope CableTrays.");
+            }
+
+            if (mepScope.ElectricalScope.Conduit.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Conduit.");
+            }
+
+            if (mepScope.ElectricalScope.Equipment.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Equipment.");
+            }
+
+            if (mepScope.ElectricalScope.Generators.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Generators.");
+            }
+
+            if (mepScope.ElectricalScope.LightFixtures.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope LightFixtures.");
+            }
+
+            if (mepScope.ElectricalScope.WireSegments.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope WireSegments.");
+            }
+
+            if (mepScope.ElectricalScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
+
+            //PlumbingScope
+
+            if (mepScope.PlumbingScope.Equipment.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope Equipment.");
+            }
+
+            if (mepScope.PlumbingScope.Pipes.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope Pipes.");
+            }
+
+            if (mepScope.PlumbingScope.AdditionalObjects.Count > 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+            }
+
+            //FireProtectionScope
+
+            if (mepScope.FireProtectionScope.Equipment.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Equipment.");
+            }
+
+            if (mepScope.FireProtectionScope.Pipes.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Pipes.");
+            }
+
+            if (mepScope.FireProtectionScope.Sprinklers.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Sprinklers.");
+            }
+
+            int val = mepScope.MechanicalScope.Ducts.Count
+                + mepScope.MechanicalScope.Equipment.Count 
+                + mepScope.MechanicalScope.Pipes.Count
+                + mepScope.ElectricalScope.Batteries.Count
+                + mepScope.ElectricalScope.CableTrays.Count
+                + mepScope.ElectricalScope.Conduit.Count 
+                + mepScope.ElectricalScope.Equipment.Count
+                + mepScope.ElectricalScope.Generators.Count 
+                + mepScope.ElectricalScope.LightFixtures.Count
+                + mepScope.ElectricalScope.WireSegments.Count
+                + mepScope.PlumbingScope.Equipment.Count
+                + mepScope.PlumbingScope.Pipes.Count
+                + mepScope.FireProtectionScope.Equipment.Count
+                + mepScope.FireProtectionScope.Pipes.Count
+                + mepScope.FireProtectionScope.Sprinklers.Count;
+
+            if (val > 0 || mepScope.MechanicalScope.AdditionalObjects.Count > 0 || mepScope.ElectricalScope.AdditionalObjects.Count > 0 || mepScope.PlumbingScope.AdditionalObjects.Count > 0 || mepScope.FireProtectionScope.AdditionalObjects.Count > 0)
             {
                 return true;
             }
