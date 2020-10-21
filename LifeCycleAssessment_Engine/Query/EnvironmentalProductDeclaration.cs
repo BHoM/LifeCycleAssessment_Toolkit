@@ -39,7 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
             switch(field)
             {
                 case EnvironmentalProductDeclarationField.GlobalWarmingPotential:
-                    return epd.GlobalWarmingPotential; // need to return per gwp available
+                    return epd.GlobalWarmingPotential;
                 case EnvironmentalProductDeclarationField.OzoneDepletionPotential:
                     return epd.OzoneDepletionPotential;
                 case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotential:

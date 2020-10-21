@@ -29,7 +29,9 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Base;
 using BH.Engine.Reflection;
+using BH.oM.Reflection.Attributes;
 using BH.oM.Base;
+using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 
@@ -37,6 +39,13 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
+        /***************************************************/
+        /****   Public Methods                          ****/
+        /***************************************************/
+
+        [Description("Query the QuantityType value from any IEnvironmentalProductDeclarationData object.")]
+        [Input("epd", "IEnvironmentalProductDeclarationData object from which to query.")]
+        [Output("quantityType", "The quantityType value from the provided IEPD.")]
         public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
         {
             if (epd == null)
@@ -44,6 +53,19 @@ namespace BH.Engine.LifeCycleAssessment
                 BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
             }
             return epd.QuantityType;
+        }
+
+        /***************************************************/
+
+        [Description("Query the QuantityType value from any IElementM object's Fragments.")]
+        [Input("elementM", "The IElementM object from which to query the EPD's QuantityType value.")]
+        [Output("quantityType", "The quantityType value from the provided IEPD.")]
+        public static QuantityType QuantityType(this IElementM elementM)
+        {
+            if (elementM == null)
+                return oM.LifeCycleAssessment.QuantityType.Undefined;
+
+            return ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType;
         }
     }
 }

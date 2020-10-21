@@ -60,8 +60,6 @@ namespace BH.Engine.LifeCycleAssessment
                     return epd.PhotochemicalOzoneCreationPotential;
                 default:
                     return double.NaN;
-
-                //Complete list of possible fields
             }
         }
 
