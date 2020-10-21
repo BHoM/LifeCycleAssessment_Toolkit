@@ -26,6 +26,10 @@ using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Dimensional;
+using BH.Engine.Matter;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -35,48 +39,46 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the ozone depletion potential of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("obj", "The BHoM Object to calculate the object's Ozone Depletion Potential (kg CFC). This method requires the object's volume to be stored in CustomData under a 'Volume' key.")]
-        [Input("epdData", "BHoM Data object with a valid value for ozone depletion potential stored in CustomData under an 'OzoneDepletionPotential' key.")]
-        [Output("ozoneDepletionPotential", "The relative amount of degradation to the ozone layer measured in kg/CFC-11e.")]
-        public static double OzoneDepletionPotential(BHoMObject obj, CustomObject epdData)
+        [Description("Calculates the OzoneDepletionPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
+        [Input("elementM", "The IElementM Object to calculate the OzoneDepletionPotential.")]
+        [Input("epd", "BHoM Data object with a valid value for OzoneDepletionPotential.")]
+        [Output("ozoneDepletionPotential", "Ozone Depletion Potential, measured in kg CFC-11 equivalents, refers to emissions which contribute to the depletion of the stratospheric ozone layer.")]
+        public static double OzoneDepletionPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
-            double volume, density, ozoneDepletionPotential;
+            QuantityType qt = epd.QuantityType;
 
-            if (obj.CustomData.ContainsKey("Volume"))
+            if (qt != QuantityType.Mass)
             {
-                volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
+                Reflection.Compute.RecordError("This method only works with Mass-based QuantityType EPDs. Please provide a different EPD.");
+                return double.NaN;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The BHoMObject must have a valid volume stored in CustomData under a 'Volume' key.");
-                return 0;
-            }
+                double volume = elementM.ISolidVolume();
+                double density = epd.Density;
+                double ozoneDepletionPotential = System.Convert.ToDouble(epd.OzoneDepletionPotential);
 
-            if (epdData.CustomData.ContainsKey("Density"))
-            {
-                density = System.Convert.ToDouble(epdData.CustomData["Density"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for density under a 'Density' key.");
-                return 0;
-            }
+                if (volume <= 0 || volume == double.NaN)
+                {
+                    Reflection.Compute.RecordError("Volume cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    return double.NaN;
+                }
 
-            if (epdData.CustomData.ContainsKey("OzoneDepletionPotential"))
-            {
-                ozoneDepletionPotential = System.Convert.ToDouble(epdData.CustomData["OzoneDepletionPotential"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for ozone depletion potential stored in CustomData under an 'OzoneDepletionPotential' key.");
-                return 0;
-            }
+                if (density <= 0 || density == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for Density");
+                    return double.NaN;
+                }
 
-            return volume * density * ozoneDepletionPotential;
+                if (ozoneDepletionPotential <= 0 || ozoneDepletionPotential == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for OzoneDepletionPotential");
+                    return double.NaN;
+                }
+
+                return volume * density * ozoneDepletionPotential;
+            }
         }
-
         /***************************************************/
-
     }
 }

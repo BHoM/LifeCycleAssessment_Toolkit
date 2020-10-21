@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Dimensional;
+using BH.Engine.Matter;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -35,48 +36,46 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the acidification potential of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("obj", "The BHoM Object to calculate the acidification potential (kg SO2). This method requires the object's volume to be stored in CustomData under a 'Volume' key.")]
-        [Input("epdData", "BHoM Data object with a valid value for acidification potential stored in CustomData under an 'AcidificationPotential' key.")]
-        [Output("acidificationPotential", "The consequence of acids being emitted to the atmosphere and subsequently deposited in surface soils and waters measured in kg/SO2e.")]
-        public static double AcidificationPotential(BHoMObject obj, CustomObject epdData)
+        [Description("Calculates the AcidificationPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
+        [Input("elementM", "The IElementM Object to calculate the acidification potential.")]
+        [Input("epdData", "BHoM Data object with a valid value for acidification potential.")]
+        [Output("acidificationPotential", "Acidification, measured in kgSO2e, refers to emissions which increase the H+ ions in the environment causing a decrease in pH. Potential effects include fish mortality, forest decline, and the deterioration of building materials.")]
+        public static double AcidificationPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
-            double volume, density, acidificationPotential;
+            QuantityType qt = epd.QuantityType;
 
-            if (obj.CustomData.ContainsKey("Volume"))
+            if(qt != QuantityType.Mass)
             {
-                volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
+                Reflection.Compute.RecordError("This method only works with Mass-based QuantityType EPDs. Please provide a different EPD.");
+                return double.NaN;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The BHoMObject must have a valid volume stored in CustomData under a 'Volume' key.");
-                return 0;
-            }
+                double volume = elementM.ISolidVolume();
+                double density = epd.Density;
+                double acidificationPotential = System.Convert.ToDouble(epd.AcidificationPotential);
 
-            if (epdData.CustomData.ContainsKey("Density"))
-            {
-                density = System.Convert.ToDouble(epdData.CustomData["Density"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for density under a 'Density' key.");
-                return 0;
-            }
+                if (volume <= 0 || volume == double.NaN)
+                {
+                    Reflection.Compute.RecordError("Volume cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    return double.NaN;
+                }
 
-            if (epdData.CustomData.ContainsKey("AcidificationPotential"))
-            {
-                acidificationPotential = System.Convert.ToDouble(epdData.CustomData["AcidificationPotential"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for acidification potential stored in CustomData under an 'AcidificationPotential' key.");
-                return 0;
-            }
+                if (density <= 0 || density == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for Density");
+                    return double.NaN;
+                }
 
-            return volume * density * acidificationPotential;
+                if (acidificationPotential <= 0 || acidificationPotential == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for AcidificationPotential");
+                    return double.NaN;
+                }
+
+                return volume * density * acidificationPotential;
+            }
         }
-
         /***************************************************/
-
     }
 }

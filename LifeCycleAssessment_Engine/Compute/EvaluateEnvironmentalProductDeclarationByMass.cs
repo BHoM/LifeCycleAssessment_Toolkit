@@ -40,19 +40,19 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the quantity of a supplied metric by querying Environmental Impact Metrics from the EPD materialFragment and the object's mass.")]
-        [Input("obj", "An IElementM object used to calculate EPD metric.")]
+        [Input("elementM", "An IElementM object used to calculate EPD metric.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
-        public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IElementM obj = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (obj.QuantityType() != QuantityType.Mass)
+            if (elementM.QuantityType() != QuantityType.Mass)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Mass. Please supply a Mass-based EPD or try a different method.");
                 return null;
             }
             else
             {
-                double epdVal = (obj as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field);
+                double epdVal = (elementM as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field);
 
                 if (epdVal <= 0 || epdVal == double.NaN)
                 {
@@ -60,17 +60,17 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                double mass = obj.Mass();
+                double mass = elementM.Mass();
 
                 if (mass <= 0 || mass == double.NaN)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Mass cannot be calculated from object " + ((IBHoMObject)obj).BHoM_Guid);
+                    BH.Engine.Reflection.Compute.RecordError("Mass cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
                     return null;
                 }
 
                 double quantity = mass * epdVal;
 
-                return new GlobalWarmingPotentialResult(((IBHoMObject)obj).BHoM_Guid, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)obj).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }
         }
 
