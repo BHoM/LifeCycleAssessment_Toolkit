@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Dimensional;
+using BH.Engine.Matter;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -35,46 +36,46 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the global warming potential of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("obj", "The BHoM Object to calculate the embodied kg CO2 - Global Warming Potential. This method requires the object's volume to be stored in CustomData under a 'Volume' key.")]
-        [Input("epdData", "BHoM Data object with a valid value for global warming potential stored in CustomData under a 'GlobalWarmingPotential' key.")]
-        [Output("globalWarmingPotential", "How much heat a greenhouse gas traps in the atmosphere up to a specific time horizon, relative to carbon dioxide measured in kg/CO2e.")]
-
-        public static double GlobalWarmingPotential(BHoMObject obj, CustomObject epdData)
+        [Description("Calculates the GlobalWarmingPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
+        [Input("elementM", "The IElementM Object to calculate the GlobalWarmingPotential.")]
+        [Input("epd", "BHoM Data object with a valid value for GlobalWarmingPotential.")]
+        [Output("globalWarmingPotential", "Global Warming Potential, expressed in kgCO2e, refers to the emissions of carbon dioxide, methane and other gases that contribute to the greenhouse effect and global warming.")]
+        public static double GlobalWarmingPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
-            double volume, density, globalWarmingPotential;
+            QuantityType qt = epd.QuantityType;
 
-            if (obj.CustomData.ContainsKey("Volume"))
+            if (qt != QuantityType.Mass)
             {
-                volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
+                Reflection.Compute.RecordError("This method only works with Mass-based QuantityType EPDs. Please provide a different EPD.");
+                return double.NaN;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The BHoMObject must have a valid volume stored in CustomData under a 'Volume' key.");
-                return 0;
+                double volume = elementM.ISolidVolume();
+                double density = epd.Density;
+                double globalWarmingPotential = System.Convert.ToDouble(epd.GlobalWarmingPotential);
+
+                if (volume <= 0 || volume == double.NaN)
+                {
+                    Reflection.Compute.RecordError("Volume cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    return double.NaN;
+                }
+
+                if (density <= 0 || density == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for Density");
+                    return double.NaN;
+                }
+
+                if (globalWarmingPotential <= 0 || globalWarmingPotential == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for GlobalWarmingPotential");
+                    return double.NaN;
+                }
+
+                return volume * density * globalWarmingPotential;
             }
 
-            if (epdData.CustomData.ContainsKey("Density"))
-            {
-                density = System.Convert.ToDouble(epdData.CustomData["Density"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for density under a 'Density' key.");
-                return 0;
-            }
-
-            if (epdData.CustomData.ContainsKey("GlobalWarmingPotential"))
-            {
-                globalWarmingPotential = System.Convert.ToDouble(epdData.CustomData["GlobalWarmingPotential"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for global warming potential stored in CustomData under a 'GlobalWarmingPotential' key.");
-                return 0;
-            }
-
-            return volume * density * globalWarmingPotential;
         }
 
         /***************************************************/

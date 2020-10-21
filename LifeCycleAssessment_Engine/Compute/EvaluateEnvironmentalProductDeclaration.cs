@@ -47,21 +47,21 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
-        [Input("obj", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
+        [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM obj, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            QuantityType qt = obj.QuantityType();
+            QuantityType qt = elementM.QuantityType();
 
             switch (qt)
             {
                 case QuantityType.Area:
-                    return EvaluateEnvironmentalProductDeclarationByArea(obj, field);
+                    return EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
                 case QuantityType.Volume:
-                    return EvaluateEnvironmentalProductDeclarationByVolume(obj, field);
+                    return EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
                 case QuantityType.Mass:
-                    return EvaluateEnvironmentalProductDeclarationByMass(obj, field);
+                    return EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
                 default:        
                     BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                     return null;

@@ -244,12 +244,12 @@ namespace BH.Engine.LifeCycleAssessment
             List<LifeCycleAssessmentElementResult> results = new List<LifeCycleAssessmentElementResult>();
 
             //EnclosuresScope Walls
-            List<LifeCycleAssessmentElementResult> enclWallsResults = enclosuresScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> enclWallsResults = enclosuresScope.Walls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < enclWallsResults.Count; x++)
             {
                 if (enclWallsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + enclosuresScope.Walls[x].BHoM_Guid + " Within EnclosuresScope Walls does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)enclosuresScope.Walls[x]).BHoM_Guid + " Within EnclosuresScope Walls does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 enclWallsResults[x] = new GlobalWarmingPotentialResult(enclWallsResults[x].ObjectId, enclWallsResults[x].ResultCase, enclWallsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.Wall, enclWallsResults[x].EnvironmentalProductDeclaration, (enclWallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -257,12 +257,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(enclWallsResults);
 
             //EnclosuresScope CurtainWalls
-            List<LifeCycleAssessmentElementResult> curtainWallsResults = enclosuresScope.CurtainWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> curtainWallsResults = enclosuresScope.CurtainWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < curtainWallsResults.Count; x++)
             {
                 if (curtainWallsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + enclosuresScope.CurtainWalls[x].BHoM_Guid + " Within EnclosuresScope CurtainWalls does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)enclosuresScope.CurtainWalls[x]).BHoM_Guid + " Within EnclosuresScope CurtainWalls does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 curtainWallsResults[x] = new GlobalWarmingPotentialResult(curtainWallsResults[x].ObjectId, curtainWallsResults[x].ResultCase, curtainWallsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.CurtainWall, curtainWallsResults[x].EnvironmentalProductDeclaration, (curtainWallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -270,12 +270,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(curtainWallsResults);
 
             //EnclosuresScope Windows
-            List<LifeCycleAssessmentElementResult> windowsResults = enclosuresScope.Windows.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> windowsResults = enclosuresScope.Windows.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < windowsResults.Count; x++)
             {
                 if (windowsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + enclosuresScope.Windows[x].BHoM_Guid + " Within EnclosuresScope Windows does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)enclosuresScope.Windows[x]).BHoM_Guid + " Within EnclosuresScope Windows does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 windowsResults[x] = new GlobalWarmingPotentialResult(windowsResults[x].ObjectId, windowsResults[x].ResultCase, windowsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.Window, windowsResults[x].EnvironmentalProductDeclaration, (windowsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -283,12 +283,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(windowsResults);
 
             //EnclosuresScope Doors
-            List<LifeCycleAssessmentElementResult> doorsResults = enclosuresScope.Doors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> doorsResults = enclosuresScope.Doors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < doorsResults.Count; x++)
             {
                 if (doorsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + enclosuresScope.Doors[x].BHoM_Guid + " Within EnclosuresScope Doors does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)enclosuresScope.Doors[x]).BHoM_Guid + " Within EnclosuresScope Doors does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 doorsResults[x] = new GlobalWarmingPotentialResult(doorsResults[x].ObjectId, doorsResults[x].ResultCase, doorsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.Wall, doorsResults[x].EnvironmentalProductDeclaration, (doorsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -296,12 +296,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(doorsResults);
 
             //Enclosures AdditionalObjects
-            List<LifeCycleAssessmentElementResult> additionalObjectsResults = enclosuresScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> additionalObjectsResults = enclosuresScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < additionalObjectsResults.Count; x++)
             {
                 if (additionalObjectsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + enclosuresScope.AdditionalObjects[x].BHoM_Guid + " Within EnclosuresScope AdditionalObjects does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)enclosuresScope.AdditionalObjects[x]).BHoM_Guid + " Within EnclosuresScope AdditionalObjects does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 additionalObjectsResults[x] = new GlobalWarmingPotentialResult(additionalObjectsResults[x].ObjectId, additionalObjectsResults[x].ResultCase, additionalObjectsResults[x].TimeStep, ObjectScope.Enclosure, ObjectCategory.AdditionalObjects, additionalObjectsResults[x].EnvironmentalProductDeclaration, (additionalObjectsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -329,7 +329,7 @@ namespace BH.Engine.LifeCycleAssessment
             //MechanicalScope
 
             //MechanicalScope Ducts
-            List<LifeCycleAssessmentElementResult> ductResults = mepScope.MechanicalScope.Ducts.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as Duct, field)).ToList();
+            List<LifeCycleAssessmentElementResult> ductResults = mepScope.MechanicalScope.Ducts.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < ductResults.Count; x++)
             {
                 if (ductResults[x] == null)
@@ -342,12 +342,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(ductResults);
 
             //MechanicalScope Equipment
-            List<LifeCycleAssessmentElementResult> mechanicalEquipmentResults = mepScope.MechanicalScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> mechanicalEquipmentResults = mepScope.MechanicalScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < mechanicalEquipmentResults.Count; x++)
             {
                 if (mechanicalEquipmentResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Mechanical Equipment object " + mepScope.MechanicalScope.Equipment[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Mechanical Equipment object " + ((IBHoMObject)mepScope.MechanicalScope.Equipment[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 mechanicalEquipmentResults[x] = new GlobalWarmingPotentialResult(mechanicalEquipmentResults[x].ObjectId, mechanicalEquipmentResults[x].ResultCase, mechanicalEquipmentResults[x].TimeStep, ObjectScope.Mechanical, ObjectCategory.Equipment, mechanicalEquipmentResults[x].EnvironmentalProductDeclaration, (mechanicalEquipmentResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -355,7 +355,7 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(mechanicalEquipmentResults);
 
             //MechanicalScope Pipes
-            List<LifeCycleAssessmentElementResult> pipingResults = mepScope.MechanicalScope.Pipes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as Pipe, field)).ToList();
+            List<LifeCycleAssessmentElementResult> pipingResults = mepScope.MechanicalScope.Pipes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < pipingResults.Count; x++)
             {
                 if (pipingResults[x] == null)
@@ -368,12 +368,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(pipingResults);
 
             //MechanicalScope AdditionalObjects
-            List<LifeCycleAssessmentElementResult> additionalMechanicalObjectsResults = mepScope.MechanicalScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> additionalMechanicalObjectsResults = mepScope.MechanicalScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < additionalMechanicalObjectsResults.Count; x++)
             {
                 if (additionalMechanicalObjectsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Additional Mechanical object " + mepScope.MechanicalScope.AdditionalObjects[x].BHoM_Guid + " within MechanicalScope does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Additional Mechanical object " + ((IBHoMObject)mepScope.MechanicalScope.AdditionalObjects[x]).BHoM_Guid + " within MechanicalScope does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 additionalMechanicalObjectsResults[x] = new GlobalWarmingPotentialResult(additionalMechanicalObjectsResults[x].ObjectId, additionalMechanicalObjectsResults[x].ResultCase, additionalMechanicalObjectsResults[x].TimeStep, ObjectScope.Mechanical, ObjectCategory.AdditionalObjects, additionalMechanicalObjectsResults[x].EnvironmentalProductDeclaration, (additionalMechanicalObjectsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -383,12 +383,12 @@ namespace BH.Engine.LifeCycleAssessment
             //ElectricalScope
 
             //ElectricalScope Batteries
-            List<LifeCycleAssessmentElementResult> batteriesResults = mepScope.ElectricalScope.Batteries.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> batteriesResults = mepScope.ElectricalScope.Batteries.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < batteriesResults.Count; x++)
             {
                 if (batteriesResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Battery object " + mepScope.ElectricalScope.Batteries[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Battery object " + ((IBHoMObject)mepScope.ElectricalScope.Batteries[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 batteriesResults[x] = new GlobalWarmingPotentialResult(batteriesResults[x].ObjectId, batteriesResults[x].ResultCase, batteriesResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.Battery, batteriesResults[x].EnvironmentalProductDeclaration, (batteriesResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -396,12 +396,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(batteriesResults);
 
             //ElectricalScope CableTray
-            List<LifeCycleAssessmentElementResult> cableTrayResults = mepScope.ElectricalScope.CableTrays.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> cableTrayResults = mepScope.ElectricalScope.CableTrays.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < cableTrayResults.Count; x++)
             {
                 if (cableTrayResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("CableTray object " + mepScope.ElectricalScope.CableTrays[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("CableTray object " + ((IBHoMObject)mepScope.ElectricalScope.CableTrays[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 cableTrayResults[x] = new GlobalWarmingPotentialResult(cableTrayResults[x].ObjectId, cableTrayResults[x].ResultCase, cableTrayResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.CableTray, cableTrayResults[x].EnvironmentalProductDeclaration, (cableTrayResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -409,12 +409,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(cableTrayResults);
 
             //ElectricalScope Conduit
-            List<LifeCycleAssessmentElementResult> conduitResults = mepScope.ElectricalScope.Conduit.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> conduitResults = mepScope.ElectricalScope.Conduit.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < conduitResults.Count; x++)
             {
                 if (conduitResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Conduit object " + mepScope.ElectricalScope.Conduit[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Conduit object " + ((IBHoMObject)mepScope.ElectricalScope.Conduit[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 conduitResults[x] = new GlobalWarmingPotentialResult(conduitResults[x].ObjectId, conduitResults[x].ResultCase, conduitResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.Conduit, conduitResults[x].EnvironmentalProductDeclaration, (conduitResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -422,12 +422,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(conduitResults);
 
             //ElectricalScope Equipment
-            List<LifeCycleAssessmentElementResult> electricalEquipmentResults = mepScope.ElectricalScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> electricalEquipmentResults = mepScope.ElectricalScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < electricalEquipmentResults.Count; x++)
             {
                 if (conduitResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Electrical Equipment object " + mepScope.ElectricalScope.Equipment[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Electrical Equipment object " + ((IBHoMObject)mepScope.ElectricalScope.Equipment[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 electricalEquipmentResults[x] = new GlobalWarmingPotentialResult(electricalEquipmentResults[x].ObjectId, electricalEquipmentResults[x].ResultCase, electricalEquipmentResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.Equipment, electricalEquipmentResults[x].EnvironmentalProductDeclaration, (electricalEquipmentResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -435,12 +435,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(electricalEquipmentResults);
 
             //ElectricalScope Generator
-            List<LifeCycleAssessmentElementResult> generatorResults = mepScope.ElectricalScope.Generators.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> generatorResults = mepScope.ElectricalScope.Generators.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < generatorResults.Count; x++)
             {
                 if (generatorResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Generator object " + mepScope.ElectricalScope.Generators[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Generator object " + ((IBHoMObject)mepScope.ElectricalScope.Generators[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 generatorResults[x] = new GlobalWarmingPotentialResult(generatorResults[x].ObjectId, generatorResults[x].ResultCase, generatorResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.Generator, generatorResults[x].EnvironmentalProductDeclaration, (generatorResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -448,12 +448,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(generatorResults);
 
             //ElectricalScope Lighting
-            List<LifeCycleAssessmentElementResult> lightingResults = mepScope.ElectricalScope.LightFixtures.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> lightingResults = mepScope.ElectricalScope.LightFixtures.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < lightingResults.Count; x++)
             {
                 if (lightingResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Light Fixture object" + mepScope.ElectricalScope.LightFixtures[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Light Fixture object" + ((IBHoMObject)mepScope.ElectricalScope.LightFixtures[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 lightingResults[x] = new GlobalWarmingPotentialResult(lightingResults[x].ObjectId, lightingResults[x].ResultCase, lightingResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.LightFixtures, lightingResults[x].EnvironmentalProductDeclaration, (lightingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -461,7 +461,7 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(lightingResults);
 
             //ElectricalScope Wiring
-            List<LifeCycleAssessmentElementResult> wiringResults = mepScope.ElectricalScope.WireSegments.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as WireSegment, field)).ToList();
+            List<LifeCycleAssessmentElementResult> wiringResults = mepScope.ElectricalScope.WireSegments.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < wiringResults.Count; x++)
             {
                 if (wiringResults[x] == null)
@@ -474,12 +474,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(wiringResults);
 
             //ElectricalScope AdditionalObjects
-            List<LifeCycleAssessmentElementResult> additionalElectricalObjectsResults = mepScope.ElectricalScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> additionalElectricalObjectsResults = mepScope.ElectricalScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < additionalElectricalObjectsResults.Count; x++)
             {
                 if (additionalElectricalObjectsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Additional Electrical object " + mepScope.ElectricalScope.AdditionalObjects[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Additional Electrical object " + ((IBHoMObject)mepScope.ElectricalScope.AdditionalObjects[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 additionalElectricalObjectsResults[x] = new GlobalWarmingPotentialResult(additionalElectricalObjectsResults[x].ObjectId, additionalElectricalObjectsResults[x].ResultCase, additionalElectricalObjectsResults[x].TimeStep, ObjectScope.Electrical, ObjectCategory.AdditionalObjects, additionalElectricalObjectsResults[x].EnvironmentalProductDeclaration, (additionalElectricalObjectsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -489,12 +489,12 @@ namespace BH.Engine.LifeCycleAssessment
             //PlumbingScope
 
             //PlumbingScope Equipment
-            List<LifeCycleAssessmentElementResult> plumbingEquipmentResults = mepScope.PlumbingScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> plumbingEquipmentResults = mepScope.PlumbingScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < plumbingEquipmentResults.Count; x++)
             {
                 if (plumbingEquipmentResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Plumbing Equipment object " + mepScope.PlumbingScope.Equipment[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Plumbing Equipment object " + ((IBHoMObject)mepScope.PlumbingScope.Equipment[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 plumbingEquipmentResults[x] = new GlobalWarmingPotentialResult(plumbingEquipmentResults[x].ObjectId, plumbingEquipmentResults[x].ResultCase, plumbingEquipmentResults[x].TimeStep, ObjectScope.Plumbing, ObjectCategory.Equipment, plumbingEquipmentResults[x].EnvironmentalProductDeclaration, (plumbingEquipmentResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -502,12 +502,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(plumbingEquipmentResults);
 
             //PlumbingScope Pipes
-            List<LifeCycleAssessmentElementResult> plumbingPipingResults = mepScope.PlumbingScope.Pipes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as Pipe, field)).ToList();
+            List<LifeCycleAssessmentElementResult> plumbingPipingResults = mepScope.PlumbingScope.Pipes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < plumbingPipingResults.Count; x++)
             {
                 if (plumbingPipingResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Plumbing Pipe object " + mepScope.PlumbingScope.Pipes[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Plumbing Pipe object " + ((IBHoMObject)mepScope.PlumbingScope.Pipes[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 plumbingPipingResults[x] = new GlobalWarmingPotentialResult(plumbingPipingResults[x].ObjectId, plumbingPipingResults[x].ResultCase, plumbingPipingResults[x].TimeStep, ObjectScope.Plumbing, ObjectCategory.Pipes, plumbingPipingResults[x].EnvironmentalProductDeclaration, (plumbingPipingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -515,12 +515,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(plumbingPipingResults);
 
             //PlumbingScope AdditionalObjects
-            List<LifeCycleAssessmentElementResult> additionalPlumbingObjectsResults = mepScope.PlumbingScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> additionalPlumbingObjectsResults = mepScope.PlumbingScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < additionalPlumbingObjectsResults.Count; x++)
             {
                 if (additionalPlumbingObjectsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Additional Plumbing object " + mepScope.PlumbingScope.AdditionalObjects[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Additional Plumbing object " + ((IBHoMObject)mepScope.PlumbingScope.AdditionalObjects[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 additionalPlumbingObjectsResults[x] = new GlobalWarmingPotentialResult(additionalPlumbingObjectsResults[x].ObjectId, additionalPlumbingObjectsResults[x].ResultCase, additionalPlumbingObjectsResults[x].TimeStep, ObjectScope.Plumbing, ObjectCategory.AdditionalObjects, additionalPlumbingObjectsResults[x].EnvironmentalProductDeclaration, (additionalPlumbingObjectsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -530,12 +530,12 @@ namespace BH.Engine.LifeCycleAssessment
             //FireProtectionScope
 
             //FireProtectionScope Equipment
-            List<LifeCycleAssessmentElementResult> fireProtectionEquipmentResults = mepScope.FireProtectionScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as BHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> fireProtectionEquipmentResults = mepScope.FireProtectionScope.Equipment.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < fireProtectionEquipmentResults.Count; x++)
             {
                 if (fireProtectionEquipmentResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Fire Protection Equipment object " + mepScope.FireProtectionScope.Equipment[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Fire Protection Equipment object " + ((IBHoMObject)mepScope.FireProtectionScope.Equipment[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 fireProtectionEquipmentResults[x] = new GlobalWarmingPotentialResult(fireProtectionEquipmentResults[x].ObjectId, fireProtectionEquipmentResults[x].ResultCase, fireProtectionEquipmentResults[x].TimeStep, ObjectScope.FireProtection, ObjectCategory.Equipment, fireProtectionEquipmentResults[x].EnvironmentalProductDeclaration, (fireProtectionEquipmentResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -556,12 +556,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(fireProtectionPipesResults);
 
             //FireProtectionScope Sprinklers
-            List<LifeCycleAssessmentElementResult> fireProtectionSprinklersResults = mepScope.FireProtectionScope.Sprinklers.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as BHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> fireProtectionSprinklersResults = mepScope.FireProtectionScope.Sprinklers.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < fireProtectionSprinklersResults.Count; x++)
             {
                 if (fireProtectionSprinklersResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Sprinkler object " + mepScope.FireProtectionScope.Sprinklers[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Sprinkler object " + ((IBHoMObject)mepScope.FireProtectionScope.Sprinklers[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 fireProtectionSprinklersResults[x] = new GlobalWarmingPotentialResult(fireProtectionSprinklersResults[x].ObjectId, fireProtectionSprinklersResults[x].ResultCase, fireProtectionSprinklersResults[x].TimeStep, ObjectScope.FireProtection, ObjectCategory.Sprinklers, fireProtectionSprinklersResults[x].EnvironmentalProductDeclaration, (fireProtectionSprinklersResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -569,12 +569,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(fireProtectionSprinklersResults);
 
             //FireProtectionScope AdditionalObjects
-            List<LifeCycleAssessmentElementResult> additionalFireProtectionObjectsResults = mepScope.FireProtectionScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> additionalFireProtectionObjectsResults = mepScope.FireProtectionScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < additionalFireProtectionObjectsResults.Count; x++)
             {
                 if (additionalFireProtectionObjectsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Additional Fire Protection object " + mepScope.FireProtectionScope.AdditionalObjects[x].BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Additional Fire Protection object " + ((IBHoMObject)mepScope.FireProtectionScope.AdditionalObjects[x]).BHoM_Guid + " does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 additionalFireProtectionObjectsResults[x] = new GlobalWarmingPotentialResult(additionalFireProtectionObjectsResults[x].ObjectId, additionalFireProtectionObjectsResults[x].ResultCase, additionalFireProtectionObjectsResults[x].TimeStep, ObjectScope.FireProtection, ObjectCategory.AdditionalObjects, additionalFireProtectionObjectsResults[x].EnvironmentalProductDeclaration, (additionalFireProtectionObjectsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -600,12 +600,12 @@ namespace BH.Engine.LifeCycleAssessment
             List<LifeCycleAssessmentElementResult> results = new List<LifeCycleAssessmentElementResult>();
 
             //TI Ceilings
-            List<LifeCycleAssessmentElementResult> ceilingResults = tenantImprovementScope.Ceiling.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> ceilingResults = tenantImprovementScope.Ceiling.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < ceilingResults.Count; x++)
             {
                 if (ceilingResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.Ceiling[x].BHoM_Guid + " Within TentantImprovementScope Ceilings does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.Ceiling[x]).BHoM_Guid + " Within TentantImprovementScope Ceilings does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 ceilingResults[x] = new GlobalWarmingPotentialResult(ceilingResults[x].ObjectId, ceilingResults[x].ResultCase, ceilingResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.Ceiling, ceilingResults[x].EnvironmentalProductDeclaration, (ceilingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -613,12 +613,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(ceilingResults);
 
             //TI Finishes
-            List<LifeCycleAssessmentElementResult> finishResults = tenantImprovementScope.Finishes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> finishResults = tenantImprovementScope.Finishes.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < finishResults.Count; x++)
             {
                 if (finishResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.Finishes[x].BHoM_Guid + " Within TentantImprovementScope Finishes does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.Finishes[x]).BHoM_Guid + " Within TentantImprovementScope Finishes does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 finishResults[x] = new GlobalWarmingPotentialResult(finishResults[x].ObjectId, finishResults[x].ResultCase, finishResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.Finishes, finishResults[x].EnvironmentalProductDeclaration, (finishResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -626,12 +626,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(finishResults);
 
             //TI Furniture
-            List<LifeCycleAssessmentElementResult> furnitureResults = tenantImprovementScope.Furniture.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> furnitureResults = tenantImprovementScope.Furniture.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < furnitureResults.Count; x++)
             {
                 if (furnitureResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.Furniture[x].BHoM_Guid + " Within TentantImprovementScope Furniture does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.Furniture[x]).BHoM_Guid + " Within TentantImprovementScope Furniture does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 furnitureResults[x] = new GlobalWarmingPotentialResult(furnitureResults[x].ObjectId, furnitureResults[x].ResultCase, furnitureResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.Furniture, furnitureResults[x].EnvironmentalProductDeclaration, (furnitureResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -639,12 +639,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(furnitureResults);
 
             //TI Interior Doors
-            List<LifeCycleAssessmentElementResult> intDoorsResults = tenantImprovementScope.InteriorDoors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> intDoorsResults = tenantImprovementScope.InteriorDoors.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < intDoorsResults.Count; x++)
             {
                 if (intDoorsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.InteriorDoors[x].BHoM_Guid + " Within TentantImprovementScope InteriorDoors does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.InteriorDoors[x]).BHoM_Guid + " Within TentantImprovementScope InteriorDoors does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 intDoorsResults[x] = new GlobalWarmingPotentialResult(intDoorsResults[x].ObjectId, intDoorsResults[x].ResultCase, intDoorsResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.InteriorDoor, intDoorsResults[x].EnvironmentalProductDeclaration, (intDoorsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -652,12 +652,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(intDoorsResults);
 
             //TI Interior Glazing
-            List<LifeCycleAssessmentElementResult> intGlazingResults = tenantImprovementScope.InteriorGlazing.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> intGlazingResults = tenantImprovementScope.InteriorGlazing.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < intGlazingResults.Count; x++)
             {
                 if (intGlazingResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.InteriorGlazing[x].BHoM_Guid + " Within TentantImprovementScope InteriorGlazing does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.InteriorGlazing[x]).BHoM_Guid + " Within TentantImprovementScope InteriorGlazing does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 intGlazingResults[x] = new GlobalWarmingPotentialResult(intGlazingResults[x].ObjectId, intGlazingResults[x].ResultCase, intGlazingResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.InteriorGlazing, intGlazingResults[x].EnvironmentalProductDeclaration, (intGlazingResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -665,12 +665,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(intGlazingResults);
 
             //TI Partition Walls
-            List<LifeCycleAssessmentElementResult> partWallsResults = tenantImprovementScope.PartitionWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> partWallsResults = tenantImprovementScope.PartitionWalls.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < partWallsResults.Count; x++)
             {
                 if (partWallsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.PartitionWalls[x].BHoM_Guid + " Within TentantImprovementScope PartitionWalls does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.PartitionWalls[x]).BHoM_Guid + " Within TentantImprovementScope PartitionWalls does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 partWallsResults[x] = new GlobalWarmingPotentialResult(partWallsResults[x].ObjectId, partWallsResults[x].ResultCase, partWallsResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.PartitionWall, partWallsResults[x].EnvironmentalProductDeclaration, (partWallsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
@@ -678,12 +678,12 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(partWallsResults);
 
             //TI AdditionalObjects
-            List<LifeCycleAssessmentElementResult> additionalObjectsResults = tenantImprovementScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x as IBHoMObject, field)).ToList();
+            List<LifeCycleAssessmentElementResult> additionalObjectsResults = tenantImprovementScope.AdditionalObjects.Select(x => EvaluateEnvironmentalProductDeclarationPerObject(x, field)).ToList();
             for (int x = 0; x < additionalObjectsResults.Count; x++)
             {
                 if (additionalObjectsResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Object " + tenantImprovementScope.AdditionalObjects[x].BHoM_Guid + " Within TenantImprovementScope AdditionalObjects does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Object " + ((IBHoMObject)tenantImprovementScope.AdditionalObjects[x]).BHoM_Guid + " Within TenantImprovementScope AdditionalObjects does not contain a valid IEnvironmentalProductDeclaration MaterialFragment.");
                     continue;
                 }
                 additionalObjectsResults[x] = new GlobalWarmingPotentialResult(additionalObjectsResults[x].ObjectId, additionalObjectsResults[x].ResultCase, additionalObjectsResults[x].TimeStep, ObjectScope.TenantImprovement, ObjectCategory.AdditionalObjects, additionalObjectsResults[x].EnvironmentalProductDeclaration, (additionalObjectsResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);

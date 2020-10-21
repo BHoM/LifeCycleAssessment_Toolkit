@@ -20,13 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Dimensional;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -36,49 +36,46 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the photochemical ozone creation potential of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("obj", "The BHoM Object to calculate the Photochemical Ozone Creation Potential (kg O3). This method requires the object's volume to be stored in CustomData under a 'Volume' key.")]
-        [Input("epdData", "BHoM Data object with a valid value for photochemical ozone creation potential stored in CustomData under an 'PhotochemicalOzoneCreationPotential' key.")]
-        [Output("photochemicalOzoneCreationPotential", "The relative abilities of volatile organic compounds (VOCs) to produce ground level ozone (or Ethene) measured in kg/O3e.")]
-
-        public static double PhotochemicalOzoneCreationPotential(BHoMObject obj, CustomObject epdData)
+        [Description("Calculates the PhotochemicalOzoneCreationPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
+        [Input("elementM", "The IElementM Object to calculate the PhotochemicalOzoneCreationPotential.")]
+        [Input("epd", "BHoM Data object with a valid value for PhotochemicalOzoneCreationPotential.")]
+        [Output("photochemicalOzoneCreationPotential", "Photochemical Ozone Creation Potential, measured in kgO3 equivalents, refers to emissions which contribute to the formation of ground-level smog.")]
+        public static double PhotochemicalOzoneCreationPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
-            double volume, density, photochemicalOzoneCreationPotential;
+            QuantityType qt = epd.QuantityType;
 
-            if (obj.CustomData.ContainsKey("Volume"))
+            if (qt != QuantityType.Mass)
             {
-                volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
+                Reflection.Compute.RecordError("This method only works with Mass-based QuantityType EPDs. Please provide a different EPD.");
+                return double.NaN;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The BHoMObject must have a valid volume stored in CustomData under a 'Volume' key.");
-                return 0;
-            }
+                double volume = elementM.ISolidVolume();
+                double density = epd.Density;
+                double photochemicalOzoneCreationPotential = System.Convert.ToDouble(epd.PhotochemicalOzoneCreationPotential);
 
-            if (epdData.CustomData.ContainsKey("Density"))
-            {
-                density = System.Convert.ToDouble(epdData.CustomData["Density"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for density under a 'Density' key.");
-                return 0;
-            }
+                if (volume <= 0 || volume == double.NaN)
+                {
+                    Reflection.Compute.RecordError("Volume cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    return double.NaN;
+                }
 
-            if (epdData.CustomData.ContainsKey("PhotochemicalOzoneCreationPotential"))
-            {
-                photochemicalOzoneCreationPotential = System.Convert.ToDouble(epdData.CustomData["PhotochemicalOzoneCreationPotential"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for photochemical ozone creation potential stored in CustomData under an 'PhotochemicalOzoneCreationPotential' key.");
-                return 0;
-            }
+                if (density <= 0 || density == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for Density");
+                    return double.NaN;
+                }
 
-            return volume * density * photochemicalOzoneCreationPotential;
+                if (photochemicalOzoneCreationPotential <= 0 || photochemicalOzoneCreationPotential == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for PhotochemicalOzoneCreationPotential");
+                    return double.NaN;
+                }
+
+                return volume * density * photochemicalOzoneCreationPotential;
+            }
         }
-
         /***************************************************/
-
     }
 }

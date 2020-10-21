@@ -20,12 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -36,18 +33,18 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Returns End of Life processing information contained within an EPD dataset.")]
-        [Input("epdData", "Environmental Product Declaration of a specific material from an EPD Dataset.")]
+        [Input("epd", "Environmental Product Declaration of a specific material from an EPD Dataset.")]
         [Output("materialEndOfLifeTreatment", "End of Life treatment per material. This includes all data collected for LCA stages C1-C4 within a provided EPD dataset.")]
-        public static string MaterialEndOfLifeTreatment(CustomObject epdData)
+        public static string MaterialEndOfLifeTreatment(IEnvironmentalProductDeclarationData epd)
         {
-            if (epdData.CustomData.ContainsKey("TreatmentEOL"))
+            if (epd.EndOfLifeTreatment == null)
             {
-                return (string)epdData.CustomData["TreatmentEOL"];
+                BH.Engine.Reflection.Compute.RecordError("The EPD does not contain any EOL data.");
+                return null;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for Treatment EOL under a 'TreatmentEOL' key.");
-                return "No data to record. Please provide missing data within 'TreatmentEOL' key.";
+                return epd.EndOfLifeTreatment;
             }
         }
         /***************************************************/

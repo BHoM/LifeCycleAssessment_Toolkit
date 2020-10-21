@@ -20,13 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Dimensional;
+using BH.Engine.Matter;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -36,49 +36,46 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the depletion of abiotic resources of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("obj", "The BHoM Object to calculate the depletion of abiotic resources (kg Antimony). This method requires the object's volume to be stored in CustomData under a 'Volume' key.")]
-        [Input("epdData", "BHoM Data object with a valid value for depletion of abiotic resources stored in CustomData under an 'DepletionofAbioticResources' key.")]
-        [Output("depletionOfAbioticResources", "The amount of depletion of non-renewable material resources measured in Sb (Antimony).")]
-        public static double DepletionOfAbioticResources(BHoMObject obj, CustomObject epdData)
+        [Description("Calculates the DepletionOfAbioticResources of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
+        [Input("elementM", "The IElementM Object to calculate the DepletionOfAbioticResources.")]
+        [Input("epd", "BHoM Data object with a valid value for DepletionOfAbioticResources.")]
+        [Output("depletionOfAbioticResources", "Depletion of Abiotic Resources refers to non-renewable resources such as minerals, clay, and peat measured in kg Sb (antimony) equivalent.")]
+        public static double DepletionOfAbioticResources(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
-            double volume, density, depletionOfAbioticResources;
+            QuantityType qt = epd.QuantityType;
 
-            if (obj.CustomData.ContainsKey("Volume"))
+            if (qt != QuantityType.Mass)
             {
-                volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
+                Reflection.Compute.RecordError("This method only works with Mass-based QuantityType EPDs. Please provide a different EPD.");
+                return double.NaN;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The BHoMObject must have a valid volume stored in CustomData under a 'Volume' key.");
-                return 0;
-            }
+                double volume = elementM.ISolidVolume();
+                double density = epd.Density;
+                double depletionOfAbioticResources = System.Convert.ToDouble(epd.DepletionOfAbioticResources);
 
-            if (epdData.CustomData.ContainsKey("Density"))
-            {
-                density = System.Convert.ToDouble(epdData.CustomData["Density"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for density under a 'Density' key.");
-                return 0;
-            }
+                if (volume <= 0 || volume == double.NaN)
+                {
+                    Reflection.Compute.RecordError("Volume cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    return double.NaN;
+                }
 
-            if (epdData.CustomData.ContainsKey("DepletionOfAbioticResources"))
-            {
-                depletionOfAbioticResources = System.Convert.ToDouble(epdData.CustomData["DepletionOfAbioticResources"]);
+                if (density <= 0 || density == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for Density");
+                    return double.NaN;
+                }
+
+                if (depletionOfAbioticResources <= 0 || depletionOfAbioticResources == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for DepletionOfAbioticResources");
+                    return double.NaN;
+                }
+
+                return volume * density * depletionOfAbioticResources;
             }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for Depletion of Abiotic Resources stored in CustomData under an 'DepletionOfAbioticResources' key.");
-                return 0;
-            }
-
-            return volume * density * depletionOfAbioticResources;
-
-
             /***************************************************/
-
         }
     }
 }

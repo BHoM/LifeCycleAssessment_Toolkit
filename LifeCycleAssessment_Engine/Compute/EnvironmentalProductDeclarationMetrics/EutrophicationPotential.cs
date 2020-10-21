@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Dimensional;
+using BH.Engine.Matter;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -35,50 +36,46 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the eutrophication potential of a BHoM Object based on explicitly defined volume and Environmental Product Declaration dataset.")]
-        [Input("obj", "The BHoM Object to calculate the eutrophication potential (kg N or SO4). This method requires the object's volume to be stored in CustomData under a 'Volume' key.")]
-        [Input("epdData", "BHoM Data object with a valid value for eutrophication potential stored in CustomData under an 'EutrophicationPotential' key.")]
-        [Output("eutrophicationPotential", "The pollution state of aquatic ecosystems in which the over-fertilization of water and soil has turned into an increased growth of biomass measured in kg/PO4e.")]
-        public static double EutrophicationPotential(BHoMObject obj, CustomObject epdData)
+        [Description("Calculates the EutrophicationPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
+        [Input("elementM", "The IElementM Object to calculate the EutrophicationPotential.")]
+        [Input("epd", "BHoM Data object with a valid value for EutrophicationPotential.")]
+        [Output("eutrophicationPotential", "Eutrophication, measured in kg N equivalents, refers to emissions of nutrients like nitrogen and phosphorus causing overfertilization, leading to overgrowth of biomass that depresses oxygen levels and suffocates ecosystems.")]
+        public static double EutrophicationPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
-            double volume = 0.0;
-            double density = 0.0;
-            double eutrophicationPotential = 0.0;
+            QuantityType qt = epd.QuantityType;
 
-            if (obj.CustomData.ContainsKey("Volume"))
+            if (qt != QuantityType.Mass)
             {
-                volume = System.Convert.ToDouble(obj.CustomData["Volume"]);
+                Reflection.Compute.RecordError("This method only works with Mass-based QuantityType EPDs. Please provide a different EPD.");
+                return double.NaN;
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("The BHoMObject must have a valid volume stored in CustomData under a 'Volume' key.");
-                return 0;
-            }
+                double volume = elementM.ISolidVolume();
+                double density = epd.Density;
+                double eutrophicationPotential = System.Convert.ToDouble(epd.EutrophicationPotential);
 
-            if (epdData.CustomData.ContainsKey("Density"))
-            {
-                density = System.Convert.ToDouble(epdData.CustomData["Density"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for density under a 'Density' key.");
-                return 0;
-            }
+                if (volume <= 0 || volume == double.NaN)
+                {
+                    Reflection.Compute.RecordError("Volume cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    return double.NaN;
+                }
 
-            if (epdData.CustomData.ContainsKey("EutrophicationPotential"))
-            {
-                eutrophicationPotential = System.Convert.ToDouble(epdData.CustomData["EutrophicationPotential"]);
-            }
-            else
-            {
-                BH.Engine.Reflection.Compute.RecordError("The EPDDataset must have a valid value for eutrophication potential stored in CustomData under an 'EutrophicationPotential' key.");
-                return 0;
-            }
+                if (density <= 0 || density == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for Density");
+                    return double.NaN;
+                }
 
-            return volume * density * eutrophicationPotential;
+                if (eutrophicationPotential <= 0 || eutrophicationPotential == double.NaN)
+                {
+                    Reflection.Compute.RecordError("EPD does not contain a value for EutrophicationPotential");
+                    return double.NaN;
+                }
+
+                return volume * density * eutrophicationPotential;
+            }
         }
-
         /***************************************************/
-
     }
 }
