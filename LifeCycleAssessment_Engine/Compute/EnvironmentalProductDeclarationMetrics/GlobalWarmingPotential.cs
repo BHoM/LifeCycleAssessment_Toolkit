@@ -40,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "The IElementM Object to calculate the GlobalWarmingPotential.")]
         [Input("epd", "BHoM Data object with a valid value for GlobalWarmingPotential.")]
         [Output("globalWarmingPotential", "Global Warming Potential, expressed in kgCO2e, refers to the emissions of carbon dioxide, methane and other gases that contribute to the greenhouse effect and global warming.")]
+        [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.GlobalWarmingPotential(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double GlobalWarmingPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
             QuantityType qt = epd.QuantityType;

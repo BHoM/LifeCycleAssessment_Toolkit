@@ -40,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "The IElementM Object to calculate the DepletionOfAbioticResources.")]
         [Input("epd", "BHoM Data object with a valid value for DepletionOfAbioticResources.")]
         [Output("depletionOfAbioticResources", "Depletion of Abiotic Resources refers to non-renewable resources such as minerals, clay, and peat measured in kg Sb (antimony) equivalent.")]
+        [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.DepletionOfAbioticResources(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double DepletionOfAbioticResources(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
             QuantityType qt = epd.QuantityType;

@@ -40,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "The IElementM Object to calculate the DepletionOfAbioticResourcesFossilFuels.")]
         [Input("epd", "BHoM Data object with a valid value for DepletionOfAbioticResourcesFossilFuels.")]
         [Output("depletionOfAbioticResourcesFossilFuels", "Depletion of non-renewable Abiotic Resources (fossil fuels) measured in Methyl Jasmonate.")]
+        [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.DepletionOfAbioticResourcesFossilFuels(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double DepletionOfAbioticResourcesFossilFuels(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
             QuantityType qt = epd.QuantityType;
