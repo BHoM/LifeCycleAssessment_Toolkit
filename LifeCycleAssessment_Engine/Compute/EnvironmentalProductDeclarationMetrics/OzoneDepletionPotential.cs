@@ -41,7 +41,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Calculates the OzoneDepletionPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
         [Input("elementM", "The IElementM Object to calculate the OzoneDepletionPotential.")]
-        [Input("epd", "BHoM Data object with a valid value for OzoneDepletionPotential.")]
+        [Input("epd", "A BHoM Environmental Product Declaration object with a valid value for OzoneDepletionPotential.")]
         [Output("ozoneDepletionPotential", "Ozone Depletion Potential, measured in kg CFC-11 equivalents, refers to emissions which contribute to the depletion of the stratospheric ozone layer.")]
         [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.OzoneDepletionPotential(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double OzoneDepletionPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
