@@ -38,7 +38,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Calculates the AcidificationPotential of a BHoM Object based on a Mass-based QuantityType Environmental Product Declaration dataset.")]
         [Input("elementM", "The IElementM Object to calculate the acidification potential.")]
-        [Input("epdData", "BHoM Data object with a valid value for acidification potential.")]
+        [Input("epd", "A BHoM Environmental Product Declaration object with a valid value for acidification potential.")]
         [Output("acidificationPotential", "Acidification, measured in kgSO2e, refers to emissions which increase the H+ ions in the environment causing a decrease in pH. Potential effects include fish mortality, forest decline, and the deterioration of building materials.")]
         [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.AcidificationPotential(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double AcidificationPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
