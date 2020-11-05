@@ -20,26 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
-using BH.oM.Quantities.Attributes;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Physical.Elements;
-using BH.oM.Dimensional;
-
-using BH.Engine.Base;
-using BH.Engine.Reflection;
-using BH.Engine.Spatial;
-using BH.Engine.Matter;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Structure.Requests;
-using System.Security.Cryptography.X509Certificates;
-using System.Net;
 
 namespace BH.Engine.LifeCycleAssessment
 {
