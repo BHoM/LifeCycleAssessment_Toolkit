@@ -52,7 +52,9 @@ namespace BH.Engine.LifeCycleAssessment
             }
             else
             {
-                double epdVal = (elementM as IBHoMObject).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().GetEvaluationValue(field);
+                double area = (elementM as IElement2D).Area();
+                double epdVal = elementM.GetEvaluationValue(field);
+                double quantity = area * epdVal;
 
                 if (epdVal <= 0 || epdVal == double.NaN)
                 {
@@ -60,15 +62,11 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                double area = (elementM as IElement2D).Area();
-
                 if (area <= 0 || area == double.NaN)
                 {
                     BH.Engine.Reflection.Compute.RecordError("Area cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
                     return null;
                 }
-
-                double quantity = area * epdVal;
 
                 return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }

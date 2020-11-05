@@ -20,20 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
-using BH.Engine.Base;
-using BH.Engine.Reflection;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -65,7 +58,17 @@ namespace BH.Engine.LifeCycleAssessment
             if (elementM == null)
                 return oM.LifeCycleAssessment.QuantityType.Undefined;
 
-            return ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault().QuantityType;
+            QuantityType qt = elementM.IMaterialComposition().Materials.Select(x =>
+            {
+                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                if (epd != null)
+                    return epd.QuantityType;
+                return oM.LifeCycleAssessment.QuantityType.Undefined;
+            }).Where(x => x != null).FirstOrDefault();
+
+            return qt;
         }
+
+        /***************************************************/
     }
 }
