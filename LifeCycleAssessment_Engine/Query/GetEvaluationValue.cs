@@ -24,10 +24,12 @@ using System.ComponentModel;
 using System.Linq;
 using BH.Engine.Base;
 using BH.oM.Base;
+using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.MEP.Elements;
 using BH.oM.Reflection.Attributes;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -61,6 +63,26 @@ namespace BH.Engine.LifeCycleAssessment
                 default:
                     return double.NaN;
             }
+        }
+
+        /***************************************************/
+
+        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EPD object.")]
+        [Input("elementM", "An IElementM object used to calculate EPD metric.")]
+        [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        public static double GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
+        {
+            if (elementM == null)
+                return double.NaN;
+
+            double epdVal = elementM.IMaterialComposition().Materials.Select(x =>
+            {
+                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+
+                return GetEvaluationValue(epd, field);
+            }).Sum();
+
+            return epdVal;
         }
 
         /***************************************************/
