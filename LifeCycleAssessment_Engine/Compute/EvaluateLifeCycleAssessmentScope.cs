@@ -29,6 +29,10 @@ using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.MEP.System;
+<<<<<<< HEAD
+=======
+using BH.oM.Dimensional;
+>>>>>>> Save point
 
 namespace BH.Engine.LifeCycleAssessment
 {
