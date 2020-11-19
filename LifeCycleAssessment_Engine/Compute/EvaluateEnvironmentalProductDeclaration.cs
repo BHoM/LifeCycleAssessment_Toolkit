@@ -32,7 +32,7 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Elements;
 using BH.oM.Dimensional;
-
+using BH.Engine.Physical;
 using BH.Engine.Base;
 using BH.Engine.Reflection;
 using BH.Engine.Spatial;
@@ -53,6 +53,16 @@ namespace BH.Engine.LifeCycleAssessment
         [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationPerObject(BH.oM.Base.IBHoMObject, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
+            if(elementM is BulkSolids)
+            {
+                if (elementM.IMaterialComposition() == null)
+                {
+                    Engine.Reflection.Compute.RecordError("The BulkSolids does not contain a materialComposition. The objects must have a materialComposition if you wish to evaluate material properties.");
+                    return null;
+                }
+                //QuantityType qt = (BulkSolids)elementM.IMaterialComposition().Materials.Select(x => BH.Engine.Physical.Query.MaterialComposition);
+            }
+            
             QuantityType qt = elementM.QuantityType();
             
             switch (qt)

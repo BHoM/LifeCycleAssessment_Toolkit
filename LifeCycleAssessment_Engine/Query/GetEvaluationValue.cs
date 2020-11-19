@@ -26,7 +26,7 @@ using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.LifeCycleAssessment

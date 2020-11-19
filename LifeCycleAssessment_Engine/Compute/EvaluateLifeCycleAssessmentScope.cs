@@ -28,7 +28,7 @@ using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.MEP.Elements;
+using BH.oM.MEP.System;
 using BH.oM.Dimensional;
 
 namespace BH.Engine.LifeCycleAssessment
