@@ -30,6 +30,7 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.MEP.System;
 using BH.oM.Reflection.Attributes;
 using BH.Engine.Matter;
+using System.Collections.Generic;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -67,20 +68,32 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EPD object.")]
-        [Input("elementM", "An IElementM object used to calculate EPD metric.")]
+        [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
+        [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
         public static double GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
         {
             if (elementM == null)
                 return double.NaN;
 
+            List<QuantityType> qt = new List<QuantityType>() { QuantityType(elementM) };
+
             double epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
-
+                qt.Add(epd.QuantityType);
                 return GetEvaluationValue(epd, field);
+
             }).Sum();
+
+            qt = qt.Distinct().ToList();
+            int qtCount = qt.Count;
+
+            if (qtCount > 1)
+            {
+                Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object " + ((IBHoMObject)elementM).BHoM_Guid + ".");
+                return 0;
+            }
 
             return epdVal;
         }
