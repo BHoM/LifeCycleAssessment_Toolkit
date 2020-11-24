@@ -58,10 +58,13 @@ namespace BH.Engine.LifeCycleAssessment
             switch (qt)
             {
                 case QuantityType.Area:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Area QuantityType.");
                     return EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
                 case QuantityType.Volume:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Volume QuantityType.");
                     return EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
                 case QuantityType.Mass:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Mass QuantityType.");
                     return EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
                 default:        
                     BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
