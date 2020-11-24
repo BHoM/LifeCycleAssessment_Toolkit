@@ -47,7 +47,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (elementM.QuantityType() != QuantityType.Volume)
             {
-                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's declared unit type is not Volume. Please supply a Volume-based EPD or try a different method.");
+                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Volume. Please supply a Volume-based EPD or try a different method.");
                 return null;
             }
             else
