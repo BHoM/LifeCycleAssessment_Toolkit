@@ -42,16 +42,16 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("bulkSolids", "BulkSolids are any object not currently formatted as a standard BHoM object (i.e. bars, floors, or panels), but can host a MaterialComposition for material based analysis.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateBulkSolids(BulkSolids bulkSolids, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        public static LifeCycleAssessmentElementResult EvaluateBulkSolids(SolidBulk solidBulk, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            QuantityType qt = bulkSolids.QuantityType();
+            QuantityType qt = solidBulk.QuantityType();
 
             switch (qt)
             {
                 case QuantityType.Volume:
-                    return EvaluateBulkSolidsByVolume(bulkSolids, field);
+                    return EvaluateBulkSolidsByVolume(solidBulk, field);
                 case QuantityType.Mass:
-                    return EvaluateBulkSolidsByMass(bulkSolids, field);
+                    return EvaluateBulkSolidsByMass(solidBulk, field);
                 default:
                     BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                     return null;

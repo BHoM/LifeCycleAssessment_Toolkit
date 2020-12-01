@@ -53,7 +53,7 @@ namespace BH.Engine.LifeCycleAssessment
         [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationPerObject(BH.oM.Base.IBHoMObject, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if(elementM is BulkSolids)
+            if(elementM is SolidBulk)
             {
                 if (elementM.IMaterialComposition() == null)
                 {
