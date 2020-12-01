@@ -76,7 +76,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (elementM == null)
                 return double.NaN;
 
-            List<QuantityType> qt = new List<QuantityType>() { QuantityType(elementM) };
+            List<QuantityType> qt = new List<QuantityType>() { GetFragmentQuantityType(elementM) };
 
             double epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {

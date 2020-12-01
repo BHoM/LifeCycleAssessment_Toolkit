@@ -45,7 +45,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByArea(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (elementM.QuantityType() != QuantityType.Area)
+            if (elementM.GetFragmentQuantityType() != QuantityType.Area)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Area. Please supply an Area-based EPD or try a different method.");
                 return null;

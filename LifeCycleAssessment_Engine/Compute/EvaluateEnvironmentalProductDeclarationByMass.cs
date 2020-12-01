@@ -45,7 +45,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (elementM.QuantityType() != QuantityType.Mass)
+            if (elementM.GetFragmentQuantityType() != QuantityType.Mass)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Mass. Please supply a Mass-based EPD or try a different method.");
                 return null;

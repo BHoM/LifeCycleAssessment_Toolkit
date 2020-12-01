@@ -44,7 +44,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
         public static LifeCycleAssessmentElementResult EvaluateBulkSolids(SolidBulk solidBulk, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            QuantityType qt = solidBulk.QuantityType();
+            QuantityType qt = solidBulk.GetFragmentQuantityType();
 
             switch (qt)
             {

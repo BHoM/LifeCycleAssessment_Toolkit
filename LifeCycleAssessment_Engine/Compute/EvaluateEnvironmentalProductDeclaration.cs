@@ -63,7 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
                 //QuantityType qt = (BulkSolids)elementM.IMaterialComposition().Materials.Select(x => BH.Engine.Physical.Query.MaterialComposition);
             }
             
-            QuantityType qt = elementM.QuantityType();
+            QuantityType qt = elementM.GetFragmentQuantityType();
             
             switch (qt)
             {

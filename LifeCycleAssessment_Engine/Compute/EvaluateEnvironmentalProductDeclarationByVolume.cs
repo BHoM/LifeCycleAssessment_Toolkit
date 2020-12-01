@@ -45,7 +45,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByVolume(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (elementM.QuantityType() != QuantityType.Volume)
+            if (elementM.GetFragmentQuantityType() != QuantityType.Volume)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Volume. Please supply a Volume-based EPD or try a different method.");
                 return null;
