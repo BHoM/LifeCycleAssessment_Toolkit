@@ -91,7 +91,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (qtCount > 1)
             {
-                Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object " + ((IBHoMObject)elementM).BHoM_Guid + ".");
+                Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object type: " + ((IBHoMObject)elementM).GetType() + ".");
                 return 0;
             }
 

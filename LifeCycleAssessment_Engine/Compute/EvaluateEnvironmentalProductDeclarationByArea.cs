@@ -30,6 +30,7 @@ using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Dimensional;
 using BH.Engine.Base;
 using BH.Engine.Spatial;
+using BH.oM.Physical.Elements;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -52,6 +53,12 @@ namespace BH.Engine.LifeCycleAssessment
             }
             else
             {
+                if (elementM is SolidBulk || elementM is ExplicitBulk)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("Element of type: " + elementM.GetType() + " does not support area-based evaluations, which is required based on your current EPD assignment.\n Please review the EPD QuantityType and confirm that your objects are compatible.");
+                    return null;
+                }
+
                 double area = (elementM as IElement2D).Area();
                 double epdVal = elementM.GetEvaluationValue(field);
                 double quantityTypeValue = elementM.GetQuantityTypeValue();              

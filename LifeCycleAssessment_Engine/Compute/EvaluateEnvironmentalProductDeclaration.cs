@@ -53,56 +53,32 @@ namespace BH.Engine.LifeCycleAssessment
         [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationPerObject(BH.oM.Base.IBHoMObject, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if(elementM is SolidBulk)
+            QuantityType qt = elementM.GetFragmentQuantityType();
+
+            switch (qt)
             {
-                if (elementM.IMaterialComposition() == null)
-                {
-                    Engine.Reflection.Compute.RecordError("The SolidBulk objects do not contain a materialComposition. The objects must have a materialComposition if you wish to evaluate material properties.");
+                case QuantityType.Undefined:
+                    BH.Engine.Reflection.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
                     return null;
-                }
-                return EvaluateSolidBulk(elementM as SolidBulk, field);
-            }
-            
-            if(elementM is ExplicitBulk)
-            {
-                if (elementM.IMaterialComposition() == null)
-                {
-                    Engine.Reflection.Compute.RecordError("The ExplicitBulk objects do not contain a materialComposition. The objects must have a materialComposition if you wish to evaluate material properties.");
+                case QuantityType.Item:
+                    BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
                     return null;
-                }
-                return EvaluateExplicitBulk(elementM as ExplicitBulk, field);
+                case QuantityType.Length:
+                    BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
+                    return null;
+                case QuantityType.Area:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
+                    return EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
+                case QuantityType.Volume:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
+                    return EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
+                case QuantityType.Mass:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
+                    return EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
+                default:
+                    BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
+                    return null;
             }
-
-            else
-            {
-                QuantityType qt = elementM.GetFragmentQuantityType();
-
-                switch (qt)
-                {
-                    case QuantityType.Undefined:
-                        BH.Engine.Reflection.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
-                        return null;
-                    case QuantityType.Item:
-                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
-                        return null;
-                    case QuantityType.Length:
-                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
-                        return null;
-                    case QuantityType.Area:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Area QuantityType.");
-                        return EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
-                    case QuantityType.Volume:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Volume QuantityType.");
-                        return EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
-                    case QuantityType.Mass:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Mass QuantityType.");
-                        return EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
-                    default:
-                        BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
-                        return null;
-                }
-            }
-
         }
         /***************************************************/
     }

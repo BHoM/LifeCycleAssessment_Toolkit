@@ -135,13 +135,7 @@
     <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\DepletionOfAbioticResources.cs" />
     <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\GlobalWarmingPotential.cs" />
     <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\PhotochemicalOzoneCreationPotential.cs" />
-    <Compile Include="Compute\EvaluateExplicitBulk.cs" />
-    <Compile Include="Compute\EvaluateSolidBulk.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByArea.cs" />
-    <Compile Include="Compute\EvaluateExplicitBulkByMass.cs" />
-    <Compile Include="Compute\EvaluateSolidBulkByMass.cs" />
-    <Compile Include="Compute\EvaluateExplicitBulkByVolume.cs" />
-    <Compile Include="Compute\EvaluateSolidBulkByVolume.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByVolume.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByMass.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
