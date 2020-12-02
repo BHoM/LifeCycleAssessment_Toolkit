@@ -88,16 +88,23 @@ namespace BH.Engine.LifeCycleAssessment
 
             }).ToList();
 
+            //Division of GWP constant by QTV
+            List<double> normalisedEpdVal = new List<double>();
+
+            for (int x = 0; x < epdVal.Count; x++)
+                normalisedEpdVal.Add(epdVal[x] / quantityTypeValue[x]);
+
             qt = qt.Distinct().ToList();
             int qtCount = qt.Count;
 
+            //Do not allow for conflicting QuantityTypes
             if (qtCount > 1)
             {
                 Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object type: " + ((IBHoMObject)elementM).GetType() + ".");
                 return new List<double>();
             }
 
-            return epdVal;
+            return normalisedEpdVal;
         }
 
         /***************************************************/
