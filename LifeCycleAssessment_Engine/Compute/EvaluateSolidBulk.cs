@@ -34,24 +34,38 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("This method calculates the results of any selected metric within an Environmental Product Declaration for a Bulk Solid./n" +
-            "This compute method will determine whether to solve by Volume or by Mass depending on the EPD QuantityType value./n" +
-            "If Volume QuantityType is used, the SolidVolume of the geometry will be utilised./n" +
-            "If Mass QuantityType is used, the Element's mass will be calculated based on the MaterialComposition's density values and the SolidVolume./n" +
-            "All values can be assessed at any point by using the appropriate element query methods (i.e. Mass(BulkSolids), or SolidVolume(BulkSolids)).")]
-        [Input("bulkSolids", "BulkSolids are any object not currently formatted as a standard BHoM object (i.e. bars, floors, or panels), but can host a MaterialComposition for material based analysis.")]
+        [Description("This method calculates the results of any selected metric within an Environmental Product Declaration for a SolidBulk.\n" +
+            "This compute method will determine whether to solve by Volume or by Mass depending on the EPD QuantityType value.\n" +
+            "If Volume QuantityType is used, the SolidVolume of the geometry will be utilised in the calculation.\n" +
+            "If Mass QuantityType is used, the Element's mass will be calculated based on the MaterialComposition's density values.\n" +
+            "All values can be assessed at any point by using the appropriate element query methods (i.e. Mass(SolidBulk), or SolidVolume(SolidBulk)).")]
+        [Input("solidBulk", "SolidBulks are any object not currently formatted as a standard BHoM object (i.e. bars, floors, or panels), but can host a MaterialComposition for material based analysis.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateBulkSolids(SolidBulk solidBulk, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        public static LifeCycleAssessmentElementResult EvaluateSolidBulk(SolidBulk solidBulk, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
             QuantityType qt = solidBulk.GetFragmentQuantityType();
 
             switch (qt)
             {
-                case QuantityType.Volume:
-                    return EvaluateBulkSolidsByVolume(solidBulk, field);
+                case QuantityType.Undefined:
+                    BH.Engine.Reflection.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
+                    return null;
+                case QuantityType.Area:
+                    BH.Engine.Reflection.Compute.RecordError("EvaluateSolidBulk currently only supports EPD evaluation based on Volume or Mass QuantityTypes.");
+                    return null;
+                case QuantityType.Item:
+                    BH.Engine.Reflection.Compute.RecordError("EvaluateSolidBulk currently only supports EPD evaluation based on Volume or Mass QuantityTypes.");
+                    return null;
+                case QuantityType.Length:
+                    BH.Engine.Reflection.Compute.RecordError("EvaluateSolidBulk currently only supports EPD evaluation based on Volume or Mass QuantityTypes.");
+                    return null;
                 case QuantityType.Mass:
-                    return EvaluateBulkSolidsByMass(solidBulk, field);
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Mass QuantityType.");
+                    return EvaluateSolidBulkByMass(solidBulk, field);
+                case QuantityType.Volume:
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Volume QuantityType.");
+                    return EvaluateSolidBulkByVolume(solidBulk, field);
                 default:
                     BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                     return null;

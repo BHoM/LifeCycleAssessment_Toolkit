@@ -39,11 +39,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityType value from any IEnvironmentalProductDeclarationData object.")]
         [Input("epd", "IEnvironmentalProductDeclarationData object from which to query.")]
         [Output("quantityType", "The quantityType value from the provided IEPD.")]
-        public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
+        public static QuantityType GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
         {
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
+                BH.Engine.Reflection.Compute.RecordError("No EPD provided.");
             }
             return epd.QuantityType;
         }

@@ -54,7 +54,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 double volume = elementM.ISolidVolume();
                 double epdVal = elementM.GetEvaluationValue(field);
-                double quantity = volume * epdVal;
+                double quantityTypeValue = elementM.GetQuantityTypeValue();
 
                 if (epdVal <= 0 || epdVal == double.NaN)
                 {
@@ -68,7 +68,15 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+                if (quantityTypeValue != 1)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote($"Using QuantityTypeValue of {quantityTypeValue} taken from EPD.");
+                    epdVal /= quantityTypeValue;
+                }
+
+                double quantity = volume * epdVal;
+
+                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }
         }
 
