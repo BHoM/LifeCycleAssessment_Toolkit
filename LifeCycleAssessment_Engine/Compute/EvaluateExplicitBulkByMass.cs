@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("This method calculates the total value of the selected environmental impact metric.\n" +
             "This compute method functions by multiplying the object's Mass by the EPD environmental impact metric.\n" +
             "Mass is derived from the materialComposition's density values.")]
-        [Input("bulkSolids", "BulkSolids are any object not currently formatted as a standard BHoM object (i.e. bars, floors, or panels), but can host a MaterialComposition for material based analysis.")]
+        [Input("explicitBulk", "ExplicitBulk objects are any object not currently formatted as a standard BHoM object (i.e. bars, floors, or panels), but can host a MaterialComposition for material based analysis along with a Volume quantity attribute.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static GlobalWarmingPotentialResult EvaluateExplicitBulkByMass(ExplicitBulk explicitBulk = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
