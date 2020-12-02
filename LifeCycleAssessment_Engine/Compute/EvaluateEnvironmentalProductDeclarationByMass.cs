@@ -22,6 +22,7 @@
 
 using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
@@ -53,12 +54,16 @@ namespace BH.Engine.LifeCycleAssessment
             else
             {
                 double mass = elementM.Mass();
-                double epdVal = elementM.GetEvaluationValue(field);
-                double quantityTypeValue = elementM.GetQuantityTypeValue();
+                List<double> epdVal = elementM.GetEvaluationValue(field);
+                List<double> massByRatio = elementM.IMaterialComposition().Ratios.Select(x => mass * x).ToList();
+                List<double> gwpByMaterial = new List<double>();
 
-                if (epdVal <= 0 || epdVal == double.NaN)
+                for (int x = 0; x < epdVal.Count; x++)
+                    gwpByMaterial.Add(epdVal[x] * massByRatio[x]);
+
+                if (epdVal.Sum() <= 0 || epdVal == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD."); 
+                    BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
                 }
 
@@ -68,13 +73,7 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                if (quantityTypeValue != 1)
-                {
-                    BH.Engine.Reflection.Compute.RecordNote($"Using QuantityTypeValue of {quantityTypeValue} taken from EPD.");
-                    epdVal /= quantityTypeValue;
-                }
-
-                double quantity = mass * epdVal;
+                double quantity = gwpByMaterial.Sum();
 
                 return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }

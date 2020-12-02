@@ -21,6 +21,7 @@
  */
 
 using System.ComponentModel;
+using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Dimensional;
@@ -58,18 +59,18 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityTypeValue from any object with a valid construction with Environmental Product Declaration MaterialFragmments.")]
         [Input("elementM", "The IElementM Object to query.")]
         [Output("quantityTypeValue", "The quantityTypeValue property from the IElementM.")]
-        public static double GetQuantityTypeValue(this IElementM elementM)
+        public static List<double> GetQuantityTypeValue(this IElementM elementM)
         {
             if (elementM == null)
-                return 1;
+                return new List<double>();
 
-            double qtv = elementM.IMaterialComposition().Materials.Select(x =>
+            List<double> qtv = elementM.IMaterialComposition().Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
                 if (epd != null)
                     return epd.QuantityTypeValue;
                 return 1;
-            }).Where(x => x != null).FirstOrDefault();
+            }).Where(x => x != null).ToList();
 
             return qtv;
         }

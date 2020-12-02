@@ -71,20 +71,22 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
         [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
-        public static double GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
+        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
         {
             if (elementM == null)
-                return double.NaN;
+                return new List<double>();
+
+            List<double> quantityTypeValue = elementM.GetQuantityTypeValue();
 
             List<QuantityType> qt = new List<QuantityType>() { GetFragmentQuantityType(elementM) };
 
-            double epdVal = elementM.IMaterialComposition().Materials.Select(x =>
+            List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
                 qt.Add(epd.QuantityType);
                 return GetEvaluationValue(epd, field);
 
-            }).Sum();
+            }).ToList();
 
             qt = qt.Distinct().ToList();
             int qtCount = qt.Count;
@@ -92,7 +94,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (qtCount > 1)
             {
                 Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object type: " + ((IBHoMObject)elementM).GetType() + ".");
-                return 0;
+                return new List<double>();
             }
 
             return epdVal;
