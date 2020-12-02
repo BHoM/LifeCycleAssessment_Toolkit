@@ -46,22 +46,17 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
         public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByArea(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (elementM.GetFragmentQuantityType() != QuantityType.Area)
+            if (elementM is IElement2D)
             {
-                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Area. Please supply an Area-based EPD or try a different method.");
-                return null;
-            }
-            else
-            {
-                if (elementM is SolidBulk || elementM is ExplicitBulk)
+                if (elementM.GetFragmentQuantityType() != QuantityType.Area)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Element of type: " + elementM.GetType() + " does not support area-based evaluations, which is required based on your current EPD assignment.\n Please review the EPD QuantityType and confirm that your objects are compatible.");
+                    BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Area. Please supply an Area-based EPD or try a different method.");
                     return null;
                 }
 
                 double area = (elementM as IElement2D).Area();
                 double epdVal = elementM.GetEvaluationValue(field);
-                double quantityTypeValue = elementM.GetQuantityTypeValue();              
+                double quantityTypeValue = elementM.GetQuantityTypeValue();
 
                 if (epdVal <= 0 || epdVal == double.NaN)
                 {
@@ -84,6 +79,11 @@ namespace BH.Engine.LifeCycleAssessment
                 double quantity = area * epdVal;
 
                 return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+            }
+            else
+            {
+                BH.Engine.Reflection.Compute.RecordError("Area-based evaluations are not supported for objects of type: " + elementM.GetType() + ".");
+                return null;
             }
         }
 
