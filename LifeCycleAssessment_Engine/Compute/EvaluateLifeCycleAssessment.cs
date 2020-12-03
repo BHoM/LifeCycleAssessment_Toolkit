@@ -50,7 +50,7 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(lca.MEPScope.EvaluateLifeCycleAssessmentScope(field));
             results.AddRange(lca.TenantImprovementScope.EvaluateLifeCycleAssessmentScope(field));
 
-            return new LifeCycleAssessmentResult(lca.BHoM_Guid, "GWP", 0, lca.LifeCycleAssessmentScope, new System.Collections.ObjectModel.ReadOnlyCollection<LifeCycleAssessmentElementResult>(results), results.TotalGlobalWarmingPotential());
+            return new LifeCycleAssessmentResult(lca.BHoM_Guid, field, 0, lca.LifeCycleAssessmentScope, new System.Collections.ObjectModel.ReadOnlyCollection<LifeCycleAssessmentElementResult>(results), results.TotalGlobalWarmingPotential());
         }
         /***************************************************/
     }

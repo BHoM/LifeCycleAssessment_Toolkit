@@ -20,19 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.oM.Base;
-using BH.Engine.Base;
+using System.Collections.Generic;
 using BH.oM.Reflection.Attributes;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.Quantities.Attributes;
-using BH.Engine.Reflection;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-
+using BH.oM.Dimensional;
 using BH.Engine.Matter;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -42,23 +36,45 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value.")]
-        [Input("epd", "The EPD object to query.")]
-        [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
-        public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
+        [Description("Query the QuantityTypeValue from any Environmental Product Declaration MaterialFragmment.")]
+        [Input("epd", "The EPD Object to query.")]
+        [Output("quantityTypeValue", "The quantityTypeValue property from the EPD.")]
+        public static double GetQuantityTypeValue(this IEnvironmentalProductDeclarationData epd)
         {
-            if (epd == null || epd.Density <= 0 || epd.Density == double.NaN)
+            if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("The Environmental Product Declaration Material Fragment does not contain a valid density.");
-                return 0;
+                BH.Engine.Reflection.Compute.RecordWarning("The Environmental Product Declaration QuantityTypeValue could not be assessed. Returning default value of 1.");
+                return 1;
             }
             else
             {
-                object density = 0.0;
-                density = System.Convert.ToDouble(epd.PropertyValue("Density"));
+                double qtv = epd.QuantityTypeValue;
 
-                return System.Convert.ToDouble(density);
+                return qtv;
             }
         }
+
+        /***************************************************/
+
+        [Description("Query the QuantityTypeValue from any object with a valid construction with Environmental Product Declaration MaterialFragmments.")]
+        [Input("elementM", "The IElementM Object to query.")]
+        [Output("quantityTypeValue", "The quantityTypeValue property from the IElementM.")]
+        public static List<double> GetQuantityTypeValue(this IElementM elementM)
+        {
+            if (elementM == null)
+                return new List<double>();
+
+            List<double> qtv = elementM.IMaterialComposition().Materials.Select(x =>
+            {
+                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                if (epd != null)
+                    return epd.QuantityTypeValue;
+                return 1;
+            }).Where(x => x != null).ToList();
+
+            return qtv;
+        }
+
+        /***************************************************/
     }
 }

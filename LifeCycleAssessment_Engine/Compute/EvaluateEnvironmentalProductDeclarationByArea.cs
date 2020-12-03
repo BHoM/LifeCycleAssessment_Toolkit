@@ -22,6 +22,7 @@
 
 using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
@@ -30,6 +31,8 @@ using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Dimensional;
 using BH.Engine.Base;
 using BH.Engine.Spatial;
+using BH.oM.Physical.Elements;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -42,21 +45,26 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("This method calculates the quantity of a supplied metric by querying Environmental Impact Metrics from the EPD materialFragment and the object's area.")]
         [Input("elementM", "An IElementM object used to calculate EPD metric.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
-        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
+        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
         public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByArea(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (elementM.QuantityType() != QuantityType.Area)
+            if (elementM is IElement2D)
             {
-                BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Area. Please supply an Area-based EPD or try a different method.");
-                return null;
-            }
-            else
-            {
-                double area = (elementM as IElement2D).Area();
-                double epdVal = elementM.GetEvaluationValue(field);
-                double quantity = area * epdVal;
+                if (elementM.GetFragmentQuantityType() != QuantityType.Area)
+                {
+                    BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Area. Please supply an Area-based EPD or try a different method.");
+                    return null;
+                }
 
-                if (epdVal <= 0 || epdVal == double.NaN)
+                double area = (elementM as IElement2D).Area();
+                List<double> epdVal = elementM.GetEvaluationValue(field);
+                List<double> areaByRatio = elementM.IMaterialComposition().Ratios.Select(x => area * x).ToList();
+                List<double> gwpByMaterial = new List<double>();
+
+                for (int x = 0; x < epdVal.Count; x++)
+                    gwpByMaterial.Add(epdVal[x] * areaByRatio[x]);
+
+                if (epdVal.Sum() <= 0 || epdVal == null)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
@@ -68,9 +76,17 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+                double quantity = gwpByMaterial.Sum();
+
+                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+            }
+            else
+            {
+                BH.Engine.Reflection.Compute.RecordError("Area-based evaluations are not supported for objects of type: " + elementM.GetType() + ".");
+                return null;
             }
         }
+
 
         /***************************************************/
     }
