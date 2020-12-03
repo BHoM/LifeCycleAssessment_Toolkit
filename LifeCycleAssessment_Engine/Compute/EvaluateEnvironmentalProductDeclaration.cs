@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,12 +31,11 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Elements;
 using BH.oM.Dimensional;
-
+using BH.Engine.Physical;
 using BH.Engine.Base;
 using BH.Engine.Reflection;
 using BH.Engine.Spatial;
 using BH.Engine.Matter;
-
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Compute
@@ -45,7 +43,6 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
         /****   Public Methods                          ****/
         /***************************************************/
-
         [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
@@ -53,20 +50,29 @@ namespace BH.Engine.LifeCycleAssessment
         [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationPerObject(BH.oM.Base.IBHoMObject, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            QuantityType qt = elementM.QuantityType();
-            
+            QuantityType qt = elementM.GetFragmentQuantityType();
+
             switch (qt)
             {
+                case QuantityType.Undefined:
+                    BH.Engine.Reflection.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
+                    return null;
+                case QuantityType.Item:
+                    BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
+                    return null;
+                case QuantityType.Length:
+                    BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
+                    return null;
                 case QuantityType.Area:
-                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Area QuantityType.");
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
                     return EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
                 case QuantityType.Volume:
-                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Volume QuantityType.");
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
                     return EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
                 case QuantityType.Mass:
-                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object based on EPD Mass QuantityType.");
+                    BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
                     return EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
-                default:        
+                default:
                     BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                     return null;
             }

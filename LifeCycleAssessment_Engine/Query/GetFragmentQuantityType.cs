@@ -39,7 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityType value from any IEnvironmentalProductDeclarationData object.")]
         [Input("epd", "IEnvironmentalProductDeclarationData object from which to query.")]
         [Output("quantityType", "The quantityType value from the provided IEPD.")]
-        public static object GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
+        public static QuantityType GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
         {
             if (epd == null)
             {
@@ -53,17 +53,17 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityType value from any IElementM object's Fragments.")]
         [Input("elementM", "The IElementM object from which to query the EPD's QuantityType value.")]
         [Output("quantityType", "The quantityType value from the provided IEPD.")]
-        public static QuantityType QuantityType(this IElementM elementM)
+        public static QuantityType GetFragmentQuantityType(this IElementM elementM)
         {
             if (elementM == null)
-                return oM.LifeCycleAssessment.QuantityType.Undefined;
+                return QuantityType.Undefined;
 
             QuantityType qt = elementM.IMaterialComposition().Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
                 if (epd != null)
                     return epd.QuantityType;
-                return oM.LifeCycleAssessment.QuantityType.Undefined;
+                return QuantityType.Undefined;
             }).Where(x => x != null).FirstOrDefault();
 
             return qt;

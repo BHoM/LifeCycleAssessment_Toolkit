@@ -22,6 +22,7 @@
 
 using System.Linq;
 using System.ComponentModel;
+using System.Collections.Generic;
 using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
@@ -42,10 +43,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("This method calculates the quantity of a supplied metric by querying Environmental Impact Metrics from the EPD materialFragment and the object's mass.")]
         [Input("elementM", "An IElementM object used to calculate EPD metric.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
-        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField")]
+        [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
         public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            if (elementM.QuantityType() != QuantityType.Mass)
+            if (elementM.GetFragmentQuantityType() != QuantityType.Mass)
             {
                 BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Mass. Please supply a Mass-based EPD or try a different method.");
                 return null;
@@ -53,12 +54,16 @@ namespace BH.Engine.LifeCycleAssessment
             else
             {
                 double mass = elementM.Mass();
-                double epdVal = elementM.GetEvaluationValue(field);
-                double quantity = mass * epdVal;
+                List<double> epdVal = elementM.GetEvaluationValue(field);
+                List<double> massByRatio = elementM.IMaterialComposition().Ratios.Select(x => mass * x).ToList();
+                List<double> gwpByMaterial = new List<double>();
 
-                if (epdVal <= 0 || epdVal == double.NaN)
+                for (int x = 0; x < epdVal.Count; x++)
+                    gwpByMaterial.Add(epdVal[x] * massByRatio[x]);
+
+                if (epdVal.Sum() <= 0 || epdVal == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD."); 
+                    BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
                 }
 
@@ -68,7 +73,10 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, "GWP", 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+                double quantity = gwpByMaterial.Sum();
+
+                return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
+
             }
         }
 

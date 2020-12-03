@@ -42,6 +42,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EPD object.")]
         [Input("epd", "Environmental Product Declaration to query the field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValue(this IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
         {
             if (epd == null)
@@ -71,31 +72,41 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
         [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
-        public static double GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
+        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
         {
             if (elementM == null)
-                return double.NaN;
+                return new List<double>();
 
-            List<QuantityType> qt = new List<QuantityType>() { QuantityType(elementM) };
+            List<double> quantityTypeValue = elementM.GetQuantityTypeValue();
 
-            double epdVal = elementM.IMaterialComposition().Materials.Select(x =>
+            List<QuantityType> qt = new List<QuantityType>() { GetFragmentQuantityType(elementM) };
+
+            List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
                 qt.Add(epd.QuantityType);
                 return GetEvaluationValue(epd, field);
 
-            }).Sum();
+            }).ToList();
+
+            //Division of GWP constant by QTV
+            List<double> normalisedEpdVal = new List<double>();
+
+            for (int x = 0; x < epdVal.Count; x++)
+                normalisedEpdVal.Add(epdVal[x] / quantityTypeValue[x]);
 
             qt = qt.Distinct().ToList();
             int qtCount = qt.Count;
 
+            //Do not allow for conflicting QuantityTypes
             if (qtCount > 1)
             {
-                Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object " + ((IBHoMObject)elementM).BHoM_Guid + ".");
-                return 0;
+                Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object type: " + ((IBHoMObject)elementM).GetType() + ".");
+                return new List<double>();
             }
 
-            return epdVal;
+            return normalisedEpdVal;
         }
 
         /***************************************************/
@@ -103,6 +114,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any Life Cycle Assessment Scope object to be used within a ProjectLifeCycleAssessment.")]
         [Input("lcaScope", "Scope to extract Environmental Product Declaration field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValue(this IBHoMObject lcaScope, EnvironmentalProductDeclarationField field)
         {
             return lcaScope.GetEvaluationValue(field);
@@ -113,6 +125,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any StructuresScope object to be used within a ProjectLifeCycleAssessment.")]
         [Input("structuresScope", "Scope to extract Environmental Product Declaration field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValueStructuresScope(this StructuresScope structuresScope, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
@@ -132,6 +145,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any FoundationsScope object to be used within a ProjectLifeCycleAssessment.")]
         [Input("foundationsScope", "Scope to extract Environmental Product Declaration field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValueFoundationsScope(this FoundationsScope foundationsScope, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
@@ -151,6 +165,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EnclosuresScope object to be used within a ProjectLifeCycleAssessment.")]
         [Input("enclosuresScope", "Scope to extract Environmental Product Declaration field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValueEnclosuresScope(this EnclosuresScope enclosuresScope, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
@@ -169,6 +184,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any MEPScope object to be used within a ProjectLifeCycleAssessment.")]
         [Input("mepScope", "Scope to extract Environmental Product Declaration field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValueMEPScope(this MEPScope mepScope, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
@@ -224,6 +240,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any TenantImprovementScope object to be used within a ProjectLifeCycleAssessment.")]
         [Input("tenantImprovementScope", "Scope to extract Environmental Product Declaration field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
         public static double GetEvaluationValueTenantImprovementScope(this TenantImprovementScope tenantImprovementScope, EnvironmentalProductDeclarationField field)
         {
             double val = 0;
