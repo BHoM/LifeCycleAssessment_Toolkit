@@ -74,7 +74,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Physical_Engine">
-      <HintPath>..\..\BHoM_Engine\Build\Physical_Engine.dll</HintPath>
+      <HintPath>C:\ProgramData\BHoM\Assemblies\Physical_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Physical_oM">
