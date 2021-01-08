@@ -35,7 +35,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns End of Life processing information contained within an EPD dataset.")]
         [Input("epd", "Environmental Product Declaration of a specific material from an EPD Dataset.")]
         [Output("materialEndOfLifeTreatment", "End of Life treatment per material. This includes all data collected for LCA stages C1-C4 within a provided EPD dataset.")]
-        [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.MaterialEndOfLife(BH.oM.Base.CustomObject)")]
         public static string MaterialEndOfLifeTreatment(IEnvironmentalProductDeclarationData epd)
         {
             if (epd.EndOfLifeTreatment == null)

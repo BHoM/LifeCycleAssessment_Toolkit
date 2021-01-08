@@ -40,7 +40,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "The IElementM Object to calculate the PhotochemicalOzoneCreationPotential.")]
         [Input("epd", "A BHoM Environmental Product Declaration object with a valid value for PhotochemicalOzoneCreationPotential.")]
         [Output("photochemicalOzoneCreationPotential", "Photochemical Ozone Creation Potential, measured in kgO3 equivalents, refers to emissions which contribute to the formation of ground-level smog.")]
-        [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.PhotochemicalOzoneCreationPotential(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double PhotochemicalOzoneCreationPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
             QuantityType qt = epd.QuantityType;
