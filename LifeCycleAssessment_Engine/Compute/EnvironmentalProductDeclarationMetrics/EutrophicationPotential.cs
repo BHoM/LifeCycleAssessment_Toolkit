@@ -40,7 +40,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "The IElementM Object to calculate the EutrophicationPotential.")]
         [Input("epd", "A BHoM Environmental Product Declaration object with a valid value for EutrophicationPotential.")]
         [Output("eutrophicationPotential", "Eutrophication, measured in kg N equivalents, refers to emissions of nutrients like nitrogen and phosphorus causing overfertilization, leading to overgrowth of biomass that depresses oxygen levels and suffocates ecosystems.")]
-        [PreviousVersion("4.0", "BH.Engine.LifeCycleAssessment.Compute.EutrophicationPotential(BH.oM.Base.BHoMObject, BH.oM.Base.CustomObject)")]
         public static double EutrophicationPotential(IElementM elementM, IEnvironmentalProductDeclarationData epd)
         {
             QuantityType qt = epd.QuantityType;
