@@ -27,6 +27,7 @@ using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.Engine.Matter;
+using System.Collections.Generic;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -53,18 +54,20 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityType value from any IElementM object's Fragments.")]
         [Input("elementM", "The IElementM object from which to query the EPD's QuantityType value.")]
         [Output("quantityType", "The quantityType value from the provided IEPD.")]
-        public static QuantityType GetFragmentQuantityType(this IElementM elementM)
+        public static List<QuantityType> GetFragmentQuantityType(this IElementM elementM)
         {
-            if (elementM == null)
-                return QuantityType.Undefined;
+            List<QuantityType> qt = new List<QuantityType>();
 
-            QuantityType qt = elementM.IMaterialComposition().Materials.Select(x =>
+            if (elementM == null)
+                return new List<QuantityType> { QuantityType.Undefined }; 
+
+            qt = elementM.IMaterialComposition().Materials.Where(x => x != null).Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
                 if (epd != null)
                     return epd.QuantityType;
                 return QuantityType.Undefined;
-            }).Where(x => x != null).FirstOrDefault();
+            }).ToList();
 
             return qt;
         }

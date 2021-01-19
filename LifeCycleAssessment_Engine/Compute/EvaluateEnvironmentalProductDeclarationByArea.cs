@@ -46,16 +46,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "An IElementM object used to calculate EPD metric.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
-        public static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByArea(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        private static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByArea(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
             if (elementM is IElement2D)
             {
-                if (elementM.GetFragmentQuantityType() != QuantityType.Area)
-                {
-                    BH.Engine.Reflection.Compute.RecordError("This EnvironmentalProductDeclaration's QuantityType is not Area. Please supply an Area-based EPD or try a different method.");
-                    return null;
-                }
-
                 double area = (elementM as IElement2D).Area();
                 List<double> epdVal = elementM.GetEvaluationValue(field);
                 List<double> areaByRatio = elementM.IMaterialComposition().Ratios.Select(x => area * x).ToList();
