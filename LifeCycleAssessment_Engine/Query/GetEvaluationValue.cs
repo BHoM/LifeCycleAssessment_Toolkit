@@ -80,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<double> quantityTypeValue = elementM.GetQuantityTypeValue();
 
-            List<QuantityType> qt = new List<QuantityType>() { GetFragmentQuantityType(elementM) };
+            List<QuantityType> qt = GetFragmentQuantityType(elementM);
 
             List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {
@@ -98,13 +98,6 @@ namespace BH.Engine.LifeCycleAssessment
 
             qt = qt.Distinct().ToList();
             int qtCount = qt.Count;
-
-            //Do not allow for conflicting QuantityTypes
-            if (qtCount > 1)
-            {
-                Engine.Reflection.Compute.RecordError("Only one QuantityType can be evaluated per object. Please find EPDs with the same QuantityType value if you wish to evaluate object type: " + ((IBHoMObject)elementM).GetType() + ".");
-                return new List<double>();
-            }
 
             return normalisedEpdVal;
         }
