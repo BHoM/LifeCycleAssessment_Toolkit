@@ -31,7 +31,7 @@ using BH.oM.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Modify
+    public static partial class Compute
     {
         public static List<LifeCycleAssessmentElementResult> Collapse(this Output<LifeCycleAssessmentElementResult, LifeCycleAssessmentElementResult, LifeCycleAssessmentElementResult> metric)
         {
