@@ -19,23 +19,13 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-using System;
+
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.oM.Base;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
-using BH.oM.Quantities.Attributes;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Physical.Elements;
 using BH.oM.Dimensional;
-using BH.Engine.Physical;
-using BH.Engine.Base;
-using BH.Engine.Reflection;
-using BH.Engine.Spatial;
-using BH.Engine.Matter;
 using BH.oM.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
@@ -66,12 +56,6 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.Undefined:
                         BH.Engine.Reflection.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
                         return null;
-                    case QuantityType.Item:
-                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
-                        return null;
-                    case QuantityType.Length:
-                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
-                        return null;
                     case QuantityType.Area:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
                         var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
@@ -79,6 +63,20 @@ namespace BH.Engine.LifeCycleAssessment
                             area = evalByArea;
                         else
                             area.GlobalWarmingPotential += evalByArea.GlobalWarmingPotential;
+                        break;
+                    case QuantityType.Item:
+                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
+                        return null;
+                    case QuantityType.Length:
+                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
+                        return null;
+                    case QuantityType.Mass:
+                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
+                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
+                        if (mass == null)
+                            mass = evalByMass;
+                        else
+                            mass.GlobalWarmingPotential += evalByMass.GlobalWarmingPotential;
                         break;
                     case QuantityType.Volume:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
@@ -88,14 +86,7 @@ namespace BH.Engine.LifeCycleAssessment
                         else
                             volume.GlobalWarmingPotential += evalByVolume.GlobalWarmingPotential;
                         break;
-                    case QuantityType.Mass:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
-                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
-                        if (mass == null)
-                            mass = evalByMass;
-                        else
-                            mass.GlobalWarmingPotential += evalByMass.GlobalWarmingPotential;
-                        break;
+
                     default:
                         BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                         return null;
