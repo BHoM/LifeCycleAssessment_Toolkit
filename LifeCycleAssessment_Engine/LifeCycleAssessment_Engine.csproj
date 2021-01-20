@@ -141,6 +141,7 @@
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Modify\Collapse.cs" />
+    <Compile Include="Query\GetQuantityType.cs" />
     <Compile Include="Query\GetQuantityTypeValue.cs" />
     <Compile Include="Query\MaterialEndOfLifeTreatment.cs" />
     <Compile Include="Compute\ReinforcementVolume.cs" />
