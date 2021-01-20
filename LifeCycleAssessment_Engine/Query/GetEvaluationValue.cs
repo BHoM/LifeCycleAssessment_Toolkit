@@ -80,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<double> quantityTypeValue = elementM.GetQuantityTypeValue();
 
-            List<QuantityType> qt = GetFragmentQuantityType(elementM);
+            List<QuantityType> qt = GetQuantityType(elementM);
 
             List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {

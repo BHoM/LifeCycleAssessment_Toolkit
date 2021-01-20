@@ -37,16 +37,25 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Query the QuantityType value from any IEnvironmentalProductDeclarationData object.")]
-        [Input("epd", "IEnvironmentalProductDeclarationData object from which to query.")]
-        [Output("quantityType", "The quantityType value from the provided IEPD.")]
-        public static QuantityType GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
+        [Description("Query the QuantityType values from any IElementM object's MaterialComposition.")]
+        [Input("elementM", "The IElementM object from which to query the EPD's QuantityType values.")]
+        [Output("quantityType", "The quantityType values from the IEnvironmentalProductDeclarationData objects found within the Element's MaterialComposition.")]
+        public static List<QuantityType> GetQuantityType(this IElementM elementM)
         {
-            if (epd == null)
+            List<QuantityType> qt = new List<QuantityType>();
+
+            if (elementM == null)
+                return new List<QuantityType> { QuantityType.Undefined }; 
+
+            qt = elementM.IMaterialComposition().Materials.Where(x => x != null).Select(x =>
             {
-                BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
-            }
-            return epd.QuantityType;
+                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                if (epd != null)
+                    return epd.QuantityType;
+                return QuantityType.Undefined;
+            }).ToList();
+
+            return qt;
         }
 
         /***************************************************/

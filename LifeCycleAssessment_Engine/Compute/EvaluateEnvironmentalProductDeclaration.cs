@@ -47,7 +47,7 @@ namespace BH.Engine.LifeCycleAssessment
             GlobalWarmingPotentialResult mass = null;
             GlobalWarmingPotentialResult volume = null;            
 
-            List<QuantityType> qts = elementM.GetFragmentQuantityType();
+            List<QuantityType> qts = elementM.GetQuantityType();
 
             foreach (QuantityType qt in qts)
             {
