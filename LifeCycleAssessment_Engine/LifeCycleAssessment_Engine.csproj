@@ -160,7 +160,9 @@
     <Compile Include="Query\GetEvaluationValue.cs" />
     <Compile Include="Query\TotalGlobalWarmingPotential.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Versioning_41.json" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
