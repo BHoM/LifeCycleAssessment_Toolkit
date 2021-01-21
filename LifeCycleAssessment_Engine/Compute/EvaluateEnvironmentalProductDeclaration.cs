@@ -38,14 +38,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
-        [MultiOutput(0, "resultPerArea", "The LCA result of the object being evaluated using an EPD with Area QuantityType.")]
-        [MultiOutput(1, "resultPerMass", "The LCA result of the object being evaluated using an EPD with Mass QuantityType")]
-        [MultiOutput(2, "resultPerVolume", "The LCA result of the object being evaluated using an EPD with Volume QuantityType")]
-        public static Output<LifeCycleAssessmentElementResult, LifeCycleAssessmentElementResult, LifeCycleAssessmentElementResult> EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
+        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            GlobalWarmingPotentialResult area = null;
-            GlobalWarmingPotentialResult mass = null;
-            GlobalWarmingPotentialResult volume = null;            
+            double value = 0;
+            GlobalWarmingPotentialResult gwpr = null;
 
             List<QuantityType> qts = elementM.GetQuantityType();
 
@@ -59,10 +56,9 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.Area:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
                         var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
-                        if (area == null)
-                            area = evalByArea;
-                        else
-                            area.GlobalWarmingPotential += evalByArea.GlobalWarmingPotential;
+                        value += evalByArea.GlobalWarmingPotential;
+                        if (gwpr == null)
+                            gwpr = evalByArea;
                         break;
                     case QuantityType.Item:
                         BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
@@ -73,32 +69,25 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.Mass:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
                         var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
-                        if (mass == null)
-                            mass = evalByMass;
-                        else
-                            mass.GlobalWarmingPotential += evalByMass.GlobalWarmingPotential;
+                        value += evalByMass.GlobalWarmingPotential;
+                        if (gwpr == null)
+                            gwpr = evalByMass;
                         break;
                     case QuantityType.Volume:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
                         var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
-                        if (volume == null)
-                            volume = evalByVolume;
-                        else
-                            volume.GlobalWarmingPotential += evalByVolume.GlobalWarmingPotential;
+                        value += evalByVolume.GlobalWarmingPotential;
+                        if (gwpr == null)
+                            gwpr = evalByVolume;
                         break;
-
                     default:
                         BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                         return null;
                 }
             }
 
-            return new Output<LifeCycleAssessmentElementResult, LifeCycleAssessmentElementResult, LifeCycleAssessmentElementResult>
-            {
-                Item1 = area,
-                Item2 = mass,
-                Item3 = volume,
-            };
+            gwpr.GlobalWarmingPotential = value;
+            return gwpr;
         }
         /***************************************************/
 
