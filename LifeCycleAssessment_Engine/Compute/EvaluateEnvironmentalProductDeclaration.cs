@@ -40,7 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclarationPerObject(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
             double value = 0;
             GlobalWarmingPotentialResult gwpr = null;
@@ -90,6 +90,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             gwpr.GlobalWarmingPotential = value;
+            gwpr.EnvironmentalProductDeclaration = elementM.GetElementEpd();
             return gwpr;
         }
         /***************************************************/

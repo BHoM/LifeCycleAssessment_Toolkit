@@ -141,6 +141,7 @@
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Query\GetElementDensity.cs" />
+    <Compile Include="Query\GetElementEpd.cs" />
     <Compile Include="Query\GetQuantityType.cs" />
     <Compile Include="Query\GetQuantityTypeValue.cs" />
     <Compile Include="Query\MaterialEndOfLifeTreatment.cs" />
