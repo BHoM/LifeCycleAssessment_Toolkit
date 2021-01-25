@@ -51,14 +51,19 @@ namespace BH.Engine.LifeCycleAssessment
             if (elementM is IElement2D)
             {
                 double area = (elementM as IElement2D).Area();
-                List<double> epdVal = elementM.GetEvaluationValue(field);
+                List<double> epdVal = elementM.GetEvaluationValue(field, QuantityType.Area);
                 List<double> areaByRatio = elementM.IMaterialComposition().Ratios.Select(x => area * x).ToList();
                 List<double> gwpByMaterial = new List<double>();
 
                 for (int x = 0; x < epdVal.Count; x++)
-                    gwpByMaterial.Add(epdVal[x] * areaByRatio[x]);
+                {
+                    if (double.IsNaN(epdVal[x]))
+                        gwpByMaterial.Add(double.NaN);
+                    else
+                        gwpByMaterial.Add(epdVal[x] * areaByRatio[x]);
+                }
 
-                if (epdVal.Sum() <= 0 || epdVal == null)
+                if (epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0 || epdVal == null)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
@@ -70,7 +75,7 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                double quantity = gwpByMaterial.Sum();
+                double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
                 return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, ((IBHoMObject)elementM).GetAllFragments().Where(y => typeof(IEnvironmentalProductDeclarationData).IsAssignableFrom(y.GetType())).Select(z => z as IEnvironmentalProductDeclarationData).FirstOrDefault(), quantity);
             }

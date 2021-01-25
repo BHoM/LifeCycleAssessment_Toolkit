@@ -73,20 +73,20 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
-        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field)
+        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, QuantityType type)
         {
             if (elementM == null)
                 return new List<double>();
 
-            List<double> quantityTypeValue = elementM.GetQuantityTypeValue();
-
-            List<QuantityType> qt = GetQuantityType(elementM);
+            List<double> quantityTypeValue = elementM.GetQuantityTypeValue(type);
 
             List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
-                qt.Add(epd.QuantityType);
-                return GetEvaluationValue(epd, field);
+                if (epd.QuantityType == type)
+                    return GetEvaluationValue(epd, field);
+                else
+                    return double.NaN;
 
             }).ToList();
 
@@ -94,10 +94,12 @@ namespace BH.Engine.LifeCycleAssessment
             List<double> normalisedEpdVal = new List<double>();
 
             for (int x = 0; x < epdVal.Count; x++)
-                normalisedEpdVal.Add(epdVal[x] / quantityTypeValue[x]);
-
-            qt = qt.Distinct().ToList();
-            int qtCount = qt.Count;
+            {
+                if (double.IsNaN(epdVal[x]))
+                    normalisedEpdVal.Add(double.NaN);
+                else
+                    normalisedEpdVal.Add(epdVal[x] / quantityTypeValue[x]);
+            }
 
             return normalisedEpdVal;
         }

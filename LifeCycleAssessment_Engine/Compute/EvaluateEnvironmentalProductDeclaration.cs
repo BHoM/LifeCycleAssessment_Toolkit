@@ -27,6 +27,7 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Dimensional;
 using BH.oM.Reflection;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -45,6 +46,8 @@ namespace BH.Engine.LifeCycleAssessment
             GlobalWarmingPotentialResult gwpr = null;
 
             List<QuantityType> qts = elementM.GetQuantityType();
+
+            qts = qts.Distinct().ToList();
 
             foreach (QuantityType qt in qts)
             {
