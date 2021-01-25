@@ -20,29 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.LifeCycleAssessment;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
+using BH.Engine.Matter;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
         /***************************************************/
-        /****   Public Methods                          ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Query the QuantityType value from any IEnvironmentalProductDeclarationData object.")]
-        [Input("epd", "IEnvironmentalProductDeclarationData object from which to query.")]
-        [Output("quantityType", "The quantityType value from the provided IEPD.")]
-        public static QuantityType GetFragmentQuantityType(this IEnvironmentalProductDeclarationData epd)
+        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
+        [Input("elementM", "A IElementM from which to query the EPD.")]
+        [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
+        public static List<IEnvironmentalProductDeclarationData> GetElementEpd(this IElementM elementM)
         {
+            if (elementM == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("No IElementM was provided.");
+            }
+
+            if (elementM.IMaterialComposition() == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("The provided element does not have a MaterialComposition.");
+            }
+
+            List<IEnvironmentalProductDeclarationData> epd = elementM.IMaterialComposition().Materials.Select(x => x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData).ToList();
+
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("The input object must have a Volume property for this method to work.");
+                BH.Engine.Reflection.Compute.RecordError("No EPD Material was found within the object's MaterialComposition.");
             }
-            return epd.QuantityType;
+
+            return epd;
         }
 
         /***************************************************/
