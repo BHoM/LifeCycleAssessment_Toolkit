@@ -20,19 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
-using System.ComponentModel;
-using System.Collections.Generic;
+using BH.Engine.Base;
+using BH.Engine.Matter;
+using BH.Engine.Spatial;
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Dimensional;
-using BH.Engine.Base;
-using BH.Engine.Spatial;
-using BH.oM.Physical.Elements;
-using BH.Engine.Matter;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -63,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
                         gwpByMaterial.Add(epdVal[x] * areaByRatio[x]);
                 }
 
-                if (epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0 || epdVal == null)
+                if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
                 {
                     BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
@@ -85,7 +84,6 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
         }
-
 
         /***************************************************/
     }
