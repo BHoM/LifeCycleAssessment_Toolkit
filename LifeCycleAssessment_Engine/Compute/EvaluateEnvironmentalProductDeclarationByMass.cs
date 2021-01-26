@@ -46,28 +46,37 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
         private static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
         {
-            double mass = elementM.Mass();
+            double volume = elementM.ISolidVolume();
             List<double> epdVal = elementM.GetEvaluationValue(field, QuantityType.Mass);
-            List<double> massByRatio = elementM.IMaterialComposition().Ratios.Select(x => mass * x).ToList();
             List<double> gwpByMaterial = new List<double>();
+            List<double> volumeByRatio = elementM.IMaterialComposition().Ratios.Select(x => volume * x).ToList();
+            List<double> densityOfMassEpd = Query.GetElementDensity(elementM);
+            List<double> massOfObj = new List<double>();
+
+            if (densityOfMassEpd == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("Density could not be found. Material density is required for all objects using Mass-based evaluations.");
+                return null;
+            }
+
+            for (int x = 0; x < volumeByRatio.Count; x++)
+            {
+                massOfObj.Add(volumeByRatio[x] * densityOfMassEpd[x]);
+            }
 
             for (int x = 0; x < epdVal.Count; x++)
             {
                 if (double.IsNaN(epdVal[x]))
                     gwpByMaterial.Add(double.NaN);
                 else
-                    gwpByMaterial.Add(epdVal[x] * massByRatio[x]);
+                {
+                    gwpByMaterial.Add(epdVal[x] * massOfObj[x]);
+                }
             }
 
-            if (epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0 || epdVal == null)
+            if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
-                return null;
-            }
-
-            if (mass <= 0 || mass == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Mass cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
                 return null;
             }
 

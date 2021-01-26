@@ -20,38 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using BH.Engine.Matter;
+using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Quantities.Attributes;
 using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value.")]
-        [Input("epd", "The EPD object to query.")]
-        [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
-        public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
+        [Description("Query the Density values from any IElementM object's MaterialComposition which hosts Environmental Product Declaration materials.")]
+        [Input("elementM", "The IElementM object from which to query the object's material density.")]
+        [Output("density", "The Density values from the Environmental Product Declarations found within the Element's MaterialComposition.")]
+        public static List<double> GetElementDensity(this IElementM elementM)
         {
-            if (epd == null || epd.Density <= 0 || epd.Density == double.NaN)
-            {
-                BH.Engine.Reflection.Compute.RecordWarning("The Environmental Product Declaration Material Fragment does not contain a valid density.");
-                return 0;
-            }
-            else
-            {
-                object density = 0.0;
-                density = System.Convert.ToDouble(epd.PropertyValue("Density"));
+            List<double> density = new List<double>();
 
-                return System.Convert.ToDouble(density);
-            }
+            if (elementM == null)
+                return new List<double>(); 
+
+            density = elementM.IMaterialComposition().Materials.Where(x => x != null).Select(x =>
+            {
+                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                if (epd != null)
+                {
+                    return epd.Density;
+                }
+                else
+                {
+                    BH.Engine.Reflection.Compute.RecordError($"No density was provided for material name {epd.Name}.");
+                    return 0;
+                }
+            }).ToList();
+
+            return density;
         }
+
+        /***************************************************/
     }
 }
-
