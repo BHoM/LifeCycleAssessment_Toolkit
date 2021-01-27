@@ -49,9 +49,10 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (elementM is IElement2D)
             {
+                BH.Engine.Reflection.Compute.RecordNote($"Thickness properties for Area-based calculations are set according to the EPD properties of object {elementM.GetType()}, not the construction.");
+                
                 double area = (elementM as IElement2D).Area();
                 List<double> epdVal = elementM.GetEvaluationValue(field, QuantityType.Area);
-                List<double> areaByRatio = elementM.IMaterialComposition().Ratios.Select(x => area * x).ToList();
                 List<double> gwpByMaterial = new List<double>();
 
                 for (int x = 0; x < epdVal.Count; x++)
@@ -59,7 +60,7 @@ namespace BH.Engine.LifeCycleAssessment
                     if (double.IsNaN(epdVal[x]))
                         gwpByMaterial.Add(double.NaN);
                     else
-                        gwpByMaterial.Add(epdVal[x] * areaByRatio[x]);
+                        gwpByMaterial.Add(epdVal[x] * area);
                 }
 
                 if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
