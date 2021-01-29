@@ -28,6 +28,7 @@ using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Physical.Constructions;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -69,7 +70,8 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
         [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
-        [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
+        [Input("type", "The quantityType to query.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
         public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, QuantityType type)
         {
             if (elementM == null)
@@ -85,6 +87,42 @@ namespace BH.Engine.LifeCycleAssessment
                 else
                     return double.NaN;
 
+            }).ToList();
+
+            //Division of GWP constant by QTV
+            List<double> normalisedEpdVal = new List<double>();
+
+            for (int x = 0; x < epdVal.Count; x++)
+            {
+                if (double.IsNaN(epdVal[x]))
+                    normalisedEpdVal.Add(double.NaN);
+                else
+                    normalisedEpdVal.Add(epdVal[x] / quantityTypeValue[x]);
+            }
+
+            return normalisedEpdVal;
+        }
+        /***************************************************/
+
+        [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within a construction.")]
+        [Input("construction", "An physical construction used to define material properties of an object.")]
+        [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Input("type", "The quantityType to query.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
+        public static List<double> GetEvaluationValue(this Construction construction, EnvironmentalProductDeclarationField field, QuantityType type)
+        {
+            if (construction == null)
+                return new List<double>();
+
+            List<double> quantityTypeValue = construction.GetQuantityTypeValue(type);
+
+            List<double> epdVal = construction.Layers.Select(x =>
+            {
+                var epd = x.Material.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                if (epd.QuantityType == type)
+                    return GetEvaluationValue(epd, field);
+                else
+                    return double.NaN;
             }).ToList();
 
             //Division of GWP constant by QTV
