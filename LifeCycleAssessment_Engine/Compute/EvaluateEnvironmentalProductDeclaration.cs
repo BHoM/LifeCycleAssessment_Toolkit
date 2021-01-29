@@ -70,8 +70,12 @@ namespace BH.Engine.LifeCycleAssessment
                         BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
                         return null;
                     case QuantityType.Length:
-                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
-                        return null;
+                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Length QuantityType.");
+                        var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, field);
+                        value += evalByLength.GlobalWarmingPotential;
+                        if (gwpr == null)
+                            gwpr = evalByLength;
+                        break;
                     case QuantityType.Mass:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
                         var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
