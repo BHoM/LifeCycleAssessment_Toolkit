@@ -28,6 +28,7 @@ using BH.oM.Dimensional;
 using BH.Engine.Matter;
 using System.Linq;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.Physical.Constructions;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -59,6 +60,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Query the QuantityTypeValue from any object with a valid construction with Environmental Product Declaration MaterialFragmments.")]
         [Input("elementM", "The IElementM Object to query.")]
+        [Input("type", "The quantityType to query.")]
         [Output("quantityTypeValue", "The quantityTypeValue property from the IElementM.")]
         public static List<double> GetQuantityTypeValue(this IElementM elementM, QuantityType type)
         {
@@ -70,6 +72,28 @@ namespace BH.Engine.LifeCycleAssessment
                 var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
                 if (epd != null && epd.QuantityType == type)
                     return epd.QuantityTypeValue;
+                return 1;
+            }).Where(x => x != null).ToList();
+
+            return qtv;
+        }
+
+        /***************************************************/
+
+        [Description("Query the QuantityTypeValue from any object with a valid construction.")]
+        [Input("construction", "The physical construction to query.")]
+        [Input("type", "The quantityType to query.")]
+        [Output("quantityTypeValue", "The quantityTypeValue property from the IElementM.")]
+        public static List<double> GetQuantityTypeValue(this Construction construction, QuantityType type)
+        {
+            if (construction == null)
+                return new List<double>();
+
+            List<double> qtv = construction.Layers.Select(x =>
+            {
+                var s = x.Material.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                if (s != null && s.QuantityType == type)
+                    return s.QuantityTypeValue;
                 return 1;
             }).Where(x => x != null).ToList();
 
