@@ -86,6 +86,9 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.Watt:
                         BH.Engine.Reflection.Compute.RecordError("Watt QuantityType is currently not supported.");
                         return null;
+                    case QuantityType.VoltAmps:
+                        BH.Engine.Reflection.Compute.RecordError("VoltAmps QuantityType is currently not supported.");
+                        return null;
                     case QuantityType.Volume:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
                         var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
