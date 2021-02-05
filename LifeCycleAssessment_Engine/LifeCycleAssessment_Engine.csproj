@@ -162,6 +162,7 @@
     <Compile Include="Query\IsValid.cs" />
     <Compile Include="Query\EnvironmentalProductDeclaration.cs" />
     <Compile Include="Query\GetEvaluationValue.cs" />
+    <Compile Include="Query\ProjectLifeCycleAssessmentResults.cs" />
     <Compile Include="Query\TotalGlobalWarmingPotential.cs" />
   </ItemGroup>
   <ItemGroup>
