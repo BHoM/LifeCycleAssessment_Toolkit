@@ -47,9 +47,10 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             string constructionScope = "";
-            if (lcaResult.LifeCycleAssessmentScope.ConstructionScopeNew == true)
+            if (lcaResult.LifeCycleAssessmentScope.ConstructionScopeNew)
                 constructionScope = "New Construction";
-            else constructionScope = "Renovation";
+            else
+                constructionScope = "Renovation";
 
             string contact = lcaResult.LifeCycleAssessmentScope.ContactName;
             if (contact == "")
@@ -63,6 +64,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 foreach (var b in lcaResult.Results.ToList())
                     elementScope += b.Scope.ToString() + ",";
+                    
                 elementScope = elementScope.Remove(elementScope.LastIndexOf(','));
             }
             else
@@ -109,6 +111,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 foreach (var c in lcaResult.LifeCycleAssessmentScope.LifeCycleAssessmentPhases)
                     lcaPhases += c.ToString() + ",";
+                    
                 lcaPhases = lcaPhases.Remove(lcaPhases.LastIndexOf(','));
             }
             else
@@ -124,7 +127,7 @@ namespace BH.Engine.LifeCycleAssessment
             string projectId = lcaResult.LifeCycleAssessmentScope.AdditionalNotes;
             if(lcaResult.LifeCycleAssessmentScope.AdditionalNotes == "")
             {
-                BH.Engine.Reflection.Compute.RecordNote("Please enter your project's identifier the LifeCycleAssessmentScope AdditionalNotes.");
+                BH.Engine.Reflection.Compute.RecordNote("Please enter your project's identifier the in LifeCycleAssessmentScope AdditionalNotes.");
                 projectId = "Undefined";
             }           
 
@@ -149,7 +152,7 @@ namespace BH.Engine.LifeCycleAssessment
                 projectName = "Undefined";
             }
 
-            string projectType = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.ProjectType);
+            string projectType =lcaResult.LifeCycleAssessmentScope.ProjectType.ToString();
             if (projectType == "Undefined")
                 BH.Engine.Reflection.Compute.RecordWarning("Please enter your project's type within the LifeCycleAssessmentScope.");
 
@@ -163,4 +166,3 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
     }
 }
-
