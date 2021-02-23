@@ -25,6 +25,7 @@ using BH.oM.Reflection.Attributes;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Environment.Climate;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -60,7 +61,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             string elementScope = "";
-            if(lcaResult.Results.Select(x => x.Scope).Count() > 0)
+            if(lcaResult.Results.Count() > 0)
             {
                 foreach (var b in lcaResult.Results.ToList())
                     elementScope += b.Scope.ToString() + ",";
@@ -87,15 +88,10 @@ namespace BH.Engine.LifeCycleAssessment
             if (projectArea <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordWarning("Please enter your project's total area within the LifeCycleAssessmentScope.");
-                projectArea = double.NaN;
+                return null;
             }
 
             double gwpPerArea = 0;
-            if (double.IsNaN(projectArea))
-            {
-                BH.Engine.Reflection.Compute.RecordError("No area was recorded for this project. The key metric of GWP per area cannot be calculated.");
-                return null;
-            }
 
             gwpPerArea = gwp / projectArea;
 
@@ -131,13 +127,13 @@ namespace BH.Engine.LifeCycleAssessment
                 projectId = "Undefined";
             }           
 
-            object location = lcaResult.LifeCycleAssessmentScope.Location;
+            BH.oM.Environment.Climate.Location location = lcaResult.LifeCycleAssessmentScope.Location;
             string projectLocation = "";
             if (location != null)
             {
                 string latitude = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.Location.Latitude);
                 string longitude = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.Location.Longitude);
-                projectLocation = String.Concat(latitude, longitude + ",");
+                projectLocation = String.Concat(latitude + ",", longitude);
             }
             else
             {
