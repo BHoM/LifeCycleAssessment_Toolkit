@@ -66,7 +66,7 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
-
+        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Query.GetEvaluationValue(BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
         [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
