@@ -36,6 +36,11 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
         /****   Public Methods                          ****/
         /***************************************************/
+
+        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationPerObject(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
+        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationByArea(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
+        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationByMass(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
+        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclarationByVolume(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
