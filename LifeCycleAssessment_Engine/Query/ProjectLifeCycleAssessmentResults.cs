@@ -40,6 +40,13 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("projectResults", "The combined amount of kgCO2e of the objects provided.")]
         public static ProjectLifeCycleAssessmentResult ProjectLifeCycleAssessmentResult(this LifeCycleAssessmentResult lcaResult)
         {
+            double area = lcaResult.LifeCycleAssessmentScope.ProjectArea;
+            if (area <= 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("No building area was defined in the LCA Scope. Returning zero.");
+                area = 0;
+            }
+
             double buildingLifespan = lcaResult.LifeCycleAssessmentScope.BuildingLifespan;
             if (double.IsNaN(buildingLifespan))
             {
@@ -127,37 +134,12 @@ namespace BH.Engine.LifeCycleAssessment
                 projectId = "Undefined";
             }           
 
-            BH.oM.Environment.Climate.Location location = lcaResult.LifeCycleAssessmentScope.Location;
-            string projectLocation = "";
-            if (location != null)
-            {
-                string latitude = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.Location.Latitude);
-                string longitude = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.Location.Longitude);
-                projectLocation = String.Concat(latitude + ",", longitude);
-            }
-            else
-            {
-                projectLocation = "Undefined";
-                BH.Engine.Reflection.Compute.RecordWarning("Please enter your project's location in Lat Long format within the LifeCycleAssessmentScope.");
-            }
-
-            string projectName = lcaResult.LifeCycleAssessmentScope.ProjectName;
-            if (projectName == "")
-            {
-                BH.Engine.Reflection.Compute.RecordWarning("Please enter your project name within the LifeCycleAssessmentScope.");
-                projectName = "Undefined";
-            }
-
-            string projectType =lcaResult.LifeCycleAssessmentScope.ProjectType.ToString();
-            if (projectType == "Undefined")
-                BH.Engine.Reflection.Compute.RecordWarning("Please enter your project's type within the LifeCycleAssessmentScope.");
-
             IComparable objectId = lcaResult.ObjectId;
             IComparable resultCase = lcaResult.ResultCase;
             double timeStamp = lcaResult.TimeStep;
             DateTime date = System.DateTime.Now;
               
-            return new ProjectLifeCycleAssessmentResult(buildingLifespan, constructionScope, contact, elementScope, gravitySys, gwp, gwpPerArea, lateralSys, lcaPhases, lod, projectArea, projectId, projectLocation, projectName, projectType, objectId, resultCase, timeStamp, date);
+            return new ProjectLifeCycleAssessmentResult(area, buildingLifespan, constructionScope, contact, elementScope, gravitySys, gwp, gwpPerArea, lateralSys, lcaPhases, lod, projectId, objectId, resultCase, timeStamp, date);
         }
         /***************************************************/
     }
