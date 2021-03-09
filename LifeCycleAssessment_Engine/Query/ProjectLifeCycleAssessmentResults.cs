@@ -60,11 +60,11 @@ namespace BH.Engine.LifeCycleAssessment
             else
                 constructionScope = "Renovation";
 
-            string contact = lcaResult.LifeCycleAssessmentScope.ContactName;
-            if (contact == "")
+            string contactName = lcaResult.LifeCycleAssessmentScope.ContactName;
+            if (contactName == "")
             {
                 BH.Engine.Reflection.Compute.RecordNote("Please enter your contact information within the LifeCycleAssessmentScope.");
-                contact = "Undefined";
+                contactName = "Undefined";
             }
 
             string elementScope = "";
@@ -139,7 +139,7 @@ namespace BH.Engine.LifeCycleAssessment
             double timeStamp = lcaResult.TimeStep;
             DateTime date = System.DateTime.Now;
               
-            return new ProjectLifeCycleAssessmentResult(area, buildingLifespan, constructionScope, contact, elementScope, gravitySys, gwp, gwpPerArea, lateralSys, lcaPhases, lod, projectId, objectId, resultCase, timeStamp, date);
+            return new ProjectLifeCycleAssessmentResult(area, buildingLifespan, constructionScope, contactName, date, elementScope, gravitySys, gwp, gwpPerArea, lateralSys, lod, objectId, lcaPhases, projectId, resultCase, timeStamp);
         }
         /***************************************************/
     }
