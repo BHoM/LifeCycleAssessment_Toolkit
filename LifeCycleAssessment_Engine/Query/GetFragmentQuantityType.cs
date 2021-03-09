@@ -33,7 +33,6 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Query.GetFragmentQuantityType(BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)")]
         [Description("Query the QuantityType value from any IEnvironmentalProductDeclarationData object.")]
         [Input("epd", "IEnvironmentalProductDeclarationData object from which to query.")]
         [Output("quantityType", "The quantityType value from the provided IEPD.")]
