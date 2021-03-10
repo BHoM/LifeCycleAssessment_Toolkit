@@ -50,7 +50,7 @@ namespace BH.Engine.LifeCycleAssessment
             double buildingLifespan = lcaResult.LifeCycleAssessmentScope.BuildingLifespan;
             if (double.IsNaN(buildingLifespan))
             {
-                BH.Engine.Reflection.Compute.RecordNote("No building lifespan has been provided for this entry. Returning zero.");
+                BH.Engine.Reflection.Compute.RecordNote("No building lifespan has been provided for this entry. Using zero as building lifespan.");
                 buildingLifespan = 0;
             }
 
