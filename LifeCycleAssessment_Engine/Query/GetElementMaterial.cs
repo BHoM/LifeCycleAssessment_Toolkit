@@ -20,14 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base;
-using BH.Engine.Reflection;
-using BH.oM.Base;
+using BH.Engine.Matter;
+using System.Linq;
 using System.Collections.Generic;
-using System.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -37,28 +36,17 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Query the Density values from any IElementM object's MaterialComposition which hosts Environmental Product Declaration materials.")]
-        [Input("elementM", "The IElementM object from which to query the object's material density.")]
-        [Output("density", "The Density values from the Environmental Product Declarations found within the Element's MaterialComposition.")]
-        public static string GetElementMaterial(this IElementM elementM)
+        [Description("Query the element's MaterialComposition to form a Material Hint to aid in EPD-Material Mapping.")]
+        [Input("elementM", "The IElementM object from which to query the object's material type hint.")]
+        [Output("materialHint", "The Material Names found within the MaterialComposition.")]
+        public static List<string> GetElementMaterial(this IElementM elementM)
         {
-            string mat = "";
-            string noMat = "No material name could be derived from the object.";
+            List<string> mat = new List<string>();
 
             if (elementM == null)
-                return noMat;
+                return null;
 
-            //List<IFragment> fragments = BH.Engine.Base.Query.GetAllFragments((IBHoMObject)elementM);
-            //if (fragments.Count <= 0)
-            //    return noMat;
-
-            // Get Family Name
-            System.Reflection.PropertyInfo familyName = Base.Query.GetAllFragments((IBHoMObject)elementM).GetType().GetProperty("FamilyType");
-
-            // Get Family Type Name
-            System.Reflection.PropertyInfo familyTypeName = Base.Query.GetAllFragments((IBHoMObject)elementM).GetType().GetProperty("FamilyTypeName");
-
-            mat = familyName + " " + familyTypeName;
+            mat = Matter.Query.IMaterialComposition(elementM).Materials.Select(x => x.Name).ToList();
 
             return mat;
         }
