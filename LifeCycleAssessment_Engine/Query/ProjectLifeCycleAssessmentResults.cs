@@ -70,8 +70,8 @@ namespace BH.Engine.LifeCycleAssessment
             string elementScope = "";
             if(lcaResult.Results.Count() > 0)
             {
-                foreach (var b in lcaResult.Results.ToList())
-                    elementScope += b.Scope.ToString() + ",";
+                foreach (var b in lcaResult.Results.Select(x => x.Scope).Distinct().ToList())
+                    elementScope += b.ToString() + ",";
                     
                 elementScope = elementScope.Remove(elementScope.LastIndexOf(','));
             }
