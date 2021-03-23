@@ -34,13 +34,13 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("This is a simple calculation method for EPD QuantityTypes that are not yet fully supported. \n" +
-            "This calculation is performed by multiplying the quantity by the selected field metric found within the EPD. \n" +
-            "This method relys upon user input and is therefore at the discression of the user to verify all results.")]
-        [Input("quantity", "The amount, quantity, or value to evaluate against any Environmental Product Declaration.")]
+            "This calculation is performed by multiplying the reference value by the selected field metric found within the EPD, divided by the QuantityTypeValue. \n" +
+            "This method relies upon user input and is therefore at the discretion of the user to verify all results.")]
+        [Input("referenceValue", "The amount, quantity, or value to evaluate against any Environmental Product Declaration.")]
         [Input("epd", "The Environmental Product Declaration to evaluate against the quantity.")]
         [Input("field", "The Environmental indicator to evaluate by. This value is queried from the EPD.")]
-        [Output("totalQuantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
-        public static double EvaluateReferenceValue(double quantity, IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
+        [Output("result", "The total result of the desired metric based on the EnvironmentalProductDeclarationField. It is up to the discre.")]
+        public static double EvaluateReferenceValue(double referenceValue, IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
         {
             if (epd == null)
             {
@@ -49,18 +49,20 @@ namespace BH.Engine.LifeCycleAssessment
 
             double epdValue = Query.GetEvaluationValue(epd, field);
 
-            if (quantity <= 0)
+            if (referenceValue <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("No evaluation value was found within the EPD. Please try another.");
             }
 
+            double qtValue = epd.QuantityTypeValue;
+
             string qt = System.Convert.ToString(Query.GetFragmentQuantityType(epd));
 
-            BH.Engine.Reflection.Compute.RecordNote($"TotalQuantity is created using {qt} QuantityType extracted from " + epd.Name + ".");
+            BH.Engine.Reflection.Compute.RecordNote($"Result is created by multiplying the ReferenceValue of {referenceValue} by the units of {qt} QuantityType extracted from " + epd.Name + " divided by {qtValue}.");
 
-            double totalQuantity = quantity * epdValue;
+            double result = (referenceValue * epdValue) / qtValue;
 
-            return totalQuantity;
+            return result;
         }
         /***************************************************/
 
