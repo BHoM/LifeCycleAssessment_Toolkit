@@ -58,7 +58,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("4.1", "BH.Engine.LifeCycleAssessment.Query.GetQuantityTypeValue(BH.oM.Dimensional.IElementM)")]
         [Description("Query the QuantityTypeValue from any object with a valid construction with Environmental Product Declaration MaterialFragmments.")]
         [Input("elementM", "The IElementM Object to query.")]
         [Input("type", "The quantityType to query.")]
