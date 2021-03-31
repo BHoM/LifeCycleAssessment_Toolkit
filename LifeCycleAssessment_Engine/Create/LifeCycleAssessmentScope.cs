@@ -34,7 +34,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Creates a Duct object. Material that flows through this Duct can be established at the system level.")]
+        [Description("Creates a Life Cycle Assessment that quantifies the carbon emissions and other environmental impacts of a project based on building elements and life cycle stages of the study.")]
         [Input("additionalNotes", "Additional notes should convey project design constraints (eg design for seismic activity) that could affect the overall embodied carbon.")]
         [Input("biogenicCarbon", "Biogenic Carbon is a true/false that indicates that the project contains materials that originated from a biological source (trees, soil), these materials have the ability sequester/store carbon.")]
         [Input("buildingLifespan", "The assumed lifespan of the building being evaluated.  These values are for categorisation purposes only and will not effect the overall results.")]
@@ -51,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("seismicDesignCategory", "Seismic Design Category is a classification assigned to a structure based on it's occupancy category, and the severity of the design earthquake ground motion. These categories are currently in reference to ASCE 7-05.")]
         [Input("windSpeedCategory", "Wind speed category is in reference to the Beaufort Scale of wind speeds. Values are arranged from 0-12 equivalent, 0 being Calm and 12 being Hurricane, and are used only to represent an average site-based, wind condition. Specific informaion on categorisation can be found at https://www.spc.noaa.gov/faq/tornado/beaufort.html")]
         [Input("location", "Provide the projects geographic location for database organisation purposes. This value is for categorisation purposes only and will not effect the overall results.")]
-        [Output("lifeCycleAssessmentScope", "A duct object is a passageway which conveys material (typically air)")]
+        [Output("lifeCycleAssessmentScope", "LifeCycleAssessmentScope")]
         public static LifeCycleAssessmentScope LifeCycleAssessmentScope(
             string additionalNotes = "", 
             bool biogenicCarbon = false, 
