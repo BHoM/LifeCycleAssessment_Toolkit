@@ -153,10 +153,10 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 if (columnResults[x] == null)
                 {
-                    BH.Engine.Reflection.Compute.RecordWarning("Foundations object " + ((IBHoMObject)foundationsScope.Footings[x]).BHoM_Guid + " does not contain a valid EPD.");
+                    BH.Engine.Reflection.Compute.RecordWarning("Foundations object " + ((IBHoMObject)foundationsScope.Columns[x]).BHoM_Guid + " does not contain a valid EPD.");
                     continue;
                 }
-                columnResults[x] = new GlobalWarmingPotentialResult(columnResults[x].ObjectId, columnResults[x].ResultCase, columnResults[x].TimeStep, ObjectScope.Foundation, ObjectCategory.Footing, columnResults[x].EnvironmentalProductDeclaration, (columnResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
+                columnResults[x] = new GlobalWarmingPotentialResult(columnResults[x].ObjectId, columnResults[x].ResultCase, columnResults[x].TimeStep, ObjectScope.Foundation, ObjectCategory.Column, columnResults[x].EnvironmentalProductDeclaration, (columnResults[x] as GlobalWarmingPotentialResult).GlobalWarmingPotential);
             }
             results.AddRange(columnResults);
 
