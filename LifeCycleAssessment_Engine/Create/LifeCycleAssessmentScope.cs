@@ -51,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("seismicDesignCategory", "Seismic Design Category is a classification assigned to a structure based on it's occupancy category, and the severity of the design earthquake ground motion. These categories are currently in reference to ASCE 7-05.")]
         [Input("windSpeedCategory", "Wind speed category is in reference to the Beaufort Scale of wind speeds. Values are arranged from 0-12 equivalent, 0 being Calm and 12 being Hurricane, and are used only to represent an average site-based, wind condition. Specific informaion on categorisation can be found at https://www.spc.noaa.gov/faq/tornado/beaufort.html")]
         [Input("location", "Provide the projects geographic location for database organisation purposes. This value is for categorisation purposes only and will not effect the overall results.")]
-        [Output("lifeCycleAssessmentScope", "LifeCycleAssessmentScope")]
+        [Output("lifeCycleAssessmentScope", "The user-specified project metadata used to define the overall scope of the LCA being complete.")]
         public static LifeCycleAssessmentScope LifeCycleAssessmentScope(
             string additionalNotes = "", 
             bool biogenicCarbon = false, 
