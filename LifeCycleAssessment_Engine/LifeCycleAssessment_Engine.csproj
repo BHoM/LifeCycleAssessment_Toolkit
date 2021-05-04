@@ -142,6 +142,7 @@
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Compute\EvaluateReferenceValue.cs" />
+    <Compile Include="Modify\MapEPD.cs" />
     <Compile Include="Query\GetElementMaterial.cs" />
     <Compile Include="Query\GetElementDensity.cs" />
     <Compile Include="Query\GetElementEpd.cs" />
@@ -166,9 +167,7 @@
     <Compile Include="Query\ProjectLifeCycleAssessmentResults.cs" />
     <Compile Include="Query\TotalGlobalWarmingPotential.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modify\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
