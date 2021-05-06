@@ -27,7 +27,9 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.MEP.System;
 using BH.oM.Physical.Elements;
 using BH.oM.Physical.Materials;
+using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
@@ -38,6 +40,12 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Map Environmental Product Declarations to a duct, duct Insulation, and duct Lining SectionPropertys for use in LCA workflows.")]
+        [Input("duct", "The duct element to modify.")]
+        [Input("elementEPD", "The EPD to be applied to the duct.")]
+        [Input("insulationEPD", "The EPD to be applied to the duct's insulation.")]
+        [Input("liningEPD", "The EPD to be applied to the duct's lining.")]
+        [Output("duct", "The duct with EPDs applied to the SectionProperty.")]
         public static IElementM MapEPD(this Duct duct, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD, IEnvironmentalProductDeclarationData liningEPD)
         {
             if(duct == null)
@@ -93,6 +101,11 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Map Environmental Product Declarations to a pipe, and pipe Insulation for use in LCA workflows.")]
+        [Input("pipe", "The pipe element to modify.")]
+        [Input("elementEPD", "The EPD to be applied to the pipe.")]
+        [Input("insulationEPD", "The EPD to be applied to the pipe's insulation.")]
+        [Output("pipe", "The pipe with EPDs applied to the SectionProperty.")]
         public static IElementM MapEPD(this Pipe pipe, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD)
         {
             if (pipe == null)
@@ -135,6 +148,10 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Map Environmental Product Declarations to a cableTray for use in LCA workflows.")]
+        [Input("cableTray", "The cableTray element to modify.")]
+        [Input("elementEPD", "The EPD to be applied to the cableTray.")]
+        [Output("cableTray", "The cableTray with EPDs applied to the SectionProperty.")]
         public static IElementM MapEPD(this CableTray cableTray, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (cableTray == null)
@@ -168,6 +185,10 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Map Environmental Product Declarations to a framingElement for use in LCA workflows.")]
+        [Input("framingElement", "The framingElement element to modify.")]
+        [Input("elementEPD", "The EPD to be applied to the framingElement.")]
+        [Output("framingElement", "The framingElement with EPDs applied to the element's material composition.")]
         public static IElementM MapEPD(this IFramingElement framingElement, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (framingElement == null)
@@ -201,6 +222,10 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Map Environmental Product Declarations to a surfaceElement for use in LCA workflows.")]
+        [Input("surfaceElement", "The surfaceElement element to modify.")]
+        [Input("elementEPD", "The EPD to be applied to the surfaceElement.")]
+        [Output("surfaceElement", "The surfaceElement with EPDs applied to the element's material composition.")]
         public static IElementM MapEPD(this ISurface surfaceElement, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (surfaceElement == null)
@@ -234,6 +259,10 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Map Environmental Product Declarations to a openingElement for use in LCA workflows.")]
+        [Input("openingElement", "The openingElement element to modify.")]
+        [Input("elementEPD", "The EPD to be applied to the openingElement.")]
+        [Output("openingElement", "The openingElement with EPDs applied to the element's material composition.")]
         public static IElementM MapEPD(this IOpening openingElement, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (openingElement == null)
