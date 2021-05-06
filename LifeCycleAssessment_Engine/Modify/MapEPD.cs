@@ -22,14 +22,13 @@
 
 using BH.Engine.Reflection;
 using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.MEP.System;
+using BH.oM.Physical.Elements;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
 using System.Linq;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.Physical.Elements;
-using System;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -39,7 +38,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IElementM MapEPD(Duct duct, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD, IEnvironmentalProductDeclarationData liningEPD)
+        public static IElementM MapEPD(this Duct duct, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD, IEnvironmentalProductDeclarationData liningEPD)
         {
             if(duct == null)
             {
@@ -94,7 +93,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IElementM MapEPD(Pipe pipe, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD)
+        public static IElementM MapEPD(this Pipe pipe, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD)
         {
             if (pipe == null)
             {
@@ -136,7 +135,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IElementM MapEPD(CableTray cableTray, IEnvironmentalProductDeclarationData elementEPD)
+        public static IElementM MapEPD(this CableTray cableTray, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (cableTray == null)
             {
@@ -169,7 +168,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IElementM MapEPD(IFramingElement framingElement, IEnvironmentalProductDeclarationData elementEPD)
+        public static IElementM MapEPD(this IFramingElement framingElement, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (framingElement == null)
             {
@@ -202,7 +201,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IElementM MapEPD(ISurface surfaceElement, IEnvironmentalProductDeclarationData elementEPD)
+        public static IElementM MapEPD(this ISurface surfaceElement, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (surfaceElement == null)
             {
@@ -235,7 +234,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IElementM MapEPD(IOpening openingElement, IEnvironmentalProductDeclarationData elementEPD)
+        public static IElementM MapEPD(this IOpening openingElement, IEnvironmentalProductDeclarationData elementEPD)
         {
             if (openingElement == null)
             {
