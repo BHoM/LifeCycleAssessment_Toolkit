@@ -40,7 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Map Environmental Product Declarations to a duct, duct Insulation, and duct Lining SectionPropertys for use in LCA workflows.")]
+        [Description("Map Environmental Product Declarations to a duct, duct Insulation, and duct Lining SectionProperties for use in LCA workflows.")]
         [Input("duct", "The duct element to modify.")]
         [Input("elementEPD", "The EPD to be applied to the duct.")]
         [Input("insulationEPD", "The EPD to be applied to the duct's insulation.")]
@@ -101,7 +101,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Map Environmental Product Declarations to a pipe, and pipe Insulation for use in LCA workflows.")]
+        [Description("Map Environmental Product Declarations to a pipe, and pipe Insulation SectionProperties for use in LCA workflows.")]
         [Input("pipe", "The pipe element to modify.")]
         [Input("elementEPD", "The EPD to be applied to the pipe.")]
         [Input("insulationEPD", "The EPD to be applied to the pipe's insulation.")]
