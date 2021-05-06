@@ -26,6 +26,10 @@ using BH.oM.MEP.System;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using System.Linq;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.Physical.Elements;
+using System;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -35,14 +39,21 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IElementM MapEPD(IElementM element, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD, IEnvironmentalProductDeclarationData liningEPD)
+        public static IElementM MapEPD(Duct duct, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD, IEnvironmentalProductDeclarationData liningEPD)
         {
-            if(element == null)
+            if(duct == null)
             {
                 Engine.Reflection.Compute.RecordError("No valid element has been provided, returning null.");
                 return null;
             }
 
+            if(elementEPD == null || insulationEPD == null || liningEPD == null)
+            {
+                Engine.Reflection.Compute.RecordError("You must provide an EPD for each input for mapping to function.");
+                return null;
+            }
+
+            // Create new materials for each type depending on the element
             Material elementEPDMaterial = new Material
             {
                 Name = elementEPD.Name,
@@ -61,19 +72,226 @@ namespace BH.Engine.LifeCycleAssessment
                 Properties = new List<IMaterialProperties>() { liningEPD },
             };
 
-            if (element is Duct)
-            {               
-                element.SetPropertyValue("SectionProperty.DuctMaterial", elementEPDMaterial);
-                element.SetPropertyValue("SectionProperty.InsulationMaterial", insulationEPDMaterial);
-                element.SetPropertyValue("SectionProperty.LiningMaterial", liningEPDMaterial);
+            // Set the materials with properties
+            duct.SetPropertyValue("SectionProperty.DuctMaterial", elementEPDMaterial);
+            duct.SetPropertyValue("SectionProperty.InsulationMaterial", insulationEPDMaterial);
+            duct.SetPropertyValue("SectionProperty.LiningMaterial", liningEPDMaterial);
 
-                return element;
-            }
-            else
+            // User feedback if EPD is Mass-based and no density value is provided
+            List<QuantityType> qts = duct.GetQuantityType();
+            qts = qts.Distinct().ToList();
+
+            if (qts.Contains(QuantityType.Mass))
             {
-                Engine.Reflection.Compute.RecordError("This is not a duct.");
+                if(Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass || Query.GetFragmentDensity(insulationEPD) <= 0 && Query.GetFragmentQuantityType(insulationEPD) == QuantityType.Mass || Query.GetFragmentDensity(liningEPD) <= 0 && Query.GetFragmentQuantityType(liningEPD) == QuantityType.Mass)
+                {
+                    Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                    return null;
+                }
+            }
+            return duct;
+        }
+
+        /***************************************************/
+
+        public static IElementM MapEPD(Pipe pipe, IEnvironmentalProductDeclarationData elementEPD, IEnvironmentalProductDeclarationData insulationEPD)
+        {
+            if (pipe == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid element has been provided, returning null.");
                 return null;
             }
-        } 
+
+            // Create new materials for each type depending on the element
+            Material elementEPDMaterial = new Material
+            {
+                Name = elementEPD.Name,
+                Properties = new List<IMaterialProperties>() { elementEPD },
+            };
+
+            Material insulationEPDMaterial = new Material
+            {
+                Name = insulationEPD.Name,
+                Properties = new List<IMaterialProperties>() { insulationEPD },
+            };
+
+            // Set the materials with properties
+            pipe.SetPropertyValue("SectionProperty.PipeMaterial", elementEPDMaterial);
+            pipe.SetPropertyValue("SectionProperty.InsulationMaterial", insulationEPDMaterial);
+
+            // User feedback if EPD is Mass-based and no density value is provided
+            List<QuantityType> qts = pipe.GetQuantityType();
+            qts = qts.Distinct().ToList();
+
+            if (qts.Contains(QuantityType.Mass))
+            {
+                if (Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass || Query.GetFragmentDensity(insulationEPD) <= 0 && Query.GetFragmentQuantityType(insulationEPD) == QuantityType.Mass)
+                {
+                    Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                    return null;
+                }
+            }
+            return pipe;
+        }
+
+        /***************************************************/
+
+        public static IElementM MapEPD(CableTray cableTray, IEnvironmentalProductDeclarationData elementEPD)
+        {
+            if (cableTray == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid element has been provided, returning null.");
+                return null;
+            }
+
+            Material elementEPDMaterial = new Material
+            {
+                Name = elementEPD.Name,
+                Properties = new List<IMaterialProperties>() { elementEPD },
+            };
+
+            cableTray.SetPropertyValue("SectionProperty.Material", elementEPDMaterial);
+
+            // User feedback if EPD is Mass-based and no density value is provided
+            List<QuantityType> qts = cableTray.GetQuantityType();
+            qts = qts.Distinct().ToList();
+
+            if (qts.Contains(QuantityType.Mass))
+            {
+                if (Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass)
+                {
+                    Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                    return null;
+                }
+            }
+            return cableTray;
+        }
+
+        /***************************************************/
+
+        public static IElementM MapEPD(IFramingElement framingElement, IEnvironmentalProductDeclarationData elementEPD)
+        {
+            if (framingElement == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid element has been provided, returning null.");
+                return null;
+            }
+
+            Material elementEPDMaterial = new Material
+            {
+                Name = elementEPD.Name,
+                Properties = new List<IMaterialProperties>() { elementEPD },
+            };
+
+            framingElement.SetPropertyValue("Property.Material", elementEPDMaterial);
+
+            // User feedback if EPD is Mass-based and no density value is provided
+            List<QuantityType> qts = framingElement.GetQuantityType();
+            qts = qts.Distinct().ToList();
+
+            if (qts.Contains(QuantityType.Mass))
+            {
+                if (Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass)
+                {
+                    Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                    return null;
+                }
+            }
+            return framingElement;
+        }
+
+        /***************************************************/
+
+        public static IElementM MapEPD(ISurface surfaceElement, IEnvironmentalProductDeclarationData elementEPD)
+        {
+            if (surfaceElement == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid element has been provided, returning null.");
+                return null;
+            }
+
+            Material elementEPDMaterial = new Material
+            {
+                Name = elementEPD.Name,
+                Properties = new List<IMaterialProperties>() { elementEPD },
+            };
+
+            surfaceElement.SetPropertyValue("Construction.Layers.Material", elementEPDMaterial);
+
+            // User feedback if EPD is Mass-based and no density value is provided
+            List<QuantityType> qts = surfaceElement.GetQuantityType();
+            qts = qts.Distinct().ToList();
+
+            if (qts.Contains(QuantityType.Mass))
+            {
+                if (Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass)
+                {
+                    Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                    return null;
+                }
+            }
+            return surfaceElement;
+        }
+
+        /***************************************************/
+
+        public static IElementM MapEPD(IOpening openingElement, IEnvironmentalProductDeclarationData elementEPD)
+        {
+            if (openingElement == null)
+            {
+                Engine.Reflection.Compute.RecordError("No valid element has been provided, returning null.");
+                return null;
+            }
+
+            Material elementEPDMaterial = new Material
+            {
+                Name = elementEPD.Name,
+                Properties = new List<IMaterialProperties>() { elementEPD },
+            };
+
+            if(openingElement is Door)
+            {
+                Door door = (Door)openingElement;
+                openingElement.SetPropertyValue("Construction.Layers.Material", elementEPDMaterial);
+
+                // User feedback if EPD is Mass-based and no density value is provided
+                List<QuantityType> qts = door.GetQuantityType();
+                qts = qts.Distinct().ToList();
+
+                if (qts.Contains(QuantityType.Mass))
+                {
+                    if (Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass)
+                    {
+                        Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                        return null;
+                    }
+                }
+                return door;
+            }
+            if(openingElement is Window)
+            {
+                Window window = (Window)openingElement;
+                openingElement.SetPropertyValue("Construction.Layers.Material", elementEPDMaterial);
+
+                // User feedback if EPD is Mass-based and no density value is provided
+                List<QuantityType> qts = window.GetQuantityType();
+                qts = qts.Distinct().ToList();
+
+                if (qts.Contains(QuantityType.Mass))
+                {
+                    if (Query.GetFragmentDensity(elementEPD) <= 0 && Query.GetFragmentQuantityType(elementEPD) == QuantityType.Mass)
+                    {
+                        Reflection.Compute.RecordError("You have provided an EPD with Mass QuantityType, but the EPD itself does not contain a density value. This object will not compute the desired metric until a Density value is set on the EPD using SetProperty prior to MapEPD.");
+                        return null;
+                    }
+                }
+                return window;
+            }
+            Reflection.Compute.RecordError($"MapEPD is not supported for element of type {openingElement.GetType()}");
+
+            return null;
+        }
+
+        /***************************************************/
     }
 }

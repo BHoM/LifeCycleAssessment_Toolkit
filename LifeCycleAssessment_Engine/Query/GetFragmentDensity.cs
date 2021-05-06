@@ -39,18 +39,22 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
         public static double GetFragmentDensity(this IEnvironmentalProductDeclarationData epd)
         {
-            if (epd == null || epd.Density <= 0 || epd.Density == double.NaN)
+            if (epd.QuantityType == oM.LifeCycleAssessment.QuantityType.Mass)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("The Environmental Product Declaration Material Fragment does not contain a valid density.");
-                return 0;
-            }
-            else
-            {
-                object density = 0.0;
-                density = System.Convert.ToDouble(epd.PropertyValue("Density"));
+                if (epd == null || epd.Density <= 0 || epd.Density == double.NaN)
+                {
+                    BH.Engine.Reflection.Compute.RecordNote($"EPD {epd.Name} does not contain a valid density and is Mass based.");
+                    return 0;
+                }
+                else
+                {
+                    object density = 0.0;
+                    density = System.Convert.ToDouble(epd.PropertyValue("Density"));
 
-                return System.Convert.ToDouble(density);
+                    return System.Convert.ToDouble(density);
+                }
             }
+            return epd.Density;
         }
     }
 }
