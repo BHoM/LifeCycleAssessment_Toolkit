@@ -20,17 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Linq;
-using System.ComponentModel;
-using System.Collections.Generic;
-using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Dimensional;
-using BH.Engine.Base;
 using BH.Engine.Matter;
+using BH.oM.Base;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -42,15 +40,17 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("This method calculates the quantity of a supplied metric by querying Environmental Impact Metrics from the EPD materialFragment and the object's mass.")]
         [Input("elementM", "An IElementM object used to calculate EPD metric.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
-        private static GlobalWarmingPotentialResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM = null, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             double volume = elementM.ISolidVolume();
-            List<double> epdVal = elementM.GetEvaluationValue(field, QuantityType.Mass);
+            List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, exactMatch);
             List<double> gwpByMaterial = new List<double>();
             List<double> volumeByRatio = elementM.IMaterialComposition().Ratios.Select(x => volume * x).ToList();
-            List<double> densityOfMassEpd = Query.GetElementDensity(elementM);
+            List<double> densityOfMassEpd = Query.GetEPDDensity(elementM);
             List<double> massOfObj = new List<double>();
 
             if (densityOfMassEpd == null)
@@ -82,7 +82,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-            return new GlobalWarmingPotentialResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, Query.GetElementEpd(elementM), quantity);
+            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
         }
 
         /***************************************************/

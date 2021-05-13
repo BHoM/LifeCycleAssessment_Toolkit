@@ -20,31 +20,60 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
-using BH.oM.Base;
+using BH.Engine.Matter;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Calculates the depletion of abiotic resources fossil fuels from volume, density, and embodied Methyl Jasmonate quantities. These quantities may be provided within Environmental Product Declaration documentation.")]
-        [Input("volume", "Provide material volume in m^3.")]
-        [Input("density", "Provide material density in kg/m^3. This value may be available within an EPD Dataset.")]
-        [Input("embodiedMethylJasmonate", "Amount of embodied kg MJ/m^3 equivalent. These values can also be referenced within typical EPD data as 'Depletion of Abiotic Resources Fossil Fuels' or 'Primary Energy Demand'. Refer to EPD dataset for corresponding input metric.")]
-        [Output("depletionOfAbioticResourcesFossilFuels", "The amount of depletion of non-renewable, fossil fuel material resources measured in kg/MJ.")]
-        public static double DepletionOfAbioticResourcesFossilFuels(double volume = 0.0, double density = 0.0, double embodiedMethylJasmonate = 0.0)
+        [Description("Return a list of all environmental metrics withing a provided EPD.")]
+        [Input("epd", "An Environmental Product Declaration object or EPD.")]
+        [Output("environmentalMetric", "A list of all Environmental Metrics that comprise a given EPD.")]
+        public static List<EnvironmentalMetric> GetEnvironmentalMetric(this EnvironmentalProductDeclaration epd)
         {
-            return volume * density * embodiedMethylJasmonate;
+            List<EnvironmentalMetric> em = new List<EnvironmentalMetric>();
+
+            if (epd == null)
+                return new List<EnvironmentalMetric>();
+
+            em = epd.EnvironmentalMetric.ToList();
+
+            return em;
         }
+
         /***************************************************/
+
+        // This doesn't work
+
+        [Description("Return a list of all environmental metrics withing a provided EPD.")]
+        [Input("epd", "An Environmental Product Declaration object or EPD.")]
+        [Output("environmentalMetric", "A list of all Environmental Metrics that comprise a given EPD.")]
+        public static List<EnvironmentalMetric> GetEnvironmentalMetric(this IElementM elementM)
+        {
+            List<EnvironmentalMetric> em = new List<EnvironmentalMetric>();
+
+            if (elementM == null)
+                return new List<EnvironmentalMetric>();
+
+            List<EnvironmentalMetric> metrics = (List<EnvironmentalMetric>)elementM.IMaterialComposition().Materials.Select(x =>
+            {
+                var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).Select(z => z as EnvironmentalMetric);
+                return epd;
+            });
+        
+            return metrics;
+        }
+
     }
 }

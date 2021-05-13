@@ -20,32 +20,23 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ComponentModel;
-using BH.oM.Base;
+using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Reflection.Attributes;
-using BH.oM.Structure.MaterialFragments;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Compute
+    public static partial class Query
     {
-        /***************************************************/
-        /****   Public Methods                          ****/
-        /***************************************************/
-
-        [Description("Calculates the Eutrophication Potential  from volume, density, and embodied Phosphate quantities. These quantities may be provided within Environmental Product Declaration documentation.")]
-        [Input("volume", "Provide material volume in m^3. ")]
-        [Input("density", "Provide material density in kg/m^3. This value may be available within an EPD Dataset.")]
-        [Input("embodiedPhosphate", "Amount of embodied kg PO4/m^3 equivalent. Refer to EPD dataset for corresponding input metric.")]
-        [Output("eutrophicationPotential", "The pollution state of aquatic ecosystems in which the over-fertilization of water and soil has turned into an increased growth of biomass measured in kg/PO4e.")]
-        public static double EutrophicationPotential(double volume = 0.0, double density = 0.0, double embodiedPhosphate = 0.0)
+        [Description("Query the total quantity from any LifeCycleAssessmentElementResult data. Be mindful of the specific unit specified in the Field enum.")]
+        [Input("results", "Supply a valid LifeCycleAssessmentElementResult from a scope evaluation.")]
+        [Output("totalFieldQuantity", "The combined amount of kgCO2e of the objects provided.")]
+        public static double TotalFieldQuantity(this List<LifeCycleAssessmentElementResult> results)
         {
-            return volume * density * embodiedPhosphate;
+            return results.Where(x => x is EnvironmentalMetricResult).Select(x => (x as EnvironmentalMetricResult).Quantity).Sum();
         }
-        /***************************************************/
     }
 }
 

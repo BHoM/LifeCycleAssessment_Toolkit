@@ -20,13 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Dimensional;
-using BH.oM.Reflection;
+using BH.oM.Reflection.Attributes;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
@@ -39,12 +38,15 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential)
+        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclaration(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
+        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             double value = 0;
-            GlobalWarmingPotentialResult gwpr = null;
+            EnvironmentalMetricResult resultValue = null;
 
             List<QuantityType> qts = elementM.GetQuantityType();
 
@@ -59,10 +61,10 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     case QuantityType.Area:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
-                        var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, field);
-                        value += evalByArea.GlobalWarmingPotential;
-                        if (gwpr == null)
-                            gwpr = evalByArea;
+                        var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, phases, field, exactMatch);
+                        value += evalByArea.Quantity;
+                        if (resultValue == null)
+                            resultValue = evalByArea;
                         break;
                     case QuantityType.Ampere:
                         BH.Engine.Reflection.Compute.RecordError("Ampere QuantityType is currently not supported.");
@@ -72,17 +74,17 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     case QuantityType.Length:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Length QuantityType.");
-                        var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, field);
-                        value += evalByLength.GlobalWarmingPotential;
-                        if (gwpr == null)
-                            gwpr = evalByLength;
+                        var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, phases, field, exactMatch);
+                        value += evalByLength.Quantity;
+                        if (resultValue == null)
+                            resultValue = evalByLength;
                         break;
                     case QuantityType.Mass:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
-                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, field);
-                        value += evalByMass.GlobalWarmingPotential;
-                        if (gwpr == null)
-                            gwpr = evalByMass;
+                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, phases, field, exactMatch);
+                        value += evalByMass.Quantity;
+                        if (resultValue == null)
+                            resultValue = evalByMass;
                         break;
                     case QuantityType.Watt:
                         BH.Engine.Reflection.Compute.RecordError("Watt QuantityType is currently not supported.");
@@ -92,10 +94,10 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     case QuantityType.Volume:
                         BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
-                        var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, field);
-                        value += evalByVolume.GlobalWarmingPotential;
-                        if (gwpr == null)
-                            gwpr = evalByVolume;
+                        var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, phases, field, exactMatch);
+                        value += evalByVolume.Quantity;
+                        if (resultValue == null)
+                            resultValue = evalByVolume;
                         break;
                     case QuantityType.VolumetricFlowRate:
                         BH.Engine.Reflection.Compute.RecordError("VolumetricFlowRate QuantityType is currently not supported.");
@@ -106,9 +108,9 @@ namespace BH.Engine.LifeCycleAssessment
                 }
             }
 
-            gwpr.GlobalWarmingPotential = value;
-            gwpr.EnvironmentalProductDeclaration = elementM.GetElementEpd();
-            return gwpr;
+            resultValue.Quantity = value;
+            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd();
+            return resultValue;
         }
         /***************************************************/
 
