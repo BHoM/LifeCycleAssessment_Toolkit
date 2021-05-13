@@ -121,20 +121,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BenchmarkVariance.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\AcidificationPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\AcidificationPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\EutrophicationPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\DepletionOfAbioticResources.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\DepletionOfAbioticResourcesFossilFuels.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\GlobalWarmingPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\OzoneDepletionPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\ExplicitMethods\PhotochemicalOzoneCreationPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\OzoneDepletionPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\EutrophicationPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\DepletionOfAbioticResourcesFossilFuels.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\DepletionOfAbioticResources.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\GlobalWarmingPotential.cs" />
-    <Compile Include="Compute\EnvironmentalProductDeclarationMetrics\PhotochemicalOzoneCreationPotential.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByLength.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByArea.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByVolume.cs" />
@@ -142,9 +128,12 @@
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Compute\EvaluateReferenceValue.cs" />
+    <Compile Include="Query\GetElementEnvironmentalMetric.cs" />
     <Compile Include="Query\GetElementMaterial.cs" />
-    <Compile Include="Query\GetElementDensity.cs" />
     <Compile Include="Query\GetElementEpd.cs" />
+    <Compile Include="Query\GetEnvironmentalMetricValue.cs" />
+    <Compile Include="Query\GetEnvironmentalMetric.cs" />
+    <Compile Include="Query\GetEPDPhases.cs" />
     <Compile Include="Query\GetQuantityType.cs" />
     <Compile Include="Query\GetQuantityTypeValue.cs" />
     <Compile Include="Query\MaterialEndOfLifeTreatment.cs" />
@@ -154,17 +143,14 @@
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclaration.cs" />
     <Compile Include="Convert\ToBuildingBenchmarkingData.cs" />
     <Compile Include="Convert\ToHealthProductDeclarationData.cs" />
-    <Compile Include="Convert\ToEnvironmentalProductDeclarationData.cs" />
-    <Compile Include="Convert\ToSectorEnvironmentalProductDeclarationData.cs" />
     <Compile Include="Create\LifeCycleAssessmentScope.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\GetFragmentDensity.cs" />
-    <Compile Include="Query\GetFragmentQuantityType.cs" />
+    <Compile Include="Query\GetEPDDensity.cs" />
+    <Compile Include="Query\GetEPDQuantityType.cs" />
     <Compile Include="Query\IsValid.cs" />
-    <Compile Include="Query\EnvironmentalProductDeclaration.cs" />
     <Compile Include="Query\GetEvaluationValue.cs" />
     <Compile Include="Query\ProjectLifeCycleAssessmentResults.cs" />
-    <Compile Include="Query\TotalGlobalWarmingPotential.cs" />
+    <Compile Include="Query\TotalFieldQuantity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modify\" />

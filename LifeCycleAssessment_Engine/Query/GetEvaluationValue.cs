@@ -40,39 +40,48 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Return a sum of all Material Fragment values from a specified EnvironmentalProductDeclarationField within any EPD object.")]
         [Input("epd", "Environmental Product Declaration to query the field value from.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Input("phases", "A phase filter.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
-        public static double GetEvaluationValue(this IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
+        public static double GetEvaluationValue(this EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (epd == null)
                 return double.NaN;
 
-            switch (field)
+            IEnumerable<EnvironmentalMetric> filteredMetrics = epd.EnvironmentalMetric.Where(x => x.Field == field);
+            if(filteredMetrics.Count() == 0)
             {
-                case EnvironmentalProductDeclarationField.AcidificationPotential:
-                    return epd.AcidificationPotential;
-                case EnvironmentalProductDeclarationField.DepletionOfAbioticResourcesFossilFuels:
-                    return epd.DepletionOfAbioticResourcesFossilFuels;
-                case EnvironmentalProductDeclarationField.EutrophicationPotential:
-                    return epd.EutrophicationPotential;
-                case EnvironmentalProductDeclarationField.GlobalWarmingPotential:
-                    return epd.GlobalWarmingPotential;
-                case EnvironmentalProductDeclarationField.OzoneDepletionPotential:
-                    return epd.OzoneDepletionPotential;
-                case EnvironmentalProductDeclarationField.PhotochemicalOzoneCreationPotential:
-                    return epd.PhotochemicalOzoneCreationPotential;
-                default:
-                    return double.NaN;
+                BH.Engine.Reflection.Compute.RecordError("No metrics of the specified Field could be found.");
+                return double.NaN;
             }
+
+            filteredMetrics = filteredMetrics.Where(x => x.GetType().IsAssignableFrom(typeof(EnvironmentalMetric)));
+
+            if(filteredMetrics.Count() == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("No Environmental Metrics could be found.");
+                return double.NaN;
+            }
+
+            if(!filteredMetrics.SelectMany(x => x.Phases).IsContaining(phases, exactMatch))
+            {
+                BH.Engine.Reflection.Compute.RecordError("There are no matching phases found within the Environmental Metrics of the provided EPDs.");
+                return double.NaN;
+            }
+
+            return filteredMetrics.First().Quantity;
         }
 
         /***************************************************/
 
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
         [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
-        [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Input("field", "Specific metric to query from provided EPD.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("type", "The quantityType to query.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, QuantityType type)
+        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, bool exactMatch = false)
         {
             if (elementM == null)
                 return new List<double>();
@@ -81,9 +90,10 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
             {
-                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
-                if (epd.QuantityType == type)
-                    return GetEvaluationValue(epd, field);
+                var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
+
+                if (epd.QuantityType == type && (epd.EnvironmentalMetric.Where(z => z.Phases.Where(a => phases.Contains(a)).Count() != 0).FirstOrDefault() != null))
+                    return GetEvaluationValue(epd, field, phases, exactMatch);
                 else
                     return double.NaN;
 
@@ -107,9 +117,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within a construction.")]
         [Input("construction", "An physical construction used to define material properties of an object.")]
         [Input("field", "Specific metric to query from provided Environmental Product Declarations.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("type", "The quantityType to query.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-        public static List<double> GetEvaluationValue(this Construction construction, EnvironmentalProductDeclarationField field, QuantityType type)
+        public static List<double> GetEvaluationValue(this Construction construction, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, bool exactMatch = false)
         {
             if (construction == null)
                 return new List<double>();
@@ -118,9 +130,10 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<double> epdVal = construction.Layers.Select(x =>
             {
-                var epd = x.Material.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
-                if (epd.QuantityType == type)
-                    return GetEvaluationValue(epd, field);
+                var epd = x.Material.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
+
+                if (epd.QuantityType == type && (epd.EnvironmentalMetric.Where(z => z.Phases.Where(a => phases.Contains(a)).Count() != 0).FirstOrDefault() != null))
+                    return GetEvaluationValue(epd, field, phases, exactMatch);
                 else
                     return double.NaN;
             }).ToList();
@@ -139,6 +152,29 @@ namespace BH.Engine.LifeCycleAssessment
             return normalisedEpdVal;
         }
         /***************************************************/
+
+        private static bool IsContaining(this IEnumerable<LifeCycleAssessmentPhases> phasesToSearch, IEnumerable<LifeCycleAssessmentPhases> phasesToFilterBy, bool exact)
+        {
+            //This will return whether a collection of Phases (phasesToSearch) is contained within the filtering phases (phasesToFilterBy)
+            //If the flag for exact is true then every phase in the phasesToFilterBy must exist in the phasesToSearch
+            //If the flag for exact is false then only one phase from the phasesToFilterBy must exist in the phasesToSearch
+
+            if (!exact)
+                return phasesToSearch.Where(x => phasesToFilterBy.Contains(x)).Count() > 0;
+
+            List<LifeCycleAssessmentPhases> phases = phasesToSearch.ToList();
+
+            bool isContained = true;
+            foreach (LifeCycleAssessmentPhases phase in phasesToFilterBy)
+            {
+                isContained &= phases.Contains(phase);
+                phases.Remove(phase);
+            }
+
+            isContained &= phases.Count == 0;
+
+            return isContained;
+        }
     }
 }
 

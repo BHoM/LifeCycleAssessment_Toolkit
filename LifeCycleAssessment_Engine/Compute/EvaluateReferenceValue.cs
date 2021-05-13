@@ -24,6 +24,7 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -39,15 +40,17 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("referenceValue", "The amount, quantity, or value to evaluate against any Environmental Product Declaration.")]
         [Input("epd", "The Environmental Product Declaration to evaluate against the quantity.")]
         [Input("field", "The Environmental indicator to evaluate by. This value is queried from the EPD.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The total result of the desired metric based on the EnvironmentalProductDeclarationField. It is up to the discre.")]
-        public static double EvaluateReferenceValue(double referenceValue, IEnvironmentalProductDeclarationData epd, EnvironmentalProductDeclarationField field)
+        public static double EvaluateReferenceValue(double referenceValue, EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (epd == null)
             {
                 BH.Engine.Reflection.Compute.RecordError("No EPD provided. Please provide a reference EPD.");
             }
 
-            double epdValue = Query.GetEvaluationValue(epd, field);
+            double epdValue = Query.GetEvaluationValue(epd, field, phases, exactMatch);
 
             if (referenceValue <= 0)
             {
@@ -56,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             double qtValue = epd.QuantityTypeValue;
 
-            string qt = System.Convert.ToString(Query.GetFragmentQuantityType(epd));
+            string qt = System.Convert.ToString(Query.GetEPDQuantityType(epd));
 
             BH.Engine.Reflection.Compute.RecordNote($"Result is created by multiplying the ReferenceValue of {referenceValue} by the units of {qt} QuantityType extracted from " + epd.Name + " divided by {qtValue}.");
 

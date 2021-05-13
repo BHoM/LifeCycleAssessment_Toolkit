@@ -23,6 +23,10 @@
 using System.ComponentModel;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Fragments;
+using BH.Engine.Base;
+using System.Linq;
+using BH.oM.Base;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -35,17 +39,28 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns End of Life processing information contained within an EPD dataset.")]
         [Input("epd", "Environmental Product Declaration of a specific material from an EPD Dataset.")]
         [Output("materialEndOfLifeTreatment", "End of Life treatment per material. This includes all data collected for LCA stages C1-C4 within a provided EPD dataset.")]
-        public static string MaterialEndOfLifeTreatment(IEnvironmentalProductDeclarationData epd)
+        public static string MaterialEndOfLifeTreatment(EnvironmentalProductDeclaration epd)
         {
-            if (epd.EndOfLifeTreatment == null)
+            // EPD null check
+            if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("The EPD does not contain any EndOfLife data.");
+                BH.Engine.Reflection.Compute.RecordError("No EPD has been provided.");
                 return null;
             }
-            else
+
+            // AdditionalEPDData fragment
+            AdditionalEPDData dataFragment = (AdditionalEPDData)Base.Query.GetAllFragments(epd).Where(x => typeof(AdditionalEPDData).IsAssignableFrom(x.GetType())).FirstOrDefault();
+
+            // AdditionalEPDData fragment null check
+            if (dataFragment == null)
             {
-                return epd.EndOfLifeTreatment;
+                BH.Engine.Reflection.Compute.RecordError("No AdditionalEPDData fragment has been found. Have you tried AddFragment on the selected EPD?");
+                return null;
             }
+
+            string endOfLife = dataFragment.EndOfLifeTreatment;
+
+            return endOfLife;
         }
         /***************************************************/
 

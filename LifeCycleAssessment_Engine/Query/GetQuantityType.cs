@@ -49,7 +49,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             qt = elementM.IMaterialComposition().Materials.Where(x => x != null).Select(x =>
             {
-                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
                 if (epd != null)
                     return epd.QuantityType;
                 return QuantityType.Undefined;

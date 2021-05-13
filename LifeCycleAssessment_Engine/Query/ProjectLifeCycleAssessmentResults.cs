@@ -84,7 +84,7 @@ namespace BH.Engine.LifeCycleAssessment
             if(gravitySys == "Undefined")
                 BH.Engine.Reflection.Compute.RecordNote("Please enter your primary gravity structural system within the LifeCycleAssessmentScope.");
 
-            double gwp = lcaResult.TotalGlobalWarmingPotential;
+            double gwp = lcaResult.TotalQuantity;
             if (gwp <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError("No GWP amount was accounted for. Please ensure you have provided objects with EPDs for evaluation before submitting to the central database.");

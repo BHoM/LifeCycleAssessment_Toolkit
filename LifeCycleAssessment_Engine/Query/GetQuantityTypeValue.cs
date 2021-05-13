@@ -41,7 +41,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityTypeValue from any Environmental Product Declaration MaterialFragmment.")]
         [Input("epd", "The EPD Object to query.")]
         [Output("quantityTypeValue", "The quantityTypeValue property from the EPD.")]
-        public static double GetQuantityTypeValue(this IEnvironmentalProductDeclarationData epd)
+        public static double GetQuantityTypeValue(this EnvironmentalProductDeclaration epd)
         {
             if (epd == null)
             {
@@ -69,7 +69,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<double> qtv = elementM.IMaterialComposition().Materials.Select(x =>
             {
-                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
                 if (epd != null && epd.QuantityType == type)
                     return epd.QuantityTypeValue;
                 return 1;
@@ -91,7 +91,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<double> qtv = construction.Layers.Select(x =>
             {
-                var s = x.Material.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
+                var s = x.Material.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
                 if (s != null && s.QuantityType == type)
                     return s.QuantityTypeValue;
                 return 1;

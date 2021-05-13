@@ -20,47 +20,54 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.ComponentModel;
+using BH.oM.Reflection.Attributes;
 using BH.Engine.Matter;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
         /***************************************************/
-        /****   Public Methods                          ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Query the Density values from any IElementM object's MaterialComposition which hosts Environmental Product Declaration materials.")]
-        [Input("elementM", "The IElementM object from which to query the object's material density.")]
-        [Output("density", "The Density values from the Environmental Product Declarations found within the Element's MaterialComposition.")]
-        public static List<double> GetElementDensity(this IElementM elementM)
+        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
+        [Input("elementM", "A IElementM from which to query the EPD.")]
+        [Output("environmentalMetric", "An Environmental Metric is used to store data regarding the environmental impacts of a given Environmental Product Declaration. \n"
+        + "An EPD can host multiple EnvironmentalMetrics to describe the overall impact which will be used in any LCA calculation.")]
+        public static List<List<EnvironmentalMetric>> GetElementEnvironmentalMetric(this IElementM elementM)
         {
-            List<double> density = new List<double>();
-
             if (elementM == null)
-                return new List<double>(); 
-
-            density = elementM.IMaterialComposition().Materials.Where(x => x != null).Select(x =>
             {
-                var epd = x.Properties.Where(y => y is IEnvironmentalProductDeclarationData).FirstOrDefault() as IEnvironmentalProductDeclarationData;
-                if (epd != null)
-                {
-                    return epd.Density;
-                }
-                else
-                {
-                    BH.Engine.Reflection.Compute.RecordError($"No density was provided for material name {epd.Name}.");
-                    return 0;
-                }
-            }).ToList();
+                BH.Engine.Reflection.Compute.RecordError("No IElementM was provided.");
+            }
 
-            return density;
+            if (elementM.IMaterialComposition() == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("The provided element does not have a MaterialComposition.");
+            }
+
+            List<EnvironmentalProductDeclaration> epd = elementM.IMaterialComposition().Materials.Select(x => x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration).ToList();
+
+            if (epd == null)
+            {
+                BH.Engine.Reflection.Compute.RecordError("No EPD Material was found within the object's MaterialComposition.");
+            }
+
+            List<List<EnvironmentalMetric>> metric = epd.Select(x => x.EnvironmentalMetric).ToList();
+
+            if (metric.Count() <= 0)
+            {
+                BH.Engine.Reflection.Compute.RecordError("No Environmental Metrics could be found.");
+            }
+
+            return metric;
         }
 
         /***************************************************/
