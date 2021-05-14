@@ -54,10 +54,8 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        // This doesn't work
-
-        [Description("Return a list of all environmental metrics withing a provided EPD.")]
-        [Input("epd", "An Environmental Product Declaration object or EPD.")]
+        [Description("Return a list of all environmental metrics withing a provided element.")]
+        [Input("elementM", "A element to query the environmental metric.")]
         [Output("environmentalMetric", "A list of all Environmental Metrics that comprise a given EPD.")]
         public static List<EnvironmentalMetric> GetEnvironmentalMetric(this IElementM elementM)
         {
@@ -66,11 +64,19 @@ namespace BH.Engine.LifeCycleAssessment
             if (elementM == null)
                 return new List<EnvironmentalMetric>();
 
-            List<EnvironmentalMetric> metrics = (List<EnvironmentalMetric>)elementM.IMaterialComposition().Materials.Select(x =>
+            List<oM.Physical.Materials.Material> material = elementM.IMaterialComposition().Materials.ToList();
+
+            List<EnvironmentalMetric> metrics = new List<EnvironmentalMetric>();
+
+            foreach(var m in material)
             {
-                var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).Select(z => z as EnvironmentalMetric);
-                return epd;
-            });
+                List<EnvironmentalProductDeclaration> epds = m.Properties.Where(X => X is EnvironmentalProductDeclaration).Cast<EnvironmentalProductDeclaration>().ToList();
+                foreach(var e in epds)
+                {
+                    List<EnvironmentalMetric> me = epds.SelectMany(x => x.EnvironmentalMetric).ToList();
+                    metrics.AddRange(me);
+                }
+            }
         
             return metrics;
         }
