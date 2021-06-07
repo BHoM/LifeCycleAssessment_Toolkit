@@ -70,7 +70,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             foreach(var m in material)
             {
-                List<EnvironmentalProductDeclaration> epds = m.Properties.Where(X => X is EnvironmentalProductDeclaration).Cast<EnvironmentalProductDeclaration>().ToList();
+                List<EnvironmentalProductDeclaration> epds = m.Properties.Where(x => x is EnvironmentalProductDeclaration).Cast<EnvironmentalProductDeclaration>().ToList();
                 foreach(var e in epds)
                 {
                     List<EnvironmentalMetric> me = epds.SelectMany(x => x.EnvironmentalMetric).ToList();
