@@ -40,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The LifeCycleElementResult that contains project data, total results, and results per element.")]
+        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static LifeCycleAssessmentResult EvaluateLifeCycleAssessment(ProjectLifeCycleAssessment lca, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (lca == null) return null;
