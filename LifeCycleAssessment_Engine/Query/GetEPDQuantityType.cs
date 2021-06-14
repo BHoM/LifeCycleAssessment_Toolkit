@@ -36,6 +36,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityType value from any EnvironmentalProductDeclaration object.")]
         [Input("epd", "EnvironmentalProductDeclaration object from which to query.")]
         [Output("quantityType", "The quantityType value from the provided EnvironmentalProductDeclaration.")]
+        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Query.GetFragmentQuantityType(BH.oM.LifeCycleAssessment.MaterialFragment.EnvironmentalProductDeclaration)")]
         public static QuantityType GetEPDQuantityType(this EnvironmentalProductDeclaration epd)
         {
             if (epd == null)

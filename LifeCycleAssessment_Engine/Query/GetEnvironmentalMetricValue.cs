@@ -38,8 +38,6 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        // TODO this doesn't work with field, cannot be added to main switch case in GetEvaluationValue()
-
         [Description("Return a list of all environmental metrics withing a provided EPD.")]
         [Input("epd", "An Environmental Product Declaration object or EPD.")]
         [Output("environmentalMetric", "A list of all Environmental Metrics that comprise a given EPD.")]
