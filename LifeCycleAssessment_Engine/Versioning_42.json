@@ -1,0 +1,53 @@
+﻿{
+  "Namespace": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Type": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+
+    }
+  },
+  "Method": {
+    "ToNew": {
+
+      },
+      "ToOld": {
+
+      }
+    },
+  "Property": {
+    "ToNew": {
+
+    },
+    "ToOld": {
+
+    }
+  },
+    "MessageForDeleted": {
+      "BH.Engine.LifeCycleAssessment.Compute.AcidificationPotential(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)": "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.AcidificationPotential(System.Double, System.Double, System.Double)": "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+      "BH.Engine.LifeCycleAssessment.Compute.EutrophicationPotential(System.Double, System.Double, System.Double)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.EutrophicationPotential(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+      "BH.Engine.LifeCycleAssessment.Compute.DepletionOfAbioticResources(System.Double, System.Double, System.Double)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.DepletionOfAbioticResources(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+      "BH.Engine.LifeCycleAssessment.Compute.DepletionOfAbioticResourcesFossilFuels(System.Double, System.Double, System.Double)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.DepletionOfAbioticResourcesFossilFuels(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+     "BH.Engine.LifeCycleAssessment.Compute.GlobalWarmingPotential(System.Double, System.Double, System.Double)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.GlobalWarmingPotential(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+      "BH.Engine.LifeCycleAssessment.Compute.OzoneDepletionPotential(System.Double, System.Double, System.Double)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.OzoneDepletionPotential(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+      "BH.Engine.LifeCycleAssessment.Compute.PhotochemicalOzoneCreationPotential(System.Double, System.Double, System.Double)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+"BH.Engine.LifeCycleAssessment.Compute.PhotochemicalOzoneCreationPotential(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData)" : "This method has been removed as EvaluateEnvironmentalProductDeclaration contains the same functionality.",
+      "BH.oM.LifeCycleAssessment.MaterialFragments.SectorEnvironmentalProductDeclaration": "This object has been replaced with a single EPD object and a specific Type parameter.",
+      "BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalProductDeclarationData": "This interface has been removed as changes to the EPD object have rendered this unnecessary."
+    },
+  "MessageForNoUpgrade": {
+
+  }
+}
