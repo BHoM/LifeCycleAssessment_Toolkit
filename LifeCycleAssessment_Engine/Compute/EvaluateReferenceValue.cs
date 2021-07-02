@@ -43,7 +43,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The total result of the desired metric based on the EnvironmentalProductDeclarationField.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateReferenceValue(System.Double, BH.oM.LifeCycleAssessment.MaterialFragment.IEnvironmentalProductDeclarationData, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static double EvaluateReferenceValue(double referenceValue, EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (epd == null)

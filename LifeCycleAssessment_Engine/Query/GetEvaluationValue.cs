@@ -43,7 +43,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "A phase filter.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Query.GetEvaluationValue(BH.oM.LifeCycleAssessment.MaterialFragment.IEnvironmentalProductDeclarationData, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
 
         public static double GetEvaluationValue(this EnvironmentalProductDeclaration epd, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
@@ -83,7 +82,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("type", "The quantityType to query.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Query.GetEvaluationValue(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessment.QuantityType)")]
         public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, bool exactMatch = false)
         {
             if (elementM == null)
@@ -124,7 +122,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("type", "The quantityType to query.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Query.GetEvaluationValue(BH.oM.Physical.Constructions.Construction, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessment.QuantityType)")]
         public static List<double> GetEvaluationValue(this Construction construction, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, bool exactMatch = false)
         {
             if (construction == null)

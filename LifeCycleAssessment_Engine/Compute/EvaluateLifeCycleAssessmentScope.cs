@@ -41,7 +41,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The LifeCycleElementResult that contains structures scope specific data, total results, and results per element.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessmentScope(BH.oM.LifeCycleAssessment.StructuresScope, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static List<LifeCycleAssessmentElementResult> EvaluateLifeCycleAssessmentScope(this StructuresScope structuresScope, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (structuresScope.IsValid() == false)
@@ -142,7 +141,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The LifeCycleElementResult that contains foundations scope specific data, total results, and results per element.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessmentScope(BH.oM.LifeCycleAssessment.FoundationsScope, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static List<LifeCycleAssessmentElementResult> EvaluateLifeCycleAssessmentScope(this FoundationsScope foundationsScope, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (foundationsScope.IsValid() == false)
@@ -254,7 +252,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The LifeCycleElementResult that contains enclosures scope specific data, total results, and results per element.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessmentScope(BH.oM.LifeCycleAssessment.EnclosuresScope, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static List<LifeCycleAssessmentElementResult> EvaluateLifeCycleAssessmentScope(this EnclosuresScope enclosuresScope, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (enclosuresScope.IsValid() == false)
@@ -340,7 +337,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The LifeCycleElementResult that contains MEP scope specific data, total results, and results per element.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessmentScope(BH.oM.LifeCycleAssessment.MEPScope, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static List<LifeCycleAssessmentElementResult> EvaluateLifeCycleAssessmentScope(this MEPScope mepScope, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (mepScope.IsValid() == false)
@@ -824,7 +820,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "The LifeCycleElementResult that contains Tenant Improvement scope specific data, total results, and results per element.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessmentScope(BH.oM.LifeCycleAssessment.TenantImprovementScope, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static List<LifeCycleAssessmentElementResult> EvaluateLifeCycleAssessmentScope(this TenantImprovementScope tenantImprovementScope, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, bool exactMatch = false)
         {
             if (tenantImprovementScope.IsValid() == false)

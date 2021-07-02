@@ -38,7 +38,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the standard project results from a complete ProjectLifeCycleAssessment evaluation for pushing to datasets.")]
         [Input("lcaResult", "Supply a complete LifeCycleAssessmentResult to query.")]
         [Output("projectResults", "The combined amount of kgCO2e of the objects provided.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Query.ProjectLifeCycleAssessmentResult(BH.oM.LifeCycleAssessment.Results.LifeCycleAssessmentResult)")]
         public static ProjectLifeCycleAssessmentResult ProjectLifeCycleAssessmentResults(this LifeCycleAssessmentResult lcaResult)
         {
             double area = lcaResult.LifeCycleAssessmentScope.ProjectArea;

@@ -42,7 +42,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclaration(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField)")]
         public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             double value = 0;
