@@ -43,7 +43,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value where any exists.")]
         [Input("epd", "The EPD object to query.")]
         [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
-        [PreviousVersion("4.2", "BH.Engine.LifeCycleAssessment.Query.GetFragmentDensity(BH.oM.LifeCycleAssessment.MaterialFragment.EnvironmentalProductDeclaration)")]
         public static List<double> GetEPDDensity(this EnvironmentalProductDeclaration epd)
         {
             // EPD null check
