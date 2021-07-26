@@ -128,6 +128,7 @@
     <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Compute\EvaluateReferenceValue.cs" />
+    <Compile Include="Compute\EvaluateTM65.cs" />
     <Compile Include="Query\GetElementEnvironmentalMetric.cs" />
     <Compile Include="Query\GetElementMaterial.cs" />
     <Compile Include="Query\GetElementEpd.cs" />
