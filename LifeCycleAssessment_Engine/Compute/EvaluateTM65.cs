@@ -24,6 +24,7 @@ using System;
 using BH.oM.Reflection.Attributes;
 using System.ComponentModel;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using BH.Engine.Matter;
@@ -41,8 +42,8 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("weight", "Weight of the equipment in kg.")]
         [Input("quantity", "The amount of determined QuantityType.")]
         [Input("materialComposition", "The material composition of the object being evaluated. This is a breakdown of materials by ratio.")]
-        [Output("environmentalMetric", "Percentage reinforcement within concrete building element m^3.")]
-        public static EnvironmentalMetric EvaluateTM65 (string name, double weight, double quantity, QuantityType quantityType, MaterialComposition materialComposition) //add optional refrigerant input after prototype is working.
+        [Output("epd", "An Environmental Product Declaration.")]
+        public static EnvironmentalProductDeclaration EvaluateTM65 (string name, double weight, double quantity, QuantityType quantityType, MaterialComposition materialComposition) //add optional refrigerant input after prototype is working.
         {
             // TM65 calculation 
             // TotalWeight x ExplicitBulkByMass x 1.1 (ReplacementWeightIncrease) x Scale Up Factor x 1.3 (Buffer Factor) + RefrigerantTotalFromImageBelow
@@ -55,7 +56,10 @@ namespace BH.Engine.LifeCycleAssessment
             // Refrigerant to be added later
             
             // Define complexity lists
+            // Make this an input 
             EPDComplexity scaleUpFactor = EPDComplexity.Undefined;
+
+            // Remove lists and add as description to epdComplexity enum
 
             // Class 1 objects > scaleUpFactor == 1.1
             List<string> class1 = new List<string>() { 
@@ -94,7 +98,6 @@ namespace BH.Engine.LifeCycleAssessment
                 "UPS"
             };
 
-            // Needs null handling
             if (class1.Contains(name))
             {
                 scaleUpFactor = EPDComplexity.Class1;
@@ -110,7 +113,6 @@ namespace BH.Engine.LifeCycleAssessment
 
             double scaleFactor = 1;
 
-            // Not sure if this switch case is working
             switch (scaleUpFactor)
             {
                 case EPDComplexity.Class1:
@@ -124,13 +126,16 @@ namespace BH.Engine.LifeCycleAssessment
                 case EPDComplexity.Class3:
                     scaleFactor = 1.3;
                     break;
-
-                default:
-                    return null;
             }
 
             // This is the calculation 
-            double totalQuantity = weight * /*BH.Engine.Matter.Query.Mass(materialComposition)*/ replacementWeightIncrease * scaleFactor* bufferFactor;
+            // Need Mass = Density * Volume for all material composition inputs 
+            // Density => All EPDDensity values 
+            // Volume => ???
+
+            // TODO Only use kg based EPDs and remove the Mass query -> give error message if QT is not kg
+
+            double totalQuantity = weight * /*BH.Engine.Matter.Query.Mass(materialComposition)*/ replacementWeightIncrease * scaleFactor * bufferFactor;
 
             // inputs required to construct an Environmental Metric
             List<LifeCycleAssessmentPhases> phases = new List<LifeCycleAssessmentPhases>() { LifeCycleAssessmentPhases.A1, LifeCycleAssessmentPhases.A2, LifeCycleAssessmentPhases.A3}; // This is hard coded to A1-A3, not sure if this is desired. But it should definitely be stated when using the method. 
@@ -140,7 +145,7 @@ namespace BH.Engine.LifeCycleAssessment
             EnvironmentalMetric metric = new EnvironmentalMetric(field, phases, totalQuantity);
 
             // construct an new EPD
-            BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration epd = new oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration { Type = EPDType.Product, EnvironmentalMetric = metric, QuantityType = quantityType, QuantityTypeValue = quantity};
+            BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration epd = new oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration { Type = EPDType.Product, EnvironmentalMetric = new List<EnvironmentalMetric> { metric }, QuantityType = quantityType, QuantityTypeValue = quantity};
 
             return epd;
         }
