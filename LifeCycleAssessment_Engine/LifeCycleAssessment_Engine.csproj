@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BenchmarkVariance.cs" />
+    <Compile Include="Compute\ComputeEquiv_Test.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByLength.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByArea.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByVolume.cs" />
