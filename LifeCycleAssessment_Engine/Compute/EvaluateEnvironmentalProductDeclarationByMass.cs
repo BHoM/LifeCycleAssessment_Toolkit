@@ -24,8 +24,10 @@ using BH.Engine.Matter;
 using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Reflection.Attributes;
+using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -47,44 +49,43 @@ namespace BH.Engine.LifeCycleAssessment
         private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             double volume = elementM.ISolidVolume();
-            List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, exactMatch);
             List<double> gwpByMaterial = new List<double>();
-            List<double> volumeByRatio = elementM.IMaterialComposition().Ratios.Select(x => volume * x).ToList();
-            List<double> densityOfMassEpd = Query.GetEPDDensity(elementM);
-            List<double> massOfObj = new List<double>();
+            MaterialComposition mc = elementM.IMaterialComposition();
+            List<Material> matList = mc.Materials.ToList();
 
-            if (densityOfMassEpd == null)
-            {
-                BH.Engine.Reflection.Compute.RecordError("Density could not be found. Material density is required for all objects using Mass-based evaluations.");
-                return null;
-            }
-
-            for (int x = 0; x < volumeByRatio.Count; x++)
-            {
-                massOfObj.Add(volumeByRatio[x] * densityOfMassEpd[x]);
-            }
-
-            for (int x = 0; x < epdVal.Count; x++)
-            {
-                if (double.IsNaN(epdVal[x]))
-                    gwpByMaterial.Add(double.NaN);
-                else
-                {
-                    gwpByMaterial.Add(epdVal[x] * massOfObj[x]);
-                }
-            }
-
-            if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
+            List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, exactMatch);
+            if (epdVals == null || epdVals.Where(x => !double.IsNaN(x)).Sum() <= 0)
             {
                 BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                 return null;
             }
 
-            double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
+            for (int i = 0; i < matList.Count(); i++)
+            {
+                double density;
+                List<EnvironmentalProductDeclaration> materialEPDs = matList[i].Properties.OfType<EnvironmentalProductDeclaration>().ToList();
+                if (materialEPDs.Any(x => x.QuantityType == QuantityType.Mass))
+                {
+                    double volumeOfMaterial = mc.Ratios[i] * volume;
+                    List<double> densityOfMassEpd = materialEPDs[0].GetEPDDensity();
+                    if (densityOfMassEpd == null || densityOfMassEpd.Count() == 0)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError("Density could not be found. Material density is required for all objects using Mass-based evaluations.");
+                        return null;
+                    }
+                    else
+                        density = densityOfMassEpd[0];
 
+                    double massOfObj = volumeOfMaterial * density;
+                    if (double.IsNaN(epdVals[i]))
+                        gwpByMaterial.Add(double.NaN);
+                    else
+                        gwpByMaterial.Add(epdVals[i] * massOfObj);
+                }
+            }
+            double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
             return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
         }
-
         /***************************************************/
     }
 }
