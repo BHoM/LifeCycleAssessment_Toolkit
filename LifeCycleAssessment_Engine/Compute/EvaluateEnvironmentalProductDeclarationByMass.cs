@@ -70,7 +70,7 @@ namespace BH.Engine.LifeCycleAssessment
                     List<double> densityOfMassEpd = materialEPDs[0].GetEPDDensity();
                     if (densityOfMassEpd == null || densityOfMassEpd.Count() == 0)
                     {
-                        BH.Engine.Reflection.Compute.RecordError("Density could not be found. Material density is required for all objects using Mass-based evaluations.");
+                        BH.Engine.Reflection.Compute.RecordError("Density could not be found. Add DensityFragment for all objects using Mass-based QuantityType EPDs.");
                         return null;
                     }
                     else
