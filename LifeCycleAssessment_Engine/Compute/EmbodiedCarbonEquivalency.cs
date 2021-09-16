@@ -54,37 +54,37 @@ namespace BH.Engine.LifeCycleAssessment
                     return 0;
 
                 case EquivalencyType.MilesDriven:
-                    var evalByMiles = 3.98E-4 / 1000;
+                    var evalByMiles = 3.98E-4 * 1000;
                     equivalencyVal = evalByMiles;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByMiles} kg CO2 per mile in a year.");
                     break;
 
                 case EquivalencyType.PassengerVehiclesDriven:
-                    var evalByVehicles = 4.6 / 1000;
+                    var evalByVehicles = 4.6 * 1000;
                     equivalencyVal = evalByVehicles;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByVehicles} kg CO2 per vehicle in a year.");
                     break;
 
                 case EquivalencyType.HomesEnergyUse:
-                    var evalByHomes = 8.3 / 1000;
+                    var evalByHomes = 8.3 * 1000;
                     equivalencyVal = evalByHomes;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByHomes} kg CO2 per home electricity use in a year.");
                     break;
 
                 case EquivalencyType.GallonsOfGasoline:
-                    var evalByGallons = 8.887E-3 / 1000;
+                    var evalByGallons = 8.887E-3 * 1000;
                     equivalencyVal = evalByGallons;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByGallons} kg CO2 per gallon.");
                     break;
 
                 case EquivalencyType.PoundsOfCoal:
-                    var evalByCoalPounds = 9.05E-4 / 1000;
+                    var evalByCoalPounds = 9.05E-4 * 1000;
                     equivalencyVal = evalByCoalPounds;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByCoalPounds} kg CO2 per pound of coal.");
                     break;
 
                 case EquivalencyType.AcresOfForest:
-                    var evalByAcres = 9.05E-4 / 1000;
+                    var evalByAcres = 9.05E-4 * 1000;
                     equivalencyVal = evalByAcres;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
                     break;
@@ -119,37 +119,37 @@ namespace BH.Engine.LifeCycleAssessment
                     return 0;
 
                 case EquivalencyType.MilesDriven:
-                    var evalByMiles = 3.98E-4 / 1000;
+                    var evalByMiles = 3.98E-4*1000;
                     equivalencyVal = evalByMiles;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByMiles} kg CO2 per mile in a year.");
                     break;
 
                 case EquivalencyType.PassengerVehiclesDriven:
-                    var evalByVehicles = 4.6/1000;
+                    var evalByVehicles = 4.6*1000;
                     equivalencyVal = evalByVehicles;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByVehicles} kg CO2 per vehicle in a year.");
                     break;
 
                 case EquivalencyType.HomesEnergyUse:
-                    var evalByHomes = 8.3/1000;
+                    var evalByHomes = 8.3 * 1000;
                     equivalencyVal = evalByHomes;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByHomes} kg CO2 per home electricity use in a year.");
                     break;
 
                 case EquivalencyType.GallonsOfGasoline:
-                    var evalByGallons = 8.887E-3 / 1000;
+                    var evalByGallons = 8.887E-3 * 1000;
                     equivalencyVal = evalByGallons;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByGallons} kg CO2 per gallon.");
                     break;
 
                 case EquivalencyType.PoundsOfCoal:
-                    var evalByCoalPounds = 9.05E-4 / 1000;
+                    var evalByCoalPounds = 9.05E-4 * 1000;
                     equivalencyVal = evalByCoalPounds;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByCoalPounds} kg CO2 per pound of coal.");
                     break;
 
                 case EquivalencyType.AcresOfForest:
-                    var evalByAcres = 9.05E-4 / 1000;
+                    var evalByAcres = 9.05E-4 * 1000;
                     equivalencyVal = evalByAcres;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
                     break;
@@ -159,8 +159,9 @@ namespace BH.Engine.LifeCycleAssessment
                     return 0;
             }
             // results 
-            return kgCO2 / equivalencyVal;
+            return kgCO2/ equivalencyVal;
         }
         /***************************************************/
     }
 }
+
