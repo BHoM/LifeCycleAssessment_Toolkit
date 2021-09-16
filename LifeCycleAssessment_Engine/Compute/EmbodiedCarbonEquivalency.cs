@@ -41,10 +41,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns EPA equivalency using a U.S.A. specific dataset")]
         [Input("kgCO2", "LCA result for Global Warming Potential")]
         [Input("equivalencyType", "Resultant unit for equivalency conversion")]
-        [Output("quantityResult", "The numerical value for the resultant unit")]
-        public static double ComputeEquivalency(double kgCO2, EquivalencyType equivalencyType)
+        [Output("quantity", "The numerical value for the resultant unit")]
+        public static double EmbodiedCarbonEquivalency(double kgCO2, EquivalencyType equivalencyType)
         {
             double equivalencyVal = 0;
+            string message = $"You selected {equivalencyType} and the method is using a constant of";
 
             switch (equivalencyType)
             {
@@ -55,37 +56,37 @@ namespace BH.Engine.LifeCycleAssessment
                 case EquivalencyType.MilesDriven:
                     var evalByMiles = 3.98E-4 / 1000;
                     equivalencyVal = evalByMiles;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Passenger Vehicles Driven and the method is using a constant of {evalByMiles} kg CO2 per mile in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByMiles} kg CO2 per mile in a year.");
                     break;
 
                 case EquivalencyType.PassengerVehiclesDriven:
                     var evalByVehicles = 4.6 / 1000;
                     equivalencyVal = evalByVehicles;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Passenger Vehicles Driven and the method is using a constant of {evalByVehicles} kg CO2 per vehicle in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByVehicles} kg CO2 per vehicle in a year.");
                     break;
 
                 case EquivalencyType.HomesEnergyUse:
                     var evalByHomes = 8.3 / 1000;
                     equivalencyVal = evalByHomes;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Homes Energy Use and the method is using a constant of {evalByHomes} kg CO2 per home electricity use in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByHomes} kg CO2 per home electricity use in a year.");
                     break;
 
                 case EquivalencyType.GallonsOfGasoline:
                     var evalByGallons = 8.887E-3 / 1000;
                     equivalencyVal = evalByGallons;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected U.S. Gallons of Gasoline and the method is using a constant of {evalByGallons} kg CO2 per gallon.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByGallons} kg CO2 per gallon.");
                     break;
 
                 case EquivalencyType.PoundsOfCoal:
                     var evalByCoalPounds = 9.05E-4 / 1000;
                     equivalencyVal = evalByCoalPounds;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Pounds of Coal and the method is using a constant of {evalByCoalPounds} kg CO2 per pound of coal.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByCoalPounds} kg CO2 per pound of coal.");
                     break;
 
                 case EquivalencyType.AcresOfForest:
                     var evalByAcres = 9.05E-4 / 1000;
                     equivalencyVal = evalByAcres;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Acres of Forest and the method is using a constant of {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
                     break;
 
                 default:
@@ -103,12 +104,13 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Returns EPA equivalency using a U.S.A. specific dataset with a Result input.")]
         [Input("result", "LCA result for Global Warming Potential")]
         [Input("equivalencyType", "Resultant unit for equivalency conversion")]
-        [Output("quantity Result", "The numerical value for the resultant unit")]
-        public static double ComputeEquivalency(List<LifeCycleAssessmentElementResult> result, EquivalencyType equivalencyType)
+        [Output("quantity", "The numerical value for the resultant unit")]
+        public static double EmbodiedCarbonEquivalency(List<LifeCycleAssessmentElementResult> result, EquivalencyType equivalencyType)
         {
             double kgCO2 = Query.TotalFieldQuantity(result);
 
             double equivalencyVal = 0;
+            string message = $"You selected {equivalencyType} and the method is using a constant of";
 
             switch (equivalencyType)
             {
@@ -119,37 +121,37 @@ namespace BH.Engine.LifeCycleAssessment
                 case EquivalencyType.MilesDriven:
                     var evalByMiles = 3.98E-4 / 1000;
                     equivalencyVal = evalByMiles;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Passenger Vehicles Driven and the method is using a constant of {evalByMiles} kg CO2 per mile in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByMiles} kg CO2 per mile in a year.");
                     break;
 
                 case EquivalencyType.PassengerVehiclesDriven:
                     var evalByVehicles = 4.6/1000;
                     equivalencyVal = evalByVehicles;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Passenger Vehicles Driven and the method is using a constant of {evalByVehicles} kg CO2 per vehicle in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByVehicles} kg CO2 per vehicle in a year.");
                     break;
 
                 case EquivalencyType.HomesEnergyUse:
                     var evalByHomes = 8.3/1000;
                     equivalencyVal = evalByHomes;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Homes Energy Use and the method is using a constant of {evalByHomes} kg CO2 per home electricity use in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByHomes} kg CO2 per home electricity use in a year.");
                     break;
 
                 case EquivalencyType.GallonsOfGasoline:
                     var evalByGallons = 8.887E-3 / 1000;
                     equivalencyVal = evalByGallons;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected U.S. Gallons of Gasoline and the method is using a constant of {evalByGallons} kg CO2 per gallon.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByGallons} kg CO2 per gallon.");
                     break;
 
                 case EquivalencyType.PoundsOfCoal:
                     var evalByCoalPounds = 9.05E-4 / 1000;
                     equivalencyVal = evalByCoalPounds;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Pounds of Coal and the method is using a constant of {evalByCoalPounds} kg CO2 per pound of coal.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByCoalPounds} kg CO2 per pound of coal.");
                     break;
 
                 case EquivalencyType.AcresOfForest:
                     var evalByAcres = 9.05E-4 / 1000;
                     equivalencyVal = evalByAcres;
-                    BH.Engine.Reflection.Compute.RecordNote($"You selected Acres of Forest and the method is using a constant of {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
+                    BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
                     break;
 
                 default:
