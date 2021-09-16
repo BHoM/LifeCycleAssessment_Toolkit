@@ -84,7 +84,7 @@ namespace BH.Engine.LifeCycleAssessment
                     break;
 
                 case EquivalencyType.AcresOfForest:
-                    var evalByAcres = 9.05E-4 * 1000;
+                    var evalByAcres = .82 * 1000;
                     equivalencyVal = evalByAcres;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
                     break;
@@ -96,7 +96,7 @@ namespace BH.Engine.LifeCycleAssessment
             // results 
 
 
-            return kgCO2 * equivalencyVal;
+            return kgCO2 / equivalencyVal;
         }
 
         /***************************************************/
@@ -149,7 +149,7 @@ namespace BH.Engine.LifeCycleAssessment
                     break;
 
                 case EquivalencyType.AcresOfForest:
-                    var evalByAcres = 9.05E-4 * 1000;
+                    var evalByAcres = .82 * 1000;
                     equivalencyVal = evalByAcres;
                     BH.Engine.Reflection.Compute.RecordNote($"{message} {evalByAcres} kg CO2 sequestered per acre of forest in a year.");
                     break;
