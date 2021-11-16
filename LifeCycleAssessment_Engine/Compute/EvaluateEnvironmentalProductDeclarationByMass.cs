@@ -67,7 +67,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (materialEPDs.Any(x => x.QuantityType == QuantityType.Mass))
                 {
                     double volumeOfMaterial = mc.Ratios[i] * volume;
-                    List<double> densityOfMassEpd = materialEPDs[0].GetEPDDensity();
+                    List<double> densityOfMassEpd = materialEPDs.Where(x => x.QuantityType == QuantityType.Mass).First().GetEPDDensity();
                     if (densityOfMassEpd == null || densityOfMassEpd.Count() == 0)
                     {
                         BH.Engine.Reflection.Compute.RecordError("Density could not be found. Add DensityFragment for all objects using Mass-based QuantityType EPDs.");
