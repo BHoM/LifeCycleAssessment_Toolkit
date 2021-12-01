@@ -22,6 +22,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using System;
 using BH.oM.Reflection.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
@@ -52,7 +53,7 @@ namespace BH.Engine.LifeCycleAssessment
             results.AddRange(lca.MEPScope.EvaluateLifeCycleAssessmentScope(field, phases, exactMatch));
             results.AddRange(lca.TenantImprovementScope.EvaluateLifeCycleAssessmentScope(field, phases, exactMatch));
 
-            return new LifeCycleAssessmentResult(lca.BHoM_Guid, field, 0, lca.LifeCycleAssessmentScope, new System.Collections.ObjectModel.ReadOnlyCollection<LifeCycleAssessmentElementResult>(results), results.TotalFieldQuantity());
+            return new LifeCycleAssessmentResult(lca.BHoM_Guid, field, DateTime.Now, lca.LifeCycleAssessmentScope, new System.Collections.ObjectModel.ReadOnlyCollection<LifeCycleAssessmentElementResult>(results), results.TotalFieldQuantity());
         }
         /***************************************************/
     }

@@ -136,8 +136,8 @@ namespace BH.Engine.LifeCycleAssessment
 
             IComparable objectId = lcaResult.ObjectId;
             IComparable resultCase = lcaResult.ResultCase;
-            double timeStamp = lcaResult.TimeStep;
-            DateTime date = System.DateTime.Now;
+            DateTime timeStamp = lcaResult.TimeStep;
+            DateTime date = DateTime.Now;
               
             return new ProjectLifeCycleAssessmentResult(area, buildingLifespan, constructionScope, contactName, date, elementScope, gravitySys, gwp, gwpPerArea, lateralSys, lod, objectId, lcaPhases, projectId, resultCase, timeStamp);
         }

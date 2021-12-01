@@ -75,7 +75,11 @@ namespace BH.Engine.LifeCycleAssessment
 
                 double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+                // Create list of elements to return in results
+                List<IElementM> elements = new List<IElementM>();
+                elements.Add(elementM);
+
+                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field, elements);
             }
             else
             {
