@@ -21,7 +21,7 @@
  */
 
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -43,14 +43,14 @@ namespace BH.Engine.LifeCycleAssessment
             double area = lcaResult.LifeCycleAssessmentScope.ProjectArea;
             if (area <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No building area was defined in the LCA Scope. Returning zero.");
+                BH.Engine.Base.Compute.RecordNote("No building area was defined in the LCA Scope. Returning zero.");
                 area = 0;
             }
 
             double buildingLifespan = lcaResult.LifeCycleAssessmentScope.BuildingLifespan;
             if (double.IsNaN(buildingLifespan))
             {
-                BH.Engine.Reflection.Compute.RecordNote("No building lifespan has been provided for this entry. Using zero as building lifespan.");
+                BH.Engine.Base.Compute.RecordNote("No building lifespan has been provided for this entry. Using zero as building lifespan.");
                 buildingLifespan = 0;
             }
 
@@ -63,7 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
             string contactName = lcaResult.LifeCycleAssessmentScope.ContactName;
             if (contactName == "")
             {
-                BH.Engine.Reflection.Compute.RecordNote("Please enter your contact information within the LifeCycleAssessmentScope.");
+                BH.Engine.Base.Compute.RecordNote("Please enter your contact information within the LifeCycleAssessmentScope.");
                 contactName = "Undefined";
             }
 
@@ -77,24 +77,24 @@ namespace BH.Engine.LifeCycleAssessment
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No objects have been provided for evaluation within the discipline-specific scope objects.");
+                BH.Engine.Base.Compute.RecordWarning("No objects have been provided for evaluation within the discipline-specific scope objects.");
             }
 
             string gravitySys = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.GravityStructuralMaterial);
             if(gravitySys == "Undefined")
-                BH.Engine.Reflection.Compute.RecordNote("Please enter your primary gravity structural system within the LifeCycleAssessmentScope.");
+                BH.Engine.Base.Compute.RecordNote("Please enter your primary gravity structural system within the LifeCycleAssessmentScope.");
 
             double gwp = lcaResult.TotalQuantity;
             if (gwp <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No GWP amount was accounted for. Please ensure you have provided objects with EPDs for evaluation before submitting to the central database.");
+                BH.Engine.Base.Compute.RecordError("No GWP amount was accounted for. Please ensure you have provided objects with EPDs for evaluation before submitting to the central database.");
                 return null;
             }
 
             double projectArea = lcaResult.LifeCycleAssessmentScope.ProjectArea;
             if (projectArea <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Please enter your project's total area within the LifeCycleAssessmentScope.");
+                BH.Engine.Base.Compute.RecordWarning("Please enter your project's total area within the LifeCycleAssessmentScope.");
                 return null;
             }
 
@@ -103,11 +103,11 @@ namespace BH.Engine.LifeCycleAssessment
             gwpPerArea = gwp / projectArea;
 
             if (gwpPerArea <= 0)
-                BH.Engine.Reflection.Compute.RecordWarning("Insufficient data was provided to calculate GWP per area. Please provide a project area and valid objects.");
+                BH.Engine.Base.Compute.RecordWarning("Insufficient data was provided to calculate GWP per area. Please provide a project area and valid objects.");
 
             string lateralSys = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.LateralStructuralMaterial);
             if (lateralSys == "Undefined")
-                BH.Engine.Reflection.Compute.RecordNote("Please enter your primary lateral structural system within the LifeCycleAssessmentScope.");
+                BH.Engine.Base.Compute.RecordNote("Please enter your primary lateral structural system within the LifeCycleAssessmentScope.");
 
             string lcaPhases = "";
             if(lcaResult.LifeCycleAssessmentScope.LifeCycleAssessmentPhases.Count() >= 1)
@@ -119,18 +119,18 @@ namespace BH.Engine.LifeCycleAssessment
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordWarning("Please enter the specific LCA phases you are reporting within the LifeCycleAssessmentScope.");
+                BH.Engine.Base.Compute.RecordWarning("Please enter the specific LCA phases you are reporting within the LifeCycleAssessmentScope.");
                 lcaPhases = "Undefined";
             }
 
             string lod = System.Convert.ToString(lcaResult.LifeCycleAssessmentScope.LevelOfDevelopment);
             if (lod == "Undefined")
-                BH.Engine.Reflection.Compute.RecordNote("Please enter your project's level of development upon reporting within the LifeCycleAssessmentScope.");
+                BH.Engine.Base.Compute.RecordNote("Please enter your project's level of development upon reporting within the LifeCycleAssessmentScope.");
 
             string projectId = lcaResult.LifeCycleAssessmentScope.AdditionalNotes;
             if(lcaResult.LifeCycleAssessmentScope.AdditionalNotes == "")
             {
-                BH.Engine.Reflection.Compute.RecordNote("Please enter your project's identifier the in LifeCycleAssessmentScope AdditionalNotes.");
+                BH.Engine.Base.Compute.RecordNote("Please enter your project's identifier the in LifeCycleAssessmentScope AdditionalNotes.");
                 projectId = "Undefined";
             }           
 

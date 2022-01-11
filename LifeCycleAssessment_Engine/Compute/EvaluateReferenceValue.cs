@@ -22,7 +22,7 @@
 
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using System.Collections.Generic;
 
@@ -47,21 +47,21 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD provided. Please provide a reference EPD.");
+                BH.Engine.Base.Compute.RecordError("No EPD provided. Please provide a reference EPD.");
             }
 
             double epdValue = Query.GetEvaluationValue(epd, field, phases, exactMatch);
 
             if (referenceValue <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No evaluation value was found within the EPD. Please try another.");
+                BH.Engine.Base.Compute.RecordError("No evaluation value was found within the EPD. Please try another.");
             }
 
             double qtValue = epd.QuantityTypeValue;
 
             string qt = System.Convert.ToString(Query.GetEPDQuantityType(epd));
 
-            BH.Engine.Reflection.Compute.RecordNote($"Result is created by multiplying the ReferenceValue of {referenceValue} by the units of {qt} QuantityType extracted from " + epd.Name + " divided by {qtValue}.");
+            BH.Engine.Base.Compute.RecordNote($"Result is created by multiplying the ReferenceValue of {referenceValue} by the units of {qt} QuantityType extracted from " + epd.Name + " divided by {qtValue}.");
 
             double result = (referenceValue * epdValue) / qtValue;
 

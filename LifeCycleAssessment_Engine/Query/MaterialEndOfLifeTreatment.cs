@@ -21,7 +21,7 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Fragments;
 using BH.Engine.Base;
@@ -44,7 +44,7 @@ namespace BH.Engine.LifeCycleAssessment
             // EPD null check
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD has been provided.");
+                BH.Engine.Base.Compute.RecordError("No EPD has been provided.");
                 return null;
             }
 
@@ -54,7 +54,7 @@ namespace BH.Engine.LifeCycleAssessment
             // AdditionalEPDData fragment null check
             if (dataFragment == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No AdditionalEPDData fragment has been found. Have you tried AddFragment on the selected EPD?");
+                BH.Engine.Base.Compute.RecordError("No AdditionalEPDData fragment has been found. Have you tried AddFragment on the selected EPD?");
                 return null;
             }
 

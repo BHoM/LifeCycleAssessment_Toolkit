@@ -23,7 +23,7 @@
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -56,53 +56,53 @@ namespace BH.Engine.LifeCycleAssessment
                 switch (qt)
                 {
                     case QuantityType.Undefined:
-                        BH.Engine.Reflection.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
+                        BH.Engine.Base.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
                         return null;
                     case QuantityType.Area:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
+                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
                         var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, phases, field, exactMatch);
                         value += evalByArea.Quantity;
                         if (resultValue == null)
                             resultValue = evalByArea;
                         break;
                     case QuantityType.Ampere:
-                        BH.Engine.Reflection.Compute.RecordError("Ampere QuantityType is currently not supported.");
+                        BH.Engine.Base.Compute.RecordError("Ampere QuantityType is currently not supported.");
                         return null;
                     case QuantityType.Item:
-                        BH.Engine.Reflection.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
+                        BH.Engine.Base.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
                         return null;
                     case QuantityType.Length:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Length QuantityType.");
+                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Length QuantityType.");
                         var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, phases, field, exactMatch);
                         value += evalByLength.Quantity;
                         if (resultValue == null)
                             resultValue = evalByLength;
                         break;
                     case QuantityType.Mass:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
+                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
                         var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, phases, field, exactMatch);
                         value += evalByMass.Quantity;
                         if (resultValue == null)
                             resultValue = evalByMass;
                         break;
                     case QuantityType.Watt:
-                        BH.Engine.Reflection.Compute.RecordError("Watt QuantityType is currently not supported.");
+                        BH.Engine.Base.Compute.RecordError("Watt QuantityType is currently not supported.");
                         return null;
                     case QuantityType.VoltAmps:
-                        BH.Engine.Reflection.Compute.RecordError("VoltAmps QuantityType is currently not supported.");
+                        BH.Engine.Base.Compute.RecordError("VoltAmps QuantityType is currently not supported.");
                         return null;
                     case QuantityType.Volume:
-                        BH.Engine.Reflection.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
+                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
                         var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, phases, field, exactMatch);
                         value += evalByVolume.Quantity;
                         if (resultValue == null)
                             resultValue = evalByVolume;
                         break;
                     case QuantityType.VolumetricFlowRate:
-                        BH.Engine.Reflection.Compute.RecordError("VolumetricFlowRate QuantityType is currently not supported.");
+                        BH.Engine.Base.Compute.RecordError("VolumetricFlowRate QuantityType is currently not supported.");
                         return null;
                     default:
-                        BH.Engine.Reflection.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
+                        BH.Engine.Base.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
                         return null;
                 }
             }

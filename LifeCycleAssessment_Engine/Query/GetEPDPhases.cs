@@ -23,7 +23,7 @@
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -44,7 +44,7 @@ namespace BH.Engine.LifeCycleAssessment
             // EPD null check
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD was provided.");
+                BH.Engine.Base.Compute.RecordError("No EPD was provided.");
                 return new List<List<LifeCycleAssessmentPhases>>();
             }
 
@@ -54,7 +54,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (phases.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No Phases have been found within the EPD.");
+                BH.Engine.Base.Compute.RecordError("No Phases have been found within the EPD.");
                 return new List<List<LifeCycleAssessmentPhases>>();
             }
 
@@ -71,7 +71,7 @@ namespace BH.Engine.LifeCycleAssessment
             // Element null check
             if (elementM == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No IElementM was provided.");
+                BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
                 return new List<List<LifeCycleAssessmentPhases>>();
             }
 
@@ -80,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError($"No EPDs could be found within element {elementM.GetType()}.");
+                BH.Engine.Base.Compute.RecordError($"No EPDs could be found within element {elementM.GetType()}.");
                 return new List<List<LifeCycleAssessmentPhases>>();
             }
 
@@ -88,7 +88,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<EnvironmentalMetric> metrics = (List<EnvironmentalMetric>)epd.Select(x => x.EnvironmentalMetric);
             if (metrics.Count() <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError($"No environmental metrics could be found within element {elementM.GetType()}.");
+                BH.Engine.Base.Compute.RecordError($"No environmental metrics could be found within element {elementM.GetType()}.");
                 return new List<List<LifeCycleAssessmentPhases>>();
             }
 
@@ -97,7 +97,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (phases.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No Phases have been found within the EPD.");
+                BH.Engine.Base.Compute.RecordError("No Phases have been found within the EPD.");
                 return new List<List<LifeCycleAssessmentPhases>>();
             }
 
