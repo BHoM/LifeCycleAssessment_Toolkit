@@ -26,7 +26,7 @@ using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,7 +56,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, exactMatch);
             if (epdVals == null || epdVals.Where(x => !double.IsNaN(x)).Sum() <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
+                BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                 return null;
             }
 
@@ -70,7 +70,7 @@ namespace BH.Engine.LifeCycleAssessment
                     List<double> densityOfMassEpd = materialEPDs.Where(x => x.QuantityType == QuantityType.Mass).First().GetEPDDensity();
                     if (densityOfMassEpd == null || densityOfMassEpd.Count() == 0)
                     {
-                        BH.Engine.Reflection.Compute.RecordError("Density could not be found. Add DensityFragment for all objects using Mass-based QuantityType EPDs.");
+                        BH.Engine.Base.Compute.RecordError("Density could not be found. Add DensityFragment for all objects using Mass-based QuantityType EPDs.");
                         return null;
                     }
                     else

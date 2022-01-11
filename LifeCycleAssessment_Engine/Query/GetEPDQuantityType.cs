@@ -22,7 +22,7 @@
 
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.LifeCycleAssessment
@@ -40,7 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD was provided.");
+                BH.Engine.Base.Compute.RecordError("No EPD was provided.");
             }
             return epd.QuantityType;
         }

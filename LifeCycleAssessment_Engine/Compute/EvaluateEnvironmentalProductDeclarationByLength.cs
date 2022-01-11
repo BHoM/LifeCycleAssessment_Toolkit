@@ -25,7 +25,7 @@ using BH.oM.Base;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -63,13 +63,13 @@ namespace BH.Engine.LifeCycleAssessment
 
                 if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
                 {
-                    BH.Engine.Reflection.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
+                    BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
                 }
 
                 if (length <= 0 || length == double.NaN)
                 {
-                    BH.Engine.Reflection.Compute.RecordError("Length cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
+                    BH.Engine.Base.Compute.RecordError("Length cannot be calculated from object " + ((IBHoMObject)elementM).BHoM_Guid);
                     return null;
                 }
 
@@ -79,7 +79,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
             else
             {
-                BH.Engine.Reflection.Compute.RecordError("Length-based evaluations are not supported for objects of type: " + elementM.GetType() + ".");
+                BH.Engine.Base.Compute.RecordError("Length-based evaluations are not supported for objects of type: " + elementM.GetType() + ".");
                 return null;
             }
         }

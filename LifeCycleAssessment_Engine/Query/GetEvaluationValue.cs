@@ -24,7 +24,7 @@ using BH.Engine.Matter;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace BH.Engine.LifeCycleAssessment
             IEnumerable<EnvironmentalMetric> filteredMetrics = epd.EnvironmentalMetric.Where(x => x.Field == field);
             if(filteredMetrics.Count() == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No metrics of the specified Field could be found.");
+                BH.Engine.Base.Compute.RecordError("No metrics of the specified Field could be found.");
                 return double.NaN;
             }
 
@@ -60,13 +60,13 @@ namespace BH.Engine.LifeCycleAssessment
 
             if(filteredMetrics.Count() == 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No Environmental Metrics could be found.");
+                BH.Engine.Base.Compute.RecordError("No Environmental Metrics could be found.");
                 return double.NaN;
             }
 
             if(!filteredMetrics.SelectMany(x => x.Phases).IsContaining(phases, exactMatch))
             {
-                BH.Engine.Reflection.Compute.RecordError("There are no matching phases found within the Environmental Metrics of the provided EPDs.");
+                BH.Engine.Base.Compute.RecordError("There are no matching phases found within the Environmental Metrics of the provided EPDs.");
                 return double.NaN;
             }
 

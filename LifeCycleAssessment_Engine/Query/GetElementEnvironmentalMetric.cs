@@ -21,7 +21,7 @@
  */
 
 using System.ComponentModel;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.Engine.Matter;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
@@ -45,26 +45,26 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (elementM == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No IElementM was provided.");
+                BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
             }
 
             if (elementM.IMaterialComposition() == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("The provided element does not have a MaterialComposition.");
+                BH.Engine.Base.Compute.RecordError("The provided element does not have a MaterialComposition.");
             }
 
             List<EnvironmentalProductDeclaration> epd = elementM.IMaterialComposition().Materials.Select(x => x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration).ToList();
 
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD Material was found within the object's MaterialComposition.");
+                BH.Engine.Base.Compute.RecordError("No EPD Material was found within the object's MaterialComposition.");
             }
 
             List<List<EnvironmentalMetric>> metric = epd.Select(x => x.EnvironmentalMetric).ToList();
 
             if (metric.Count() <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No Environmental Metrics could be found.");
+                BH.Engine.Base.Compute.RecordError("No Environmental Metrics could be found.");
             }
 
             return metric;

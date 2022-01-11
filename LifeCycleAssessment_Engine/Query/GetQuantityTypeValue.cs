@@ -22,7 +22,7 @@
 
 using System.ComponentModel;
 using System.Collections.Generic;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Dimensional;
 using BH.Engine.Matter;
@@ -45,7 +45,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("The Environmental Product Declaration QuantityTypeValue could not be assessed. Returning default value of 1.");
+                BH.Engine.Base.Compute.RecordWarning("The Environmental Product Declaration QuantityTypeValue could not be assessed. Returning default value of 1.");
                 return 1;
             }
             else

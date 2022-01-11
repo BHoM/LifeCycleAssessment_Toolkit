@@ -20,7 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.LifeCycleAssessment;
 
@@ -39,32 +39,32 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (structuresScope.Beams.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Beams.");
+                BH.Engine.Base.Compute.RecordNote("No objects within StructuresScope Beams.");
             }
 
             if (structuresScope.Slabs.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Slabs.");
+                BH.Engine.Base.Compute.RecordNote("No objects within StructuresScope Slabs.");
             }
 
             if (structuresScope.Columns.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Columns.");
+                BH.Engine.Base.Compute.RecordNote("No objects within StructuresScope Columns.");
             }
 
             if (structuresScope.CoreWalls.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope CoreWalls.");
+                BH.Engine.Base.Compute.RecordNote("No objects within StructuresScope CoreWalls.");
             }
 
             if (structuresScope.Bracing.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within StructuresScope Bracing.");
+                BH.Engine.Base.Compute.RecordNote("No objects within StructuresScope Bracing.");
             }
 
             if (structuresScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             int val = structuresScope.Beams.Count + structuresScope.Columns.Count + structuresScope.CoreWalls.Count + structuresScope.Slabs.Count + structuresScope.Bracing.Count;
@@ -88,32 +88,32 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if(foundationsScope.Footings.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationsScope Footings.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FoundationsScope Footings.");
             }
 
             if(foundationsScope.Piles.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Piles.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FoundationScope Piles.");
             }
 
             if (foundationsScope.Slabs.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Slabs.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FoundationScope Slabs.");
             }
 
             if (foundationsScope.Walls.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope Walls.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FoundationScope Walls.");
             }
 
             if (foundationsScope.GradeBeams.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FoundationScope GradeBeams.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FoundationScope GradeBeams.");
             }
 
             if (foundationsScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             int val = foundationsScope.Footings.Count + foundationsScope.Piles.Count + foundationsScope.Slabs.Count + foundationsScope.Walls.Count + foundationsScope.GradeBeams.Count;
@@ -137,27 +137,27 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (enclosuresScope.CurtainWalls.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope CurtainWalls.");
+                BH.Engine.Base.Compute.RecordNote("No objects within EnclosuresScope CurtainWalls.");
             }
 
             if (enclosuresScope.Doors.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Doors.");
+                BH.Engine.Base.Compute.RecordNote("No objects within EnclosuresScope Doors.");
             }
 
             if (enclosuresScope.Walls.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Walls.");
+                BH.Engine.Base.Compute.RecordNote("No objects within EnclosuresScope Walls.");
             }
 
             if (enclosuresScope.Windows.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within EnclosuresScope Windows.");
+                BH.Engine.Base.Compute.RecordNote("No objects within EnclosuresScope Windows.");
             }
 
             if (enclosuresScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             int val = enclosuresScope.CurtainWalls.Count + enclosuresScope.Doors.Count + enclosuresScope.Walls.Count + enclosuresScope.Windows.Count;
@@ -183,183 +183,183 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (mepScope.MechanicalScope.AirTerminals.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Air Terminals.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Air Terminals.");
             }
 
             if (mepScope.MechanicalScope.Dampers.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Dampers.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Dampers.");
             }
 
             if (mepScope.MechanicalScope.Ducts.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Ducts.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Ducts.");
             }
 
             if (mepScope.MechanicalScope.Equipment.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Equipment.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Equipment.");
             }
 
             if (mepScope.MechanicalScope.Pipes.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Pipes.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Pipes.");
             }
 
             if (mepScope.MechanicalScope.Refrigerants.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Refrigerants.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Refrigerants.");
             }
 
             if (mepScope.MechanicalScope.Tanks.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Tanks.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Tanks.");
             }
 
             if (mepScope.MechanicalScope.Valves.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within MechanicalScope Valves.");
+                BH.Engine.Base.Compute.RecordNote("No objects within MechanicalScope Valves.");
             }
 
             if (mepScope.MechanicalScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             //ElectricalScope
 
             if (mepScope.ElectricalScope.Batteries.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Batteries.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope Batteries.");
             }
 
             if (mepScope.ElectricalScope.CableTrays.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope CableTrays.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope CableTrays.");
             }
 
             if (mepScope.ElectricalScope.Conduit.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Conduit.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope Conduit.");
             }
 
             if (mepScope.ElectricalScope.Equipment.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Equipment.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope Equipment.");
             }
 
             if (mepScope.ElectricalScope.FireAlarmDevices.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope FireAlarmDevices.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope FireAlarmDevices.");
             }
 
             if (mepScope.ElectricalScope.Generators.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Generators.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope Generators.");
             }
 
             if (mepScope.ElectricalScope.InformationCommunicationDevices.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope InformationCommunicationDevices.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope InformationCommunicationDevices.");
             }
 
             if (mepScope.ElectricalScope.LightFixtures.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope LightFixtures.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope LightFixtures.");
             }
 
             if (mepScope.ElectricalScope.LightingControls.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope LightingControls.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope LightingControls.");
             }
 
             if (mepScope.ElectricalScope.Meters.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Meters.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope Meters.");
             }
 
             if (mepScope.ElectricalScope.SecurityDevices.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope SecurityDevices.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope SecurityDevices.");
             }
 
             if (mepScope.ElectricalScope.Sockets.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope Sockets.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope Sockets.");
             }
 
             if (mepScope.ElectricalScope.SolarPanels.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope SolarPanels.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope SolarPanels.");
             }
 
             if (mepScope.ElectricalScope.WireSegments.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within ElectricalScope WireSegments.");
+                BH.Engine.Base.Compute.RecordNote("No objects within ElectricalScope WireSegments.");
             }
 
             if (mepScope.ElectricalScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             //PlumbingScope
 
             if (mepScope.PlumbingScope.Equipment.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope Equipment.");
+                BH.Engine.Base.Compute.RecordNote("No objects within PlumbingScope Equipment.");
             }
 
             if (mepScope.PlumbingScope.Pipes.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope Pipes.");
+                BH.Engine.Base.Compute.RecordNote("No objects within PlumbingScope Pipes.");
             }
 
             if (mepScope.PlumbingScope.PlumbingFixtures.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope PlumbingFixtures.");
+                BH.Engine.Base.Compute.RecordNote("No objects within PlumbingScope PlumbingFixtures.");
             }
 
             if (mepScope.PlumbingScope.Tanks.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope Tanks.");
+                BH.Engine.Base.Compute.RecordNote("No objects within PlumbingScope Tanks.");
             }
 
             if (mepScope.PlumbingScope.Valves.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within PlumbingScope Valves.");
+                BH.Engine.Base.Compute.RecordNote("No objects within PlumbingScope Valves.");
             }
 
             if (mepScope.PlumbingScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             //FireProtectionScope
 
             if (mepScope.FireProtectionScope.Equipment.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Equipment.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FireProtectionScope Equipment.");
             }
 
             if (mepScope.FireProtectionScope.Pipes.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Pipes.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FireProtectionScope Pipes.");
             }
 
             if (mepScope.FireProtectionScope.Sprinklers.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Sprinklers.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FireProtectionScope Sprinklers.");
             }
 
             if (mepScope.FireProtectionScope.Tanks.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within FireProtectionScope Tanks.");
+                BH.Engine.Base.Compute.RecordNote("No objects within FireProtectionScope Tanks.");
             }
 
             if (mepScope.FireProtectionScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             int val =
@@ -415,42 +415,42 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (tiScope.Ceiling.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Ceiling.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope Ceiling.");
             }
 
             if (tiScope.Finishes.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Finishes.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope Finishes.");
             }
 
             if (tiScope.Flooring.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Flooring.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope Flooring.");
             }
 
             if (tiScope.Furniture.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope Furniture.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope Furniture.");
             }
 
             if (tiScope.InteriorDoors.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope InteriorDoors.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope InteriorDoors.");
             }
 
             if (tiScope.InteriorGlazing.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope InteriorGlazing.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope InteriorGlazing.");
             }
 
             if (tiScope.PartitionWalls.Count == 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("No objects within TenantImprovementScope PartitionWalls.");
+                BH.Engine.Base.Compute.RecordNote("No objects within TenantImprovementScope PartitionWalls.");
             }
 
             if (tiScope.AdditionalObjects.Count > 0)
             {
-                BH.Engine.Reflection.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
+                BH.Engine.Base.Compute.RecordNote("You are accounting for additional user objects, this will be noted in the results.");
             }
 
             int val = tiScope.Ceiling.Count + tiScope.Finishes.Count + tiScope.Flooring.Count + tiScope.Furniture.Count + tiScope.InteriorDoors.Count + tiScope.InteriorGlazing.Count + tiScope.PartitionWalls.Count;

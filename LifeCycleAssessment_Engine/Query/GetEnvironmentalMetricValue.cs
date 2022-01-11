@@ -24,7 +24,7 @@ using BH.Engine.Matter;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -46,14 +46,14 @@ namespace BH.Engine.LifeCycleAssessment
             // EPD Null Check
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD found. Returning double.NaN.");
+                BH.Engine.Base.Compute.RecordError("No EPD found. Returning double.NaN.");
                 return new List<double>();
             }
 
             // EPD Environmental Metric null check
             if (epd.EnvironmentalMetric.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No Environmental Metrics have been found. Returning double.NaN.");
+                BH.Engine.Base.Compute.RecordError("No Environmental Metrics have been found. Returning double.NaN.");
                 return new List<double>();
             }
 

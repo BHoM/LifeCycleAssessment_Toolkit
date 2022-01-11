@@ -20,10 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Quantities.Attributes;
-using BH.oM.Reflection.Attributes;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace BH.Engine.LifeCycleAssessment
             // EPD null check
             if (epd == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPD was provided. Returning NaN.");
+                BH.Engine.Base.Compute.RecordError("No EPD was provided. Returning NaN.");
                 return new List<double>();
             }        
 
@@ -57,7 +57,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (densityFragment.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPDDensity Fragment could be found within the EPD. AddFragment and try again.");
+                BH.Engine.Base.Compute.RecordError("No EPDDensity Fragment could be found within the EPD. AddFragment and try again.");
                 return new List<double>();
             }
 
@@ -65,7 +65,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if(density.Count <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No density values could be found within the EPDDensity Fragments. Please check these values and try again.");
+                BH.Engine.Base.Compute.RecordError("No density values could be found within the EPDDensity Fragments. Please check these values and try again.");
                 return new List<double>();
             }
 
@@ -82,7 +82,7 @@ namespace BH.Engine.LifeCycleAssessment
             // Element null check
             if (elementM == null)
             {
-                BH.Engine.Reflection.Compute.RecordError("No element was provided. Returning NaN.");
+                BH.Engine.Base.Compute.RecordError("No element was provided. Returning NaN.");
                 return new List<double>();
             }
 
@@ -90,7 +90,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<EnvironmentalProductDeclaration> elementEpd = GetElementEpd(elementM);
             if(elementEpd.Count() <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No EPDs could be found within any elements. Returning NaN. \n" + "Have you tried MapEPD to set your desired EPD?");
+                BH.Engine.Base.Compute.RecordError("No EPDs could be found within any elements. Returning NaN. \n" + "Have you tried MapEPD to set your desired EPD?");
                 return new List<double>();
             }
 
@@ -98,7 +98,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<EPDDensity> densityFragment = elementEpd.SelectMany(a => Base.Query.GetAllFragments(a, typeof(EPDDensity)).Cast<EPDDensity>()).ToList();
             if (densityFragment.Count() <= 0)
             {
-                BH.Engine.Reflection.Compute.RecordError("No Density fragments could be found on the provided EPD. Have you tried adding an EPDDensity fragment?");
+                BH.Engine.Base.Compute.RecordError("No Density fragments could be found on the provided EPD. Have you tried adding an EPDDensity fragment?");
                 return new List<double>();
             }
 
@@ -106,7 +106,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<double> density = densityFragment.Select(x => x).Select(y => y.Density).ToList();
             if(density == null)
             {
-                BH.Engine.Reflection.Compute.RecordWarning("No density data could be found. Please review any EPDDensity fragments used on the EPD.");
+                BH.Engine.Base.Compute.RecordWarning("No density data could be found. Please review any EPDDensity fragments used on the EPD.");
                 return new List<double>();
             }
 

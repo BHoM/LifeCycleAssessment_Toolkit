@@ -27,7 +27,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.LifeCycleAssessment;
-using BH.Engine.Reflection;
+using BH.Engine.Base;
 
 namespace BH.Engine.LifeCycleAssessment
 {
