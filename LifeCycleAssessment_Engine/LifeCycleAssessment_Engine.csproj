@@ -147,7 +147,6 @@
     <Compile Include="Query\GetEPDDensity.cs" />
     <Compile Include="Query\GetEPDQuantityType.cs" />
     <Compile Include="Query\GetEvaluationValue.cs" />
-    <Compile Include="Query\ProjectLifeCycleAssessmentResults.cs" />
     <Compile Include="Query\TotalFieldQuantity.cs" />
   </ItemGroup>
   <ItemGroup>
