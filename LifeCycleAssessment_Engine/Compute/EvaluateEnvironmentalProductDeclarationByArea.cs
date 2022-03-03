@@ -74,9 +74,11 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
+                ScopeType scope = BH.Engine.LifeCycleAssessment.Query.GetElementScope(elementM);
+
                 double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, ObjectScope.Undefined, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
             }
             else
             {
