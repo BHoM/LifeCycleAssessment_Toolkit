@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -125,10 +125,9 @@
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByArea.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByVolume.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByMass.cs" />
-    <Compile Include="Compute\EvaluateLifeCycleAssessment.cs" />
-    <Compile Include="Compute\EvaluateLifeCycleAssessmentScope.cs" />
     <Compile Include="Compute\EvaluateReferenceValue.cs" />
     <Compile Include="Query\GetElementEnvironmentalMetric.cs" />
+    <Compile Include="Query\GetElementScope.cs" />
     <Compile Include="Query\GetElementMaterial.cs" />
     <Compile Include="Query\GetElementEpd.cs" />
     <Compile Include="Query\GetEnvironmentalMetricValue.cs" />
@@ -147,7 +146,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\GetEPDDensity.cs" />
     <Compile Include="Query\GetEPDQuantityType.cs" />
-    <Compile Include="Query\IsValid.cs" />
     <Compile Include="Query\GetEvaluationValue.cs" />
     <Compile Include="Query\ProjectLifeCycleAssessmentResults.cs" />
     <Compile Include="Query\TotalFieldQuantity.cs" />
