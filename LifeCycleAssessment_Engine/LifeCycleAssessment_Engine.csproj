@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BenchmarkVariance.cs" />
+    <Compile Include="Compute\EvaluateProjectLifeCycleAssessment.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByLength.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByArea.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByVolume.cs" />
@@ -151,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modify\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Versioning_51.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
