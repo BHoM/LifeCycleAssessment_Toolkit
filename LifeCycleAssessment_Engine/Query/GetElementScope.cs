@@ -53,7 +53,6 @@ namespace BH.Engine.LifeCycleAssessment
             // return note that no fragments were found
             if (fragments.Count <= 0)
             {
-                Base.Compute.RecordNote("No fragments were found on this element. Add a Scope fragment and try again.");
                 return ScopeType.Undefined;
             }
 
@@ -64,7 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (scope == null)
             {
-                BH.Engine.Base.Compute.RecordError("No scopes could be found within the objects. Add a scope fragment and try again.");
+                return ScopeType.Undefined;
             }
 
             return type;
