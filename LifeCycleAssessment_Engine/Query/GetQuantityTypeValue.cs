@@ -62,7 +62,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the QuantityTypeValue from any object with a valid construction with Environmental Product Declaration MaterialFragmments.")]
         [Input("elementM", "The IElementM Object to query.")]
         [Input("type", "The quantityType to query.")]
+        [Input("materialComposition", "The material composition of the element using physical materials.")]
         [Output("quantityTypeValue", "The quantityTypeValue property from the IElementM.")]
+        [PreviousVersion("5.1", "BH.Engine.LifeCycleAssessment.Query.GetEPDDensity(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.QuantityType)")]
         public static List<double> GetQuantityTypeValue(this IElementM elementM, QuantityType type, MaterialComposition materialComposition)
         {
             if (elementM == null)
