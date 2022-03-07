@@ -32,6 +32,7 @@ using BH.oM.Base;
 using System.Linq;
 using BH.oM.Dimensional;
 using BH.oM.Physical.Materials;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -77,10 +78,27 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value where any exists.")]
         [Input("elementM", "The EPD object to query.")]
+        [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
+        public static List<double> GetEPDDensity(this IElementM elementM)
+        {
+            // Element null check
+            if (elementM == null)
+            {
+                BH.Engine.Base.Compute.RecordError("No element was provided. Returning NaN.");
+                return new List<double>();
+            }
+
+            MaterialComposition mc = elementM.IMaterialComposition();
+
+            return GetEPDDensity(elementM, mc);
+
+        }/***************************************************/
+
+        [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value where any exists.")]
+        [Input("elementM", "The EPD object to query.")]
         [Input("materialComposition", "The material composition of the element using physical materials.")]
         [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
-        [PreviousVersion("5.1", "BH.Engine.LifeCycleAssessment.Query.GetEPDDensity(BH.oM.Dimensional.IElementM)")]
-        public static List<double> GetEPDDensity(this IElementM elementM, MaterialComposition materialComposition)
+        private static List<double> GetEPDDensity(this IElementM elementM, MaterialComposition materialComposition)
         {
             // Element null check
             if (elementM == null)
@@ -112,7 +130,6 @@ namespace BH.Engine.LifeCycleAssessment
                 BH.Engine.Base.Compute.RecordWarning("No density data could be found. Please review any EPDDensity fragments used on the EPD.");
                 return new List<double>();
             }
-
             return density;
         }
     }

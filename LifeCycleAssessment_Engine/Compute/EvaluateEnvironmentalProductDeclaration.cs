@@ -111,7 +111,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             resultValue.Quantity = value;
-            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd(mc);
+            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd();
             return resultValue;
         }
         /***************************************************/

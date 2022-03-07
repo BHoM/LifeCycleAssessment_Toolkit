@@ -81,11 +81,27 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Specific metric to query from provided EPD.")]
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("type", "The quantityType to query.")]
+        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
+        [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
+        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, bool exactMatch = false)
+        {
+            MaterialComposition mc = elementM.IMaterialComposition();
+
+            return GetEvaluationValue(elementM, field, phases, type, mc, exactMatch);
+        }
+
+        /***************************************************/
+
+        [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
+        [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
+        [Input("field", "Specific metric to query from provided EPD.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
+        [Input("type", "The quantityType to query.")]
         [Input("materialComposition", "The material composition of the element using physical materials.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-        [PreviousVersion("5.1", "BH.Engine.LifeCycleAssessment.Query.GetEPDDensity(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessment.Phases, BH.oM.LifeCycleAssessment.QuantityType, System.Boolean)")]
-        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, MaterialComposition materialComposition, bool exactMatch = false)
+
+        private static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, MaterialComposition materialComposition, bool exactMatch = false)
         {
             if(materialComposition == null)
             {
@@ -122,6 +138,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             return normalisedEpdVal;
         }
+
         /***************************************************/
 
         [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within a construction.")]

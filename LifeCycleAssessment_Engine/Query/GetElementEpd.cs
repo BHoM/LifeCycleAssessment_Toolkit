@@ -41,9 +41,25 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "A IElementM from which to query the EPD.")]
         [Input("materialComposition", "The material composition of the element using physical materials.")]
         [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
-        [PreviousVersion("5.1", "BH.Engine.LifeCycleAssessment.Query.GetElementEpd(BH.oM.Dimensional.IElementM)")]
+        public static List<EnvironmentalProductDeclaration> GetElementEpd(this IElementM elementM)
+        {
+            if (elementM == null)
+            {
+                BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
+            }
 
-        public static List<EnvironmentalProductDeclaration> GetElementEpd(this IElementM elementM, MaterialComposition materialComposition)
+            MaterialComposition mc = elementM.IMaterialComposition();
+
+            return GetElementEpd(elementM, mc);
+        }
+
+        /***************************************************/
+
+        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
+        [Input("elementM", "A IElementM from which to query the EPD.")]
+        [Input("materialComposition", "The material composition of the element using physical materials.")]
+        [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
+        private static List<EnvironmentalProductDeclaration> GetElementEpd(this IElementM elementM, MaterialComposition materialComposition)
         {
             if (elementM == null)
             {
