@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.oM.Physical.Constructions;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -82,14 +83,20 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("type", "The quantityType to query.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, bool exactMatch = false)
+        public static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, MaterialComposition materialComposition, bool exactMatch = false)
         {
+            if(materialComposition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("The material composition of the element could not be returned.");
+                return new List<double>();
+            }
+
             if (elementM == null)
                 return new List<double>();
 
-            List<double> quantityTypeValue = elementM.GetQuantityTypeValue(type);
+            List<double> quantityTypeValue = elementM.GetQuantityTypeValue(type, materialComposition);
 
-            List<double> epdVal = elementM.IMaterialComposition().Materials.Select(x =>
+            List<double> epdVal = materialComposition.Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
 

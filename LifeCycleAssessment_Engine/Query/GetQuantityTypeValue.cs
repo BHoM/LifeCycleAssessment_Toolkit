@@ -29,6 +29,7 @@ using BH.Engine.Matter;
 using System.Linq;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Physical.Constructions;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -62,12 +63,12 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("elementM", "The IElementM Object to query.")]
         [Input("type", "The quantityType to query.")]
         [Output("quantityTypeValue", "The quantityTypeValue property from the IElementM.")]
-        public static List<double> GetQuantityTypeValue(this IElementM elementM, QuantityType type)
+        public static List<double> GetQuantityTypeValue(this IElementM elementM, QuantityType type, MaterialComposition materialComposition)
         {
             if (elementM == null)
                 return new List<double>();
 
-            List<double> qtv = elementM.IMaterialComposition().Materials.Select(x =>
+            List<double> qtv = materialComposition.Materials.Select(x =>
             {
                 var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
                 if (epd != null && epd.QuantityType == type)
