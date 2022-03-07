@@ -29,6 +29,7 @@ using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -44,13 +45,13 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
-        private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByLength(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
+        private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByLength(IElementM elementM, List<LifeCycleAssessmentPhases> phases, MaterialComposition materialComposition, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             if (elementM is IElement1D)
             {
                
                 double length = (elementM as IElement1D).Length();
-                List<double> epdVal = elementM.GetEvaluationValue(field, phases ,QuantityType.Length, exactMatch);
+                List<double> epdVal = elementM.GetEvaluationValue(field, phases ,QuantityType.Length, materialComposition, exactMatch);
                 List<double> gwpByMaterial = new List<double>();
 
                 for (int x = 0; x < epdVal.Count; x++)
@@ -76,7 +77,7 @@ namespace BH.Engine.LifeCycleAssessment
 
                 double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM, materialComposition), quantity, field);
             }
             else
             {

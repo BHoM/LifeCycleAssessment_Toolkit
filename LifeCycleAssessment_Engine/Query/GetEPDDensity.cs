@@ -31,6 +31,7 @@ using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.Base;
 using System.Linq;
 using BH.oM.Dimensional;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -77,7 +78,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value where any exists.")]
         [Input("elementM", "The EPD object to query.")]
         [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
-        public static List<double> GetEPDDensity(this IElementM elementM)
+        public static List<double> GetEPDDensity(this IElementM elementM, MaterialComposition materialComposition)
         {
             // Element null check
             if (elementM == null)
@@ -87,7 +88,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             // EPD Fragment null check
-            List<EnvironmentalProductDeclaration> elementEpd = GetElementEpd(elementM);
+            List<EnvironmentalProductDeclaration> elementEpd = GetElementEpd(elementM, materialComposition);
             if(elementEpd.Count() <= 0)
             {
                 BH.Engine.Base.Compute.RecordError("No EPDs could be found within any elements. Returning NaN. \n" + "Have you tried MapEPD to set your desired EPD?");

@@ -31,6 +31,7 @@ using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -46,14 +47,13 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
-        private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
+        private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByMass(IElementM elementM, List<LifeCycleAssessmentPhases> phases, MaterialComposition materialComposition, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             double volume = elementM.ISolidVolume();
             List<double> gwpByMaterial = new List<double>();
-            MaterialComposition mc = elementM.IMaterialComposition();
-            List<Material> matList = mc.Materials.ToList();
+            List<Material> matList = materialComposition.Materials.ToList();
 
-            List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, exactMatch);
+            List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, materialComposition, exactMatch);
             if (epdVals == null || epdVals.Where(x => !double.IsNaN(x)).Sum() <= 0)
             {
                 BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
@@ -66,7 +66,7 @@ namespace BH.Engine.LifeCycleAssessment
                 List<EnvironmentalProductDeclaration> materialEPDs = matList[i].Properties.OfType<EnvironmentalProductDeclaration>().ToList();
                 if (materialEPDs.Any(x => x.QuantityType == QuantityType.Mass))
                 {
-                    double volumeOfMaterial = mc.Ratios[i] * volume;
+                    double volumeOfMaterial = materialComposition.Ratios[i] * volume;
                     List<double> densityOfMassEpd = materialEPDs.Where(x => x.QuantityType == QuantityType.Mass).First().GetEPDDensity();
                     if (densityOfMassEpd == null || densityOfMassEpd.Count() == 0)
                     {
@@ -86,7 +86,7 @@ namespace BH.Engine.LifeCycleAssessment
             ScopeType scope = BH.Engine.LifeCycleAssessment.Query.GetElementScope(elementM);
 
             double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
-            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM, materialComposition), quantity, field);
         }
         /***************************************************/
     }

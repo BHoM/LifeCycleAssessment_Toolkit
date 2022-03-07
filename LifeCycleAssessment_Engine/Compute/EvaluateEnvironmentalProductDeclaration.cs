@@ -27,6 +27,8 @@ using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Physical.Materials;
+using BH.Engine.Matter;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -46,6 +48,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             double value = 0;
             EnvironmentalMetricResult resultValue = null;
+            MaterialComposition mc = elementM.IMaterialComposition();
 
             List<QuantityType> qts = elementM.GetQuantityType();
 
@@ -60,7 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     case QuantityType.Area:
                         BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
-                        var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, phases, field, exactMatch);
+                        var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, phases, mc, field, exactMatch);
                         value += evalByArea.Quantity;
                         if (resultValue == null)
                             resultValue = evalByArea;
@@ -73,14 +76,14 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     case QuantityType.Length:
                         BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Length QuantityType.");
-                        var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, phases, field, exactMatch);
+                        var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, phases, mc, field, exactMatch);
                         value += evalByLength.Quantity;
                         if (resultValue == null)
                             resultValue = evalByLength;
                         break;
                     case QuantityType.Mass:
                         BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
-                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, phases, field, exactMatch);
+                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, phases, mc, field, exactMatch);
                         value += evalByMass.Quantity;
                         if (resultValue == null)
                             resultValue = evalByMass;
@@ -93,7 +96,7 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                     case QuantityType.Volume:
                         BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
-                        var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, phases, field, exactMatch);
+                        var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, phases, mc, field, exactMatch);
                         value += evalByVolume.Quantity;
                         if (resultValue == null)
                             resultValue = evalByVolume;
@@ -108,7 +111,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             resultValue.Quantity = value;
-            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd();
+            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd(mc);
             return resultValue;
         }
         /***************************************************/

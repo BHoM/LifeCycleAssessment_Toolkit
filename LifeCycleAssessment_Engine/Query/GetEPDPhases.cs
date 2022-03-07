@@ -27,6 +27,7 @@ using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -66,7 +67,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query an IElementM to return it's LCA Phase property value where any exists within applied Environmental Product Declarations.")]
         [Input("elementM", "The IElementM object to query.")]
         [Output("phases", "A list of all phases used within the EPD.")]
-        public static List<List<LifeCycleAssessmentPhases>> GetEPDPhases(this IElementM elementM)
+        public static List<List<LifeCycleAssessmentPhases>> GetEPDPhases(this IElementM elementM, MaterialComposition materialComposition)
         {
             // Element null check
             if (elementM == null)
@@ -76,7 +77,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             // Get all the epds from the elements 
-            List<EnvironmentalProductDeclaration> epd = GetElementEpd(elementM);
+            List<EnvironmentalProductDeclaration> epd = GetElementEpd(elementM, materialComposition);
 
             if (epd == null)
             {
