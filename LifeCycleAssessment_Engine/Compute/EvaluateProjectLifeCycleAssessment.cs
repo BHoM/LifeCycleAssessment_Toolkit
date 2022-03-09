@@ -43,6 +43,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("quantity", "The total quantity of the specified metric.")]
         [PreviousVersion("5.1", "BH.Engine.Compute.EvaluateLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, BH.oM.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessmentPhases, System.Boolean)")]
+        [PreviousVersion("5.0", "BH.Engine.Compute.EvaluateLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, BH.oM.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessmentPhases, System.Boolean)")]
+        [PreviousVersion("4.3", "BH.Engine.Compute.EvaluateLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, BH.oM.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessmentPhases, System.Boolean)")]
+        [PreviousVersion("4.2", "BH.Engine.Compute.EvaluateLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, BH.oM.EnvironmentalProductDeclarationField, BH.oM.LifeCycleAssessmentPhases, System.Boolean)")]
         public static double EvaluateProjectLifeCycleAssessment(ProjectLifeCycleAssessment projectLCA, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             List<IElementM> elements = projectLCA.Elements;
