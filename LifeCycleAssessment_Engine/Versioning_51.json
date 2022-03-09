@@ -22,7 +22,8 @@
   "MessageForDeleted": {
     "BH.Engine.LifeCycleAssessment.Query.IsValid": "This method has been removed. If you'd like to query Scope-specific information, please use the GetElementScope Query method.",
     "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessmentScope": "Evaluation of scope-specific properties has been removed. Please try grouping your elements by type and evaluating them using the EvaluateEnvironmentalProductDeclaration Compute method.",
-    "BH.Engine.LifeCycleAssessment.Query.ProjectLifeCycleAssessmentResults": "The Life Cycle Assessment object has been removed. Please try grouping your elements by type and evaluating them using the EvaluateEnvironmentalProductDeclaration Compute method."
+    "BH.Engine.LifeCycleAssessment.Query.ProjectLifeCycleAssessmentResults": "The Life Cycle Assessment object has been removed. Please try grouping your elements by type and evaluating them using the EvaluateEnvironmentalProductDeclaration Compute method.",
+    "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessment": "This evaluation method has been removed since the objects have been removed from the oM."
   },
   "MessageForNoUpgrade": {
   }
