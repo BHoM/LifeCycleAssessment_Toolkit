@@ -20,16 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.LifeCycleAssessment.Objects;
 using BH.Engine.Spatial;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Base.Attributes;
+using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -51,7 +52,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                
                 double length = (elementM as IElement1D).Length();
-                List<double> epdVal = elementM.GetEvaluationValue(field, phases ,QuantityType.Length, exactMatch);
+                List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Length, materialComposition, exactMatch);
                 List<double> gwpByMaterial = new List<double>();
 
                 for (int x = 0; x < epdVal.Count; x++)
@@ -77,7 +78,7 @@ namespace BH.Engine.LifeCycleAssessment
 
                 double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, elementM.GetElementEpd(materialComposition), quantity, field);
             }
             else
             {

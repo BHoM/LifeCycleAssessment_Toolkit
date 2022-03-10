@@ -127,6 +127,7 @@
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByVolume.cs" />
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByMass.cs" />
     <Compile Include="Compute\EvaluateReferenceValue.cs" />
+    <Compile Include="Objects\HelperMethods.cs" />
     <Compile Include="Query\GetElementEnvironmentalMetric.cs" />
     <Compile Include="Query\GetElementScope.cs" />
     <Compile Include="Query\GetElementMaterial.cs" />

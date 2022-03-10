@@ -28,6 +28,7 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Physical.Materials;
+using BH.Engine.LifeCycleAssessment.Objects;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -50,35 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             MaterialComposition mc = elementM.IMaterialComposition();
 
-            return GetElementEpd(elementM, mc);
-        }
-
-        /***************************************************/
-
-        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
-        [Input("elementM", "A IElementM from which to query the EPD.")]
-        [Input("materialComposition", "The material composition of the element using physical materials.")]
-        [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
-        private static List<EnvironmentalProductDeclaration> GetElementEpd(this IElementM elementM, MaterialComposition materialComposition)
-        {
-            if (elementM == null)
-            {
-                BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
-            }
-
-            if (materialComposition == null)
-            {
-                BH.Engine.Base.Compute.RecordError("The provided element does not have a MaterialComposition.");
-            }
-
-            List<EnvironmentalProductDeclaration> epd = materialComposition.Materials.Select(x => x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration).ToList();
-
-            if (epd == null)
-            {
-                BH.Engine.Base.Compute.RecordError("No EPD Material was found within the object's MaterialComposition.");
-            }
-
-            return epd;
+            return HelperMethods.GetElementEpd(elementM, mc);
         }
 
         /***************************************************/

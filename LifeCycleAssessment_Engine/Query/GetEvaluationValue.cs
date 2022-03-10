@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Linq;
 using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Materials;
+using BH.Engine.LifeCycleAssessment.Objects;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -87,56 +88,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             MaterialComposition mc = elementM.IMaterialComposition();
 
-            return GetEvaluationValue(elementM, field, phases, type, mc, exactMatch);
-        }
-
-        /***************************************************/
-
-        [Description("Returns the Environmental Impact metric value for the specified field input from the Environmental Product Declaration found within the MaterialComposition of an object.")]
-        [Input("elementM", "An IElementM object with a MaterialProperty from which to query the desired metric.")]
-        [Input("field", "Specific metric to query from provided EPD.")]
-        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
-        [Input("type", "The quantityType to query.")]
-        [Input("materialComposition", "The material composition of the element using physical materials.")]
-        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
-        [Output("evaluationValue", "The Environmental Impact metric value for the specified field and quantityType.")]
-
-        private static List<double> GetEvaluationValue(this IElementM elementM, EnvironmentalProductDeclarationField field, List<LifeCycleAssessmentPhases> phases, QuantityType type, MaterialComposition materialComposition, bool exactMatch = false)
-        {
-            if(materialComposition == null)
-            {
-                BH.Engine.Base.Compute.RecordError("The material composition of the element could not be returned.");
-                return new List<double>();
-            }
-
-            if (elementM == null)
-                return new List<double>();
-
-            List<double> quantityTypeValue = elementM.GetQuantityTypeValue(type, materialComposition);
-
-            List<double> epdVal = materialComposition.Materials.Select(x =>
-            {
-                var epd = x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration;
-
-                if (epd.QuantityType == type && (epd.EnvironmentalMetric.Where(z => z.Phases.Where(a => phases.Contains(a)).Count() != 0).FirstOrDefault() != null))
-                    return GetEvaluationValue(epd, field, phases, exactMatch);
-                else
-                    return double.NaN;
-
-            }).ToList();
-
-            //Division of GWP constant by QTV
-            List<double> normalisedEpdVal = new List<double>();
-
-            for (int x = 0; x < epdVal.Count; x++)
-            {
-                if (double.IsNaN(epdVal[x]))
-                    normalisedEpdVal.Add(double.NaN);
-                else
-                    normalisedEpdVal.Add(epdVal[x] / quantityTypeValue[x]);
-            }
-
-            return normalisedEpdVal;
+            return HelperMethods.GetEvaluationValue(elementM, field, phases, type, mc, exactMatch);
         }
 
         /***************************************************/

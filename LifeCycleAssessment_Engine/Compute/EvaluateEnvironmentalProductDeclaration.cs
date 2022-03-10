@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.Linq;
 using BH.oM.Physical.Materials;
 using BH.Engine.Matter;
+using BH.Engine.LifeCycleAssessment.Objects;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -50,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
             EnvironmentalMetricResult resultValue = null;
             MaterialComposition mc = elementM.IMaterialComposition();
 
-            List<QuantityType> qts = elementM.GetQuantityType();
+            List<QuantityType> qts = elementM.GetQuantityType(mc);
 
             qts = qts.Distinct().ToList();
 
@@ -111,7 +112,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             resultValue.Quantity = value;
-            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd();
+            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd(mc);
             return resultValue;
         }
         /***************************************************/
