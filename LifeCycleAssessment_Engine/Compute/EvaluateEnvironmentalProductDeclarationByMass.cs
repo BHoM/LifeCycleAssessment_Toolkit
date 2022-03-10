@@ -20,18 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.LifeCycleAssessment.Objects;
 using BH.Engine.Matter;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Base.Attributes;
 using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -53,7 +53,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<double> gwpByMaterial = new List<double>();
             List<Material> matList = materialComposition.Materials.ToList();
 
-            List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, exactMatch);
+            List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, materialComposition, exactMatch);
             if (epdVals == null || epdVals.Where(x => !double.IsNaN(x)).Sum() <= 0)
             {
                 BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
@@ -86,7 +86,7 @@ namespace BH.Engine.LifeCycleAssessment
             ScopeType scope = BH.Engine.LifeCycleAssessment.Query.GetElementScope(elementM);
 
             double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
-            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, elementM.GetElementEpd(materialComposition), quantity, field);
         }
         /***************************************************/
     }

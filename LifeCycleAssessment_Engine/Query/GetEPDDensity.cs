@@ -25,7 +25,6 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
-using BH.Engine.Base;
 using System.Collections.Generic;
 using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.Base;
@@ -33,6 +32,7 @@ using System.Linq;
 using BH.oM.Dimensional;
 using BH.oM.Physical.Materials;
 using BH.Engine.Matter;
+using BH.Engine.LifeCycleAssessment.Objects;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -90,48 +90,11 @@ namespace BH.Engine.LifeCycleAssessment
 
             MaterialComposition mc = elementM.IMaterialComposition();
 
-            return GetEPDDensity(elementM, mc);
+            return HelperMethods.GetEPDDensity(elementM, mc);
 
-        }/***************************************************/
-
-        [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value where any exists.")]
-        [Input("elementM", "The EPD object to query.")]
-        [Input("materialComposition", "The material composition of the element using physical materials.")]
-        [Output("density", "Density value queried from the EPD MaterialFragment.", typeof(Density))]
-        private static List<double> GetEPDDensity(this IElementM elementM, MaterialComposition materialComposition)
-        {
-            // Element null check
-            if (elementM == null)
-            {
-                BH.Engine.Base.Compute.RecordError("No element was provided. Returning NaN.");
-                return new List<double>();
-            }
-
-            // EPD Fragment null check
-            List<EnvironmentalProductDeclaration> elementEpd = GetElementEpd(elementM, materialComposition);
-            if(elementEpd.Count() <= 0)
-            {
-                BH.Engine.Base.Compute.RecordError("No EPDs could be found within any elements. Returning NaN. \n" + "Have you tried MapEPD to set your desired EPD?");
-                return new List<double>();
-            }
-
-            // Get list of all EPD Fragments -- Cast to IBHoMObject fails
-            List<EPDDensity> densityFragment = elementEpd.SelectMany(a => Base.Query.GetAllFragments(a, typeof(EPDDensity)).Cast<EPDDensity>()).ToList();
-            if (densityFragment.Count() <= 0)
-            {
-                BH.Engine.Base.Compute.RecordError("No Density fragments could be found on the provided EPD. Have you tried adding an EPDDensity fragment?");
-                return new List<double>();
-            }
-
-            // Get list of all EPD Density Values from fragments
-            List<double> density = densityFragment.Select(x => x).Select(y => y.Density).ToList();
-            if(density == null)
-            {
-                BH.Engine.Base.Compute.RecordWarning("No density data could be found. Please review any EPDDensity fragments used on the EPD.");
-                return new List<double>();
-            }
-            return density;
         }
+
+        /***************************************************/
     }
 }
 

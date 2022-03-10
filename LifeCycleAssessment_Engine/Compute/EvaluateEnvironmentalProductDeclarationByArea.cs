@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.oM.Physical.Materials;
+using BH.Engine.LifeCycleAssessment.Objects;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -52,7 +53,7 @@ namespace BH.Engine.LifeCycleAssessment
                 BH.Engine.Base.Compute.RecordNote($"Thickness properties for Area-based calculations are set according to the EPD properties of object {elementM.GetType()}, not the construction.");
                 
                 double area = (elementM as IElement2D).Area();
-                List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Area, exactMatch);
+                List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Area, materialComposition, exactMatch);
                 List<double> gwpByMaterial = new List<double>();
 
                 for (int x = 0; x < epdVal.Count; x++)
@@ -79,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
 
                 double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+                return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, elementM.GetElementEpd(materialComposition), quantity, field);
             }
             else
             {

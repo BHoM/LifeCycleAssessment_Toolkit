@@ -20,16 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.LifeCycleAssessment.Objects;
 using BH.Engine.Matter;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.Base.Attributes;
+using BH.oM.Physical.Materials;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -50,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("quantity", "The total quantity of the desired metric based on the EnvironmentalProductDeclarationField.")]
         private static EnvironmentalMetricResult EvaluateEnvironmentalProductDeclarationByVolume(IElementM elementM, List<LifeCycleAssessmentPhases> phases, MaterialComposition materialComposition, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
-            List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Volume, exactMatch);
+            List<double> epdVal = elementM.GetEvaluationValue(field, phases, QuantityType.Volume, materialComposition, exactMatch);
             double volume = elementM.ISolidVolume();
             List<double> volumeByRatio = materialComposition.Ratios.Select(x => volume * x).ToList();
             List<double> gwpByMaterial = new List<double>();
@@ -78,7 +79,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             double quantity = gwpByMaterial.Where(x => !double.IsNaN(x)).Sum();
 
-            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, Query.GetElementEpd(elementM), quantity, field);
+            return new EnvironmentalMetricResult(((IBHoMObject)elementM).BHoM_Guid, field, 0, scope, ObjectCategory.Undefined, phases, elementM.GetElementEpd(materialComposition), quantity, field);
         }
 
         /***************************************************/
