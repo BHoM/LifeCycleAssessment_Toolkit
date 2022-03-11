@@ -142,11 +142,13 @@ namespace BH.Engine.LifeCycleAssessment.Objects
             if (elementM == null)
             {
                 BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
+                return null;
             }
 
             if (materialComposition == null)
             {
                 BH.Engine.Base.Compute.RecordError("The provided element does not have a MaterialComposition.");
+                return null;
             }
 
             List<EnvironmentalProductDeclaration> epd = materialComposition.Materials.Select(x => x.Properties.Where(y => y is EnvironmentalProductDeclaration).FirstOrDefault() as EnvironmentalProductDeclaration).ToList();

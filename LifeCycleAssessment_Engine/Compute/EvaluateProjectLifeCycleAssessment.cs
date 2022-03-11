@@ -45,6 +45,18 @@ namespace BH.Engine.LifeCycleAssessment
         [PreviousVersion("5.1", "BH.Engine.LifeCycleAssessment.Compute.EvaluateLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, System.Boolean)")]
         public static double EvaluateProjectLifeCycleAssessment(ProjectLifeCycleAssessment projectLCA, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
+            if(projectLCA == null)
+            {
+                Base.Compute.RecordError("No Project LCA was provided.");
+                return double.NaN;
+            }
+
+            if(phases == null)
+            {
+                Base.Compute.RecordError("No phases were provided for evaluation.");
+                return double.NaN;
+            }
+            
             List<IElementM> elements = projectLCA.Elements;
 
             if (elements.Count <=0)
