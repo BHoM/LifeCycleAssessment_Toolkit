@@ -49,6 +49,11 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             MaterialComposition mc = elementM.IMaterialComposition();
+            if (mc == null)
+            {
+                Base.Compute.RecordError("Material composition could not be assessed. Please add materials to your objects and try again.");
+                return null;
+            }
 
             return HelperMethods.GetElementEpd(elementM, mc);
         }
