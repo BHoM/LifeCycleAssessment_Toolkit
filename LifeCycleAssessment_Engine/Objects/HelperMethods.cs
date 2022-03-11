@@ -161,50 +161,6 @@ namespace BH.Engine.LifeCycleAssessment.Objects
 
         /***************************************************/
 
-        [Description("Query an IElementM to return it's LCA Phase property value where any exists within applied Environmental Product Declarations.")]
-        [Input("elementM", "The IElementM object to query.")]
-        [Input("materialComposition", "The IElementM object to query.")]
-        [Output("phases", "A list of all phases used within the EPD.")]
-        public static List<List<LifeCycleAssessmentPhases>> GetEPDPhases(this IElementM elementM, MaterialComposition materialComposition)
-        {
-            // Element null check
-            if (elementM == null)
-            {
-                BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
-                return new List<List<LifeCycleAssessmentPhases>>();
-            }
-
-            // Get all the epds from the elements 
-            List<EnvironmentalProductDeclaration> epd = GetElementEpd(elementM, materialComposition);
-
-            if (epd == null)
-            {
-                BH.Engine.Base.Compute.RecordError($"No EPDs could be found within element {elementM.GetType()}.");
-                return new List<List<LifeCycleAssessmentPhases>>();
-            }
-
-            // Get list of all EPD EnvironmentalMetrics
-            List<EnvironmentalMetric> metrics = (List<EnvironmentalMetric>)epd.Select(x => x.EnvironmentalMetric);
-            if (metrics.Count() <= 0)
-            {
-                BH.Engine.Base.Compute.RecordError($"No environmental metrics could be found within element {elementM.GetType()}.");
-                return new List<List<LifeCycleAssessmentPhases>>();
-            }
-
-            // Get list of all Phases
-            List<List<LifeCycleAssessmentPhases>> phases = metrics.Select(x => x.Phases).Distinct().ToList();
-
-            if (phases.Count <= 0)
-            {
-                BH.Engine.Base.Compute.RecordError("No Phases have been found within the EPD.");
-                return new List<List<LifeCycleAssessmentPhases>>();
-            }
-
-            return phases;
-        }
-
-        /***************************************************/
-
         [Description("Query an Environmental Product Declaration MaterialFragment to return it's Density property value where any exists.")]
         [Input("elementM", "The EPD object to query.")]
         [Input("materialComposition", "The material composition of the element using physical materials.")]

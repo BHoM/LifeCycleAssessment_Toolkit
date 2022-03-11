@@ -67,6 +67,11 @@ namespace BH.Engine.LifeCycleAssessment
         public static List<double> GetQuantityTypeValue(this IElementM elementM, QuantityType type)
         {
             MaterialComposition mc = elementM.IMaterialComposition();
+            if (mc == null)
+            {
+                Base.Compute.RecordError("Material composition could not be assessed. Please add materials to your objects and try again.");
+                return null;
+            }
 
             return HelperMethods.GetQuantityTypeValue(elementM, type, mc);
         }
