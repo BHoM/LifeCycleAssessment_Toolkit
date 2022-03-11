@@ -66,6 +66,17 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Query an IElementM to return it's LCA Phase property value where any exists within applied Environmental Product Declarations.")]
+        [Input("elementM", "The IElementM object to query.")]
+        [Input("materialComposition", "The material composition of the element using physical materials.")]
+        [Output("phases", "A list of all phases used within the EPD.")]
+        public static List<List<LifeCycleAssessmentPhases>> GetEPDPhases(this IElementM elementM, MaterialComposition mc)
+        {
+            mc = elementM.IMaterialComposition();
+
+            return GetEPDPhases(elementM, mc);
+        }
+
     }
 }
 
