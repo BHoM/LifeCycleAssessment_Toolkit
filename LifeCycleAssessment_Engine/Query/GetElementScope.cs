@@ -59,13 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
             // get scope fragment
             Scope scope = fragments.Select(x => x).Where(y => y is Scope).FirstOrDefault() as Scope;
 
-            if (scope == null)
-            {
-                return ScopeType.Undefined;
-            }
-
-            // For cases where objects have multiple fragments, but don't have a scope fragment
-            if (fragments.Count >= 1 && scope == null)
+            if (scope == null || fragments.Count >= 1)
             {
                 return ScopeType.Undefined;
             }
