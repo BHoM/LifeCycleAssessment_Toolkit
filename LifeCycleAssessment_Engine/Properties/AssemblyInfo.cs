@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("LifeCycleAssessment_Engine")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("https://github.com/BHoM/LifeCycleAssessment_Toolkit")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("LifeCycleAssessment_Engine")]
