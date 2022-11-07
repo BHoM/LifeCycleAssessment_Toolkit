@@ -137,6 +137,7 @@
     <Compile Include="Query\GetEPDPhases.cs" />
     <Compile Include="Query\GetQuantityType.cs" />
     <Compile Include="Query\GetQuantityTypeValue.cs" />
+    <Compile Include="Query\MaterialBreakdown.cs" />
     <Compile Include="Query\MaterialEndOfLifeTreatment.cs" />
     <Compile Include="Compute\ReinforcementVolume.cs" />
     <Compile Include="Compute\GlazingVolume.cs" />
