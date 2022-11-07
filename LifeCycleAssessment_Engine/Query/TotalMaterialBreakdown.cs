@@ -40,14 +40,27 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("elementResults", "The element results to extract the material breakdown from.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
-        public static List<MaterialResult> MaterialBreakdown(this IEnumerable<ElementResult> elementResults)
+        public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<ElementResult> elementResults)
         {
             if (elementResults == null || !elementResults.Any())
                 return new List<MaterialResult>();
 
+            return elementResults.SelectMany(x => x.MaterialResults).TotalMaterialBreakdown();
+        }
+
+        /***************************************************/
+
+        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
+        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<MaterialResult> materialResults)
+        {
+            if (materialResults == null || !materialResults.Any())
+                return new List<MaterialResult>();
+
             List<MaterialResult> result = new List<MaterialResult>();
 
-            foreach (var group in elementResults.SelectMany(x => x.MaterialResults).GroupBy(x => x.MaterialName + x.EPDName + x.Metric))
+            foreach (var group in materialResults.GroupBy(x => x.MaterialName + x.EPDName + x.Metric))
             {
                 List<MaterialResult> resultsOfType = group.ToList();
                 List<LifeCycleAssessmentPhases> evaluatedPhases = resultsOfType[0].Phases.ToList();
