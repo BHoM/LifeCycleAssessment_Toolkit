@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
@@ -47,17 +48,8 @@ namespace BH.Engine.LifeCycleAssessment
                 BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
             }
 
-            // get all fragments
-            List<IFragment> fragments = Base.Query.GetAllFragments((IBHoMObject)elementM);
-
-            // return note that no fragments were found
-            if (fragments.Count <= 0)
-            {
-                return ScopeType.Undefined;
-            }
-
             // get scope fragment
-            Scope scope = fragments.Select(x => x).Where(y => y is Scope).FirstOrDefault() as Scope;
+            Scope scope = ((IBHoMObject)elementM).FindFragment<Scope>();
 
             if (scope == null)
             {
