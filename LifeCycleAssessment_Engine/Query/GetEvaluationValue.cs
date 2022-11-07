@@ -58,14 +58,6 @@ namespace BH.Engine.LifeCycleAssessment
                 return double.NaN;
             }
 
-            filteredMetrics = filteredMetrics.Where(x => x.GetType().IsAssignableFrom(typeof(EnvironmentalMetric)));
-
-            if(filteredMetrics.Count() == 0)
-            {
-                BH.Engine.Base.Compute.RecordError("No Environmental Metrics could be found.");
-                return double.NaN;
-            }
-
             if(!filteredMetrics.SelectMany(x => x.Phases).IsContaining(phases, exactMatch))
             {
                 BH.Engine.Base.Compute.RecordError("There are no matching phases found within the Environmental Metrics of the provided EPDs.");
