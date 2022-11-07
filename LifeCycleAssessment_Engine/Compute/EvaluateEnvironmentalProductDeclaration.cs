@@ -30,6 +30,7 @@ using System.Linq;
 using BH.oM.Physical.Materials;
 using BH.Engine.Matter;
 using BH.Engine.LifeCycleAssessment.Objects;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -39,21 +40,26 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+        [PreviousVersion("6.0", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclaration(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean)")]
         [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
+        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
             double value = 0;
             EnvironmentalMetricResult resultValue = null;
-            MaterialComposition mc = elementM.IMaterialComposition();
+            MaterialComposition mc = elementM.MappedMaterialComposition(templateMaterials, true, prioritiseTemplate);
 
-            List<QuantityType> qts = elementM.GetQuantityType(mc);
-
-            qts = qts.Distinct().ToList();
+            List<QuantityType> qts = mc.Materials.Where(x => x != null).Select(x =>
+            {
+                var epd = x.Properties.OfType<EnvironmentalProductDeclaration>().FirstOrDefault();
+                if (epd != null)
+                    return epd.QuantityType;
+                return QuantityType.Undefined;
+            }).Distinct().ToList();
 
             foreach (QuantityType qt in qts)
             {
@@ -115,8 +121,8 @@ namespace BH.Engine.LifeCycleAssessment
             resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd(mc);
             return resultValue;
         }
-        /***************************************************/
 
+        /***************************************************/
 
     }
 }

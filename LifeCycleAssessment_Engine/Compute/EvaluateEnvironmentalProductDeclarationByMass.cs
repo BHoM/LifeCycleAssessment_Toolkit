@@ -51,7 +51,6 @@ namespace BH.Engine.LifeCycleAssessment
         {
             double volume = elementM.ISolidVolume();
             List<double> gwpByMaterial = new List<double>();
-            List<Material> matList = materialComposition.Materials.ToList();
 
             List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, materialComposition, exactMatch);
             if (epdVals == null || epdVals.Where(x => !double.IsNaN(x)).Sum() <= 0)
@@ -60,27 +59,31 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            for (int i = 0; i < matList.Count(); i++)
+            for (int i = 0; i < materialComposition.Materials.Count; i++)
             {
-                double density;
-                List<EnvironmentalProductDeclaration> materialEPDs = matList[i].Properties.OfType<EnvironmentalProductDeclaration>().ToList();
+                List<EnvironmentalProductDeclaration> materialEPDs = materialComposition.Materials[i].Properties.OfType<EnvironmentalProductDeclaration>().ToList();
                 if (materialEPDs.Any(x => x.QuantityType == QuantityType.Mass))
                 {
                     double volumeOfMaterial = materialComposition.Ratios[i] * volume;
-                    List<double> densityOfMassEpd = materialEPDs.Where(x => x.QuantityType == QuantityType.Mass).First().GetEPDDensity();
-                    if (densityOfMassEpd == null || densityOfMassEpd.Count() == 0)
+                    double density = materialComposition.Materials[i].Density;
+                    if (double.IsNaN(density))
                     {
-                        BH.Engine.Base.Compute.RecordError("Density could not be found. Add DensityFragment for all objects using Mass-based QuantityType EPDs.");
+                        Engine.Base.Compute.RecordError($"Density of material {materialComposition.Materials[i].Name} is not set (NaN). Ensure all materials have densities assigned when computing {field} for mass-based {nameof(QuantityType)}s.");
                         return null;
                     }
+                    else if (density == 0)
+                    {
+                        Engine.Base.Compute.RecordWarning($"Density of material {materialComposition.Materials[i].Name} is 0 and will lead to no contribution to the computation of {field}.");
+                        gwpByMaterial.Add(0);
+                    }
                     else
-                        density = densityOfMassEpd[0];
-
-                    double massOfObj = volumeOfMaterial * density;
-                    if (double.IsNaN(epdVals[i]))
-                        gwpByMaterial.Add(double.NaN);
-                    else
-                        gwpByMaterial.Add(epdVals[i] * massOfObj);
+                    {
+                        double massOfObj = volumeOfMaterial * density;
+                        if (double.IsNaN(epdVals[i]))
+                            gwpByMaterial.Add(double.NaN);
+                        else
+                            gwpByMaterial.Add(epdVals[i] * massOfObj);
+                    }
                 }
             }
             ScopeType scope = BH.Engine.LifeCycleAssessment.Query.GetElementScope(elementM);
