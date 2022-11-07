@@ -65,7 +65,7 @@ namespace BH.Engine.LifeCycleAssessment
                     return null;
                 }
 
-                double evaluationValue = epd.GetEvaluationValue(field, phases, exactMatch);
+                double evaluationValue = epd.GetEvaluationValue(field, phases, exactMatch) / epd.QuantityTypeValue;
                 if (double.IsNaN(evaluationValue))
                 {
                     Base.Compute.RecordError($"EPD {epd.Name} does not contain {field} for phases {string.Join(",", phases)}.");
