@@ -72,6 +72,9 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.Ampere:
                         BH.Engine.Base.Compute.RecordError("Ampere QuantityType is currently not supported.");
                         return null;
+                    case QuantityType.Energy:
+                        BH.Engine.Base.Compute.RecordError("Energy QuantityType is currently not supported.");
+                        return null;
                     case QuantityType.Item:
                         BH.Engine.Base.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
                         return null;
