@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
 
-        [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
+        [Description("Evaluates the embodied carbon (the global warming potential field) for the provided element for life cycle assessment phases A1-A3 (cradle to gate.) The provided Template Materials allow each material within your object to have an associated Environmental Product Declaration.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
         [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
