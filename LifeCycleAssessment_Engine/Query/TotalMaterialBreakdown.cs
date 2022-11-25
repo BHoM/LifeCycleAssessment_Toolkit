@@ -60,7 +60,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<MaterialResult> result = new List<MaterialResult>();
 
-            foreach (var group in materialResults.GroupBy(x => x.MaterialName + x.EPDName + x.Metric))
+            foreach (var group in materialResults.GroupBy(x => x.MaterialName + x.EnvironmentalProductDeclarationName + x.Metric))
             {
                 List<MaterialResult> resultsOfType = group.ToList();
                 List<LifeCycleAssessmentPhases> evaluatedPhases = resultsOfType[0].Phases.ToList();
@@ -81,7 +81,7 @@ namespace BH.Engine.LifeCycleAssessment
                     Base.Compute.RecordWarning("Missmatch in phases between same material on different elements. Please check the results.");
 
                 MaterialResult first = resultsOfType[0];
-                result.Add(new MaterialResult(first.MaterialName, first.EPDName, evaluatedPhases, resultsOfType.Sum(x => x.Quantity), first.Metric));
+                result.Add(new MaterialResult(first.MaterialName, first.EnvironmentalProductDeclarationName, evaluatedPhases, resultsOfType.Sum(x => x.Quantity), first.Metric));
             }
             return result;
         }
