@@ -128,9 +128,9 @@
     <Compile Include="Compute\EvaluateEnvironmentalProductDeclarationByMass.cs" />
     <Compile Include="Compute\EvaluateReferenceValue.cs" />
     <Compile Include="Objects\HelperMethods.cs" />
-    <Compile Include="Query\ElementEmbodiedCarbon.cs" />
-    <Compile Include="Query\EvaluateElement.cs" />
-    <Compile Include="Query\EvaluateMaterialTakeoff.cs" />
+    <Compile Include="Compute\ElementEmbodiedCarbon.cs" />
+    <Compile Include="Compute\EvaluateElement.cs" />
+    <Compile Include="Compute\EvaluateMaterialTakeoff.cs" />
     <Compile Include="Query\GetElementEnvironmentalMetric.cs" />
     <Compile Include="Query\GetElementScope.cs" />
     <Compile Include="Query\GetElementMaterial.cs" />

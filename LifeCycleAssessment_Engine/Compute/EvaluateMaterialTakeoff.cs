@@ -35,7 +35,7 @@ using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
