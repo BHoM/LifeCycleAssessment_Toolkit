@@ -33,13 +33,15 @@ using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Evaluated the embodied carbon on the provided element. TemplateMaterials can be provided helping with picking the correct EPD corresponding to each material on the element.")]
+        [Description("Evaluates the embodied carbon on the provided element.\n" +
+            "If you would like to evaluate other EPD metrics, please use one of the other Evaluation methods. \n" +
+            "TemplateMaterials can be provided helping with picking the correct EPD corresponding to each material on the element.")]
         [Input("elementM", "Element for which to evaluate the embodied carbon.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]

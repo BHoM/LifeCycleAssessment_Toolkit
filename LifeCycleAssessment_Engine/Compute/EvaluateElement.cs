@@ -36,7 +36,7 @@ using BH.Engine.Spatial;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Query
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
