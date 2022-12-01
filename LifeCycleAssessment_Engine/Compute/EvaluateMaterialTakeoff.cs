@@ -42,11 +42,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Evaluates the materials in the VolumetricMaterialTakeoff and returns a MaterialResult per material in the takeoff. Requires the materials in the Takeoff to have EPDs assigned. Please use the AssignTemplate methods before calling this method.")]
-        [Input("materialTakeoff", "THe volumetric material takeoff to evaluate.")]
-        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
+        [Input("materialTakeoff", "The volumetric material takeoff to evaluate.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.\n" +
+            "Note that only phases A1-A3 combined are possible evaluations at present.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
-        [Output("", "")]
+        [Output("result", "A MaterialResult that contains the LifeCycleAssessment data for the input object(s).")]
         public static List<MaterialResult> EvaluateMaterialTakeoff(this VolumetricMaterialTakeoff materialTakeoff, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
         {
             if (materialTakeoff == null)
@@ -98,6 +99,7 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.VoltAmps:
                     case QuantityType.VolumetricFlowRate:
                     case QuantityType.Watt:
+                    case QuantityType.Energy:
                     default:
                         Base.Compute.RecordError($"{epd.QuantityType} QuantityType is currently not supported.");
                         return null;

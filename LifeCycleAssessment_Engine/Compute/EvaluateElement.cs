@@ -43,14 +43,18 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
 
-        [Description("Evaluates the embodied carbon (the global warming potential field) for the provided element for life cycle assessment phases A1-A3 (cradle to gate.) The provided Template Materials allow each material within your object to have an associated Environmental Product Declaration.")]
+        [Description("Evaluates the environmental metrics found within a given EPD. \n" +
+            "This method is only fit for the evaluation of phases A1-A3 (cradle to gate) at present. \n" +
+            "To view a list of all possible metric evaluations, please view the EPDField enum. Note that not all fields can be evaluated. \n" +
+            "The provided Template Materials allow each material within your object to have an associated Environmental Product Declaration.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
-        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
+        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.\n" +
+            "Note that only phases A1-A3 combined are possible evaluations at present.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
-        [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
+        [Output("result", "An ElementResult that contains the LifeCycleAssessment data for the input object(s).")]
         public static ElementResult EvaluateElement(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
             if (elementM == null)
@@ -143,6 +147,7 @@ namespace BH.Engine.LifeCycleAssessment
                     case QuantityType.VoltAmps:
                     case QuantityType.VolumetricFlowRate:
                     case QuantityType.Watt:
+                    case QuantityType.Energy:
                     default:
                         Base.Compute.RecordError($"{epd.QuantityType} QuantityType is currently not supported.");
                         return null;
