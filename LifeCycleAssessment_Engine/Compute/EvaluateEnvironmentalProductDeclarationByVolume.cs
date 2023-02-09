@@ -64,7 +64,7 @@ namespace BH.Engine.LifeCycleAssessment
                     gwpByMaterial.Add(epdVal[x] * volumeByRatio[x]);
             }
 
-            if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
+            if (epdVal == null)
             {
                 BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                 return null;
