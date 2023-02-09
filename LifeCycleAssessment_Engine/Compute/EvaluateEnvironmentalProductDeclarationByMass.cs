@@ -54,7 +54,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<Material> matList = materialComposition.Materials.ToList();
 
             List<double> epdVals = elementM.GetEvaluationValue(field, phases, QuantityType.Mass, materialComposition, exactMatch);
-            if (epdVals == null || epdVals.Where(x => !double.IsNaN(x)).Sum() <= 0)
+            if (epdVals == null)
             {
                 BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                 return null;
