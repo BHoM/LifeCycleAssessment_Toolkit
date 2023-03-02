@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2022, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -63,7 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
                         gwpByMaterial.Add(epdVal[x] * length);
                 }
 
-                if (epdVal == null || epdVal.Where(x => !double.IsNaN(x)).Sum() <= 0)
+                if (epdVal == null)
                 {
                     BH.Engine.Base.Compute.RecordError($"No value for {field} can be found within the supplied EPD.");
                     return null;
@@ -90,4 +90,5 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
     }
 }
+
 
