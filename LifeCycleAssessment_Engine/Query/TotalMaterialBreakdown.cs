@@ -20,14 +20,18 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -87,6 +91,59 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+
+        [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [Input("elementResults", "The element results to extract the material breakdown from.")]
+        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        public static List<MaterialResult2> TotalMaterialBreakdown(this IEnumerable<IElementResult<MaterialResult2>> elementResults)
+        {
+            if (elementResults == null || !elementResults.Any())
+                return new List<MaterialResult2>();
+
+            return elementResults.SelectMany(x => x.MaterialResults).TotalMaterialBreakdown();
+        }
+
+        /***************************************************/
+
+        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
+        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        public static List<MaterialResult2> TotalMaterialBreakdown(this IEnumerable<MaterialResult2> materialResults)
+        {
+            List<MaterialResult2> breakDown = new List<MaterialResult2>();
+
+            foreach (var group in materialResults.GroupBy(x => x.GetType()))
+            {
+                breakDown.AddRange(MaterialBreakdown(group));
+            }
+
+            return breakDown;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
+        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        private static List<MaterialResult2> MaterialBreakdown(IEnumerable<MaterialResult2> materialResults)
+        {
+            List<MaterialResult2> breakDown = new List<MaterialResult2>();
+            Func<object[], MaterialResult2> cst = MaterialResultConstructor(materialResults.First().GetType());
+
+            foreach (var group in materialResults.GroupBy(x => new { x.MaterialName, x.EnvironmentalProductDeclarationName }))
+            {
+                List<object> parameters = new List<object> { group.Key.MaterialName, group.Key.EnvironmentalProductDeclarationName };
+
+                parameters.AddRange(group.ToList().SumPhaseDataValues2().Cast<object>());
+                breakDown.Add(cst(parameters.ToArray()));
+            }
+            return breakDown;
+        }
+
+        /***************************************************/
+
     }
 }
 
