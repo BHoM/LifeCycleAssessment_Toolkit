@@ -40,19 +40,9 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided ILifeCycleAssessmentPhaseData, i.e. the first value will be the sum of A1 for all the provided ILifeCycleAssessmentPhaseDatas.")]
-        [Input("materialResults", "List of ILifeCycleAssessmentPhaseData to get the sum data from.")]
-        [Output("values", "The values of the summed up material results as list of doubles.")]
-        public static List<double> ISumPhaseDataValues<T>(this IEnumerable<T> materialResults) where T : ILifeCycleAssessmentPhaseData
-        {
-            return SumMaterialResultValues(materialResults as dynamic);
-        }
-
-        /***************************************************/
-
-        [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided ILifeCycleAssessmentPhaseData, i.e. the first value will be the sum of A1 for all the provided ILifeCycleAssessmentPhaseDatas.")]
         [Input("phaseData", "List of ILifeCycleAssessmentPhaseData to get the sum data from.")]
         [Output("values", "The values of the summed up material results as list of doubles.")]
-        public static List<double> SumPhaseDataValues2(this IReadOnlyList<ILifeCycleAssessmentPhaseData> phaseData)
+        public static List<double> SumPhaseDataValues(this IReadOnlyList<ILifeCycleAssessmentPhaseData> phaseData)
         {
             if(phaseData.IsNullOrEmpty())
                 return new List<double>();
@@ -87,63 +77,6 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             return sum;
-        }
-
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided results, i.e. the first value will be the sum of A1 for all the provided results.")]
-        [Input("materialResults", "IEnvironmentalMetric being evaluated.")]
-        [Output("values", "The values of the summed up material results as list of doubles.")]
-        public static List<double> SumPhaseDataValues(this IEnumerable<IGlobalWarmingPotentialPhaseData> materialResults)
-        {
-            List<double> metrics = SumPhaseDataValues(materialResults);
-            metrics.Add(materialResults.Sum(x => x.BiogenicCarbon));
-            return metrics;
-        }
-
-        /***************************************************/
-        /**** Private Methods - Fallback                ****/
-        /***************************************************/
-
-        [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided results, i.e. the first value will be the sum of A1 for all the provided results.  Fallback case that is relevant for all material results without any additional phases outside the standard phase data.")]
-        [Input("materialResults", "IEnvironmentalMetric being evaluated.")]
-        [Output("values", "The values of the summed up material results as list of doubles.")]
-        public static List<double> SumMaterialResultValues(this IEnumerable<MaterialResult2> materialResults)
-        {
-            return SumMaterialResultBaseValues(materialResults);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        [Description("Gets a list of doubles corresponding to the base phases applicable to all IEnvironmentalMetric.")]
-        [Input("metric", "IEnvironmentalMetric being evaluated.")]
-        [Input("quantityValue", "The quatity value to evaluate the metric by. All metric properties will be multiplied by this value. Quatity should correspond to the QueantityType on the EPD to which the metric belongs.")]
-        [Output("values", "The values of the evaluated metric as a list of doubles.")]
-        private static List<double> SumMaterialResultBaseValues(this IEnumerable<MaterialResult2> materialResults)
-        {
-            return new List<double>{
-                        materialResults.Sum(x => x.A1),
-                        materialResults.Sum(x => x.A2),
-                        materialResults.Sum(x => x.A3),
-                        materialResults.Sum(x => x.A1toA3),
-                        materialResults.Sum(x => x.A4),
-                        materialResults.Sum(x => x.A5),
-                        materialResults.Sum(x => x.B1),
-                        materialResults.Sum(x => x.B2),
-                        materialResults.Sum(x => x.B3),
-                        materialResults.Sum(x => x.B4),
-                        materialResults.Sum(x => x.B5),
-                        materialResults.Sum(x => x.B6),
-                        materialResults.Sum(x => x.B7),
-                        materialResults.Sum(x => x.C1),
-                        materialResults.Sum(x => x.C2),
-                        materialResults.Sum(x => x.C3),
-                        materialResults.Sum(x => x.C4),
-                        materialResults.Sum(x => x.D)};
         }
 
         /***************************************************/
