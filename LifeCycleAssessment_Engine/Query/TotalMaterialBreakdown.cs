@@ -136,7 +136,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 List<object> parameters = new List<object> { group.Key.MaterialName, group.Key.EnvironmentalProductDeclarationName };
 
-                parameters.AddRange(group.ToList().SumPhaseDataValues2().Cast<object>());
+                parameters.AddRange(group.ToList().SumPhaseDataValues().Cast<object>());
                 breakDown.Add(cst(parameters.ToArray()));
             }
             return breakDown;

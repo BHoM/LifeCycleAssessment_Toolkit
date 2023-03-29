@@ -148,7 +148,7 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                 }
 
-                materialResults.AddRange(EvaluateEnvironmentalProductDeclaration5(epd, material.Name, quantityValue));
+                materialResults.AddRange(EvaluateEnvironmentalProductDeclaration(epd, material.Name, quantityValue));
             }
 
             IComparable objectId = "";
@@ -165,129 +165,24 @@ namespace BH.Engine.LifeCycleAssessment
             List<IElementResult<MaterialResult2>> elementResults = new List<IElementResult<MaterialResult2>>();
             foreach (var group in materialResults.GroupBy(x => x.GetType()))
             {
-                elementResults.Add(SumMaterialResultToElementResult2(group.First() as dynamic, group, objectId, scope, category));
+                elementResults.Add(SumMaterialResultToElementResult(group.First() as dynamic, group, objectId, scope, category));
             }
             return elementResults;
         }
 
         /***************************************************/
 
-        private static IElementResult<MaterialResult2> SumMaterialResultToElementResult2<T>(T item, IEnumerable<MaterialResult2> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category) where T : MaterialResult2
+        private static IElementResult<MaterialResult2> SumMaterialResultToElementResult<T>(T item, IEnumerable<MaterialResult2> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category) where T : MaterialResult2
         {
             List<T> castResults = materialResults.Cast<T>().ToList();
 
             Func<object[], IElementResult<MaterialResult2>> cst = typeof(T).ElementResultConstructor();//GetElementResultConstructor<T>();
 
             List<object> parameters = new List<object> { objectId, scope, category, new ReadOnlyCollection<T>(castResults) };
-            parameters.AddRange(castResults.SumPhaseDataValues2().Cast<object>());
+            parameters.AddRange(castResults.SumPhaseDataValues().Cast<object>());
 
             return cst(parameters.ToArray());
         }
-
-        /***************************************************/
-
-        private static IElementResult<MaterialResult2> SumMaterialResultToElementResult<T>(T item, IEnumerable<MaterialResult2> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category) where T : MaterialResult2
-        {
-            List<object> parameters = new List<object> { objectId, scope, category, new ReadOnlyCollection<T>(materialResults.Cast<T>().ToList()) };
-            Output<List<Func<MaterialResult2, double>>, Func<object[], IElementResult<MaterialResult2>>> constAndParameters = GetElementResultConstructorAndFuncs<T>();
-            List<Func<MaterialResult2, double>> metricFuncs = constAndParameters.Item1;
-            Func<object[], IElementResult<MaterialResult2>> cst = constAndParameters.Item2;
-
-            foreach (Func<MaterialResult2, double> f in metricFuncs)
-            {
-                parameters.Add(materialResults.Select(f).Sum());
-            }
-            return cst(parameters.ToArray());
-        }
-
-        /***************************************************/
-
-        private static Func<object[], IElementResult<MaterialResult2>> GetElementResultConstructor<T>() where T : MaterialResult2
-        {
-            Type t = typeof(T);
-
-            Func<object[], IElementResult<MaterialResult2>> cstFunc;
-
-            if (!m_ElementResultConstructors.TryGetValue(t, out cstFunc))
-            {
-                ConstructorInfo constructor = GetElementResultConstructorInfo<T>();
-                Func<object[], object> genericFunc = constructor.ToFunc();
-                cstFunc = x => (IElementResult<MaterialResult2>)genericFunc(x);
-                m_ElementResultConstructors[t] = cstFunc;
-            }
-
-            return cstFunc;
-        }
-
-        /***************************************************/
-
-        private static Output<List<Func<MaterialResult2, double>>, Func<object[], IElementResult<MaterialResult2>>> GetElementResultConstructorAndFuncs<T>() where T : MaterialResult2
-        {
-            Type t = typeof(T);
-
-            Func<object[], IElementResult<MaterialResult2>> cstFunc;
-            ConstructorInfo constructor = null;
-
-
-            if (!m_ElementResultConstructors.TryGetValue(t, out cstFunc))
-            {
-                constructor = GetElementResultConstructorInfo<T>();
-                Func<object[], object> genericFunc = constructor.ToFunc();
-                cstFunc = x => (IElementResult<MaterialResult2>)genericFunc(x);
-                m_ElementResultConstructors[t] = cstFunc;
-            }
-
-            List<Func<MaterialResult2, double>> funcs;
-
-            if (!m_MaterialResultProperties.TryGetValue(t, out funcs))
-            {
-                if (constructor == null)
-                    constructor = GetElementResultConstructorInfo<T>();
-
-                Dictionary<string, PropertyInfo> props = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(x => x.PropertyType == typeof(double)).ToDictionary(x => x.Name, StringComparer.OrdinalIgnoreCase);
-
-                funcs = new List<Func<MaterialResult2, double>>();
-
-                foreach (ParameterInfo parameter in constructor.GetParameters())
-                {
-                    if (parameter.ParameterType != typeof(double))
-                        continue;
-
-                    PropertyInfo prop;
-                    if (props.TryGetValue(parameter.Name, out prop))
-                    {
-                        Func<T, double> func = (Func<T, double>)Delegate.CreateDelegate(typeof(Func<T, double>), prop.GetGetMethod());
-                        funcs.Add(x => func((T)x));
-                    }
-                }
-                m_MaterialResultProperties[t] = funcs;
-            }
-            return new Output<List<Func<MaterialResult2, double>>, Func<object[], IElementResult<MaterialResult2>>> { Item1 = funcs, Item2 = cstFunc };
-        }
-
-        /***************************************************/
-
-        private static ConstructorInfo GetElementResultConstructorInfo<T>() where T : MaterialResult2
-        {
-            Type materialResultType = GetMaterialElementResultType<T>();
-
-            return materialResultType.GetConstructors().OrderByDescending(x => x.GetParameters().Count()).First();
-        }
-
-        /***************************************************/
-
-        private static Type GetMaterialElementResultType<T>() where T : MaterialResult2
-        {
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList()
-                .First(x => typeof(IElementResult<T>).IsAssignableFrom(x));
-            return materialResultType;
-        }
-
-        /***************************************************/
-
-        private static ConcurrentDictionary<Type, Func<object[], IElementResult<MaterialResult2>>> m_ElementResultConstructors = new ConcurrentDictionary<Type, Func<object[], IElementResult<MaterialResult2>>>();
-        private static ConcurrentDictionary<Type, List<Func<MaterialResult2, double>>> m_MaterialResultProperties = new ConcurrentDictionary<Type, List<Func<MaterialResult2, double>>>();
-
 
         /***************************************************/
     }
