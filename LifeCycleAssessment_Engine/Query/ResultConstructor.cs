@@ -77,8 +77,8 @@ namespace BH.Engine.LifeCycleAssessment
                      "If a type of MaterialResult is provided, then the returned constructor will be corresponding to the provided type.\n" +
                      "If a type of EnvironmentalMetric is provided, the constructor will correspond to the MaterialResult corresponding to this type.\n" +
                      "For all other types, null is returned.")]
-        [Input("t", "The type to find a matching constructor for. Should be a type of ElementResult or a type of MaterialResult.")]
-        [Output("cstFunc", "The function correpsonding to the constructor of the ElementResult related to the type.")]
+        [Input("t", "The type to find a matching constructor for. Should be a type of MaterialResult or a type of EnvironmentalMetric.")]
+        [Output("cstFunc", "The function correpsonding to the constructor of the MaterialResult related to the type.")]
         public static Func<object[], MaterialResult2> MaterialResultConstructor(this Type t)
         {
             Func<object[], MaterialResult2> cstFunc;
