@@ -44,7 +44,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("")]
         [Input("", "")]
         [Output("", "")]
-        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration2(EnvironmentalProductDeclaration2 epd, string materialName, double quantityValue)
+        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration2 epd, string materialName, double quantityValue)
         {
             List<MaterialResult2> results = new List<MaterialResult2>();
 
@@ -54,50 +54,6 @@ namespace BH.Engine.LifeCycleAssessment
                 results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
             }
 
-            return results;
-        }
-
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration3(EnvironmentalProductDeclaration2 epd, string materialName, double quantityValue)
-        {
-            List<MaterialResult2> results = new List<MaterialResult2>();
-
-                foreach (IEnvironmentalMetric metric in epd.EnvironmentalMetrics)
-                {
-                    results.Add(IEvaluateEnvironmentalMetric3(metric, epd.Name, materialName, quantityValue));
-                }
-            
-
-            return results;
-        }
-
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration4(EnvironmentalProductDeclaration2 epd, string materialName, double quantityValue)
-        {
-            List<MaterialResult2> results = new List<MaterialResult2>();
-            foreach (IEnvironmentalMetric metric in epd.EnvironmentalMetrics)
-            {
-                results.Add(IEvaluateEnvironmentalMetric3(metric, epd.Name, materialName, quantityValue));
-            }
-            return results;
-        }
-
-        /***************************************************/
-
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration5(EnvironmentalProductDeclaration2 epd, string materialName, double quantityValue)
-        {
-            List<MaterialResult2> results = new List<MaterialResult2>();
-            foreach (IEnvironmentalMetric metric in epd.EnvironmentalMetrics)
-            {
-                results.Add(EvaluateEnvironmentalMetric5(metric, epd.Name, materialName, quantityValue));
-            }
             return results;
         }
 

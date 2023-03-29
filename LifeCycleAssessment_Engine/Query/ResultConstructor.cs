@@ -85,7 +85,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (!m_MaterialResultConstructors.TryGetValue(t, out cstFunc))
             {
-                ConstructorInfo constructor = GetElementResultConstructorInfo(t);
+                ConstructorInfo constructor = GetMaterialResultConstructorInfo(t);
                 if (constructor != null)
                 {
                     Func<object[], object> genericFunc = constructor.ToFunc();
@@ -98,7 +98,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             if (cstFunc == null)
-                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(IElementResult<MaterialResult2>)} based on provided type {t}");
+                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(MaterialResult2)} based on provided type {t}");
 
             return cstFunc;
         }
