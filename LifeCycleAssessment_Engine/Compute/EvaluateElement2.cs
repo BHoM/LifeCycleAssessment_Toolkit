@@ -145,7 +145,7 @@ namespace BH.Engine.LifeCycleAssessment
                         return null;
                 }
 
-                materialResults.AddRange(EvaluateEnvironmentalProductDeclaration(epd, material.Name, quantityValue));
+                materialResults.AddRange(EvaluateEnvironmentalProductDeclaration(epd, quantityValue, material.Name, metricTypes));
             }
 
             IComparable objectId = "";
