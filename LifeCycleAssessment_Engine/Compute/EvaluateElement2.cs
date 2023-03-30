@@ -51,14 +51,11 @@ namespace BH.Engine.LifeCycleAssessment
                    "To view a list of all possible metric evaluations, please view the EPDField enum. Note that not all fields can be evaluated. \n" +
                    "The provided Template Materials allow each material within your object to have an associated Environmental Product Declaration.")]
         [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
-        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.\n" +
-                   "Note that only phases A1-A3 combined are possible evaluations at present.")]
-        [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
-        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
-        [Output("result", "An ElementResult that contains the LifeCycleAssessment data for the input object(s).")]
-        public static List<IElementResult<MaterialResult2>> EvaluateElement(IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
+        [Input("metricTypes", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("result", "A List of ElementResults, one per metric type, that contains the LifeCycleAssessment data for the input object(s).")]
+        public static List<IElementResult<MaterialResult2>> EvaluateElement(IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<Type> metricTypes = null)
         {
             if (elementM == null)
             {
