@@ -41,7 +41,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided ILifeCycleAssessmentPhaseData, i.e. the first value will be the sum of A1 for all the provided ILifeCycleAssessmentPhaseDatas.")]
         [Input("phaseData", "List of ILifeCycleAssessmentPhaseData to get the sum data from.")]
-        [Output("values", "The values of the summed up material results as list of doubles.")]
+        [Output("values", "The values of the summed up material results as list of doubles where each item in the list corresponds to the sum for a particular phase, i.e. first item in the list will be the sum of all A1s in the provided phase data.")]
         public static List<double> SumPhaseDataValues(this IReadOnlyList<ILifeCycleAssessmentPhaseData> phaseData)
         {
             if(phaseData.IsNullOrEmpty())
