@@ -39,7 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets the total sum of values from all phases with a set value (all values not NaN).")]
         [Input("phaseData", "LCA phase data object to get the total from.")]
-        [Output("total", "The sum of all non-NaN proeprties on the provided phase data object.")]
+        [Output("total", "The sum of all non-NaN properties on the provided phase data object.")]
         public static double Total(this ILifeCycleAssessmentPhaseData phaseData)
         {
             List<string> included = new List<string>();
@@ -60,7 +60,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets the total sum of values from all A-phases (A1-A5) with a set value (all values not NaN).")]
         [Input("phaseData", "LCA phase data object to get the total from.")]
-        [Output("Atotal", "The sum of all non-NaN proeprties on the provided phase data object.")]
+        [Output("Atotal", "The sum of all non-NaN properties on the provided phase data object.")]
         public static double ATotal(this ILifeCycleAssessmentPhaseData phaseData)
         {
             List<string> included = new List<string>();
@@ -73,7 +73,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets the total sum of values from all B-phases (B1-B7) with a set value (all values not NaN).")]
         [Input("phaseData", "LCA phase data object to get the total from.")]
-        [Output("BTotal", "The sum of all non-NaN proeprties on the provided phase data object.")]
+        [Output("BTotal", "The sum of all non-NaN properties on the provided phase data object.")]
         public static double BTotal(this ILifeCycleAssessmentPhaseData phaseData)
         {
             List<string> included = new List<string>();
@@ -86,7 +86,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets the total sum of values from all B-phases (C1-C4) with a set value (all values not NaN).")]
         [Input("phaseData", "LCA phase data object to get the total from.")]
-        [Output("CTotal", "The sum of all non-NaN proeprties on the provided phase data object.")]
+        [Output("CTotal", "The sum of all non-NaN properties on the provided phase data object.")]
         public static double CTotal(this ILifeCycleAssessmentPhaseData phaseData)
         {
             List<string> included = new List<string>();

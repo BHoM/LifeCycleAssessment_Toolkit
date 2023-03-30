@@ -38,9 +38,14 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets the values corresponding to the values of all phases as a list of doubles.")]
         [Input("phaseData", "ILifeCycleAssessmentPhaseData from which to extract all phase data values.")]
-        [Output("values", "The values of the phaseData as a list of doubles.")]
+        [Output("values", "The values of the phase data as a list of doubles.")]
         public static List<double> IPhaseDataValues(this ILifeCycleAssessmentPhaseData phaseData)
         {
+            if (phaseData == null)
+            {
+                Base.Compute.RecordError($"Unable to extract phase data values from a null {nameof(ILifeCycleAssessmentPhaseData)}.");
+                return new List<double>();
+            }
             return PhaseDataValues(phaseData as dynamic);
         }
 
@@ -49,12 +54,16 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
 
-        [Description("Gets a list of doubles corresponding to the metric values being evaluated for the particular GlobalWarmingPotentialMetrics.")]
-        [Input("phaseData", "GlobalWarmingPotentialMetrics being evaluated.")]
-        [Input("quantityValue", "The quatity value to evaluate the metric by. All metric properties will be multiplied by this value. Quatity should correspond to the QueantityType on the EPD to which the metric belongs.")]
-        [Output("values", "The values of the evaluated metric as a list of doubles.")]
+        [Description("Gets the values corresponding to the values of all phases as a list of doubles.")]
+        [Input("phaseData", "IGlobalWarmingPotentialPhaseData from which to extract all phase data values.")]
+        [Output("values", "The values of the phase data as a list of doubles.")]
         public static List<double> PhaseDataValues(this IGlobalWarmingPotentialPhaseData phaseData)
         {
+            if (phaseData == null)
+            {
+                Base.Compute.RecordError($"Unable to extract phase data values from a null {nameof(IGlobalWarmingPotentialPhaseData)}.");
+                return new List<double>();
+            }
             List<double> metrics = BasePhaseDataValues(phaseData);
             metrics.Add(phaseData.BiogenicCarbon);
             return metrics;
@@ -63,11 +72,10 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
         /**** Private Methods - Fallback                ****/
         /***************************************************/
-
-        [Description("Gets a list of doubles corresponding to the metric values being evaluated for the particular IEnvironmentalMetric. Fallback case that is relevant for all metric without any additional phases outside the standard phase data.")]
-        [Input("phaseData", "IEnvironmentalMetric being evaluated.")]
-        [Input("quantityValue", "The quatity value to evaluate the metric by. All metric properties will be multiplied by this value. Quatity should correspond to the QueantityType on the EPD to which the metric belongs.")]
-        [Output("values", "The values of the evaluated metric as a list of doubles.")]
+        
+        [Description("Gets the values corresponding to the values of all phases as a list of doubles. Fallback case that is relevant for all metric without any additional phases outside the standard phase data.")]
+        [Input("phaseData", "ILifeCycleAssessmentPhaseData from which to extract all phase data values.")]
+        [Output("values", "The values of the phase data as a list of doubles.")]
         private static List<double> PhaseDataValues(this ILifeCycleAssessmentPhaseData phaseData)
         {
             return BasePhaseDataValues(phaseData);
@@ -77,10 +85,9 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Gets a list of doubles corresponding to the base phases applicable to all IEnvironmentalMetric.")]
-        [Input("phaseData", "IEnvironmentalMetric being evaluated.")]
-        [Input("quantityValue", "The quatity value to evaluate the metric by. All metric properties will be multiplied by this value. Quatity should correspond to the QueantityType on the EPD to which the metric belongs.")]
-        [Output("values", "The values of the evaluated metric as a list of doubles.")]
+        [Description("Gets a list of doubles corresponding to the base phases applicable to all ILifeCycleAssessmentPhaseData.")]
+        [Input("phaseData", "ILifeCycleAssessmentPhaseData from which to extract all base phase data values common to all metric/result types.")]
+        [Output("values", "The values of the base phase data as a list of doubles.")]
         private static List<double> BasePhaseDataValues(this ILifeCycleAssessmentPhaseData phaseData)
         {
             return new List<double>{
