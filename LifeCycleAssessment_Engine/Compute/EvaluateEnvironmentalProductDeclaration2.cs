@@ -41,20 +41,56 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("")]
-        [Input("", "")]
-        [Output("", "")]
-        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration2 epd, string materialName, double quantityValue)
+        [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.")]
+        [Input("epd", "The EnvironmentalProductDeclaration to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
+        [Input("quantityValue", "The quatity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quatity should correspond to the QuantityType on the EPD.")]
+        [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
+        [Input("metricTypes", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
+        public static List<MaterialResult2> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration2 epd, double quantityValue, string materialName, List<Type> metricTypes = null)
         {
+            if (epd == null)
+            {
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(EnvironmentalProductDeclaration2)}.");
+                return null;
+            }
+
             List<MaterialResult2> results = new List<MaterialResult2>();
 
-            results = new List<MaterialResult2>();
-            foreach (IEnvironmentalMetric metric in epd.EnvironmentalMetrics)
+            foreach (IEnvironmentalMetric metric in epd.FilterMetrics(metricTypes))
             {
                 results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
             }
 
             return results;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD is returned.")]
+        private static List<IEnvironmentalMetric> FilterMetrics(this EnvironmentalProductDeclaration2 epd, List<Type> metricTypes)
+        {
+            List<IEnvironmentalMetric> metrics;
+
+            if (metricTypes == null || metricTypes.Count == 0)
+            {
+                metrics = epd.EnvironmentalMetrics;
+            }
+            else
+            {
+                metrics = new List<IEnvironmentalMetric>();
+                foreach (Type type in metricTypes)
+                {
+                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.FirstOrDefault(x => x.GetType() == type);
+                    if (metric != null)
+                        metrics.Add(metric);
+                    else
+                        Base.Compute.RecordError($"{nameof(EnvironmentalProductDeclaration2)} named {epd.Name} does not contain a {nameof(IEnvironmentalMetric)} of type {type.Name}. No {nameof(MaterialResult2)} will be returned for this {nameof(EnvironmentalProductDeclaration2)} corresponding to this metric.");
+                }
+            }
+            return metrics;
         }
 
         /***************************************************/
