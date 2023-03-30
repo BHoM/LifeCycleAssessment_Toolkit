@@ -41,7 +41,8 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Evaluates the IEnvironmentalMetric and returns a MaterialResult of a type corresponding to the metric. The evaluation is done by multiplying all phase data on the metric by the provided quantityValue.")]
+        [Description("Evaluates the IEnvironmentalMetric and returns a MaterialResult of a type corresponding to the metric. The evaluation is done by multiplying all phase data on the metric by the provided quantityValue.\n" +
+                     "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
         [Input("metric", "The IEnvironmentalMetric to evaluate. Returned result will be a MaterialResult of a type corresponding to the metric.")]
         [Input("quantityValue", "The quatity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quatity should correspond to the QuantityType on the EPD.")]
         [Input("epdName", "The name of the EnvironmentalProductDeclaration that owns the IEnvironmentalMetric. Stored as an identifier on the returned result class.")]
@@ -68,11 +69,7 @@ namespace BH.Engine.LifeCycleAssessment
             //Imporant that the order of the metrics extracted cooresponds to the order of the constructor
             //General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated
             //For example, GlobalWarmpingPotential will have an additional property corresponding to BiogenicCarbon
-            List<double> phaseDataValues = metric.IPhaseDataValues();
-            foreach (double phaseData in phaseDataValues)
-            {
-                parameters.Add(phaseData * quantityValue);  //Evaluation value is base phase data multiplied by quantity value
-            }
+            parameters.AddRange(metric.ResultingPhaseValues(quantityValue).Cast<object>());  //Gets the resulting final metrics for each phase from the metric
 
             //Call the constructor function
             return cst(parameters.ToArray());
