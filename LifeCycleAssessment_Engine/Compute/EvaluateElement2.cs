@@ -148,10 +148,12 @@ namespace BH.Engine.LifeCycleAssessment
                 materialResults.AddRange(EvaluateEnvironmentalProductDeclaration(epd, quantityValue, material.Name, metricTypes));
             }
 
+            //Get out id as BHoM_Guid
             IComparable objectId = "";
             if (elementM is IBHoMObject bhObj)
                 objectId = bhObj.BHoM_Guid;
 
+            //Groupds results by type and sums them up to single ElementResult per type
             return GroupAndSumResults(materialResults, objectId, elementM.GetElementScope(), ObjectCategory.Undefined);
         }
 
@@ -159,6 +161,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         private static List<IElementResult<MaterialResult2>> GroupAndSumResults(List<MaterialResult2> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category)
         {
+            //Group all of the provided MaterialResult by their type
             List<IElementResult<MaterialResult2>> elementResults = new List<IElementResult<MaterialResult2>>();
             foreach (var group in materialResults.GroupBy(x => x.GetType()))
             {
@@ -171,13 +174,22 @@ namespace BH.Engine.LifeCycleAssessment
 
         private static IElementResult<MaterialResult2> SumMaterialResultToElementResult<T>(T item, IEnumerable<MaterialResult2> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category) where T : MaterialResult2
         {
+            //Cast the results to the actual type
             List<T> castResults = materialResults.Cast<T>().ToList();
 
-            Func<object[], IElementResult<MaterialResult2>> cst = typeof(T).ElementResultConstructor();//GetElementResultConstructor<T>();
+            //Get the constructor for the element result of the type corresponding to the type of material result
+            //This is done by finding the ElementResult able to store the particular type of MaterialResult
+            //The constructor is pre-compiled to a function to speed up the execution of the particular method
+            Func<object[], IElementResult<MaterialResult2>> cst = typeof(T).ElementResultConstructor();
 
+            //Set up parameters for the constructor.
+            //This always beings with objectId, scope, category and the list of the material results
             List<object> parameters = new List<object> { objectId, scope, category, new ReadOnlyCollection<T>(castResults) };
+            //Add the values, computed as the sum of all the MaterialResult parts,
+            //this means for example the A1 value of the element result will be the sum of A1 from all the MaterialResults that are part of the ElementResult
             parameters.AddRange(castResults.SumPhaseDataValues().Cast<object>());
 
+            //Call constructor
             return cst(parameters.ToArray());
         }
 
