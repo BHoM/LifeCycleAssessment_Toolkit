@@ -35,7 +35,7 @@ namespace BH.Engine.LifeCycleAssessment
     public static partial class Compute
     {
         [Description("The LCA_tool_part_tostart.py script in c#.")]
-        [Input("filePath", "")]
+        [Input("filePath", ".")]
         [Input("c2_input", ".")]
         [Input("d2_input", ".")]
         [Input("b2_input", ".")]
@@ -59,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("c5_2ndlayer", ".")]
         [Input("c6_2ndlayer", ".")]
         [Input("c18_2ndlayer", ".")]
-        [Output("Success", "has it written to the file?")]
+        [Output("Success", "has it written to the file?.")]
         public static bool LCAToolPart(string filePath, int c2_input = 2942, int d2_input = 0, int b2_input = 11768, int e2_input = 0, int g2_input = 0, int h2_input = 50,
             int f2_input = 0, int o2_input = 0, int i2_input = 2942, string j2_input = "New Buildings", int m2_input = 1, int l2_input = 50, int w2_input = 0,
             double p2_input = 0.5, double u2_input = 0, double t2_input = 0, double q2_input = 0.1, string n2_input = "No",
