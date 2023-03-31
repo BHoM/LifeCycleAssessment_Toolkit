@@ -105,11 +105,14 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
         public static List<MaterialResult2> TotalMaterialBreakdown(this IEnumerable<MaterialResult2> materialResults)
         {
+            if (materialResults == null || !materialResults.Any())
+                return new List<MaterialResult2>();
+
             List<MaterialResult2> breakDown = new List<MaterialResult2>();
 
             foreach (var group in materialResults.GroupBy(x => x.GetType()))
@@ -124,19 +127,24 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
-        [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
+        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName and EPDName, and returns a single MaterialResult for each group containing the total evaluated for each phase.")]
+        [Input("materialResults", "The individual MaterialResult results to extract the total from All assumed to be of the same type.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
         private static List<MaterialResult2> MaterialBreakdown(IEnumerable<MaterialResult2> materialResults)
         {
             List<MaterialResult2> breakDown = new List<MaterialResult2>();
+            //Get MaterialResultConstructor of the same type as currently being evaluated
             Func<object[], MaterialResult2> cst = MaterialResultConstructor(materialResults.First().GetType());
 
+            //Group results by EPD and Material name
             foreach (var group in materialResults.GroupBy(x => new { x.MaterialName, x.EnvironmentalProductDeclarationName }))
             {
+                //First parameters of constructor is material name and EPD name
                 List<object> parameters = new List<object> { group.Key.MaterialName, group.Key.EnvironmentalProductDeclarationName };
 
+                //Compute the sume value for each phase and add to the list
                 parameters.AddRange(group.ToList().SumPhaseDataValues().Cast<object>());
+                //Call constructor and add to output list
                 breakDown.Add(cst(parameters.ToArray()));
             }
             return breakDown;
