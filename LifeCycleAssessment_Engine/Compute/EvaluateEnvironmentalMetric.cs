@@ -56,23 +56,32 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            //Get the constructor for the material result of the type corresponding to the metric currently being evaluated
-            //This is done by finding the MaterialResult with matching name and exatracting the constructor from it
-            //The constructor is pre-compiled to a function to speed up the execution of the particular method
-            Func<object[], MaterialResult2> cst = Query.MaterialResultConstructor(metric.GetType());
+            return Create.MaterialResult(metric.GetType(), materialName, epdName, metric.EvaluateEnvironmentalMetricValues(quantityValue));
 
-            //Collect all the relevant data for constructor (essentailly, all properties for the result in correct order)
-            //First two parameters of all MaterialResults should always be name of the material and name of the EPD
-            List<object> parameters = new List<object> { materialName, epdName };
-            //Collect the rest of the evaluation metrics
-            //For most cases this will be the phases 
-            //Imporant that the order of the metrics extracted cooresponds to the order of the constructor
-            //General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated
-            //For example, GlobalWarmpingPotential will have an additional property corresponding to BiogenicCarbon
-            parameters.AddRange(metric.ResultingPhaseValues(quantityValue).Cast<object>());  //Gets the resulting final metrics for each phase from the metric
+        }
 
-            //Call the constructor function
-            return cst(parameters.ToArray());
+        /***************************************************/
+
+        [Description("Gets the resulting values for each phase of the providing EnvironmentalMetric given the provided quantityValue.\n" +
+             "The resulting values are computed as the values on the metric for each phase multiplied by the quantity value.\n" +
+             "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
+        [Input("metric", "The IEnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
+        [Input("quantityValue", "The quatity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quatity should correspond to the QuantityType on the EPD.")]
+        [Output("resultValues", "The resulting values for each phase.")]
+        public static List<double> EvaluateEnvironmentalMetricValues(this IEnvironmentalMetric metric, double quantityValue)
+        {
+            if (metric == null)
+            {
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(IEnvironmentalMetric)}.");
+                return null;
+            }
+
+            List<double> resultingValues = new List<double>();
+            foreach (double phaseData in metric.IPhaseDataValues())
+            {
+                resultingValues.Add(phaseData * quantityValue);  //Evaluation value is base phase data multiplied by quantity value
+            }
+            return resultingValues;
         }
 
         /***************************************************/
