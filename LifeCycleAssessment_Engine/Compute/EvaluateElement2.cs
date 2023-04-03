@@ -160,7 +160,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (elementM is IBHoMObject bhObj)
                 objectId = bhObj.BHoM_Guid;
 
-            //Groupds results by type and sums them up to single ElementResult per type
+            //Groups results by type and sums them up to single ElementResult per type
             return Create.ElementResults(objectId, elementM.GetElementScope(), ObjectCategory.Undefined, materialResults);
         }
 
