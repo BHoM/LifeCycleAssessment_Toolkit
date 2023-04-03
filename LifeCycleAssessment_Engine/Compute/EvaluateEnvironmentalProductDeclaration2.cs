@@ -59,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<MaterialResult2> results = new List<MaterialResult2>();
 
-            foreach (IEnvironmentalMetric metric in epd.FilterMetrics(metricTypes))
+            foreach (IEnvironmentalMetric metric in epd.FilteredMetrics(metricTypes))
             {
                 results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
             }
@@ -71,30 +71,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD is returned.")]
-        private static List<IEnvironmentalMetric> FilterMetrics(this EnvironmentalProductDeclaration2 epd, List<Type> metricTypes)
-        {
-            List<IEnvironmentalMetric> metrics;
 
-            if (metricTypes == null || metricTypes.Count == 0)
-            {
-                metrics = epd.EnvironmentalMetrics;
-            }
-            else
-            {
-                metrics = new List<IEnvironmentalMetric>();
-                foreach (Type type in metricTypes)
-                {
-                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.FirstOrDefault(x => x.GetType() == type);
-                    if (metric != null)
-                        metrics.Add(metric);
-                    else
-                        Base.Compute.RecordError($"{nameof(EnvironmentalProductDeclaration2)} named {epd.Name} does not contain a {nameof(IEnvironmentalMetric)} of type {type.Name}. No {nameof(MaterialResult2)} will be returned for this {nameof(EnvironmentalProductDeclaration2)} corresponding to this metric.");
-                }
-            }
-            return metrics;
-        }
-
-        /***************************************************/
     }
 }
