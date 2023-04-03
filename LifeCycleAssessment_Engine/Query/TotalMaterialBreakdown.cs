@@ -133,19 +133,16 @@ namespace BH.Engine.LifeCycleAssessment
         private static List<MaterialResult2> MaterialBreakdown(IEnumerable<MaterialResult2> materialResults)
         {
             List<MaterialResult2> breakDown = new List<MaterialResult2>();
-            //Get MaterialResultConstructor of the same type as currently being evaluated
-            Func<object[], MaterialResult2> cst = MaterialResultConstructor(materialResults.First().GetType());
-
+            ////Get current type being evaluated
+            Type type = materialResults.First().GetType();
             //Group results by EPD and Material name
             foreach (var group in materialResults.GroupBy(x => new { x.MaterialName, x.EnvironmentalProductDeclarationName }))
             {
-                //First parameters of constructor is material name and EPD name
-                List<object> parameters = new List<object> { group.Key.MaterialName, group.Key.EnvironmentalProductDeclarationName };
-
-                //Compute the sume value for each phase and add to the list
-                parameters.AddRange(group.ToList().SumPhaseDataValues().Cast<object>());
-                //Call constructor and add to output list
-                breakDown.Add(cst(parameters.ToArray()));
+                //Compute the total breakdown as sum value for each phase
+                List<double> sumValues = group.ToList().SumPhaseDataValues();
+                //Call create and add to list
+                breakDown.Add(Create.MaterialResult(type, group.Key.MaterialName, group.Key.EnvironmentalProductDeclarationName, sumValues));
+               
             }
             return breakDown;
         }
