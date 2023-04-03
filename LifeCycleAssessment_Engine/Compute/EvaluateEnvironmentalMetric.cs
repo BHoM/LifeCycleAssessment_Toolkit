@@ -63,8 +63,8 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets the resulting values for each phase of the providing EnvironmentalMetric given the provided quantityValue.\n" +
-             "The resulting values are computed as the values on the metric for each phase multiplied by the quantity value.\n" +
-             "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
+                     "The resulting values are computed as the values on the metric for each phase multiplied by the quantity value.\n" +
+                     "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
         [Input("metric", "The IEnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quatity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quatity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
