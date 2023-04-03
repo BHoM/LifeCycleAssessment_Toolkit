@@ -46,11 +46,12 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Evaluates the environmental metrics found within a given EPD. \n" +
-                   "This method is only fit for the evaluation of phases A1-A3 (cradle to gate) at present. \n" +
-                   "To view a list of all possible metric evaluations, please view the EPDField enum. Note that not all fields can be evaluated. \n" +
-                   "The provided Template Materials allow each material within your object to have an associated Environmental Product Declaration.")]
-        [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
+        [Description("Evaluates the EnvironmentalMetrics for the provided element and returns a ElementResult for each evaluated metric type.\n" +
+                     "Evaluation is done by extrating the material takeoff for the provided element, giving quantities and Materiality.\n" +
+                     "Each Material in the takeoff is then evaluated by finding the EnvironmentalProductDeclaration (EPD), either stored on the material or from the list of template materials.\n" +
+                     "Each metric, or filtered choosen metrics, on the EPD is then evaluated.\n" +
+                     "Finally, a element result is returned per metric type. Each element result being the sum result of all metrics of the same type.")]
+        [Input("elementM", "The element to evaluate. The materiality and quantities is extracted from the element.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("metricTypes", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
@@ -59,18 +60,24 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (elementM == null)
             {
+                Base.Compute.RecordError("Unable to evaluate a null element.");
                 return null;
             }
 
+            //Gets the material takeoff from the element, with additional material proeprties mapped over from the provided template materials.
             VolumetricMaterialTakeoff takeoff = elementM.MappedVolumetricMaterialTakeoff(templateMaterials, true, prioritiseTemplate);
 
             if (takeoff == null)
             {
+                Base.Compute.RecordError($"Unable to extract a MaterialTakeoff from the provided {elementM.GetType().Name}.");
                 return null;
             }
 
             if (takeoff.Materials.Count == 0)
-                return null;
+            {
+                BH.Engine.Base.Compute.RecordWarning($"The {nameof(VolumetricMaterialTakeoff)} provided {elementM.GetType().Name} does not contain any {nameof(Material)}s. Nothing to evaluate.");
+                return new List<IElementResult<MaterialResult2>>();
+            }
 
             //Predefining parameters to be used for some item types in loop
             double area = double.NaN;
