@@ -37,7 +37,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD is returned.")]
+        [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD are returned.")]
         [Input("epd", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
         [Input("metricTypes", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are returned.")]
         [Output("materics", "The metrics on the EnvironmentalProductDeclaration corresponding to the provided filter, or all metrics on the epd if no metricType filters are provided.")]
