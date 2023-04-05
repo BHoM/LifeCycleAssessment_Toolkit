@@ -33,6 +33,12 @@ using System.ComponentModel;
 using System.Linq;
 using BH.Engine.Matter;
 using BH.Engine.Spatial;
+using BH.Engine.Structure;
+using System.Dynamic;
+using BH.oM.Structure.Elements;
+using BH.oM.Physical.Constructions;
+using BH.oM.Structure;
+using BH.Engine.Base;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -124,7 +130,35 @@ namespace BH.Engine.LifeCycleAssessment
                                 Base.Compute.RecordError($"Can only evaluate Area based epds on elements of a {nameof(IElement2D)} type.");
                                 return null;
                             }
-                            area = element2D.Area();
+
+                            //Check count of layers of material
+                            Construction c = null;
+                            double layerCount = 1;
+                            if(element2D is IAreaElement)
+                            {
+                                IAreaElement elem = element2D as IAreaElement;
+                                c = elem.Property.Construction();
+                            }
+                            else 
+                            { 
+                                c = element2D.PropertyValue("Construction") as Construction;
+                                if (c == null) c = element2D.PropertyValue("OpeningConstruction") as Construction;
+                            }
+                            
+                            if (c!= null)
+                            {
+                                double counter = 0;
+                                foreach (Layer layer in c.Layers) 
+                                {
+                                    Material mat = layer.Material;
+                                    mat.Fragments.Clear();
+                                    material.Fragments.Clear();
+                                    string hash = mat.Hash();
+                                    if(hash == material.Hash()) counter += 1;
+                                }
+                                layerCount = counter;
+                            }
+                            area = element2D.Area() * layerCount;
                         }
                         quantityValue = area;
                         break;
