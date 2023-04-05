@@ -141,8 +141,7 @@ namespace BH.Engine.LifeCycleAssessment
                             }
                             else 
                             { 
-                                c = element2D.PropertyValue("Construction") as Construction;
-                                if (c == null) c = element2D.PropertyValue("OpeningConstruction") as Construction;
+                                c = element2D.PropertyValue("Construction") as Construction ?? element2D.PropertyValue("OpeningConstruction") as Construction;
                             }
                             
                             if (c!= null)
@@ -153,8 +152,7 @@ namespace BH.Engine.LifeCycleAssessment
                                     Material mat = layer.Material;
                                     mat.Fragments.Clear();
                                     material.Fragments.Clear();
-                                    string hash = mat.Hash();
-                                    if(hash == material.Hash()) counter += 1;
+                                    if(mat.Hash() == material.Hash()) counter += 1;
                                 }
                                 layerCount = counter;
                             }
