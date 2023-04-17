@@ -158,7 +158,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (typeof(IElementResult<MaterialResult2>).IsAssignableFrom(t))    //Type of Elementresult -> simply return
                 elementResultType = t;
             else if (typeof(MaterialResult2).IsAssignableFrom(t))   //Type of material result -> Find element result able to store it
-                elementResultType = typeof(Query).GetMethod(nameof(ElementResultTypeFromMaterialResultType), BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(t).Invoke(null, new object[] { }) as Type;
+                elementResultType = typeof(Create).GetMethod(nameof(ElementResultTypeFromMaterialResultType), BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(t).Invoke(null, new object[] { }) as Type;
             else if (typeof(IEnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
                 elementResultType = ElementResultTypeFromMetric(t);
 
