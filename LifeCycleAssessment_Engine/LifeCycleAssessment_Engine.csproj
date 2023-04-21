@@ -35,6 +35,11 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Facade_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Facade_oM.dll</HintPath>
+	  <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Geometry_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_Engine.dll</HintPath>
       <Private>False</Private>
@@ -53,6 +58,11 @@
     <Reference Include="Matter_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_Engine.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Matter_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_oM.dll</HintPath>
+	  <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="MEP_oM">
