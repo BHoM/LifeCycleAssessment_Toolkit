@@ -42,6 +42,7 @@ using BH.oM.Facade;
 using BH.oM.Physical.Materials;
 using BH.Engine.Base;
 using BH.oM.Quantities.Attributes;
+using BH.oM.LifeCycleAssessment.Fragments;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -54,8 +55,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Changes the materials of section profiles to EPD based material.")]
         [Input("frameEdgeProp", "FrameEdgeProperty with section profiles to apply EPD material to.")]
         [Input("targetMatl", "Name of material to replace with EPD material.")]
-        [Output("epd", "Environmental Product Declaration to apply to section profiles as material.")]
-        public static FrameEdgeProperty AssignEPDFrameEdgeProperty(this FrameEdgeProperty frameEdgeProp, string targetMatl, EnvironmentalProductDeclaration epd)
+        [Input("epd", "Environmental Product Declaration to apply to section profiles as material.")]
+        [Output("frameEdgeProp", "FrameEdgeProperty with EPD assigned.")]
+        public static FrameEdgeProperty AssignEPDFrameEdgeProperty(this FrameEdgeProperty frameEdgeProp, EnvironmentalProductDeclaration epd, string targetMatl = "Aluminum")
         {
             if (frameEdgeProp == null || frameEdgeProp.SectionProperties == null || epd == null)
             {
@@ -67,38 +69,34 @@ namespace BH.Engine.LifeCycleAssessment
                 BH.Engine.Base.Compute.RecordError($"No target material entered. Target material set to Aluminum by default.");
             }
 
-            List<IFragment> epdDensity = epd.GetAllFragments(typeof(Density));
-            if (epdDensity.Count > 1)
+            Material epdMatl = BH.Engine.Physical.Create.Material(epd);
+            List<IFragment> epdDensities = epd.GetAllFragments(typeof(EPDDensity));
+            if (epdDensities.Count > 1)
             {
                 BH.Engine.Base.Compute.RecordError($"EPD has more than one density fragment assigned.");
                 return null;
             }
-            
-            Material epdMatl = BH.Engine.Physical.Create.Material(epd);
-            if (epdDensity.Count == 1)
+            if (epdDensities.Count == 1)
             {
-                epdMatl.SetPropertyValue("Density", epdDensity[0]);
+                epdMatl.SetPropertyValue("Density", epdDensities[0].PropertyValue("Density"));
             }
 
-            Double matchCount = 0;
-            //List<ConstantFramingProperty> secProps = frameEdgeProp.SectionProperties;
+            List<ConstantFramingProperty> secProps = new List<ConstantFramingProperty>();
+            
             foreach (ConstantFramingProperty prop in frameEdgeProp.SectionProperties)
             {
                 if (prop.Material.Name.Contains(targetMatl))
                 {
-                    prop.Material = epdMatl;
-                    matchCount ++;
-                }
-                else
-                {
-                    frameEdgeProp.SectionProperties.Remove(prop);
+                    ConstantFramingProperty newProp = prop;
+                    newProp.Material = epdMatl;
+                    secProps.Add(newProp);
                 }
             }
-            //frameEdgeProp.SectionProperties = secProps;
+            frameEdgeProp.SectionProperties = secProps;
 
-            if (matchCount == 0)
+            if (secProps.Count == 0)
             {
-                BH.Engine.Base.Compute.RecordError($"No SectionProperties found that matched target material.");
+                BH.Engine.Base.Compute.RecordError($"No SectionProperties found that match target material.");
                 return null;
             }
             return frameEdgeProp;
