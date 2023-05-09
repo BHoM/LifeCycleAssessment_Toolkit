@@ -48,12 +48,12 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("category")]
         [Input("materialResults", "Material results used to create the element result. Results will first be grouped by type, and a single element result created per type. The phase vlaues of the element result will be the sum of the MaterialResult values.")]
         [Output("results", "Created element results")]
-        public static List<IElementResult<MaterialResult2>> ElementResults(IComparable objectId, ScopeType scope, ObjectCategory category, IEnumerable<MaterialResult2> materialResults)
+        public static List<IElementResult<MaterialResult>> ElementResults(IComparable objectId, ScopeType scope, ObjectCategory category, IEnumerable<MaterialResult> materialResults)
         {
             if(materialResults.IsNullOrEmpty())
-                return new List<IElementResult<MaterialResult2>>();
+                return new List<IElementResult<MaterialResult>>();
 
-            List<IElementResult<MaterialResult2>> elementResults = new List<IElementResult<MaterialResult2>>();
+            List<IElementResult<MaterialResult>> elementResults = new List<IElementResult<MaterialResult>>();
 
             //Group all of the provided MaterialResult by their type
             foreach (var group in materialResults.GroupBy(x => x.GetType()))
@@ -75,7 +75,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("scope")]
         [InputFromProperty("category")]
         [Output("result", "Created ElementResult<T> from the provided MaterialResults.")]
-        private static IElementResult<MaterialResult2> ElementResult<T>(T first, IEnumerable<MaterialResult2> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category) where T : MaterialResult2
+        private static IElementResult<MaterialResult> ElementResult<T>(T first, IEnumerable<MaterialResult> materialResults, IComparable objectId, ScopeType scope, ObjectCategory category) where T : MaterialResult
         {
             //Cast the material results to the actual type
             List<T> castResults = materialResults.Cast<T>().ToList();
@@ -96,12 +96,12 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("materialResults")]
         [Input("resultValues", "The resuling values to be stored on the result. Imporant that the order of the metrics extracted cooresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmpingPotential will have an additional property corresponding to BiogenicCarbon.")]
         [Output("result", "The created element result.")]
-        private static IElementResult<MaterialResult2> ElementResult<T>(IComparable objectId, ScopeType scope, ObjectCategory category, List<T> materialResults, List<double> resultValues) where T : MaterialResult2
+        private static IElementResult<MaterialResult> ElementResult<T>(IComparable objectId, ScopeType scope, ObjectCategory category, List<T> materialResults, List<double> resultValues) where T : MaterialResult
         {
             //Get the constructor for the element result of the type corresponding to the type of material result
             //This is done by finding the ElementResult able to store the particular type of MaterialResult
             //The constructor is pre-compiled to a function to speed up the execution of the particular method
-            Func<object[], IElementResult<MaterialResult2>> cst = typeof(T).ElementResultConstructor();
+            Func<object[], IElementResult<MaterialResult>> cst = typeof(T).ElementResultConstructor();
 
             //Set up parameters for the constructor.
             //This always begin with objectId, scope, category and the list of the material results
@@ -122,9 +122,9 @@ namespace BH.Engine.LifeCycleAssessment
                  "For all other types, null is returned.")]
         [Input("t", "The type to find a matching constructor for. Should be a type of ElementResult or a type of MaterialResult.")]
         [Output("cstFunc", "The function correpsonding to the constructor of the ElementResult related to the type.")]
-        private static Func<object[], IElementResult<MaterialResult2>> ElementResultConstructor(this Type t)
+        private static Func<object[], IElementResult<MaterialResult>> ElementResultConstructor(this Type t)
         {
-            Func<object[], IElementResult<MaterialResult2>> cstFunc;
+            Func<object[], IElementResult<MaterialResult>> cstFunc;
 
             //Try get chached constructor func
             if (!m_ElementResultConstructors.TryGetValue(t, out cstFunc))
@@ -135,7 +135,7 @@ namespace BH.Engine.LifeCycleAssessment
                 {
                     //Pre-compile the constructor info to a function to increase performance
                     Func<object[], object> genericFunc = constructor.ToFunc();
-                    cstFunc = x => (IElementResult<MaterialResult2>)genericFunc(x);
+                    cstFunc = x => (IElementResult<MaterialResult>)genericFunc(x);
                 }
                 else
                     cstFunc = null;
@@ -144,7 +144,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             if (cstFunc == null)
-                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(IElementResult<MaterialResult2>)} based on provided type {t}");
+                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(IElementResult<MaterialResult>)} based on provided type {t}");
 
             return cstFunc;
         }
@@ -155,9 +155,9 @@ namespace BH.Engine.LifeCycleAssessment
         private static ConstructorInfo GetElementResultConstructorInfo(Type t)
         {
             Type elementResultType = null;
-            if (typeof(IElementResult<MaterialResult2>).IsAssignableFrom(t))    //Type of Elementresult -> simply return
+            if (typeof(IElementResult<MaterialResult>).IsAssignableFrom(t))    //Type of Elementresult -> simply return
                 elementResultType = t;
-            else if (typeof(MaterialResult2).IsAssignableFrom(t))   //Type of material result -> Find element result able to store it
+            else if (typeof(MaterialResult).IsAssignableFrom(t))   //Type of material result -> Find element result able to store it
                 elementResultType = typeof(Create).GetMethod(nameof(ElementResultTypeFromMaterialResultType), BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(t).Invoke(null, new object[] { }) as Type;
             else if (typeof(IEnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
                 elementResultType = ElementResultTypeFromMetric(t);
@@ -171,7 +171,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets a ElementResult type able to store MaterialResult type T.")]
-        private static Type ElementResultTypeFromMaterialResultType<T>() where T : MaterialResult2
+        private static Type ElementResultTypeFromMaterialResultType<T>() where T : MaterialResult
         {
             Type materialResultType = BH.Engine.Base.Query.BHoMTypeList()
                 .First(x => typeof(IElementResult<T>).IsAssignableFrom(x));
@@ -184,7 +184,7 @@ namespace BH.Engine.LifeCycleAssessment
         private static Type ElementResultTypeFromMetric(Type metricType)
         {
             string metric = metricType.Name.Replace("Metrics", "");
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(IElementResult<MaterialResult2>).IsAssignableFrom(x)).First(x => x.Name.StartsWith(metric));
+            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(IElementResult<MaterialResult>).IsAssignableFrom(x)).First(x => x.Name.StartsWith(metric));
             return materialResultType;
         }
 
@@ -193,7 +193,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         //Storage of the pre-compiled functions for future usage
-        private static ConcurrentDictionary<Type, Func<object[], IElementResult<MaterialResult2>>> m_ElementResultConstructors = new ConcurrentDictionary<Type, Func<object[], IElementResult<MaterialResult2>>>();
+        private static ConcurrentDictionary<Type, Func<object[], IElementResult<MaterialResult>>> m_ElementResultConstructors = new ConcurrentDictionary<Type, Func<object[], IElementResult<MaterialResult>>>();
 
         /***************************************************/
     }
