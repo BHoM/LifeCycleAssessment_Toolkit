@@ -46,12 +46,12 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to.. Stored as an identifier on the returned result class.")]
         [Input("resultValues", "The resuling values to be stored on the result. Imporant that the order of the metrics extracted cooresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmpingPotential will have an additional property corresponding to BiogenicCarbon.")]
         [Output("result", "The created MaterialResult.")]
-        public static MaterialResult2 MaterialResult(Type type, string materialName, string epdName, List<double> resultValues)
+        public static MaterialResult MaterialResult(Type type, string materialName, string epdName, List<double> resultValues)
         {
             //Get the constructor for the material result of the type corresponding to the metric currently being evaluated
             //This is done by finding the MaterialResult with matching name and exatracting the constructor from it
             //The constructor is pre-compiled to a function to speed up the execution of the particular method
-            Func<object[], MaterialResult2> cst = MaterialResultConstructor(type);
+            Func<object[], MaterialResult> cst = MaterialResultConstructor(type);
 
             //Collect all the relevant data for constructor (essentailly, all properties for the result in correct order)
             //First two parameters of all MaterialResults should always be name of the material and name of the EPD
@@ -77,9 +77,9 @@ namespace BH.Engine.LifeCycleAssessment
                    "For all other types, null is returned.")]
         [Input("t", "The type to find a matching constructor for. Should be a type of MaterialResult or a type of EnvironmentalMetric.")]
         [Output("cstFunc", "The function correpsonding to the constructor of the MaterialResult related to the type.")]
-        private static Func<object[], MaterialResult2> MaterialResultConstructor(this Type t)
+        private static Func<object[], MaterialResult> MaterialResultConstructor(this Type t)
         {
-            Func<object[], MaterialResult2> cstFunc;
+            Func<object[], MaterialResult> cstFunc;
 
             //Try get chached constructor func
             if (!m_MaterialResultConstructors.TryGetValue(t, out cstFunc))
@@ -90,7 +90,7 @@ namespace BH.Engine.LifeCycleAssessment
                 {
                     //Pre-compile the constructor info to a function to increase performance
                     Func<object[], object> genericFunc = constructor.ToFunc();
-                    cstFunc = x => (MaterialResult2)genericFunc(x);
+                    cstFunc = x => (MaterialResult)genericFunc(x);
                 }
                 else
                     cstFunc = null;
@@ -99,7 +99,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             if (cstFunc == null)
-                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(MaterialResult2)} based on provided type {t}");
+                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(MaterialResult)} based on provided type {t}");
 
             return cstFunc;
         }
@@ -110,11 +110,11 @@ namespace BH.Engine.LifeCycleAssessment
         private static ConstructorInfo GetMaterialResultConstructorInfo(Type t)
         {
             Type materialResultType = null;
-            if (typeof(MaterialResult2).IsAssignableFrom(t))    //Type of material result -> simply use it
+            if (typeof(MaterialResult).IsAssignableFrom(t))    //Type of material result -> simply use it
                 materialResultType = t;
             else if (typeof(IEnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
                 materialResultType = MaterialResultTypeFromMetric(t);
-            else if (typeof(IElementResult<MaterialResult2>).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)    //Type of element reuslt, get generic argument from base class
+            else if (typeof(IElementResult<MaterialResult>).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)    //Type of element reuslt, get generic argument from base class
                 materialResultType = t.BaseType?.GenericTypeArguments.FirstOrDefault();
 
             if (materialResultType == null)
@@ -129,7 +129,7 @@ namespace BH.Engine.LifeCycleAssessment
         private static Type MaterialResultTypeFromMetric(Type metricType)
         {
             string metric = metricType.Name.Replace("Metrics", "");
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult2).IsAssignableFrom(x)).First(x => x.Name.StartsWith(metric));
+            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name.StartsWith(metric));
             return materialResultType;
         }
 
@@ -138,7 +138,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         //Storage of the pre-compiled functions for future usage
-        private static ConcurrentDictionary<Type, Func<object[], MaterialResult2>> m_MaterialResultConstructors = new ConcurrentDictionary<Type, Func<object[], MaterialResult2>>();
+        private static ConcurrentDictionary<Type, Func<object[], MaterialResult>> m_MaterialResultConstructors = new ConcurrentDictionary<Type, Func<object[], MaterialResult>>();
 
         /***************************************************/
     }
