@@ -48,7 +48,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("epdName", "The name of the EnvironmentalProductDeclaration that owns the IEnvironmentalMetric. Stored as an identifier on the returned result class.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result class.")]
         [Output("result", "A MaterialResult of a type corresponding to the evaluated metric with phase data calculated as data on metric multiplied by the provided quantity value.")]
-        public static MaterialResult2 EvaluateEnvironmentalMetric(IEnvironmentalMetric metric, string epdName, string materialName, double quantityValue)
+        public static MaterialResult EvaluateEnvironmentalMetric(IEnvironmentalMetric metric, string epdName, string materialName, double quantityValue)
         {
             if (metric == null)
             {
