@@ -43,19 +43,28 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Evaluates the materials in the VolumetricMaterialTakeoff and returns a MaterialResult per material in the takeoff. Requires the materials in the Takeoff to have EPDs assigned. Please use the AssignTemplate methods before calling this method.")]
         [Input("materialTakeoff", "The volumetric material takeoff to evaluate.")]
+        [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
+        [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("metricTypes", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Output("result", "A MaterialResult per material and per metric that contains the LifeCycleAssessment data for the input takeoff.")]
-        public static List<MaterialResult2> EvaluateMaterialTakeoff(this VolumetricMaterialTakeoff materialTakeoff, List<Type> metricTypes = null)
+        public static List<MaterialResult2> EvaluateMaterialTakeoff(this GeneralMaterialTakeoff materialTakeoff, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<Type> metricTypes = null)
         {
             if (materialTakeoff == null)
                 return new List<MaterialResult2>();
 
+            GeneralMaterialTakeoff mappedTakeoff;
+            if (templateMaterials == null || templateMaterials.Count == 0)
+                mappedTakeoff = materialTakeoff;
+            else
+                mappedTakeoff = Matter.Modify.AssignTemplate(materialTakeoff, templateMaterials, prioritiseTemplate);
+
             List<MaterialResult2> materialResults = new List<MaterialResult2>();
 
-            for (int i = 0; i < materialTakeoff.Materials.Count; i++)
+            for (int i = 0; i < mappedTakeoff.MaterialTakeoffItems.Count; i++)
             {
-                Material material = materialTakeoff.Materials[i];
-                EnvironmentalProductDeclaration2 epd = material.Properties.OfType<EnvironmentalProductDeclaration2>().FirstOrDefault();
+                TakeoffItem takeoffItem = mappedTakeoff.MaterialTakeoffItems[i];
+                Material material = takeoffItem.Material;
+                EnvironmentalProductDeclaration epd = material.Properties.OfType<EnvironmentalProductDeclaration>().FirstOrDefault();
 
                 if (epd == null)
                 {
@@ -67,33 +76,43 @@ namespace BH.Engine.LifeCycleAssessment
                 switch (epd.QuantityType)
                 {
                     case QuantityType.Volume:
-                        quantityValue = materialTakeoff.Volumes[i];
+                        quantityValue = takeoffItem.Volume;
                         break;
                     case QuantityType.Mass:
-                        if (double.IsNaN(material.Density))
-                        {
-                            Base.Compute.RecordError($"Density is not set for material {material.Name}. Cannot evaluate mass based EPD.");
-                            return null;
-                        }
-                        if (material.Density == 0)
-                        {
-                            Base.Compute.RecordWarning($"Density of materials {material.Name} is 0 and will give no contribution for evaluating mass based EPD.");
-                        }
-                        quantityValue = materialTakeoff.Volumes[i] * material.Density;
+                        quantityValue = takeoffItem.Mass;
+                        if (double.IsNaN(quantityValue))
+                            quantityValue = takeoffItem.Volume * material.Density;
                         break;
                     case QuantityType.Length:
+                        quantityValue = takeoffItem.Length;
+                        break;
                     case QuantityType.Area:
-                    case QuantityType.Undefined:
+                        quantityValue = takeoffItem.Area;
+                        break;
                     case QuantityType.Item:
+                        quantityValue = takeoffItem.NumberItem;
+                        break;
                     case QuantityType.Ampere:
+                        quantityValue = takeoffItem.ElectricCurrent;
+                        break;
                     case QuantityType.VoltAmps:
-                    case QuantityType.VolumetricFlowRate:
                     case QuantityType.Watt:
+                        quantityValue = takeoffItem.Power;
+                        break;
+                    case QuantityType.VolumetricFlowRate:
+                        quantityValue = takeoffItem.VolumetricFlowRate;
+                        break;
                     case QuantityType.Energy:
+                        quantityValue = takeoffItem.Energy;
+                        break;
+                    case QuantityType.Undefined:
                     default:
                         Base.Compute.RecordError($"{epd.QuantityType} QuantityType is currently not supported.");
                         return null;
                 }
+
+                if (double.IsNaN(quantityValue))
+                    BH.Engine.Base.Compute.RecordError($"{epd.QuantityType} is NaN on MaterialTakeoff and will result in NaN result when evaluating epd named {epd.Name}");
 
                 materialResults.AddRange(EvaluateEnvironmentalProductDeclaration(epd, quantityValue, material.Name, metricTypes));
             }
