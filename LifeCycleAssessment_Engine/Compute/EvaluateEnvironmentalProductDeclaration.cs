@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -20,114 +20,55 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Dimensional;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.LifeCycleAssessment.Results;
+using BH.Engine.Base;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.Physical.Constructions;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using BH.oM.Physical.Materials;
-using BH.Engine.Matter;
-using BH.Engine.LifeCycleAssessment.Objects;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.Engine.Spatial;
-using BH.oM.Base;
-using BH.oM.Quantities.Attributes;
-using System.Xml.Linq;
+using System.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Compute
     {
         /***************************************************/
-        /****   Public Methods                          ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("This method calculates the results of any selected metric within an Environmental Product Declaration. For example for an EPD of QuantityType Volume, results will reflect the objects volume * EPD Field metric.")]
-        [Input("elementM", "This is a BHoM object used to calculate EPD metric. This obj must have an EPD MaterialFragment applied to the object.")]
-        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
-        [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
-        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
-        [Output("result", "A LifeCycleElementResult that contains the LifeCycleAssessment data for the input object.")]
-        public static LifeCycleAssessmentElementResult EvaluateEnvironmentalProductDeclaration(IElementM elementM, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateReferenceValue(System.Double, BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, System.Boolean)")]
+        [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
+                     "Each metric is evaluated by multiplying the values for each phase by the provided quantityValue.\n" +
+                     "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]
+        [Input("epd", "The EnvironmentalProductDeclaration to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
+        [Input("quantityValue", "The quatity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quatity should correspond to the QuantityType on the EPD.")]
+        [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
+        [Input("metricTypes", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
+        [PreviousInputNames("quantityValue", "referenceValue")]
+        public static List<MaterialResult> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<Type> metricTypes = null)
         {
-            double value = 0;
-            EnvironmentalMetricResult resultValue = null;
-            MaterialComposition mc = elementM.IMaterialComposition();
-
-            List<QuantityType> qts = elementM.GetQuantityType(mc);
-
-            qts = qts.Distinct().ToList();
-
-            foreach (QuantityType qt in qts)
+            if (epd == null)
             {
-                switch (qt)
-                {
-                    case QuantityType.Undefined:
-                        BH.Engine.Base.Compute.RecordError("The object's EPD QuantityType is Undefined and cannot be evaluated.");
-                        return null;
-                    case QuantityType.Area:
-                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Area QuantityType.");
-                        var evalByArea = EvaluateEnvironmentalProductDeclarationByArea(elementM, phases, mc, field, exactMatch);
-                        value += evalByArea.Quantity;
-                        if (resultValue == null)
-                            resultValue = evalByArea;
-                        break;
-                    case QuantityType.Ampere:
-                        BH.Engine.Base.Compute.RecordError("Ampere QuantityType is currently not supported.");
-                        return null;
-                    case QuantityType.Energy:
-                        BH.Engine.Base.Compute.RecordError("Energy QuantityType is currently not supported.");
-                        return null;
-                    case QuantityType.Item:
-                        BH.Engine.Base.Compute.RecordError("Length QuantityType is currently not supported. Try a different EPD with QuantityType values of either Area, Volume, or Mass.");
-                        return null;
-                    case QuantityType.Length:
-                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Length QuantityType.");
-                        var evalByLength = EvaluateEnvironmentalProductDeclarationByLength(elementM, phases, mc, field, exactMatch);
-                        value += evalByLength.Quantity;
-                        if (resultValue == null)
-                            resultValue = evalByLength;
-                        break;
-                    case QuantityType.Mass:
-                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Mass QuantityType.");
-                        var evalByMass = EvaluateEnvironmentalProductDeclarationByMass(elementM, phases, mc, field, exactMatch);
-                        value += evalByMass.Quantity;
-                        if (resultValue == null)
-                            resultValue = evalByMass;
-                        break;
-                    case QuantityType.Watt:
-                        BH.Engine.Base.Compute.RecordError("Watt QuantityType is currently not supported.");
-                        return null;
-                    case QuantityType.VoltAmps:
-                        BH.Engine.Base.Compute.RecordError("VoltAmps QuantityType is currently not supported.");
-                        return null;
-                    case QuantityType.Volume:
-                        BH.Engine.Base.Compute.RecordNote("Evaluating object type: " + elementM.GetType() + " based on EPD Volume QuantityType.");
-                        var evalByVolume = EvaluateEnvironmentalProductDeclarationByVolume(elementM, phases, mc, field, exactMatch);
-                        value += evalByVolume.Quantity;
-                        if (resultValue == null)
-                            resultValue = evalByVolume;
-                        break;
-                    case QuantityType.VolumetricFlowRate:
-                        BH.Engine.Base.Compute.RecordError("VolumetricFlowRate QuantityType is currently not supported.");
-                        return null;
-                    default:
-                        BH.Engine.Base.Compute.RecordWarning("The object you have provided does not contain an EPD Material Fragment.");
-                        return null;
-                }
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(EnvironmentalProductDeclaration)}.");
+                return null;
             }
 
-            resultValue.Quantity = value;
-            resultValue.EnvironmentalProductDeclaration = elementM.GetElementEpd(mc);
-            return resultValue;
+            List<MaterialResult> results = new List<MaterialResult>();
+
+            foreach (IEnvironmentalMetric metric in epd.FilteredMetrics(metricTypes))
+            {
+                results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
+            }
+
+            return results;
         }
+
         /***************************************************/
-
-
- 
     }
 }
-
-
