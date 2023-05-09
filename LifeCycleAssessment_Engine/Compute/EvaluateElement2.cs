@@ -65,7 +65,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             //Gets the material takeoff from the element, with additional material proeprties mapped over from the provided template materials.
-            VolumetricMaterialTakeoff takeoff = elementM.MappedVolumetricMaterialTakeoff(templateMaterials, true, prioritiseTemplate);
+            GeneralMaterialTakeoff takeoff = elementM.IGeneralMaterialTakeoff();
 
             if (takeoff == null)
             {
@@ -73,87 +73,13 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            if (takeoff.Materials.Count == 0)
+            if (takeoff.MaterialTakeoffItems.Count == 0)
             {
-                BH.Engine.Base.Compute.RecordWarning($"The {nameof(VolumetricMaterialTakeoff)} provided {elementM.GetType().Name} does not contain any {nameof(Material)}s. Nothing to evaluate.");
+                BH.Engine.Base.Compute.RecordWarning($"The {nameof(GeneralMaterialTakeoff)} provided {elementM.GetType().Name} does not contain any {nameof(Material)}s. Nothing to evaluate.");
                 return new List<IElementResult<MaterialResult2>>();
             }
 
-            //Predefining parameters to be used for some item types in loop
-            double area = double.NaN;
-            double length = double.NaN;
-
-            List<MaterialResult2> materialResults = new List<MaterialResult2>();
-
-            for (int i = 0; i < takeoff.Materials.Count; i++)
-            {
-                Material material = takeoff.Materials[i];
-                EnvironmentalProductDeclaration2 epd = material.Properties.OfType<EnvironmentalProductDeclaration2>().FirstOrDefault();
-
-                if (epd == null)
-                {
-                    Base.Compute.RecordError($"EPD not set to material {material.Name}. Unable to evaluate element.");
-                    return null;
-                }
-
-                double quantityValue;
-                switch (epd.QuantityType)
-                {
-                    case QuantityType.Volume:
-                        quantityValue = takeoff.Volumes[i];
-                        break;
-                    case QuantityType.Mass:
-                        if (double.IsNaN(material.Density))
-                        {
-                            Base.Compute.RecordError($"Density is not set for material {material.Name}. Cannot evaluate mass based EPD.");
-                            return null;
-                        }
-                        if (material.Density == 0)
-                        {
-                            Base.Compute.RecordWarning($"Density of materials {material.Name} is 0 and will give no contribution for evaluating mass based EPD.");
-                        }
-                        quantityValue = takeoff.Volumes[i] * material.Density;
-                        break;
-                    case QuantityType.Area:
-                        if (double.IsNaN(area))
-                        {
-                            IElement2D element2D = elementM as IElement2D;
-                            if (element2D == null)
-                            {
-                                Base.Compute.RecordError($"Can only evaluate Area based epds on elements of a {nameof(IElement2D)} type.");
-                                return null;
-                            }
-                            area = element2D.Area();
-                        }
-                        quantityValue = area;
-                        break;
-                    case QuantityType.Length:
-                        if (double.IsNaN(length))
-                        {
-                            IElement1D element1D = elementM as IElement1D;
-                            if (element1D == null)
-                            {
-                                Base.Compute.RecordError($"Can only evaluate Area based epds on elements of a {nameof(IElement1D)} type.");
-                                return null;
-                            }
-                            length = element1D.Length();
-                        }
-                        quantityValue = length;
-                        break;
-                    case QuantityType.Undefined:
-                    case QuantityType.Item:
-                    case QuantityType.Ampere:
-                    case QuantityType.VoltAmps:
-                    case QuantityType.VolumetricFlowRate:
-                    case QuantityType.Watt:
-                    case QuantityType.Energy:
-                    default:
-                        Base.Compute.RecordError($"{epd.QuantityType} QuantityType is currently not supported.");
-                        return null;
-                }
-
-                materialResults.AddRange(EvaluateEnvironmentalProductDeclaration(epd, quantityValue, material.Name, metricTypes));
-            }
+            List<MaterialResult2> materialResults = EvaluateMaterialTakeoff(takeoff, templateMaterials, prioritiseTemplate, metricTypes);
 
             //Get out id as BHoM_Guid
             IComparable objectId = "";
