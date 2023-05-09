@@ -32,6 +32,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.LifeCycleAssessment.Fragments;
+using BH.Engine.Base;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -80,8 +82,24 @@ namespace BH.Engine.LifeCycleAssessment
                         break;
                     case QuantityType.Mass:
                         quantityValue = takeoffItem.Mass;
-                        if (double.IsNaN(quantityValue))
-                            quantityValue = takeoffItem.Volume * material.Density;
+                        if (double.IsNaN(quantityValue) || quantityValue == 0)
+                        {
+                            double vol = takeoffItem.Volume;
+                            if (vol == 0)
+                                quantityValue = 0;
+                            else if(!double.IsNaN(vol))
+                            {
+                                double density = material.Density;
+                                if (double.IsNaN(density) || density == 0)
+                                {
+                                    EPDDensity epdDensity = epd.FindFragment<EPDDensity>();
+                                    if (epdDensity != null)
+                                        density = epdDensity.Density;
+                                }
+                                if(!double.IsNaN(density))
+                                    quantityValue = vol * density;
+                            }
+                        }
                         break;
                     case QuantityType.Length:
                         quantityValue = takeoffItem.Length;
