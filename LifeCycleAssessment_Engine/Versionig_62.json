@@ -1,0 +1,29 @@
+﻿{
+  "Namespace": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Type": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Property": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "MessageForDeleted": {
+    "BH.Engine.LifeCycleAssessment.Objects.HelperMethods.GetEPDDensity(BH.oM.Dimensional.IElementM, BH.oM.Physical.Materials.MaterialComposition)": "Method removed during full refactoring of EPDs and evaluation framework. Please raise an issue on https://github.com/BHoM/LifeCycleAssessment_Toolkit if you have any issues.",
+    "BH.Engine.LifeCycleAssessment.Objects.HelperMethods.GetElementEpd(BH.oM.Dimensional.IElementM, BH.oM.Physical.Materials.MaterialComposition)": "Method removed during full refactoring of EPDs and evaluation framework. Please raise an issue on https://github.com/BHoM/LifeCycleAssessment_Toolkit if you have any issues.",
+    "BH.Engine.LifeCycleAssessment.Objects.HelperMethods.GetQuantityType(BH.oM.Dimensional.IElementM, BH.oM.Physical.Materials.MaterialComposition)": "Method removed during full refactoring of EPDs and evaluation framework. Please raise an issue on https://github.com/BHoM/LifeCycleAssessment_Toolkit if you have any issues.",
+    "BH.Engine.LifeCycleAssessment.Objects.HelperMethods.GetQuantityTypeValue(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.QuantityType, BH.oM.Physical.Materials.MaterialComposition)": "Method removed during full refactoring of EPDs and evaluation framework. Please raise an issue on https://github.com/BHoM/LifeCycleAssessment_Toolkit if you have any issues.",
+    "BH.Engine.LifeCycleAssessment.Objects.HelperMethods.GetEvaluationValue(BH.oM.Dimensional.IElementM, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.QuantityType, BH.oM.Physical.Materials.MaterialComposition, System.Boolean)": "Method removed during full refactoring of EPDs and evaluation framework. Please raise an issue on https://github.com/BHoM/LifeCycleAssessment_Toolkit if you have any issues."
+  },
+  "MessageForNoUpgrade": {
+  }
+}
