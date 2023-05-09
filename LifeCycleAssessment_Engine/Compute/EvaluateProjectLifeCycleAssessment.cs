@@ -27,6 +27,8 @@ using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System;
+using BH.oM.Physical.Materials;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -36,23 +38,16 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateProjectLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean)")]
         [Description("This method calculates the total field quantity specified for an entire project or a collection of elements. Metadata included on the ProjectLCA object is not accounted for within this calculation.")]
         [Input("projectLCA", "Project LCA can be used to collect all objects used in an evaluation along with the project's specific metatdata for tracking within a database.")]
-        [Input("phases", "Provide phases of life you wish to evaluate. Phases of life must be documented within EPDs for this method to work.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
-        [Input("exactMatch", "If true, the evaluation method will force an exact LCA phase match to solve for.")]
         [Output("quantity", "The total quantity of the specified metric.")]
-        public static double EvaluateProjectLifeCycleAssessment(ProjectLifeCycleAssessment projectLCA, List<LifeCycleAssessmentPhases> phases, EnvironmentalProductDeclarationField field = EnvironmentalProductDeclarationField.GlobalWarmingPotential, bool exactMatch = false)
+        public static double EvaluateProjectLifeCycleAssessment(ProjectLifeCycleAssessment projectLCA, Type field = null, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
             if(projectLCA == null)
             {
                 Base.Compute.RecordError("No Project LCA was provided.");
-                return double.NaN;
-            }
-
-            if(phases == null)
-            {
-                Base.Compute.RecordError("No phases were provided for evaluation.");
                 return double.NaN;
             }
             
@@ -64,18 +59,9 @@ namespace BH.Engine.LifeCycleAssessment
                 return double.NaN;
             }
 
-            List<LifeCycleAssessmentElementResult> elementResults = new List<LifeCycleAssessmentElementResult>();
+            var results = projectLCA.Elements.SelectMany(x => EvaluateElement(x, templateMaterials, prioritiseTemplate, new List<Type> { field })).ToList();
 
-            for (int i=0; i<elements.Count(); i++)
-            {
-                IElementM element = elements[i];
-                LifeCycleAssessmentElementResult evalElement = EvaluateEnvironmentalProductDeclaration(element, phases, field, exactMatch);
-                elementResults.Add(evalElement);         
-            }
-
-            double quantity = Query.TotalFieldQuantity(elementResults);
-
-            return quantity;
+            return results.Sum(x => x.Total());
         }
         /***************************************************/
 

@@ -24,6 +24,7 @@ using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Materials;
 using System;
@@ -39,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.ElementEmbodiedCarbon(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.Physical.Materials.Material>, System.Boolean)")]
         [Description("Evaluates the embodied carbon on the provided element.\n" +
             "If you would like to evaluate other EPD metrics, please use one of the other Evaluation methods. \n" +
             "TemplateMaterials can be provided helping with picking the correct EPD corresponding to each material on the element.")]
@@ -46,9 +48,23 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Output("result", "Result containing the embodied carbon of the element as well as a breakdown per material in the element.")]
-        public static ElementResult ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
+        public static GlobalWarmingPotentialElementResult ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
-            return EvaluateElement(elementM, new List<LifeCycleAssessmentPhases> { LifeCycleAssessmentPhases.A1, LifeCycleAssessmentPhases.A2, LifeCycleAssessmentPhases.A3 }, EnvironmentalProductDeclarationField.GlobalWarmingPotential, true, templateMaterials, prioritiseTemplate);
+            List<GlobalWarmingPotentialElementResult> gwpResults = EvaluateElement(elementM, templateMaterials, prioritiseTemplate, new List<Type> { typeof(GlobalWarmingPotentialMetrics) }).OfType<GlobalWarmingPotentialElementResult>().ToList();
+
+            if (gwpResults.Count == 0)
+            {
+                BH.Engine.Base.Compute.RecordError("Unable evaluate the GlobalWarmingPotential for the element.");
+                return null;
+            }
+            if (gwpResults.Count == 1)
+                return gwpResults[0];
+            else
+            {
+                BH.Engine.Base.Compute.RecordError("Ambigious GlobalWarmingPotential results for the element.");
+                return null;
+            }
+            
         }
 
         /***************************************************/
