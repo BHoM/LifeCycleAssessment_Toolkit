@@ -49,7 +49,7 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             // AdditionalEPDData fragment
-            AdditionalEPDData dataFragment = (AdditionalEPDData)Base.Query.GetAllFragments(epd).Where(x => typeof(AdditionalEPDData).IsAssignableFrom(x.GetType())).FirstOrDefault();
+            AdditionalEPDData dataFragment = epd.FindFragment<AdditionalEPDData>();
 
             // AdditionalEPDData fragment null check
             if (dataFragment == null)
