@@ -20,39 +20,47 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Dimensional;
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using BH.oM.Base.Attributes;
 using BH.Engine.Matter;
-using System.Linq;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using System.Collections.Generic;
+using System.Linq;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
         /***************************************************/
-        /****   Public Methods                          ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Query the element's MaterialComposition to form a Material Hint to aid in EPD-Material Mapping.")]
-        [Input("elementM", "The IElementM object from which to query the object's material type hint.")]
-        [Output("materialHint", "The Material Names found within the MaterialComposition.")]
-        public static List<string> GetElementMaterial(this IElementM elementM)
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetElementEnvironmentalMetric(BH.oM.Dimensional.IElementM)")]
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetEnvironmentalMetric(BH.oM.Dimensional.IElementM)")]
+        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
+        [Input("elementM", "A IElementM from which to query the EPD.")]
+        [Output("environmentalMetric", "An Environmental Metric is used to store data regarding the environmental impacts of a given Environmental Product Declaration. \n"
+        + "An EPD can host multiple EnvironmentalMetrics to describe the overall impact which will be used in any LCA calculation.")]
+        public static List<List<IEnvironmentalMetric>> ElementEnvironmentalMetrics(this IElementM elementM)
         {
-            List<string> mat = new List<string>();
+            List<EnvironmentalProductDeclaration> epd = elementM.ElementEpds();
 
-            if (elementM == null)
-                return null;
+            if (epd == null || epd.Count == 0)
+                return new List<List<IEnvironmentalMetric>>();
 
-            mat = Matter.Query.IMaterialComposition(elementM).Materials.Select(x => x.Name).ToList();
+            List<List<IEnvironmentalMetric>> metric = epd.Select(x => x.EnvironmentalMetrics).ToList();
 
-            return mat;
+            if (metric.Count() <= 0)
+            {
+                BH.Engine.Base.Compute.RecordError("No Environmental Metrics could be found.");
+            }
+
+            return metric;
         }
 
         /***************************************************/
     }
 }
-
 

@@ -37,15 +37,16 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetElementScope(BH.oM.Dimensional.IElementM)")]
         [Description("Returns the enumerable type of the scope found on an element.")]
         [Input("elementM", "A IElementM from which to query the EPD.")]
         [Output("scopeType", "The type of scope the element is being set to within the evaluate EPD method.")]
-
-        public static ScopeType GetElementScope(this IElementM elementM)
+        public static ScopeType ElementScope(this IElementM elementM)
         {
             if (elementM == null)
             {
                 BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
+                return ScopeType.Undefined;
             }
 
             // get scope fragment
