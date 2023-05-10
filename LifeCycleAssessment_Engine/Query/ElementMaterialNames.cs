@@ -20,42 +20,34 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.Engine.Matter;
+using BH.oM.Base;
 using BH.oM.Dimensional;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using System.Collections.Generic;
+using BH.oM.Base.Attributes;
+using System.ComponentModel;
+using BH.Engine.Matter;
 using System.Linq;
-using BH.oM.Physical.Materials;
-using BH.Engine.LifeCycleAssessment.Objects;
+using System.Collections.Generic;
 
 namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
-        [Input("elementM", "A IElementM from which to query the EPD.")]
-        [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
-        public static List<EnvironmentalProductDeclaration> GetElementEpd(this IElementM elementM)
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetElementMaterial(BH.oM.Dimensional.IElementM)")]
+        [Description("Query the element's MaterialComposition to form a Material Hint to aid in EPD-Material Mapping.")]
+        [Input("elementM", "The IElementM object from which to query the object's material type hint.")]
+        [Output("materialHint", "The Material Names found within the MaterialComposition.")]
+        public static List<string> ElementMaterialNames(this IElementM elementM)
         {
+            List<string> mat = new List<string>();
+
             if (elementM == null)
-            {
-                BH.Engine.Base.Compute.RecordError("No IElementM was provided.");
-            }
-
-            MaterialComposition mc = elementM.IMaterialComposition();
-            if (mc == null)
-            {
-                Base.Compute.RecordError("Material composition could not be assessed. Please add materials to your objects and try again.");
                 return null;
-            }
 
-            return HelperMethods.GetElementEpd(elementM, mc);
+            return Matter.Query.IMaterialComposition(elementM).Materials.Select(x => x.Name).ToList();
         }
 
         /***************************************************/

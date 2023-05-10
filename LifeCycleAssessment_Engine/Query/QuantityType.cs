@@ -20,13 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Matter;
-using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Base.Attributes;
-using System.Collections.Generic;
 using System.ComponentModel;
+using BH.oM.Dimensional;
+using System.Collections.Generic;
+using BH.Engine.Matter;
 using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
@@ -37,50 +37,42 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Return a list of all environmental metrics withing a provided EPD.")]
-        [Input("epd", "An Environmental Product Declaration object or EPD.")]
-        [Output("environmentalMetric", "A list of all Environmental Metrics that comprise a given EPD.")]
-        public static List<EnvironmentalMetric> GetEnvironmentalMetric(this EnvironmentalProductDeclaration epd)
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetEPDQuantityType(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration)")]
+        [Description("Query the QuantityType value from any EnvironmentalProductDeclaration object.")]
+        [Input("epd", "EnvironmentalProductDeclaration object from which to query.")]
+        [Output("quantityType", "The quantityType value from the provided EnvironmentalProductDeclaration.")]
+        public static QuantityType QuantityType(this EnvironmentalProductDeclaration epd)
         {
-            List<EnvironmentalMetric> em = new List<EnvironmentalMetric>();
-
             if (epd == null)
-                return new List<EnvironmentalMetric>();
-
-            em = epd.EnvironmentalMetric.ToList();
-
-            return em;
+            {
+                Base.Compute.RecordError("No EPD was provided.");
+                return oM.LifeCycleAssessment.QuantityType.Undefined;
+            }
+            return epd.QuantityType;
         }
 
         /***************************************************/
 
-        [Description("Return a list of all environmental metrics withing a provided element.")]
-        [Input("elementM", "A element to query the environmental metric.")]
-        [Output("environmentalMetric", "A list of all Environmental Metrics that comprise a given EPD.")]
-        public static List<EnvironmentalMetric> GetEnvironmentalMetric(this IElementM elementM)
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetQuantityType(BH.oM.Dimensional.IElementM)")]
+        [Description("Query the QuantityType values from any IElementM object's MaterialComposition.")]
+        [Input("elementM", "The IElementM object from which to query the EPD's QuantityType values.")]
+        [Output("quantityType", "The quantityType values from the IEnvironmentalProductDeclarationData objects found within the Element's MaterialComposition.")]
+        public static List<QuantityType> QuantityTypes(this IElementM elementM)
         {
-            List<EnvironmentalMetric> em = new List<EnvironmentalMetric>();
+            List<QuantityType> qt = new List<QuantityType>();
 
             if (elementM == null)
-                return new List<EnvironmentalMetric>();
-
-            List<oM.Physical.Materials.Material> material = elementM.IMaterialComposition().Materials.ToList();
-
-            List<EnvironmentalMetric> metrics = new List<EnvironmentalMetric>();
-
-            foreach(var m in material)
             {
-                List<EnvironmentalProductDeclaration> epds = m.Properties.Where(x => x is EnvironmentalProductDeclaration).Cast<EnvironmentalProductDeclaration>().ToList();
-                foreach(var e in epds)
-                {
-                    List<EnvironmentalMetric> me = epds.SelectMany(x => x.EnvironmentalMetric).ToList();
-                    metrics.AddRange(me);
-                }
+                Base.Compute.RecordError("Cannot get the QuantityType from a null element.");
+                return new List<QuantityType> { oM.LifeCycleAssessment.QuantityType.Undefined };
             }
-        
-            return metrics;
+
+            return elementM.ElementEpds().Select(x => x == null ? oM.LifeCycleAssessment.QuantityType.Undefined : x.QuantityType).ToList();
+
+
         }
 
+        /***************************************************/
     }
 }
 
