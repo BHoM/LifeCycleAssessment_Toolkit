@@ -41,10 +41,11 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.ElementResult>)")]
         [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("elementResults", "The element results to extract the material breakdown from.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
-        public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<ElementResult> elementResults)
+        public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<IElementResult<MaterialResult>> elementResults)
         {
             if (elementResults == null || !elementResults.Any())
                 return new List<MaterialResult>();
@@ -54,7 +55,8 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.MaterialResult>)")]
+        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
         public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<MaterialResult> materialResults)
@@ -62,58 +64,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (materialResults == null || !materialResults.Any())
                 return new List<MaterialResult>();
 
-            List<MaterialResult> result = new List<MaterialResult>();
-
-            foreach (var group in materialResults.GroupBy(x => x.MaterialName + x.EnvironmentalProductDeclarationName + x.Metric))
-            {
-                List<MaterialResult> resultsOfType = group.ToList();
-                List<LifeCycleAssessmentPhases> evaluatedPhases = resultsOfType[0].Phases.ToList();
-                bool missMatchedPhases = false;
-
-                for (int i = 1; i < resultsOfType.Count; i++)
-                {
-                    foreach (LifeCycleAssessmentPhases phase in resultsOfType[i].Phases)
-                    {
-                        if (!evaluatedPhases.Contains(phase))
-                        {
-                            missMatchedPhases = true;
-                            evaluatedPhases.Add(phase);
-                        }
-                    }
-                }
-                if (missMatchedPhases)
-                    Base.Compute.RecordWarning("Missmatch in phases between same material on different elements. Please check the results.");
-
-                MaterialResult first = resultsOfType[0];
-                result.Add(new MaterialResult(first.MaterialName, first.EnvironmentalProductDeclarationName, evaluatedPhases, resultsOfType.Sum(x => x.Quantity), first.Metric));
-            }
-            return result;
-        }
-
-        /***************************************************/
-
-        [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
-        [Input("elementResults", "The element results to extract the material breakdown from.")]
-        [Output("materialResults", "Material results with the total quantity per materal type.")]
-        public static List<MaterialResult2> TotalMaterialBreakdown(this IEnumerable<IElementResult<MaterialResult2>> elementResults)
-        {
-            if (elementResults == null || !elementResults.Any())
-                return new List<MaterialResult2>();
-
-            return elementResults.SelectMany(x => x.MaterialResults).TotalMaterialBreakdown();
-        }
-
-        /***************************************************/
-
-        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
-        [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
-        [Output("materialResults", "Material results with the total quantity per materal type.")]
-        public static List<MaterialResult2> TotalMaterialBreakdown(this IEnumerable<MaterialResult2> materialResults)
-        {
-            if (materialResults == null || !materialResults.Any())
-                return new List<MaterialResult2>();
-
-            List<MaterialResult2> breakDown = new List<MaterialResult2>();
+            List<MaterialResult> breakDown = new List<MaterialResult>();
 
             foreach (var group in materialResults.GroupBy(x => x.GetType()))
             {
@@ -130,9 +81,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName and EPDName, and returns a single MaterialResult for each group containing the total evaluated for each phase.")]
         [Input("materialResults", "The individual MaterialResult results to extract the total from All assumed to be of the same type.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
-        private static List<MaterialResult2> MaterialBreakdown(IEnumerable<MaterialResult2> materialResults)
+        private static List<MaterialResult> MaterialBreakdown(IEnumerable<MaterialResult> materialResults)
         {
-            List<MaterialResult2> breakDown = new List<MaterialResult2>();
+            List<MaterialResult> breakDown = new List<MaterialResult>();
             ////Get current type being evaluated
             Type type = materialResults.First().GetType();
             //Group results by EPD and Material name
