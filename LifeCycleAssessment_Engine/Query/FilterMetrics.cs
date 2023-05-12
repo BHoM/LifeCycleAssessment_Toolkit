@@ -50,7 +50,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            var metricLookup = lcaItems.ToLookup(x => x.IEnvironmentalMetricType());
+            var metricLookup = lcaItems.ToLookup(x => x.MetricType);
             List<ILifeCycleAssessmentPhaseData> metrics = new List<ILifeCycleAssessmentPhaseData>();
             foreach (EnvironmentalMetrics type in metricFilter)
             {
