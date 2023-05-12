@@ -61,7 +61,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return gwpResults[0];
             else
             {
-                BH.Engine.Base.Compute.RecordError("Ambigious GlobalWarmingPotential results for the element.");
+                BH.Engine.Base.Compute.RecordError("Ambiguous GlobalWarmingPotential results for the element.");
                 return null;
             }
             
