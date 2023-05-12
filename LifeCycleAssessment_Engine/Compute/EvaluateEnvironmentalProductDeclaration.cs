@@ -23,6 +23,7 @@
 using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Constructions;
@@ -48,10 +49,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("epd", "The EnvironmentalProductDeclaration to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
-        [Input("metricTypes", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<Type> metricTypes = null)
+        public static List<MaterialResult> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null)
         {
             if (epd == null)
             {
@@ -61,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<MaterialResult> results = new List<MaterialResult>();
 
-            foreach (IEnvironmentalMetric metric in epd.FilteredMetrics(metricTypes))
+            foreach (IEnvironmentalMetric metric in epd.FilteredMetrics(metricFilter))
             {
                 results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
             }

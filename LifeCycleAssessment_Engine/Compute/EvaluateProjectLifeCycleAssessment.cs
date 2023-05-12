@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("projectLCA", "Project LCA can be used to collect all objects used in an evaluation along with the project's specific metatdata for tracking within a database.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]
         [Output("quantity", "The total quantity of the specified metric.")]
-        public static double EvaluateProjectLifeCycleAssessment(ProjectLifeCycleAssessment projectLCA, Type field = null, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
+        public static double EvaluateProjectLifeCycleAssessment(ProjectLifeCycleAssessment projectLCA, EnvironmentalMetrics field, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
             if(projectLCA == null)
             {
@@ -59,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return double.NaN;
             }
 
-            var results = projectLCA.Elements.SelectMany(x => EvaluateElement(x, templateMaterials, prioritiseTemplate, new List<Type> { field })).ToList();
+            var results = projectLCA.Elements.SelectMany(x => EvaluateElement(x, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { field })).ToList();
 
             return results.Sum(x => x.Total());
         }
