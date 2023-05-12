@@ -48,11 +48,11 @@ namespace BH.Engine.LifeCycleAssessment
 
         [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclaration(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean)")]
         [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateElement(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean, System.Collections.Generic.List<BH.oM.Physical.Materials.Material>, System.Boolean)")]
-        [Description("Evaluates the EnvironmentalMetrics for the provided element and returns a ElementResult for each evaluated metric type.\n" +
-                     "Evaluation is done by extrating the material takeoff for the provided element, giving quantities and Materiality.\n" +
+        [Description("Evaluates the EnvironmentalMetrics for the provided element and returns an ElementResult for each evaluated metric type.\n" +
+                     "Evaluation is done by extracting the material takeoff for the provided element, giving quantities and Materiality.\n" +
                      "Each Material in the takeoff is then evaluated by finding the EnvironmentalProductDeclaration (EPD), either stored on the material or from the list of template materials.\n" +
-                     "Each metric, or filtered choosen metrics, on the EPD is then evaluated.\n" +
-                     "Finally, a element result is returned per metric type. Each element result being the sum result of all metrics of the same type.")]
+                     "Each metric, or filtered chosen metrics, on the EPD is then evaluated.\n" +
+                     "Finally, an element result is returned per metric type. Each element result being the sum result of all metrics of the same type.")]
         [Input("elementM", "The element to evaluate. The materiality and quantities is extracted from the element.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
@@ -66,7 +66,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            //Gets the material takeoff from the element, with additional material proeprties mapped over from the provided template materials.
+            //Gets the material takeoff from the element, with additional material properties mapped over from the provided template materials.
             GeneralMaterialTakeoff takeoff = elementM.IGeneralMaterialTakeoff();
 
             if (takeoff == null)

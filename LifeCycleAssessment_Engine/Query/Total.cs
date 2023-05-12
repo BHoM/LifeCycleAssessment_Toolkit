@@ -84,7 +84,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets the total sum of values from all B-phases (C1-C4) with a set value (all values not NaN).")]
+        [Description("Gets the total sum of values from all C-phases (C1-C4) with a set value (all values not NaN).")]
         [Input("phaseData", "LCA phase data object to get the total from.")]
         [Output("CTotal", "The sum of all non-NaN properties on the provided phase data object.")]
         public static double CTotal(this ILifeCycleAssessmentPhaseData phaseData)
@@ -128,7 +128,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Raises a message corresponding to which phases that was included when computing the total.")]
+        [Description("Raises a message corresponding to which phases that were included when computing the total.")]
         private static void IncludedMessage(List<string> included, string totalType)
         {
             if(included.Count == 0)
