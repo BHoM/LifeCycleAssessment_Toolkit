@@ -50,7 +50,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("result", "Result containing the embodied carbon of the element as well as a breakdown per material in the element.")]
         public static GlobalWarmingPotentialElementResult ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
-            List<GlobalWarmingPotentialElementResult> gwpResults = EvaluateElement(elementM, templateMaterials, prioritiseTemplate, new List<Type> { typeof(GlobalWarmingPotentialMetrics) }).OfType<GlobalWarmingPotentialElementResult>().ToList();
+            List<GlobalWarmingPotentialElementResult> gwpResults = EvaluateElement(elementM, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { EnvironmentalMetrics.GlobalWarmingPotential }).OfType<GlobalWarmingPotentialElementResult>().ToList();
 
             if (gwpResults.Count == 0)
             {
