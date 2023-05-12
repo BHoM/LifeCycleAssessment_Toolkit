@@ -47,7 +47,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (metricFilter == null || metricFilter.Count == 0)
                 return epd.EnvironmentalMetrics;
 
-            var metricLookup = epd.EnvironmentalMetrics.ToLookup(x => x.IEnvironmentalMetricType());
+            var metricLookup = epd.EnvironmentalMetrics.ToLookup(x => x.MetricType);
             List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
             foreach (EnvironmentalMetrics type in metricFilter)
             {
