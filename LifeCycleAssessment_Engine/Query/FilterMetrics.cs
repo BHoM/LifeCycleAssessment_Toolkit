@@ -39,23 +39,26 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD are returned.")]
-        [Input("epd", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
+        [Input("lcaItems", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
         [Input("metricFilter", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the EPD are returned.")]
         [Output("materics", "The metrics on the EnvironmentalProductDeclaration corresponding to the provided filter, or all metrics on the epd if no metricType filters are provided.")]
-        public static List<IEnvironmentalMetric> FilteredMetrics(this EnvironmentalProductDeclaration epd, List<EnvironmentalMetrics> metricFilter = null)
+        public static List<ILifeCycleAssessmentPhaseData> FilterMetrics(this IEnumerable<ILifeCycleAssessmentPhaseData> lcaItems, List<EnvironmentalMetrics> metricFilter)
         {
-            if (metricFilter == null || metricFilter.Count == 0)
-                return epd.EnvironmentalMetrics;
+            if (lcaItems == null || metricFilter == null)
+            {
+                Base.Compute.RecordError("Cannot filter due to null inputs.");
+                return null;
+            }
 
-            var metricLookup = epd.EnvironmentalMetrics.ToLookup(x => x.IEnvironmentalMetricType());
-            List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
+            var metricLookup = lcaItems.ToLookup(x => x.IEnvironmentalMetricType());
+            List<ILifeCycleAssessmentPhaseData> metrics = new List<ILifeCycleAssessmentPhaseData>();
             foreach (EnvironmentalMetrics type in metricFilter)
             {
-                IEnvironmentalMetric metric = metricLookup[type].FirstOrDefault();
-                if (metric != null)
-                    metrics.Add(metric);
+                IEnumerable<ILifeCycleAssessmentPhaseData> metric = metricLookup[type];
+                if (metric.Any())
+                    metrics.AddRange(metric);
                 else
-                    Base.Compute.RecordError($"{nameof(EnvironmentalProductDeclaration)} named {epd.Name} does not contain a {nameof(IEnvironmentalMetric)} of type {type}.");
+                    Base.Compute.RecordWarning($"Provided items does not contain a {nameof(ILifeCycleAssessmentPhaseData)} corresponding to metric of type {type}.");
             }
 
             return metrics;
