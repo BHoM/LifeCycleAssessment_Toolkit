@@ -83,7 +83,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a GlobalWarmingPotentialMetrics to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases.")]
-        [InputFromProperty("a1toa3")]
+        [InputFromProperty("a1toa3", "A1toA3")]
         [InputFromProperty("a4")]
         [InputFromProperty("a5")]
         [InputFromProperty("b1")]
