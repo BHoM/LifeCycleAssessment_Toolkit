@@ -47,7 +47,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("category")]
         [Input("materialResults", "Material results used to create the element result. Results will first be grouped by type, and a single element result created per type. The phase values of the element result will be the sum of the MaterialResult values.")]
         [Output("results", "Created element results")]
-        public static List<IElementResult<MaterialResult>> ElementResults(IComparable objectId, ScopeType scope, ObjectCategory category, IEnumerable<MaterialResult> materialResults)
+        public static List<IElementResult<MaterialResult>> IElementResults(IComparable objectId, ScopeType scope, ObjectCategory category, IEnumerable<MaterialResult> materialResults)
         {
             if (materialResults.IsNullOrEmpty())
                 return new List<IElementResult<MaterialResult>>();
