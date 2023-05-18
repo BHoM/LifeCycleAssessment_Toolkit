@@ -51,7 +51,6 @@ namespace BH.Engine.LifeCycleAssessment
                 total += phaseData.D;
                 included.Add(nameof(phaseData.D));
             }
-            total += IAdditional(phaseData, included);
             IncludedMessage(included, nameof(Total));
             return total;
         }
@@ -98,23 +97,6 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
-
-        [Description("Additional data point to be inlcuded.")]
-        private static double IAdditional(this ILifeCycleAssessmentPhaseData phaseData, List<string> included)
-        {
-            return Additional(phaseData as dynamic, included);
-        }
-
-        /***************************************************/
-
-        [Description("Additional data point for general case (nothing).")]
-        private static double Additional(this ILifeCycleAssessmentPhaseData phaseData, List<string> included)
-        {
-            return 0;
-        }
-
-        /***************************************************/
-
 
         [Description("Raises a message corresponding to which phases that were included when computing the total.")]
         private static void IncludedMessage(List<string> included, string totalType)
