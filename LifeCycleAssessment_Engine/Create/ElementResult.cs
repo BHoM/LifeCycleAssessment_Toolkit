@@ -21,7 +21,6 @@
  */
 
 using BH.Engine.Base;
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
@@ -35,7 +34,7 @@ using System.Linq;
 using System.Reflection;
 
 namespace BH.Engine.LifeCycleAssessment
-{ 
+{
     public static partial class Create
     {
         /***************************************************/
@@ -50,7 +49,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("results", "Created element results")]
         public static List<IElementResult<MaterialResult>> ElementResults(IComparable objectId, ScopeType scope, ObjectCategory category, IEnumerable<MaterialResult> materialResults)
         {
-            if(materialResults.IsNullOrEmpty())
+            if (materialResults.IsNullOrEmpty())
                 return new List<IElementResult<MaterialResult>>();
 
             List<IElementResult<MaterialResult>> elementResults = new List<IElementResult<MaterialResult>>();
@@ -159,7 +158,7 @@ namespace BH.Engine.LifeCycleAssessment
                 elementResultType = t;
             else if (typeof(MaterialResult).IsAssignableFrom(t))   //Type of material result -> Find element result able to store it
                 elementResultType = typeof(Create).GetMethod(nameof(ElementResultTypeFromMaterialResultType), BindingFlags.Static | BindingFlags.NonPublic).MakeGenericMethod(t).Invoke(null, new object[] { }) as Type;
-            else if (typeof(IEnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
+            else if (typeof(EnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
                 elementResultType = ElementResultTypeFromMetric(t);
 
             if (elementResultType == null)
@@ -183,7 +182,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets an ElementResult type matching the metric type by name.")]
         private static Type ElementResultTypeFromMetric(Type metricType)
         {
-            string metric = metricType.Name.Replace("Metrics", "");
+            string metric = metricType.Name.Replace("Metric", "");
             Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(IElementResult<MaterialResult>).IsAssignableFrom(x)).First(x => x.Name.StartsWith(metric));
             return materialResultType;
         }
