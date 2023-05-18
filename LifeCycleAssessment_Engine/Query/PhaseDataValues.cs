@@ -54,20 +54,6 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
 
-        [Description("Gets the values corresponding to the values of all phases as a list of doubles.")]
-        [Input("phaseData", "IGlobalWarmingPotentialPhaseData from which to extract all phase data values.")]
-        [Output("values", "The values of the phase data as a list of doubles.")]
-        public static List<double> PhaseDataValues(this IGlobalWarmingPotentialPhaseData phaseData)
-        {
-            if (phaseData == null)
-            {
-                Base.Compute.RecordError($"Unable to extract phase data values from a null {nameof(IGlobalWarmingPotentialPhaseData)}.");
-                return new List<double>();
-            }
-            List<double> metrics = BasePhaseDataValues(phaseData);
-            metrics.Add(phaseData.BiogenicCarbon);
-            return metrics;
-        }
 
         /***************************************************/
         /**** Private Methods - Fallback                ****/
@@ -104,10 +90,12 @@ namespace BH.Engine.LifeCycleAssessment
                         phaseData.B5,
                         phaseData.B6,
                         phaseData.B7,
+                        phaseData.B1toB7,
                         phaseData.C1,
                         phaseData.C2,
                         phaseData.C3,
                         phaseData.C4,
+                        phaseData.C1toC4,
                         phaseData.D};
         }
 
