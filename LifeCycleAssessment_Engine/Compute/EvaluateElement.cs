@@ -89,7 +89,7 @@ namespace BH.Engine.LifeCycleAssessment
                 objectId = bhObj.BHoM_Guid;
 
             //Groups results by type and sums them up to single ElementResult per type
-            return Create.ElementResults(objectId, elementM.ElementScope(), ObjectCategory.Undefined, materialResults);
+            return Create.IElementResults(objectId, elementM.ElementScope(), ObjectCategory.Undefined, materialResults);
         }
 
         /***************************************************/
