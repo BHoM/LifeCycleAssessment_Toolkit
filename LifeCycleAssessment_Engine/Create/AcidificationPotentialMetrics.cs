@@ -55,7 +55,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c4")]
         [InputFromProperty("d")]
         [Output("apMetric", "Created AcidificationPotentialMetrics.")]
-        public static AcidificationPotentialMetrics AcidificationPotentialMetrics(
+        public static AcidificationMetric AcidificationMetric(
             double a1 = double.NaN,
             double a2 = double.NaN,
             double a3 = double.NaN,
@@ -75,7 +75,9 @@ namespace BH.Engine.LifeCycleAssessment
             double d = double.NaN)
         {
             double a1toa3 = a1 + a2 + a3;
-            return new AcidificationPotentialMetrics(a1, a2, a3, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, c1, c2, c3, c4, d);
+            double b1tob7 = b1 + b2 + b3 + b4 + b5 + b6 + b7;
+            double c1toc4 = c1 + c2 + c3 + c4;
+            return new AcidificationMetric(a1, a2, a3, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
         }
 
         /***************************************************/
@@ -97,7 +99,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c4")]
         [InputFromProperty("d")]
         [Output("apMetric", "Created AcidificationPotentialMetrics.")]
-        public static AcidificationPotentialMetrics AcidificationPotentialMetrics(
+        public static AcidificationMetric AcidificationPotentialMetrics(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
                 double a5 = double.NaN,
@@ -114,8 +116,9 @@ namespace BH.Engine.LifeCycleAssessment
                 double c4 = double.NaN,
                 double d = double.NaN)
         {
-            return new AcidificationPotentialMetrics(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, c1, c2, c3, c4, d);
-
+            double b1tob7 = b1 + b2 + b3 + b4 + b5 + b6 + b7;
+            double c1toc4 = c1 + c2 + c3 + c4;
+            return new AcidificationMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
         }
 
         /***************************************************/

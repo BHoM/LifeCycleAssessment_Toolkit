@@ -48,9 +48,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Output("result", "Result containing the embodied carbon of the element as well as a breakdown per material in the element.")]
-        public static GlobalWarmingPotentialElementResult ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
+        public static ClimateChangeTotalElementResult ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
-            List<GlobalWarmingPotentialElementResult> gwpResults = EvaluateElement(elementM, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { EnvironmentalMetrics.GlobalWarmingPotential }).OfType<GlobalWarmingPotentialElementResult>().ToList();
+            List<ClimateChangeTotalElementResult> gwpResults = EvaluateElement(elementM, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { EnvironmentalMetrics.ClimateChangeTotal }).OfType<ClimateChangeTotalElementResult>().ToList();
 
             if (gwpResults.Count == 0)
             {

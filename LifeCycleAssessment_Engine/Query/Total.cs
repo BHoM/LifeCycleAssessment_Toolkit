@@ -115,18 +115,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Additional data point for GWP.")]
-        private static double Additional(this IGlobalWarmingPotentialPhaseData phaseData, List<string> included)
-        {
-            if (!double.IsNaN(phaseData.BiogenicCarbon))
-            {
-                included.Add(nameof(phaseData.BiogenicCarbon));
-                return phaseData.BiogenicCarbon;
-            }
-            return 0;
-        }
-
-        /***************************************************/
 
         [Description("Raises a message corresponding to which phases that were included when computing the total.")]
         private static void IncludedMessage(List<string> included, string totalType)
@@ -167,7 +155,9 @@ namespace BH.Engine.LifeCycleAssessment
             }
             else
             {
-                if (!double.IsNaN(phaseData.A1) && !double.IsNaN(phaseData.A2) && !double.IsNaN(phaseData.A3))
+                if (!double.IsNaN(phaseData.A1) && 
+                    !double.IsNaN(phaseData.A2) && 
+                    !double.IsNaN(phaseData.A3))
                 {
                     total += phaseData.A1 + phaseData.A2 + phaseData.A3;
                     included.Add(nameof(phaseData.A1));
@@ -203,49 +193,75 @@ namespace BH.Engine.LifeCycleAssessment
         {
             double total = 0;
 
-
-            if (!double.IsNaN(phaseData.B1))
+            if (double.IsNaN(phaseData.B1toB7))
             {
-                total += phaseData.B1;
-                included.Add(nameof(phaseData.B1));
-            }
+                if (!double.IsNaN(phaseData.B1))
+                {
+                    total += phaseData.B1;
+                    included.Add(nameof(phaseData.B1));
+                }
 
-            if (!double.IsNaN(phaseData.B2))
+                if (!double.IsNaN(phaseData.B2))
+                {
+                    total += phaseData.B2;
+                    included.Add(nameof(phaseData.B2));
+                }
+
+                if (!double.IsNaN(phaseData.B3))
+                {
+                    total += phaseData.B3;
+                    included.Add(nameof(phaseData.B3));
+                }
+
+                if (!double.IsNaN(phaseData.B4))
+                {
+                    total += phaseData.B4;
+                    included.Add(nameof(phaseData.B4));
+                }
+
+                if (!double.IsNaN(phaseData.B5))
+                {
+                    total += phaseData.B5;
+                    included.Add(nameof(phaseData.B5));
+                }
+
+                if (!double.IsNaN(phaseData.B6))
+                {
+                    total += phaseData.B6;
+                    included.Add(nameof(phaseData.B6));
+                }
+
+                if (!double.IsNaN(phaseData.B7))
+                {
+                    total += phaseData.B7;
+                    included.Add(nameof(phaseData.B7));
+                }
+            }
+            else
             {
-                total += phaseData.B2;
-                included.Add(nameof(phaseData.B2));
+                if (!double.IsNaN(phaseData.B1) && 
+                    !double.IsNaN(phaseData.B2) && 
+                    !double.IsNaN(phaseData.B3) &&
+                    !double.IsNaN(phaseData.B4) &&
+                    !double.IsNaN(phaseData.B5) &&
+                    !double.IsNaN(phaseData.B6) &&
+                    !double.IsNaN(phaseData.B7))
+                {
+                    total += phaseData.B1 + phaseData.B2 + phaseData.B3 + phaseData.B4 + phaseData.B5 + phaseData.B6 + phaseData.B7;
+                    included.Add(nameof(phaseData.B1));
+                    included.Add(nameof(phaseData.B2));
+                    included.Add(nameof(phaseData.B3));
+                    included.Add(nameof(phaseData.B4));
+                    included.Add(nameof(phaseData.B5));
+                    included.Add(nameof(phaseData.B6));
+                    included.Add(nameof(phaseData.B7));
+                }
+                else
+                {
+                    total += phaseData.B1toB7;
+                    included.Add(nameof(phaseData.B1toB7));
+                }
             }
-
-            if (!double.IsNaN(phaseData.B3))
-            {
-                total += phaseData.B3;
-                included.Add(nameof(phaseData.B3));
-            }
-
-            if (!double.IsNaN(phaseData.B4))
-            {
-                total += phaseData.B4;
-                included.Add(nameof(phaseData.B4));
-            }
-
-            if (!double.IsNaN(phaseData.B5))
-            {
-                total += phaseData.B5;
-                included.Add(nameof(phaseData.B5));
-            }
-
-            if (!double.IsNaN(phaseData.B6))
-            {
-                total += phaseData.B6;
-                included.Add(nameof(phaseData.B6));
-            }
-
-            if (!double.IsNaN(phaseData.B7))
-            {
-                total += phaseData.B7;
-                included.Add(nameof(phaseData.B7));
-            }
-
             return total;
         }
 
@@ -256,29 +272,50 @@ namespace BH.Engine.LifeCycleAssessment
         {
             double total = 0;
 
-
-            if (!double.IsNaN(phaseData.C1))
+            if (double.IsNaN(phaseData.C1toC4))
             {
-                total += phaseData.C1;
-                included.Add(nameof(phaseData.C1));
+                if (!double.IsNaN(phaseData.C1))
+                {
+                    total += phaseData.C1;
+                    included.Add(nameof(phaseData.C1));
+                }
+
+                if (!double.IsNaN(phaseData.C2))
+                {
+                    total += phaseData.C2;
+                    included.Add(nameof(phaseData.C2));
+                }
+
+                if (!double.IsNaN(phaseData.C3))
+                {
+                    total += phaseData.C3;
+                    included.Add(nameof(phaseData.C3));
+                }
+
+                if (!double.IsNaN(phaseData.C4))
+                {
+                    total += phaseData.C4;
+                    included.Add(nameof(phaseData.C4));
+                }
             }
-
-            if (!double.IsNaN(phaseData.C2))
+            else
             {
-                total += phaseData.C2;
-                included.Add(nameof(phaseData.C2));
-            }
-
-            if (!double.IsNaN(phaseData.C3))
-            {
-                total += phaseData.C3;
-                included.Add(nameof(phaseData.C3));
-            }
-
-            if (!double.IsNaN(phaseData.C4))
-            {
-                total += phaseData.C4;
-                included.Add(nameof(phaseData.C4));
+                if (!double.IsNaN(phaseData.C1) &&
+                    !double.IsNaN(phaseData.C2) &&
+                    !double.IsNaN(phaseData.C3) &&
+                    !double.IsNaN(phaseData.C4))
+                {
+                    total += phaseData.C1 + phaseData.C2 + phaseData.C3 + phaseData.C4;
+                    included.Add(nameof(phaseData.C1));
+                    included.Add(nameof(phaseData.C2));
+                    included.Add(nameof(phaseData.C3));
+                    included.Add(nameof(phaseData.C4));
+                }
+                else
+                {
+                    total += phaseData.C1toC4;
+                    included.Add(nameof(phaseData.C1toC4));
+                }
             }
 
             return total;
