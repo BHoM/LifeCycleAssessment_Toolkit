@@ -62,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<MaterialResult> results = new List<MaterialResult>();
 
-            foreach (IEnvironmentalMetric metric in epd.FilteredMetrics(metricFilter))
+            foreach (EnvironmentalMetric metric in epd.FilteredMetrics(metricFilter))
             {
                 results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
             }
