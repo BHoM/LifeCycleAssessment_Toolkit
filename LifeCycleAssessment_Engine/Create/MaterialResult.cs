@@ -21,7 +21,6 @@
  */
 
 using BH.Engine.Base;
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
@@ -112,7 +111,7 @@ namespace BH.Engine.LifeCycleAssessment
             Type materialResultType = null;
             if (typeof(MaterialResult).IsAssignableFrom(t))    //Type of material result -> simply use it
                 materialResultType = t;
-            else if (typeof(IEnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
+            else if (typeof(EnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
                 materialResultType = MaterialResultTypeFromMetric(t);
             else if (typeof(IElementResult<MaterialResult>).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)    //Type of element reuslt, get generic argument from base class
                 materialResultType = t.BaseType?.GenericTypeArguments.FirstOrDefault();
@@ -128,7 +127,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets a MaterialResult type matching the metric type by name.")]
         private static Type MaterialResultTypeFromMetric(Type metricType)
         {
-            string metric = metricType.Name.Replace("Metrics", "");
+            string metric = metricType.Name.Replace("Metric", "");
             Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name.StartsWith(metric));
             return materialResultType;
         }
