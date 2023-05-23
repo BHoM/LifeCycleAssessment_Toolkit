@@ -25,6 +25,12 @@
   </ItemGroup>
 
 
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\..\..\LifeCycleAssessment_Engine\LifeCycleAssessment_Engine.csproj" />
+	</ItemGroup>
+
+
   <ItemGroup>
 	  <Reference Include="Analytical_oM">
 		  <HintPath>$(ProgramData)\BHoM\Assemblies\Analytical_oM.dll</HintPath>
@@ -37,7 +43,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>	  
     <Reference Include="BHoM_Engine">
-      <HintPath>..\..\..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
     </Reference>	  
     <Reference Include="Data_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Data_oM.dll</HintPath>
@@ -60,16 +66,16 @@
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Matter_Engine">
-      <HintPath>..\..\..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Matter_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Matter_oM">
-      <HintPath>..\..\..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Matter_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_oM.dll</HintPath>
     </Reference>
     <Reference Include="Physical_oM">
-      <HintPath>..\..\..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Physical_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_oM.dll</HintPath>
     </Reference>
     <Reference Include="Serialiser_Engine">
-      <HintPath>..\..\..\..\..\..\..\..\..\ProgramData\BHoM\Assemblies\Serialiser_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Serialiser_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
