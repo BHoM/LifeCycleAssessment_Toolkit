@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeCycleAssessment_Engine_Tests", "LifeCycleAssessment_Engine_Tests\LifeCycleAssessment_Engine_Tests.csproj", "{4B514889-5FB1-4A6C-B962-8F630D743A1D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeCycleAssessment_Engine", "..\..\LifeCycleAssessment_Engine\LifeCycleAssessment_Engine.csproj", "{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Test|Any CPU = Test|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4B514889-5FB1-4A6C-B962-8F630D743A1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B514889-5FB1-4A6C-B962-8F630D743A1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B514889-5FB1-4A6C-B962-8F630D743A1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B514889-5FB1-4A6C-B962-8F630D743A1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B514889-5FB1-4A6C-B962-8F630D743A1D}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{4B514889-5FB1-4A6C-B962-8F630D743A1D}.Test|Any CPU.Build.0 = Test|Any CPU
+		{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}.Test|Any CPU.ActiveCfg = Test|Any CPU
+		{6F8C4A1A-3E91-40B9-B658-2F8C2EF3440E}.Test|Any CPU.Build.0 = Test|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB913D3B-3FD1-489E-BDF7-F8408A2DD120}
+	EndGlobalSection
+EndGlobal
