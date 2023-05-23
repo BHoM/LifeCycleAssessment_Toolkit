@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -7,6 +7,7 @@
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <RootNamespace>BH.Engine.LifeCycleAssessment</RootNamespace>
     <BaseOutputPath>..\Build\</BaseOutputPath>
+    <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -97,7 +98,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)DataSets\*.*&quot; &quot;C:\ProgramData\BHoM\DataSets&quot; /Y /I /E" />
+    <Exec Command="if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(SolutionDir)DataSets\*.*&quot; &quot;$(ProgramData)\BHoM\DataSets&quot; /Y /I /E" />
   </Target>
 
 </Project>
