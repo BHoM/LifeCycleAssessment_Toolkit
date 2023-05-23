@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
-
+    
   <ItemGroup>
     <Reference Include="Analytical_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Analytical_oM.dll</HintPath>
@@ -98,7 +98,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(SolutionDir)DataSets\*.*&quot; &quot;$(ProgramData)\BHoM\DataSets&quot; /Y /I /E" />
+    <Exec Command="if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(ProjectDir)\..\DataSets\*.*&quot; &quot;$(ProgramData)\BHoM\DataSets&quot; /Y /I /E" />
   </Target>
 
 </Project>
