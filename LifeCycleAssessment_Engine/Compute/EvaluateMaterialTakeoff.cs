@@ -93,6 +93,8 @@ namespace BH.Engine.LifeCycleAssessment
                                 double density = material.Density;
                                 if (double.IsNaN(density) || density == 0)
                                 {
+                                    //Keeping support for backwards compability for old workflows relying epd density assigned as fragments to EPDS
+                                    //Generally not recomended to work with this fragment
                                     EPDDensity epdDensity = epd.FindFragment<EPDDensity>();
                                     if (epdDensity != null)
                                         density = epdDensity.Density;
