@@ -118,12 +118,12 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             GeneralMaterialTakeoff takeoff = new GeneralMaterialTakeoff
             {
-                MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x }, Volume = (i+1)*42.543 }).ToList(),
+                MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x }, Volume = (i + 1) * 42.543 }).ToList(),
             };
 
             List<MaterialResult> materialResults = Compute.EvaluateMaterialTakeoff(takeoff, templates);
 
-            foreach (MaterialResult result in materialResults) 
+            foreach (MaterialResult result in materialResults)
             {
                 templates.Should().Contain(x => x.Name == result.MaterialName);
                 Material mat = templates.First(x => x.Name == result.MaterialName);
@@ -202,40 +202,41 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static void ValidateMetricAndResult(EnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "")
         {
-            if(!string.IsNullOrEmpty(epdName)) 
+            string message = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
+            if (!string.IsNullOrEmpty(epdName))
             {
-                result.EnvironmentalProductDeclarationName.Should().Be(epdName);
+                result.EnvironmentalProductDeclarationName.Should().Be(epdName, message);
             }
 
             if (!string.IsNullOrEmpty(materialName))
             {
-                result.MaterialName.Should().Be(materialName);
+                result.MaterialName.Should().Be(materialName, message);
             }
 
-            result.MetricType.Should().Be(metric.MetricType);
-            result.A1.Should().Be(metric.A1 * quantity);
-            result.A2.Should().Be(metric.A2 * quantity);
-            result.A3.Should().Be(metric.A3 * quantity);
-            result.A4.Should().Be(metric.A4 * quantity);
-            result.A5.Should().Be(metric.A5 * quantity);
-            result.A1toA3.Should().Be(metric.A1toA3 * quantity);
+            result.MetricType.Should().Be(metric.MetricType, message);
+            result.A1.Should().Be(metric.A1 * quantity, message);
+            result.A2.Should().Be(metric.A2 * quantity, message);
+            result.A3.Should().Be(metric.A3 * quantity, message);
+            result.A4.Should().Be(metric.A4 * quantity, message);
+            result.A5.Should().Be(metric.A5 * quantity, message);
+            result.A1toA3.Should().Be(metric.A1toA3 * quantity, message);
 
-            result.B1.Should().Be(metric.B1 * quantity);
-            result.B2.Should().Be(metric.B2 * quantity);
-            result.B3.Should().Be(metric.B3 * quantity);
-            result.B4.Should().Be(metric.B4 * quantity);
-            result.B5.Should().Be(metric.B5 * quantity);
-            result.B6.Should().Be(metric.B6 * quantity);
-            result.B7.Should().Be(metric.B7 * quantity);
-            result.B1toB7.Should().Be(metric.B1toB7 * quantity);
+            result.B1.Should().Be(metric.B1 * quantity, message);
+            result.B2.Should().Be(metric.B2 * quantity, message);
+            result.B3.Should().Be(metric.B3 * quantity, message);
+            result.B4.Should().Be(metric.B4 * quantity, message);
+            result.B5.Should().Be(metric.B5 * quantity, message);
+            result.B6.Should().Be(metric.B6 * quantity, message);
+            result.B7.Should().Be(metric.B7 * quantity, message);
+            result.B1toB7.Should().Be(metric.B1toB7 * quantity, message);
 
-            result.C1.Should().Be(metric.C1 * quantity);
-            result.C2.Should().Be(metric.C2 * quantity);
-            result.C3.Should().Be(metric.C3 * quantity);
-            result.C4.Should().Be(metric.C4 * quantity);
-            result.C1toC4.Should().Be(metric.C1toC4 * quantity);
+            result.C1.Should().Be(metric.C1 * quantity, message);
+            result.C2.Should().Be(metric.C2 * quantity, message);
+            result.C3.Should().Be(metric.C3 * quantity, message);
+            result.C4.Should().Be(metric.C4 * quantity, message);
+            result.C1toC4.Should().Be(metric.C1toC4 * quantity, message);
 
-            result.D.Should().Be(metric.D * quantity);
+            result.D.Should().Be(metric.D * quantity, message);
         }
 
         /***************************************************/
@@ -295,7 +296,25 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static List<Type> MetricTypes()
         {
-            return BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(EnvironmentalMetric).IsAssignableFrom(x)).Where(x => !x.IsAbstract).ToList();
+            return new List<Type>
+            {
+                typeof(AbioticDepletionFossilResourcesMetric),
+                typeof(AbioticDepletionMineralsAndMetalsMetric),
+                typeof(AcidificationMetric),
+                typeof(ClimateChangeBiogenicMetric),
+                typeof(ClimateChangeFossilMetric),
+                typeof(ClimateChangeLandUseMetric),
+                typeof(ClimateChangeTotalMetric),
+                typeof(ClimateChangeTotalNoBiogenicMetric),
+                typeof(EutrophicationAquaticFreshwaterMetric),
+                typeof(EutrophicationAquaticMarineMetric),
+                typeof(EutrophicationTerrestrialMetric),
+                typeof(EutrophicationVer1EuropeMetric),
+                typeof(EutrophicationVer1NAMetric),
+                typeof(OzoneDepletionMetric),
+                typeof(PhotochemicalOzoneCreationMetric),
+                typeof(WaterDeprivationMetric)
+            };
         }
 
         /***************************************************/
