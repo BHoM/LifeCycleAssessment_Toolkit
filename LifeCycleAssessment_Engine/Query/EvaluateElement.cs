@@ -40,7 +40,7 @@ using BH.Engine.Base;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
