@@ -48,23 +48,18 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Output("result", "Result containing the embodied carbon of the element as well as a breakdown per material in the element.")]
-        public static ClimateChangeTotalElementResult ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
+        public static List<IElementResult<MaterialResult>> ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true)
         {
-            List<ClimateChangeTotalElementResult> gwpResults = EvaluateElement(elementM, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { EnvironmentalMetrics.ClimateChangeTotal }).OfType<ClimateChangeTotalElementResult>().ToList();
+            List<EnvironmentalMetrics> metricsFilter = new List<EnvironmentalMetrics> 
+            { 
+                EnvironmentalMetrics.ClimateChangeTotal,
+                EnvironmentalMetrics.ClimateChangeTotalNoBiogenic,
+                EnvironmentalMetrics.ClimateChangeFossil,
+                EnvironmentalMetrics.ClimateChangeLandUse,
+                EnvironmentalMetrics.ClimateChangeBiogenic
+            };
 
-            if (gwpResults.Count == 0)
-            {
-                BH.Engine.Base.Compute.RecordError("Unable evaluate the GlobalWarmingPotential for the element.");
-                return null;
-            }
-            if (gwpResults.Count == 1)
-                return gwpResults[0];
-            else
-            {
-                BH.Engine.Base.Compute.RecordError("Ambiguous GlobalWarmingPotential results for the element.");
-                return null;
-            }
-            
+            return EvaluateElement(elementM, templateMaterials, prioritiseTemplate, metricsFilter);           
         }
 
         /***************************************************/
