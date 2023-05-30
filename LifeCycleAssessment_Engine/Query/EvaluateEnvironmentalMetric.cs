@@ -28,7 +28,7 @@ using System.ComponentModel;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
