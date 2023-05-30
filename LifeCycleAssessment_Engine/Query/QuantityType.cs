@@ -37,22 +37,6 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetEPDQuantityType(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration)")]
-        [Description("Query the QuantityType value from any EnvironmentalProductDeclaration object.")]
-        [Input("epd", "EnvironmentalProductDeclaration object from which to query.")]
-        [Output("quantityType", "The quantityType value from the provided EnvironmentalProductDeclaration.")]
-        public static QuantityType QuantityType(this EnvironmentalProductDeclaration epd)
-        {
-            if (epd == null)
-            {
-                Base.Compute.RecordError("No EPD was provided.");
-                return oM.LifeCycleAssessment.QuantityType.Undefined;
-            }
-            return epd.QuantityType;
-        }
-
-        /***************************************************/
-
         [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetQuantityType(BH.oM.Dimensional.IElementM)")]
         [Description("Query the QuantityType values from any IElementM object's MaterialComposition.")]
         [Input("elementM", "The IElementM object from which to query the EPD's QuantityType values.")]
