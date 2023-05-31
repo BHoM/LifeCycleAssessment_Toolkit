@@ -24,6 +24,7 @@ using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Constructions;
@@ -50,9 +51,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null)
+        public static List<MaterialResult> EvaluateEnvironmentalProductDeclaration(EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (epd == null)
             {
@@ -60,14 +62,49 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
+            if (!IValidateConfig(evaluationConfig, epd))
+                return new List<MaterialResult>();
+
             List<MaterialResult> results = new List<MaterialResult>();
 
             foreach (EnvironmentalMetric metric in epd.FilteredMetrics(metricFilter))
             {
-                results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue));
+                results.Add(EvaluateEnvironmentalMetric(metric, epd.Name, materialName, quantityValue, evaluationConfig));
             }
 
             return results;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool IValidateConfig(IEvaluationConfig config, EnvironmentalProductDeclaration epd)
+        {
+            if (config == null) //Null config is valid, as default case of evaluation is assumed for provided null config.
+                return true;
+
+            return ValidateConfig(config, epd);
+        }
+
+        /***************************************************/
+
+        private static bool ValidateConfig(IStructEEvaluationConfig config, EnvironmentalProductDeclaration epd)
+        {
+            bool valid = epd.QuantityType == QuantityType.Mass;
+
+            if (!valid)
+                BH.Engine.Base.Compute.RecordError($"{nameof(IStructEEvaluationConfig)} is only valid to be used with epds with quantity type mass.");
+            return valid;
+        }
+
+        /***************************************************/
+        /**** Private Methods - Fallback                ****/
+        /***************************************************/
+
+        private static bool ValidateConfig(IEvaluationConfig config, EnvironmentalProductDeclaration epd)
+        {
+            return true;    //Default to true for fallback
         }
 
         /***************************************************/
