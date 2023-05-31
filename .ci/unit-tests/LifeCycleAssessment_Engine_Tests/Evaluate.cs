@@ -46,8 +46,6 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         [Test]
         public void EvaluateMetricTest()
         {
-
-            List<string> names = new List<string>() { "Concrete", "Steel", "Glass" };
             List<EnvironmentalMetric> metrics = new List<EnvironmentalMetric>();
 
             double v = 1.234;
@@ -202,6 +200,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static void ValidateMetricAndResult(EnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "")
         {
+            double tolerance = 1e-12;
             string message = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
             if (!string.IsNullOrEmpty(epdName))
             {
@@ -214,34 +213,30 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             }
 
             result.MetricType.Should().Be(metric.MetricType, message);
-            result.A1.Should().Be(metric.A1 * quantity, message);
-            result.A2.Should().Be(metric.A2 * quantity, message);
-            result.A3.Should().Be(metric.A3 * quantity, message);
-            result.A4.Should().Be(metric.A4 * quantity, message);
-            result.A5.Should().Be(metric.A5 * quantity, message);
-            result.A1toA3.Should().Be(metric.A1toA3 * quantity, message);
+            result.A1.Should().BeApproximately(metric.A1 * quantity, tolerance, message);
+            result.A2.Should().BeApproximately(metric.A2 * quantity, tolerance, message);
+            result.A3.Should().BeApproximately(metric.A3 * quantity, tolerance, message);
+            result.A4.Should().BeApproximately(metric.A4 * quantity, tolerance, message);
+            result.A5.Should().BeApproximately(metric.A5 * quantity, tolerance, message);
+            result.A1toA3.Should().BeApproximately(metric.A1toA3 * quantity, tolerance, message);
 
-            result.B1.Should().Be(metric.B1 * quantity, message);
-            result.B2.Should().Be(metric.B2 * quantity, message);
-            result.B3.Should().Be(metric.B3 * quantity, message);
-            result.B4.Should().Be(metric.B4 * quantity, message);
-            result.B5.Should().Be(metric.B5 * quantity, message);
-            result.B6.Should().Be(metric.B6 * quantity, message);
-            result.B7.Should().Be(metric.B7 * quantity, message);
-            result.B1toB7.Should().Be(metric.B1toB7 * quantity, message);
+            result.B1.Should().BeApproximately(metric.B1 * quantity, tolerance, message);
+            result.B2.Should().BeApproximately(metric.B2 * quantity, tolerance, message);
+            result.B3.Should().BeApproximately(metric.B3 * quantity, tolerance, message);
+            result.B4.Should().BeApproximately(metric.B4 * quantity, tolerance, message);
+            result.B5.Should().BeApproximately(metric.B5 * quantity, tolerance, message);
+            result.B6.Should().BeApproximately(metric.B6 * quantity, tolerance, message);
+            result.B7.Should().BeApproximately(metric.B7 * quantity, tolerance, message);
+            result.B1toB7.Should().BeApproximately(metric.B1toB7 * quantity, tolerance, message);
 
-            result.C1.Should().Be(metric.C1 * quantity, message);
-            result.C2.Should().Be(metric.C2 * quantity, message);
-            result.C3.Should().Be(metric.C3 * quantity, message);
-            result.C4.Should().Be(metric.C4 * quantity, message);
-            result.C1toC4.Should().Be(metric.C1toC4 * quantity, message);
+            result.C1.Should().BeApproximately(metric.C1 * quantity, tolerance, message);
+            result.C2.Should().BeApproximately(metric.C2 * quantity, tolerance, message);
+            result.C3.Should().BeApproximately(metric.C3 * quantity, tolerance, message);
+            result.C4.Should().BeApproximately(metric.C4 * quantity, tolerance, message);
+            result.C1toC4.Should().BeApproximately(metric.C1toC4 * quantity, tolerance, message);
 
-            result.D.Should().Be(metric.D * quantity, message);
+            result.D.Should().BeApproximately(metric.D * quantity, tolerance, message);
         }
-
-        /***************************************************/
-
-
 
         /***************************************************/
 
