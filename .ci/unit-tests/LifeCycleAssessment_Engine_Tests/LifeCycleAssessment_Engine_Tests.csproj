@@ -49,6 +49,11 @@
       <HintPath>$(ProgramData)\BHoM\Assemblies\Data_oM.dll</HintPath>
 	  <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
+	</Reference>
+	<Reference Include="Dimensional_oM">
+		<HintPath>$(ProgramData)\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
+		<Private>true</Private>
+		<SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>

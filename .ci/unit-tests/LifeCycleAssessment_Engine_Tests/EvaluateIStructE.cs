@@ -60,7 +60,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             double quantity = 50;
             foreach (EnvironmentalMetric metric in metrics)
             {
-                MaterialResult result = Query.EvaluateEnvironmentalMetric(metric, "", "", quantity, DummyConfig());
+                MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity, DummyConfig());
                 ValidateMetricAndResult(metric, result, quantity, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor);
             }
 
@@ -87,7 +87,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             double eval = 32.22;
             foreach (EnvironmentalProductDeclaration epd in epds)
             {
-                List<MaterialResult> materialResults = Query.EvaluateEnvironmentalProductDeclaration(epd, eval, "", null, config);
+                List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval, "", null, config);
                 for (int i = 0; i < materialResults.Count; i++)
                 {
                     ValidateMetricAndResult(epd.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name);
@@ -124,7 +124,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x }, Volume = (i + 1) * 42.543 }).ToList(),
             };
 
-            List<MaterialResult> materialResults = Query.EvaluateMaterialTakeoff(takeoff, templates, true, null, config);
+            List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates, true, null, config);
 
             foreach (MaterialResult result in materialResults)
             {
