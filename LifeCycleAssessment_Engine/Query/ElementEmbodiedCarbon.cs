@@ -45,7 +45,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.ElementEmbodiedCarbon(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.Physical.Materials.Material>, System.Boolean)")]
         [Description("Evaluates the embodied carbon on the provided element based on IStructE methodology of evaluation.\n" +
-                    "If you would like to evaluate other EPD metrics, please use one of the other Evaluation methods. \n" +
+                    "If you would like to evaluate other EPD metrics, please use one of the Query.EnvironmentalResults methods. \n" +
                     "TemplateMaterials can be provided helping with picking the correct EPD corresponding to each material on the element. Please note that this evaluation method only support mass-based EPDs.")]
         [Input("elementM", "Element for which to evaluate the embodied carbon.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation. Please note that this evaluation method only support mass-based EPDs.")]
@@ -76,7 +76,7 @@ namespace BH.Engine.LifeCycleAssessment
                 C1CarbonFactor = c1CarbonFactor
             };
 
-            return EvaluateElement(elementM, templateMaterials, prioritiseTemplate, metricsFilter, config);
+            return EnvironmentalResults(elementM, templateMaterials, prioritiseTemplate, metricsFilter, config);
         }
 
         /***************************************************/

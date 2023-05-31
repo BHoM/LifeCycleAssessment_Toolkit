@@ -58,7 +58,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             double quantity = 4;
             foreach (EnvironmentalMetric metric in metrics)
             {
-                MaterialResult result = Query.EvaluateEnvironmentalMetric(metric, "", "", quantity);
+                MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity);
                 ValidateMetricAndResult(metric, result, quantity);
             }
 
@@ -83,7 +83,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             double eval = 32.22;
             foreach (EnvironmentalProductDeclaration epd in epds)
             {
-                List<MaterialResult> materialResults = Query.EvaluateEnvironmentalProductDeclaration(epd, eval);
+                List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval);
                 for (int i = 0; i < materialResults.Count; i++)
                 {
                     ValidateMetricAndResult(epd.EnvironmentalMetrics[i], materialResults[i], eval, epd.Name);
@@ -119,7 +119,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x }, Volume = (i + 1) * 42.543 }).ToList(),
             };
 
-            List<MaterialResult> materialResults = Query.EvaluateMaterialTakeoff(takeoff, templates);
+            List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates);
 
             foreach (MaterialResult result in materialResults)
             {
@@ -168,7 +168,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             List<EnvironmentalMetrics> metricFilter = new List<EnvironmentalMetrics> { EnvironmentalMetrics.AbioticDepletionFossilResources, EnvironmentalMetrics.ClimateChangeBiogenic, EnvironmentalMetrics.EutrophicationTerrestrial };
 
-            List<MaterialResult> materialResults = Query.EvaluateMaterialTakeoff(takeoff, templates, true, metricFilter);
+            List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates, true, metricFilter);
 
 
             materialResults.Should().AllSatisfy(x => metricFilter.Contains(x.MetricType));

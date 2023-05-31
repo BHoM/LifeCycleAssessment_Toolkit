@@ -59,7 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return double.NaN;
             }
 
-            var results = projectLCA.Elements.SelectMany(x => Query.EvaluateElement(x, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { field })).ToList();
+            var results = projectLCA.Elements.SelectMany(x => Query.EnvironmentalResults(x, templateMaterials, prioritiseTemplate, new List<EnvironmentalMetrics> { field })).ToList();
 
             return results.Sum(x => x.Total());
         }
