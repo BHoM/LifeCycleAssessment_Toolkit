@@ -128,7 +128,7 @@ namespace BH.Engine.LifeCycleAssessment
         private static Type MaterialResultTypeFromMetric(Type metricType)
         {
             string metric = metricType.Name.Replace("Metric", "");
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name.Replace("MaterialResult", "") == metric);
+            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name == metric + "MaterialResult");
             return materialResultType;
         }
 
