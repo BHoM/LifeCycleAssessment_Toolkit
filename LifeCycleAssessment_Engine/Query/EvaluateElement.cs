@@ -25,6 +25,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.Physical.Materials;
 using System;
 using System.Collections.Generic;
@@ -57,8 +58,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
         [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("result", "A List of ElementResults, one per metric type, that contains the LifeCycleAssessment data for the input object(s).")]
-        public static List<IElementResult<MaterialResult>> EvaluateElement(IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<EnvironmentalMetrics> metricFilter = null)
+        public static List<IElementResult<MaterialResult>> EvaluateElement(IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (elementM == null)
             {
@@ -81,7 +83,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return new List<IElementResult<MaterialResult>>();
             }
 
-            List<MaterialResult> materialResults = EvaluateMaterialTakeoff(takeoff, templateMaterials, prioritiseTemplate, metricFilter);
+            List<MaterialResult> materialResults = EvaluateMaterialTakeoff(takeoff, templateMaterials, prioritiseTemplate, metricFilter, evaluationConfig);
 
             //Get out id as BHoM_Guid
             IComparable objectId = "";
