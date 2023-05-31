@@ -34,7 +34,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the total quantity from any LifeCycleAssessmentElementResult data. Be mindful of the specific unit specified in the Field enum.")]
         [Input("results", "Supply a valid LifeCycleAssessmentElementResult from a scope evaluation.")]
         [Output("totalFieldQuantity", "The combined amount of kgCO2e of the objects provided.")]
-        public static double TotalFieldQuantity(this List<ILifeCycleAssesmentResult> results)
+        public static double TotalFieldQuantity(this List<IEnvironmentalResult> results)
         {
             return results.Sum(x => x.Total());
         }
