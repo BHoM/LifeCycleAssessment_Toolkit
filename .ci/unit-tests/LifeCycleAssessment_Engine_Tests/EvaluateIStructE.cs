@@ -279,8 +279,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 typeof(EutrophicationAquaticFreshwaterMetric),
                 typeof(EutrophicationAquaticMarineMetric),
                 typeof(EutrophicationTerrestrialMetric),
-                typeof(EutrophicationVer1EuropeMetric),
-                typeof(EutrophicationVer1NAMetric),
+                typeof(EutrophicationCMLMetric),
+                typeof(EutrophicationTRACIMetric),
                 typeof(OzoneDepletionMetric),
                 typeof(PhotochemicalOzoneCreationMetric),
                 typeof(WaterDeprivationMetric)

@@ -36,7 +36,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a EutrophicationVer1NAMetric to be applied as part of an EnvironmentalProductDeclaration. Values of A1toA3, B1toB7 and C1toC4 will be computed as the sum of the relevant phases.")]
+        [Description("Creates a EutrophicationCMLMetric to be applied as part of an EnvironmentalProductDeclaration. Values of A1toA3, B1toB7 and C1toC4 will be computed as the sum of the relevant phases.")]
         [InputFromProperty("a1")]
         [InputFromProperty("a2")]
         [InputFromProperty("a3")]
@@ -54,8 +54,8 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c3")]
         [InputFromProperty("c4")]
         [InputFromProperty("d")]
-        [Output("apMetric", "Created EutrophicationVer1NAMetric.")]
-        public static EutrophicationVer1NAMetric EutrophicationVer1NAMetric(
+        [Output("apMetric", "Created EutrophicationCMLMetric.")]
+        public static EutrophicationCMLMetric EutrophicationCMLMetric(
             double a1 = double.NaN,
             double a2 = double.NaN,
             double a3 = double.NaN,
@@ -77,12 +77,12 @@ namespace BH.Engine.LifeCycleAssessment
             double a1toa3 = a1 + a2 + a3;
             double b1tob7 = b1 + b2 + b3 + b4 + b5 + b6 + b7;
             double c1toc4 = c1 + c2 + c3 + c4;
-            return new EutrophicationVer1NAMetric(a1, a2, a3, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
+            return new EutrophicationCMLMetric(a1, a2, a3, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
         }
 
         /***************************************************/
 
-        [Description("Creates a EutrophicationVer1NAMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. Values of B1toB7 and C1toC4 will be computed as the sum of the relevant phases.")]
+        [Description("Creates a EutrophicationCMLMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. Values of B1toB7 and C1toC4 will be computed as the sum of the relevant phases.")]
         [InputFromProperty("a1toa3", "A1toA3")]
         [InputFromProperty("a4")]
         [InputFromProperty("a5")]
@@ -98,8 +98,8 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c3")]
         [InputFromProperty("c4")]
         [InputFromProperty("d")]
-        [Output("apMetric", "Created EutrophicationVer1NAMetric.")]
-        public static EutrophicationVer1NAMetric EutrophicationVer1NAMetric(
+        [Output("apMetric", "Created EutrophicationCMLMetric.")]
+        public static EutrophicationCMLMetric EutrophicationCMLMetric(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
                 double a5 = double.NaN,
@@ -118,20 +118,20 @@ namespace BH.Engine.LifeCycleAssessment
         {
             double b1tob7 = b1 + b2 + b3 + b4 + b5 + b6 + b7;
             double c1toc4 = c1 + c2 + c3 + c4;
-            return new EutrophicationVer1NAMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
+            return new EutrophicationCMLMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
         }
 
         /***************************************************/
 
-        [Description("Creates a EutrophicationVer1NAMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available.")]
+        [Description("Creates a EutrophicationCMLMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available.")]
         [InputFromProperty("a1toa3", "A1toA3")]
         [InputFromProperty("a4")]
         [InputFromProperty("a5")]
         [InputFromProperty("b1tob7", "B1toB7")]
         [InputFromProperty("c1toc4", "C1toC4")]
         [InputFromProperty("d")]
-        [Output("apMetric", "Created EutrophicationVer1NAMetric.")]
-        public static EutrophicationVer1NAMetric EutrophicationVer1NAMetric(
+        [Output("apMetric", "Created EutrophicationCMLMetric.")]
+        public static EutrophicationCMLMetric EutrophicationCMLMetric(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
                 double a5 = double.NaN,
@@ -140,7 +140,7 @@ namespace BH.Engine.LifeCycleAssessment
                 double d = double.NaN)
         {
 
-            return new EutrophicationVer1NAMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, b1tob7, double.NaN, double.NaN, double.NaN, double.NaN, c1toc4, d);
+            return new EutrophicationCMLMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, b1tob7, double.NaN, double.NaN, double.NaN, double.NaN, c1toc4, d);
         }
 
         /***************************************************/
