@@ -57,7 +57,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("result", "A List of ElementResults, one per metric type, that contains the LifeCycleAssessment data for the input object(s).")]
-        public static List<IElementResult<MaterialResult>> EnvironmentalResults(IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<IElementResult<MaterialResult>> EnvironmentalResults(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (elementM == null)
             {
@@ -76,7 +76,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (takeoff.MaterialTakeoffItems.Count == 0)
             {
-                BH.Engine.Base.Compute.RecordWarning($"The {nameof(GeneralMaterialTakeoff)} provided {elementM.GetType().Name} does not contain any {nameof(Material)}s. Nothing to evaluate.");
+                BH.Engine.Base.Compute.RecordWarning($"The {nameof(GeneralMaterialTakeoff)} from the provided {elementM.GetType().Name} does not contain any {nameof(Material)}s. Nothing to evaluate.");
                 return new List<IElementResult<MaterialResult>>();
             }
 
@@ -104,7 +104,10 @@ namespace BH.Engine.LifeCycleAssessment
         public static List<MaterialResult> EnvironmentalResults(this GeneralMaterialTakeoff materialTakeoff, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (materialTakeoff == null)
+            {
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(GeneralMaterialTakeoff)}.");
                 return new List<MaterialResult>();
+            }
 
             GeneralMaterialTakeoff mappedTakeoff;
             if (templateMaterials == null || templateMaterials.Count == 0)
@@ -205,7 +208,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (epd == null)
             {
@@ -236,7 +239,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result class.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times quantity.")]
         [Output("result", "A MaterialResult of a type corresponding to the evaluated metric with phase data calculated as data on metric multiplied by the provided quantity value.")]
-        public static MaterialResult EnvironmentalResults(EnvironmentalMetric metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null)
+        public static MaterialResult EnvironmentalResults(this EnvironmentalMetric metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null)
         {
             if (metric == null)
             {
@@ -244,7 +247,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            return Create.MaterialResult(metric.GetType(), materialName, epdName, metric.IEvaluateEnvironmentalMetricValues(quantityValue, evaluationConfig));
+            return Create.MaterialResult(metric.GetType(), materialName, epdName, metric.IResultingPhaseValues(quantityValue, evaluationConfig));
         }
 
         /***************************************************/
@@ -258,12 +261,12 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static List<double> IEvaluateEnvironmentalMetricValues(this EnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig)
+        private static List<double> IResultingPhaseValues(this EnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig)
         {
             if (evaluationConfig == null)   //For case of null config, use default evaluation methodology of phase data value * quantity for each phase
-                return EvaluateEnvironmentalMetricValues(metric, quantityValue);
+                return ResultingPhaseValues(metric, quantityValue);
             else
-                return EvaluateEnvironmentalMetricValues(metric, quantityValue, evaluationConfig as dynamic);
+                return ResultingPhaseValues(metric, quantityValue, evaluationConfig as dynamic);
         }
 
         /***************************************************/
@@ -274,7 +277,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static List<double> EvaluateEnvironmentalMetricValues(this EnvironmentalMetric metric, double quantityValue)
+        private static List<double> ResultingPhaseValues(this EnvironmentalMetric metric, double quantityValue)
         {
             if (metric == null)
             {
@@ -298,7 +301,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static List<double> EvaluateEnvironmentalMetricValues(this EnvironmentalMetric metric, double quantityValue, IStructEEvaluationConfig evaluationConfig)
+        private static List<double> ResultingPhaseValues(this EnvironmentalMetric metric, double quantityValue, IStructEEvaluationConfig evaluationConfig)
         {
             if (metric == null)
             {
@@ -311,7 +314,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 Base.Compute.RecordNote($"The {nameof(IStructEEvaluationConfig)} evaluation is only applicable for evaluating metrics of type {EnvironmentalMetrics.ClimateChangeTotal} and {EnvironmentalMetrics.ClimateChangeTotalNoBiogenic}." +
                                   $"All other metrics are evaluated based on standard evaluation procedure of phase times quantity for all phases.");
-                return EvaluateEnvironmentalMetricValues(metric, quantityValue);
+                return ResultingPhaseValues(metric, quantityValue);
             }
 
             double weight = quantityValue;
@@ -355,11 +358,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static List<double> EvaluateEnvironmentalMetricValues(this EnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig)
+        private static List<double> ResultingPhaseValues(this EnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig)
         {
             BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for evaluation config of type {evaluationConfig}. Results returned are based on default evaluation method of phase values times quantity.");
 
-            return EvaluateEnvironmentalMetricValues(metric, quantityValue);
+            return ResultingPhaseValues(metric, quantityValue);
         }
 
         /***************************************************/
