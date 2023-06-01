@@ -308,6 +308,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 typeof(EutrophicationTRACIMetric),
                 typeof(OzoneDepletionMetric),
                 typeof(PhotochemicalOzoneCreationMetric),
+                typeof(PhotochemicalOzoneCreationCMLMetric),
+                typeof(PhotochemicalOzoneCreationTRACIMetric),
                 typeof(WaterDeprivationMetric)
             };
         }
