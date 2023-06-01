@@ -248,9 +248,9 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             if (metric.MetricType == EnvironmentalMetrics.EutrophicationCML ||
-               metric.MetricType == EnvironmentalMetrics.EutrophicationTRACI ||
-               metric.MetricType == EnvironmentalMetrics.PhotochemicalOzoneCreationCML ||
-               metric.MetricType == EnvironmentalMetrics.PhotochemicalOzoneCreationTRACI)
+                metric.MetricType == EnvironmentalMetrics.EutrophicationTRACI ||
+                metric.MetricType == EnvironmentalMetrics.PhotochemicalOzoneCreationCML ||
+                metric.MetricType == EnvironmentalMetrics.PhotochemicalOzoneCreationTRACI)
             {
                 Base.Compute.RecordWarning($"Please note that the metric of type {metric.MetricType} that is evaluated comes from an older standard and that the resulting values are incompatible in terms of quantity and unit to metrics from the EN 15804+A2 standard.\n" +
                                            $"Resulting values for the metrics can only be compared with other evaluated metrics from the exact same standard.");
