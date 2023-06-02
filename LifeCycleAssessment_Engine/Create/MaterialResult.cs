@@ -41,8 +41,8 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Creates a MaterialResult of a type matched to the provided Type.")]
         [Input("type", "Type used to find which type of MaterialResult to create. Should be a type of EnvironmentalMetric, a type of MaterialResult or a type of ElementResult.")]
-        [Input("epdName", "The name of the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
+        [Input("epdName", "The name of the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
         [Input("resultValues", "The resulting values to be stored on the result. Important that the order of the metrics extracted corresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmingPotential will have an additional property corresponding to BiogenicCarbon.")]
         [Output("result", "The created MaterialResult.")]
         public static MaterialResult MaterialResult(Type type, string materialName, string epdName, List<double> resultValues)

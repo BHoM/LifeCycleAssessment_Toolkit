@@ -4,7 +4,7 @@
 	<TargetFramework>net6.0</TargetFramework>
     <FileVersion>6.2.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
-    <Description>https://github.com/BHoM/BHoM_Engine</Description>
+    <Description>https://github.com/BHoM/LifeCycleAssessment_Toolkit</Description>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -44,6 +44,8 @@
     </Reference>	  
     <Reference Include="BHoM_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
     </Reference>	  
     <Reference Include="Data_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Data_oM.dll</HintPath>
@@ -72,15 +74,23 @@
     </Reference>
     <Reference Include="Matter_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_Engine.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Matter_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Physical_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Serialiser_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Serialiser_Engine.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Structure_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
