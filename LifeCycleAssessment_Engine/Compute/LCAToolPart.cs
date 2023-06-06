@@ -238,13 +238,13 @@ namespace BH.Engine.LifeCycleAssessment
 
             //Renewables
             double c7_renewables = o2_input;                        //available space 
-            double c8_renewables = 6.0;                               //radius
+            double c8_renewables = 6.0;                             //radius
             double c9_renewables = (Math.PI * Math.Sqrt(3) / 6 * c7_renewables) / (Math.PI * (Math.Pow(c8_renewables, 2)));   //maximum value
             double c6_renewables = 1.0;                             //geo factor
-            double c10_renewables = c9_renewables * c6_renewables;  //anzahl sonden _ number of special??
-            double c13_renewables = 100.0;                            //lange der sonde _ length of the special??
-            double c12_renewables = 45.0;                               //specific heat capacity (W/m)
-            double c14_renewables = 1800.0;                           //load hours (h/a)
+            double c10_renewables = c9_renewables * c6_renewables;  //Number of samples
+            double c13_renewables = 100.0;                          //Sample length
+            double c12_renewables = 45.0;                           //specific heat capacity (W/m)
+            double c14_renewables = 1800.0;                         //load hours (h/a)
 
             double g71_syst = 0;
 
@@ -314,11 +314,11 @@ namespace BH.Engine.LifeCycleAssessment
             if (c18_2ndlayer == "Yes")
             {
                 p7_renewables = c5_2ndlayer + c6_2ndlayer;  // waste water personen
-                p8_renewables = 80.0;           //amount of waste water (I/d)l51
-                p10_renewables = 4.19;      //waste water specific energiegehalt wasser (kJ/kgWasser/K)
-                p12_renewables = 10.0;      //waste water temperaturedifferenz heat exchanger (K)
-                p13_renewables = 1.0 / 3600.0;  //waste water conversion (kWh/kJ)
-                p14_renewables = 0.6;       //waste water efficiency heat exchanger
+                p8_renewables = 80.0;                       //amount of waste water (I/d)l51
+                p10_renewables = 4.19;                      //waste water specific energiegehalt wasser (kJ/kgWasser/K)
+                p12_renewables = 10.0;                      //waste water temperaturedifferenz heat exchanger (K)
+                p13_renewables = 1.0 / 3600.0;              //waste water conversion (kWh/kJ)
+                p14_renewables = 0.6;                       //waste water efficiency heat exchanger
                 double p19_renewables = p7_renewables * p8_renewables * p10_renewables * p12_renewables * p13_renewables * p14_renewables * 365 / 1000;     //waste water warmepotential
                 g51_syst = p19_renewables;      //(MWh/a)
             }
