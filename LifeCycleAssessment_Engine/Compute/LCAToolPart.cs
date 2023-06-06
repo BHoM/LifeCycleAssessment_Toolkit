@@ -241,8 +241,8 @@ namespace BH.Engine.LifeCycleAssessment
             double c8_renewables = 6.0;                             //radius
             double c9_renewables = (Math.PI * Math.Sqrt(3) / 6 * c7_renewables) / (Math.PI * (Math.Pow(c8_renewables, 2)));   //maximum value
             double c6_renewables = 1.0;                             //geo factor
-            double c10_renewables = c9_renewables * c6_renewables;  //Number of samples
-            double c13_renewables = 100.0;                          //Sample length
+            double c10_renewables = c9_renewables * c6_renewables;  //Number of samples/probes
+            double c13_renewables = 100.0;                          //Sample/probe length
             double c12_renewables = 45.0;                           //specific heat capacity (W/m)
             double c14_renewables = 1800.0;                         //load hours (h/a)
 
