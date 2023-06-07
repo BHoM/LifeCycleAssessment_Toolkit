@@ -35,38 +35,13 @@ namespace BH.Engine.LifeCycleAssessment
     public static partial class Compute
     {
         [Description("The LCA_tool_part_tostart.py script in c#.")]
-        [Input("filePath", ".")]
-        [Input("c2_input", ".")]
-        [Input("d2_input", ".")]
-        [Input("b2_input", ".")]
-        [Input("e2_input", ".")]
-        [Input("g2_input", ".")]
-        [Input("h2_input", ".")]
-        [Input("f2_input", ".")]
-        [Input("o2_input", ".")]
-        [Input("i2_input", ".")]
-        [Input("j2_input", ".")]
-        [Input("m2_input", ".")]
-        [Input("l2_input", ".")]
-        [Input("w2_input", ".")]
-        [Input("p2_input", ".")]
-        [Input("u2_input", ".")]
-        [Input("t2_input", ".")]
-        [Input("q2_input", ".")]
-        [Input("n2_input", ".")]
-        [Input("s2_input", ".")]
-        [Input("v2_input", ".")]
-        [Input("c5_2ndlayer", ".")]
-        [Input("c6_2ndlayer", ".")]
-        [Input("c18_2ndlayer", ".")]
-        [Output("Success", "has it written to the file?")]
+        [Output("Success", "True if file has successfully been written.")]
         public static bool LCAToolPart(string filePath, int c2_input = 2942, int d2_input = 0, int b2_input = 11768, int e2_input = 0, int g2_input = 0, int h2_input = 50,
             int f2_input = 0, int o2_input = 0, int i2_input = 2942, string j2_input = "New Buildings", int m2_input = 1, int l2_input = 50, int w2_input = 0,
             double p2_input = 0.5, double u2_input = 0, double t2_input = 0, double q2_input = 0.1, string n2_input = "No",
             string s2_input = "Gas BHKW (KWKK)", string v2_input = "Second-Life Lithium", double c5_2ndlayer = 188.288, double c6_2ndlayer = 156.9066667,
             string c18_2ndlayer = "Yes")
         {
-
             double kelvin = 273.15;
 
             //INPUTS
@@ -135,7 +110,6 @@ namespace BH.Engine.LifeCycleAssessment
             double n16_hotwater = 0;
             double n27_hotwater = 0;
 
-
             if (j2_input == "New Buildings")
             {
                 // heating
@@ -166,7 +140,6 @@ namespace BH.Engine.LifeCycleAssessment
             else if (j2_input == "Existing Buildings")
             {
                 // heating
-
                 double production_heating = e19_assumed * d18_area;
                 double office_heating = e20_assumed * e5_area;
                 double research_heating = e21_assumed * g5_area;
@@ -262,7 +235,6 @@ namespace BH.Engine.LifeCycleAssessment
 
             double l71_syst = g71_syst / (1 - 1 / j74_syst);        // heat pump geothermal (MWh/a)
 
-
             double g61_syst = 0;            
             double j7_renewables = 0;
             double j8_renewables = 0;
@@ -330,7 +302,6 @@ namespace BH.Engine.LifeCycleAssessment
             double j54_syst = j53_syst * j52_syst;      //heat pump waste water COPreal
             double l51_syst = g51_syst / (1 - 1.0 / j54_syst);      //heat pump waste water (MWh/a)
             double n47_syst = l71_syst + l61_syst + l51_syst;  //sustainable supply (MWh/a)
-
 
             //New Buildings - heating performance in W/m2
             double k12_assumed = 55.0;      //office
@@ -426,7 +397,6 @@ namespace BH.Engine.LifeCycleAssessment
             double g70_syst = 0;   
             double g60_syst = 0;
             double l70_syst = 0;
-                
 
             if (p44_syst != 0)
             {
@@ -665,7 +635,6 @@ namespace BH.Engine.LifeCycleAssessment
             double inv_battery = d51_ke * g51_ke;                        //battery costs
             Console.WriteLine("inv_battery = " + "   " + inv_battery);
 
-
             //Investment Costs [€] - Local Heat Storage
 
             //calculate j55_ke - local_heat_storage costs
@@ -860,10 +829,9 @@ namespace BH.Engine.LifeCycleAssessment
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Data could not be written to the CSV file.");
+                BH.Engine.Base.Compute.RecordError("Data could not be written to the CSV file.");
                 return false;
             }
-
         }
     }
 }
