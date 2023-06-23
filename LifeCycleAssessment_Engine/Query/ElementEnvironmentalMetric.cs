@@ -37,8 +37,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetElementEnvironmentalMetric(BH.oM.Dimensional.IElementM)")]
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetEnvironmentalMetric(BH.oM.Dimensional.IElementM)")]
         [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
         [Input("elementM", "A IElementM from which to query the EPD.")]
         [Output("environmentalMetric", "An Environmental Metric is used to store data regarding the environmental impacts of a given Environmental Product Declaration. \n"

@@ -37,7 +37,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetElementEpd(BH.oM.Dimensional.IElementM)")]
         [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
         [Input("elementM", "A IElementM from which to query the EPD.")]
         [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
