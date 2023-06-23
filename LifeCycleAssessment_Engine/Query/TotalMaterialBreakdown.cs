@@ -41,7 +41,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.ElementResult>)")]
         [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("elementResults", "The element results to extract the material breakdown from.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
@@ -55,7 +54,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.MaterialResult>)")]
         [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
         [Output("materialResults", "Material results with the total quantity per materal type.")]
