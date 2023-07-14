@@ -15,7 +15,7 @@
     <tags>BHoM object_model AEC lifecycleassessment lifecycle</tags>
     <title></title>
     <dependencies>
-      <group targetFramework=".NetStandard2.0">
+      <group targetFramework="netstandard2.0">
         <dependency id="NETStandard.Library" version="2.0.3" />
         <dependency id="Microsoft.CSharp" version="4.7.0" />
       </group>
