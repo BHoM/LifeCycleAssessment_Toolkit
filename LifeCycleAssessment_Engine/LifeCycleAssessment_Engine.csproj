@@ -5,7 +5,7 @@
     <FileVersion>6.3.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <RootNamespace>BH.Engine.LifeCycleAssessment</RootNamespace>
-    <BaseOutputPath>..\Build\</BaseOutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
   <ItemGroup>
