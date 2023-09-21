@@ -38,7 +38,6 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateProjectLifeCycleAssessment(BH.oM.LifeCycleAssessment.ProjectLifeCycleAssessment, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean)")]
         [Description("This method calculates the total field quantity specified for an entire project or a collection of elements. Metadata included on the ProjectLCA object is not accounted for within this calculation.")]
         [Input("projectLCA", "Project LCA can be used to collect all objects used in an evaluation along with the project's specific metatdata for tracking within a database.")]
         [Input("field", "Filter the provided EnvironmentalProductDeclaration by selecting one of the provided metrics for calculation. This method also accepts multiple fields simultaneously.")]

@@ -1,15 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>https://github.com/BHoM/LifeCycleAssessment_Toolkit</Description>
-    <FileVersion>6.2.0.0</FileVersion>
+    <FileVersion>6.3.0.0</FileVersion>
     <AssemblyVersion>6.0.0.0</AssemblyVersion>
     <RootNamespace>BH.Engine.LifeCycleAssessment</RootNamespace>
-    <BaseOutputPath>..\Build\</BaseOutputPath>
+    <OutputPath>..\Build\</OutputPath>
     <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
@@ -96,9 +94,7 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;$(ProgramData)\BHoM\Assemblies&quot; /Y&#xD;&#xA;if not &quot;$(ConfigurationName)&quot; == &quot;Test&quot; xcopy &quot;$(ProjectDir)\..\DataSets\*.*&quot; &quot;$(ProgramData)\BHoM\DataSets&quot; /Y /I /E" />
   </Target>
-
 </Project>

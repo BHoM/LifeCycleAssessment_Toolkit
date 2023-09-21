@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
  *
@@ -44,8 +44,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateEnvironmentalProductDeclaration(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean)")]
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateElement(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean, System.Collections.Generic.List<BH.oM.Physical.Materials.Material>, System.Boolean)")]
         [Description("Evaluates the EnvironmentalMetrics for the provided element and returns an ElementResult for each evaluated metric type.\n" +
                     "Evaluation is done by extracting the material takeoff for the provided element, giving quantities and Materiality.\n" +
                     "Each Material in the takeoff is then evaluated by finding the EnvironmentalProductDeclaration (EPD), either stored on the material or from the list of template materials.\n" +
@@ -93,7 +91,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateMaterialTakeoff(BH.oM.Physical.Materials.VolumetricMaterialTakeoff, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Boolean)")]
         [Description("Evaluates the materials in the VolumetricMaterialTakeoff and returns a MaterialResult per material in the takeoff. Requires the materials in the Takeoff to have EPDs assigned. Please use the AssignTemplate methods before calling this method.")]
         [Input("materialTakeoff", "The volumetric material takeoff to evaluate.")]
         [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
@@ -197,7 +194,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.EvaluateReferenceValue(System.Double, BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, BH.oM.LifeCycleAssessment.EnvironmentalProductDeclarationField, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.LifeCycleAssessmentPhases>, System.Boolean)")]
         [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
                      "Each metric is evaluated by multiplying the values for each phase by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]

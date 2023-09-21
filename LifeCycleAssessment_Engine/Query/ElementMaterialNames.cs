@@ -36,7 +36,6 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Query.GetElementMaterial(BH.oM.Dimensional.IElementM)")]
         [Description("Query the element's MaterialComposition to form a Material Hint to aid in EPD-Material Mapping.")]
         [Input("elementM", "The IElementM object from which to query the object's material type hint.")]
         [Output("materialHint", "The Material Names found within the MaterialComposition.")]

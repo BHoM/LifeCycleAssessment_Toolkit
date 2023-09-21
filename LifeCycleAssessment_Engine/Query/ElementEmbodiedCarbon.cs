@@ -43,7 +43,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("6.2", "BH.Engine.LifeCycleAssessment.Compute.ElementEmbodiedCarbon(BH.oM.Dimensional.IElementM, System.Collections.Generic.List<BH.oM.Physical.Materials.Material>, System.Boolean)")]
         [Description("Evaluates the embodied carbon on the provided element based on IStructE methodology of evaluation.\n" +
                     "If you would like to evaluate other EPD metrics, please use one of the Query.EnvironmentalResults methods. \n" +
                     "TemplateMaterials can be provided helping with picking the correct EPD corresponding to each material on the element. Please note that this evaluation method only support mass-based EPDs.")]
