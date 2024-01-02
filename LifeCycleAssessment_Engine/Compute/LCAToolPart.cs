@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -57,7 +57,7 @@ namespace BH.Engine.LifeCycleAssessment
             string c23_2ndlayer_input = s2_input;
             string c26_2ndlayer = v2_input;
 
-            //Investment [€] - KG200
+            //Investment [ï¿½] - KG200
             //ke - Cost of Emissions table
 
             //calculate j8_ke Central Heating Infrastructure Costs (KG200 - Central Heating System) Heat Energy Demand in kwh/m2/a
@@ -457,45 +457,45 @@ namespace BH.Engine.LifeCycleAssessment
                 }
             }
 
-            double g8_ke = l34_syst + l40_syst;     //quantität
+            double g8_ke = l34_syst + l40_syst;     //quantitï¿½t
             int d8_ke = 110;                        //spezifischer   
             double j8_ke = d8_ke * g8_ke;           //central heating costs
             Console.WriteLine("j8_ke" + "   " + j8_ke);
 
             //calculate j9_ke - infrastructure EMSR costs (kg200 - central heating)
             int d9_ke = 55;                         //spezifischer 
-            double g9_ke = p43_syst;                //quantität
+            double g9_ke = p43_syst;                //quantitï¿½t
             double j9_ke = d9_ke * g9_ke;           //EMSR costs
 
             Console.WriteLine("j9_ke" + "   " + j9_ke);
 
             //calculate j10_ke - infrastructure storage tank costs (kg200 - central heating)
             int d10_ke = 6640;                      //spezifischer
-            double g10_ke = c9_2ndlayer;            //quantität
+            double g10_ke = c9_2ndlayer;            //quantitï¿½t
             double j10_ke = d10_ke * g10_ke;        //storage tank costs
             Console.WriteLine("j10_ke" + "   " + j10_ke);
 
             //calculate j11_ke - infrastructure mains connection costs (kg200 - central heating)
             int d11_ke = 3500;                      //spezifischer
-            double g11_ke = c9_2ndlayer;            //quantität
+            double g11_ke = c9_2ndlayer;            //quantitï¿½t
             double j11_ke = d11_ke * g11_ke;        //mains connection costs
             Console.WriteLine("j11_ke" + "   " + j11_ke);
 
             //calculate j13_ke - infrastructure line DN100 costs (kg200 - central heating)
             int d13_ke = 215;                       //spezifischer
-            double g13_ke = c8_2ndlayer * 0.09;     //quantität
+            double g13_ke = c8_2ndlayer * 0.09;     //quantitï¿½t
             double j13_ke = d13_ke * g13_ke;        //low-ex network line DN100 costs
             Console.WriteLine("j13_ke" + "   " + j13_ke);
 
             //calculate j14_ke - infrastructure line DN150 costs (kg200 - central heating)
             int d14_ke = 286;                       //spezifischer
-            double g14_ke = c8_2ndlayer * 0.5;      //quantität
+            double g14_ke = c8_2ndlayer * 0.5;      //quantitï¿½t
             double j14_ke = d14_ke * g14_ke;        //low-ex network line DN150 costs
             Console.WriteLine("j14_ke" + "   " + j14_ke);
 
             //calculate j15_ke - infrastructure line DN300 costs (kg200 - central heating)
             double d15_ke = 550;                    //spezifischer
-            double g15_ke = c8_2ndlayer * 0.41;     //quantität
+            double g15_ke = c8_2ndlayer * 0.41;     //quantitï¿½t
             double j15_ke = d15_ke * g15_ke;        //low-ex network line DN300 costs
             Console.WriteLine("j15_ke" + "   " + j15_ke);
 
@@ -505,20 +505,20 @@ namespace BH.Engine.LifeCycleAssessment
             double j16_ke = d16_ke * g16_ke;        //low-ex network kernbohrungen costs
             Console.WriteLine("j16_ke" + "   " + j16_ke);
 
-            //calculate j17_ke - infrastructure low-ex network demand for local heating network according to § 18 KWKG costs (kg200 - central heating)
+            //calculate j17_ke - infrastructure low-ex network demand for local heating network according to ï¿½ 18 KWKG costs (kg200 - central heating)
             double d17_ke = 0.3;                    //spezifischer
-            double j17_ke = (j13_ke + j14_ke + j15_ke + j16_ke) * d17_ke * (-1);    //low-ex network demand for local heating network according to § 18 KWKG costs
+            double j17_ke = (j13_ke + j14_ke + j15_ke + j16_ke) * d17_ke * (-1);    //low-ex network demand for local heating network according to ï¿½ 18 KWKG costs
             Console.WriteLine("j17_ke" + "   " + j17_ke);
 
             //calculate j20_ke - energy source BHKW costs (kg200 - central heating)
             double d20_ke = 950;                    //spezifischer
-            double g20_ke = j28_syst;               //quantität
+            double g20_ke = j28_syst;               //quantitï¿½t
             double j20_ke = d20_ke * g20_ke;        //Energy source BHKW costs
             Console.WriteLine("j20_ke" + "   " + j20_ke);
 
             //calculate j22_ke - energy source waste water costs (kg200 - central heating)
             double d22_ke = 800;                    //spezifischer
-            double g22_ke = l50_syst;               //quantität
+            double g22_ke = l50_syst;               //quantitï¿½t
             double j22_ke = d22_ke * g22_ke;        //energy source waste water costs
             Console.WriteLine("j22_ke" + "   " + j22_ke);
 
@@ -529,19 +529,19 @@ namespace BH.Engine.LifeCycleAssessment
 
             //calculate j27_ke - energy source solar energy costs (kg200 - central heating)
             double d27_ke = 300;                    //spezifischer
-            double g27_ke = j7_renewables;          //quantität
+            double g27_ke = j7_renewables;          //quantitï¿½t
             double j27_ke = d27_ke * g27_ke;        //energy source solar energy costs
             Console.WriteLine("j27_ke" + "   " + j27_ke);
 
             //calculate j30_ke - energy source geothermal costs (kg200 - central heating)
             double d30_ke = 2400;                   //spezifischer
-            double g30_ke = g70_syst;               //quantität
+            double g30_ke = g70_syst;               //quantitï¿½t
             double j30_ke = d30_ke * g30_ke;        //energy source geothermal costs
             Console.WriteLine("j30_ke" + "   " + j30_ke);
 
             //calculate j31_ke - energy source heat pump central costs (kg200 - central heating)
             double d31_ke = 8000 / 20;              //spezifischer
-            double g31_ke = l50_syst + l60_syst + l70_syst + l40_syst;   //quantität
+            double g31_ke = l50_syst + l60_syst + l70_syst + l40_syst;   //quantitï¿½t
             double j31_ke = d31_ke * g31_ke;        //energy source heat pump central costs
             Console.WriteLine("j31_ke" + "   " + j31_ke);
 
@@ -549,11 +549,11 @@ namespace BH.Engine.LifeCycleAssessment
 
             Console.WriteLine("sum_inv_kg200 = " + "   " + sum_inv_kg200);
 
-            //Investment Costs [€] - KG400-Technology
+            //Investment Costs [ï¿½] - KG400-Technology
 
             //calculate j34_ke - increasing heat pump decentralise costs (kg400 - decentralised facilities)
             double d34_ke = 6000.0 / 20.0;          //spezifischer
-            double g34_ke = (ae48_syst + ae57_syst + ae66_syst) / 5000.0 * 1000.0; //quantität
+            double g34_ke = (ae48_syst + ae57_syst + ae66_syst) / 5000.0 * 1000.0; //quantitï¿½t
             double j34_ke = d34_ke * g34_ke;        //increasing heat pump decentralise costs
 
             //calculate j35_ke - building TGA pro m2 BGF costs (kg400 - decentralised facilities)
@@ -573,7 +573,7 @@ namespace BH.Engine.LifeCycleAssessment
                 n25_area = d5_area + e5_area + g5_area + h5_area + i5_area + j5_area + k5_area + l5_area;
             }
 
-            double g35_ke = n15_area;           //quantität
+            double g35_ke = n15_area;           //quantitï¿½t
             double j35_ke = d35_ke * g35_ke;    //building TGA pro m2 BGF costs
 
             //calculate j38_ke - installation costs (electricity grid)
@@ -584,7 +584,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (c10_2ndlayer == "Yes")     
             {
-                g38_ke = 1;  //quantität
+                g38_ke = 1;  //quantitï¿½t
             }
 
             double j38_ke = d38_ke * g38_ke;     //installation costs
@@ -592,16 +592,16 @@ namespace BH.Engine.LifeCycleAssessment
             double sum_inv_kg400 = j34_ke + j35_ke + j38_ke;
             Console.WriteLine("sum_inv_kg400 = " + "   " + sum_inv_kg400);
 
-            //Investment Costs [€] - wind_power
+            //Investment Costs [ï¿½] - wind_power
 
             //calculate j44_ke - wind_power offshore costs (wind_power)
             double d44_ke = 3500.0;                     //spezifischer
-            double g44_ke = c22_2ndlayer * 1000.0;      //quantität
+            double g44_ke = c22_2ndlayer * 1000.0;      //quantitï¿½t
             double inv_wind_power = d44_ke * g44_ke;    //wind_power offshore costs
             Console.WriteLine("inv_wind_power = " + "   " + inv_wind_power);
 
 
-            //Investment Costs [€] - PV
+            //Investment Costs [ï¿½] - PV
 
             //calculate j48_ke - PV total costs (PV)
             double d48_ke = 1200.0;       //spezifischer
@@ -626,7 +626,7 @@ namespace BH.Engine.LifeCycleAssessment
             double inv_pv = d48_ke * g48_ke;            //total pv costs
             Console.WriteLine("inv_pv = " + "   " + inv_pv);
 
-            //Investment Costs [€] - Battery
+            //Investment Costs [ï¿½] - Battery
 
             //calculate j51_ke - battery tesia powerpacks costs
             double d51_ke = 55000.0;                                     //spezifischer
@@ -635,7 +635,7 @@ namespace BH.Engine.LifeCycleAssessment
             double inv_battery = d51_ke * g51_ke;                        //battery costs
             Console.WriteLine("inv_battery = " + "   " + inv_battery);
 
-            //Investment Costs [€] - Local Heat Storage
+            //Investment Costs [ï¿½] - Local Heat Storage
 
             //calculate j55_ke - local_heat_storage costs
             double d55_ke = 16000 / 10;                                                     //spezifischer
@@ -643,12 +643,12 @@ namespace BH.Engine.LifeCycleAssessment
             double radius_tank = 1.5;                                          
             double height = 7;                                                
             double n7_local_heat_storage = height * Math.PI * Math.Pow(radius_tank, 2);     //was originally n7_local_heat_storage = height* pi*radius_tank**2
-            double g55_ke = n4_local_heat_storage * n7_local_heat_storage;                  //quantität (m3)
+            double g55_ke = n4_local_heat_storage * n7_local_heat_storage;                  //quantitï¿½t (m3)
             double inv_local_heat_storage = d55_ke * g55_ke;                                //local_heat_storage costs
             Console.WriteLine("inv_local_heat_storage =" + "   " + inv_local_heat_storage);
 
 
-            //Investment Costs [€] - Total
+            //Investment Costs [ï¿½] - Total
 
             //calculate Investment Costs total
             double inv_total = sum_inv_kg200 + sum_inv_kg400 + inv_wind_power + inv_pv + inv_battery + inv_local_heat_storage;
@@ -658,28 +658,28 @@ namespace BH.Engine.LifeCycleAssessment
 
             //calculate s8_ke - infrastructure central heating embodied emissions (kg200 - central heating)
             double p8_ke = 1.53;                        //specific embodied emissions
-            double n8_ke = n15_area + n25_area;         //quantität
+            double n8_ke = n15_area + n25_area;         //quantitï¿½t
             double s8_ke = p8_ke * n8_ke / 1000.0;      //infrastructure central heating embodied emissions
 
             //calculate s9_ke - infrastructure EMSR embodied emissions (kg200 - central heating)
             double p9_ke = 12.7;                        //specific embodied emissions
-            double n9_ke = n8_ke;                       //quantität
+            double n9_ke = n8_ke;                       //quantitï¿½t
             double s9_ke = p9_ke * n9_ke / 1000.0;      //infrastructure EMSR embodied emissions
 
             //calculate s10_ke - infrastructure storage tank embodied emissions (kg200 - central heating)
             double p10_ke = 3.5;                        //specific embodied emissions
-            double n10_ke = g10_ke * 2000.0;            //quantität
+            double n10_ke = g10_ke * 2000.0;            //quantitï¿½t
             double s10_ke = p10_ke * n10_ke / 1000.0;   //infrastructure storage tank embodied emissions
 
             //calculate s12_ke - infrastructure low-ex netwerk embodied emissions (kg200 - central heating)
             double p12_ke = 1260.0;                     //specific embodied emissions
             double g12_ke = c8_2ndlayer;                
-            double n12_ke = g12_ke;                     //quantität
+            double n12_ke = g12_ke;                     //quantitï¿½t
             double s12_ke = p12_ke * n12_ke / 1000.0;   //infrastructure low-ex netwerk embodied emissions
 
             //calculate s20_ke - energy source BHKW embodied emissions (kg200 - central heating)
             double p20_ke = 2180.0 / 8.0 / 2.0;         //specific embodied emissions
-            double n20_ke = g20_ke;                     //quantität
+            double n20_ke = g20_ke;                     //quantitï¿½t
             double s20_ke = p20_ke * n20_ke / 1000.0;   //energy source BHKW embodied emissions
 
             //calculate s22_ke - energy source waste water embodied emissions (kg220 - central heating)
@@ -692,7 +692,7 @@ namespace BH.Engine.LifeCycleAssessment
             double p27_ke = 155.0;                                  //specific embodied emissions
             j7_renewables = (p25_area + p15_area) * c21_2ndlayer;   
             j8_renewables = 1.0;                                    //utilisation factor solar energy
-            double n27_ke = j7_renewables * j8_renewables;          //quantität
+            double n27_ke = j7_renewables * j8_renewables;          //quantitï¿½t
             double s27_ke = p27_ke * n27_ke / 1000.0;               //energy source solar energy embodied emissions
 
             //calculate s30_ke - energy source geothermal embodied emissions (kg300 - central heating)
@@ -702,13 +702,13 @@ namespace BH.Engine.LifeCycleAssessment
             double n30_ke = 0;
             if (n8_ke != 0)
             {
-                n30_ke = c10_renewables * c13_renewables;   //quantität
+                n30_ke = c10_renewables * c13_renewables;   //quantitï¿½t
             }
             double s30_ke = p30_ke * n30_ke / 1000.0;       //energy source geothermal embodied emissions
 
             //calculate s31_ke - energy source heat pump central embodied emissions
             double p31_ke = 2180.0 / 8.0;                               //specific embodied emissions
-            double n31_ke = l50_syst + l60_syst + l70_syst + l40_syst;  //quantität
+            double n31_ke = l50_syst + l60_syst + l70_syst + l40_syst;  //quantitï¿½t
             double s31_ke = p31_ke * n31_ke / 1000.0;                   //energy source heat pump central embodied emissions
             double embodied_thg_em_kg200 = s8_ke + s9_ke + s10_ke + s12_ke + s20_ke + s22_ke + s27_ke + s30_ke + s31_ke;        //embodied_thg_em_kg200 - Embodied THG Emissions [tCO2e] - KG200
             Console.WriteLine("embodied_thg_em_kg200 = " + "   " + embodied_thg_em_kg200);
@@ -717,13 +717,13 @@ namespace BH.Engine.LifeCycleAssessment
 
             //calculate s34_ke - increasing heat pump decentral embodied emissions
             double p34_ke = 2910.0 / 8.0;                                           //specific embodied emissions
-            double n34_ke = (ae48_syst + ae57_syst + ae66_syst) / 5000.0 * 1000.0;  //quantität
+            double n34_ke = (ae48_syst + ae57_syst + ae66_syst) / 5000.0 * 1000.0;  //quantitï¿½t
             double s34_ke = p34_ke * n34_ke / 1000.0;                               //increasing heat pump decentral
 
             //calculate s35_ke - building embodied emissions
 
             double p35_ke = 3.07 + 6.06;                    //specific embodied emissions
-            double n35_ke = n15_area + n25_area;            //quantität
+            double n35_ke = n15_area + n25_area;            //quantitï¿½t
             double s35_ke = p35_ke * n35_ke / 1000.0;       //building embodied emissions
 
             double embodied_thg_em_kg400 = s34_ke + s35_ke; //embodied_thg_em_kg400 - Embodied THG Emissions [tCO2e] - KG400-Technology
@@ -731,14 +731,14 @@ namespace BH.Engine.LifeCycleAssessment
 
             // Embodied THG Emissions [tCO2e] - wind_power
             double p44_ke = 1600.0 / 3.0;           //spezifischer
-            double n44_ke = c22_2ndlayer;           //quantität
+            double n44_ke = c22_2ndlayer;           //quantitï¿½t
             double s44_ke = p44_ke * n44_ke;        //embodied emissions - wind_power
             double embodied_thg_em_wind = s44_ke;
             Console.WriteLine("embodied_thg_em_wind = " + "   " + embodied_thg_em_wind);
 
             //Embodied THG Emissions [tCO2e] - PV
             double p48_ke = 2080.0;                     //spezifischer
-            double n48_ke = c9_solar;                   //quantität
+            double n48_ke = c9_solar;                   //quantitï¿½t
             double s48_ke = p48_ke * n48_ke / 1000.0;   //embodied emissions - PV total
             double embodied_thg_em_pv = s48_ke;
             Console.WriteLine("embodied_thg_em_pv = " + "   " + embodied_thg_em_pv);
@@ -765,7 +765,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             //Embodied THG Emissions [tCO2e] - Local Heat Storage
             double p55_ke = 540.0 / 4.0 * 3.51;                             //spezifischer, 3.51 - stahlblech verzinkt
-            double n55_ke = n4_local_heat_storage * n7_local_heat_storage;  //quantität
+            double n55_ke = n4_local_heat_storage * n7_local_heat_storage;  //quantitï¿½t
             double embodied_thg_em_nahw = p55_ke * n55_ke / 1000.0;
 
             Console.WriteLine("embodied_thg_em_nahw = " + "   " + embodied_thg_em_nahw);
