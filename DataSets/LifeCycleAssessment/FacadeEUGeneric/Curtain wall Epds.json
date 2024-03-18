@@ -636,7 +636,10 @@
             ]
         }
     ],
-    "BHoM_Guid": "f58f8d44-405a-45a2-bfe7-1b19edbbdf36",
-    "Name": "Curtain wall Epds.json",
+    "BHoM_Guid": "cd339e2f-5222-4d55-9ba3-6875130318fe",
+    "Name": "Curtain wall Epds",
+    "Fragments": [],
+    "Tags": [],
+    "CustomData": {},
     "_bhomVersion": "7.1"
 }
