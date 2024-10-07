@@ -46,23 +46,23 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("metric", "The created EnvironmentalMetric.")]
         public static EnvironmentalMetric EnvironmentalMetric(Type type, string name, List<double> metricValues)
         {
-            //Get the constructor for the material result of the type corresponding to the metric currently being evaluated
-            //This is done by finding the MaterialResult with matching name and exatracting the constructor from it
+            //Get the constructor for the material metric of the type corresponding to the metric currently being evaluated
+            //This is done by finding the EnvironmentalMetric with matching name and exatracting the constructor from it
             //The constructor is pre-compiled to a function to speed up the execution of the particular method
-            Func<object[], EnvironmentalMetric> cst = MaterialResultConstructor(type);
+            Func<object[], EnvironmentalMetric> cst = EnvironmentalMetricConstructor(type);
 
-            //Collect all the relevant data for constructor (essentailly, all properties for the result in correct order)
-            //First two parameters of all MaterialResults should always be name of the material and name of the EPD
-            List<object> parameters = new List<object> { materialName, epdName };
             //Add the rest of the evaluation metrics
             //For most cases this will be the phases 
             //Imporant that the order of the metrics extracted cooresponds to the order of the constructor
             //General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated
-            //For example, GlobalWarmpingPotential will have an additional property corresponding to BiogenicCarbon
-            parameters.AddRange(resultValues.Cast<object>());  //Gets the resulting final metrics for each phase from the metric
+            object[] parameters = metricValues.Cast<object>().ToArray();  //Gets the resulting final metrics for each phase from the metric
 
             //Call the constructor function
-            return cst(parameters.ToArray());
+            EnvironmentalMetric metric = cst(parameters);
+
+            //Set the name. Done separately as not part opf the constructor
+            metric.Name = name;
+            return metric;
         }
 
         /***************************************************/
