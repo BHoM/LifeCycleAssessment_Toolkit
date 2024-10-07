@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("a4Value", "The value for the A4 stage to be assigned to relevant climateChange metrics on the Metrics provider.", typeof(ClimateChangePerQuantity))]
         [Input("metricType", "Metric filter to assign A4 value to. For default undefined case, ClimateChangeFossilMetric, ClimateChangeTotalMetric and ClimateChangeTotalNoBiogenicMetric will have their values updated to the provided value.")]
         [Output("lcaImpactFactors", "CalculatedMaterialLifeCycleEnvironmentalImpactFactors with metrics copied from the provided metricsProvider, with a4 value updated to the provided A4 value.")]
-        public static CalculatedMaterialLifeCycleEnvironmentalImpactFactors SetClimateChangeA4(IEnvironmentalMetricsProvider metricsProvider, double a4Value, EnvironmentalMetrics metricType = EnvironmentalMetrics.Undefined)
+        public static CalculatedMaterialLifeCycleEnvironmentalImpactFactors SetClimateChangeA4(this IEnvironmentalMetricsProvider metricsProvider, double a4Value, EnvironmentalMetrics metricType = EnvironmentalMetrics.Undefined)
         {
             if (metricsProvider == null)
             {
