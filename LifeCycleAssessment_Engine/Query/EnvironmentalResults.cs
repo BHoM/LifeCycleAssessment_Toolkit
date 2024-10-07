@@ -118,16 +118,44 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 TakeoffItem takeoffItem = mappedTakeoff.MaterialTakeoffItems[i];
                 Material material = takeoffItem.Material;
-                EnvironmentalProductDeclaration epd = material.Properties.OfType<EnvironmentalProductDeclaration>().FirstOrDefault();
+                List<IEnvironmentalMetricsProvider> metricProviders = material.Properties.OfType<IEnvironmentalMetricsProvider>().ToList();
 
-                if (epd == null)
+                if (metricProviders.Count == 0)
+                {
+                    Base.Compute.RecordError($"{nameof(EnvironmentalProductDeclaration)} or {nameof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors)} not set to material {material.Name}. Unable to evaluate element.");
+                    return null;
+                }
+
+                IEnvironmentalMetricsProvider metricProvider;
+                if (metricProviders.Count == 1)
+                {
+                    metricProvider = metricProviders[0];
+                }
+                else
+                {
+                    //If more than one metric provider is present, check if any CalculatedMaterialLifeCycleEnvironmentalImpactFactors exists. If at least one does, use it over any potential EPD.
+                    //If no CalculatedMaterialLifeCycleEnvironmentalImpactFactors exist, simply take the first avilable
+                    CalculatedMaterialLifeCycleEnvironmentalImpactFactors calcImpactFactors = metricProviders.OfType<CalculatedMaterialLifeCycleEnvironmentalImpactFactors>().FirstOrDefault();
+                    if (calcImpactFactors != null)
+                    {
+                        metricProvider = calcImpactFactors;
+                    }
+                    else
+                    {
+                        metricProvider = metricProviders.First();
+                    }
+                    BH.Engine.Base.Compute.RecordNote($"More than one EnvironmentalMetricsProvider found on material named {material.Name}. Metric provider of type {metricProvider.GetType().Name} with name {metricProvider.Name} used for evaluation.");
+                }
+
+
+                if (metricProvider == null)
                 {
                     Base.Compute.RecordError($"EPD not set to material {material.Name}. Unable to evaluate element.");
                     return null;
                 }
 
                 double quantityValue;
-                switch (epd.QuantityType)
+                switch (metricProvider.QuantityType)
                 {
                     case QuantityType.Volume:
                         quantityValue = takeoffItem.Volume;
@@ -146,7 +174,7 @@ namespace BH.Engine.LifeCycleAssessment
                                 {
                                     //Keeping support for backwards compability for old workflows relying epd density assigned as fragments to EPDS
                                     //Generally not recomended to work with this fragment
-                                    EPDDensity epdDensity = epd.FindFragment<EPDDensity>();
+                                    EPDDensity epdDensity = metricProvider.FindFragment<EPDDensity>();
                                     if (epdDensity != null)
                                         density = epdDensity.Density;
                                 }
@@ -179,14 +207,14 @@ namespace BH.Engine.LifeCycleAssessment
                         break;
                     case QuantityType.Undefined:
                     default:
-                        Base.Compute.RecordError($"{epd.QuantityType} QuantityType is currently not supported.");
+                        Base.Compute.RecordError($"{metricProvider.QuantityType} QuantityType is currently not supported.");
                         return null;
                 }
 
                 if (double.IsNaN(quantityValue))
-                    BH.Engine.Base.Compute.RecordError($"{epd.QuantityType} is NaN on MaterialTakeoff and will result in NaN result when evaluating epd named {epd.Name}");
+                    BH.Engine.Base.Compute.RecordError($"{metricProvider.QuantityType} is NaN on MaterialTakeoff and will result in NaN result when evaluating epd named {metricProvider.Name}");
 
-                materialResults.AddRange(EnvironmentalResults(epd, quantityValue, material.Name, metricFilter, evaluationConfig));
+                materialResults.AddRange(EnvironmentalResults(metricProvider, quantityValue, material.Name, metricFilter, evaluationConfig));
             }
 
             return materialResults;
@@ -194,6 +222,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.EnvironmentalResults(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, System.Double, System.String, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.EnvironmentalMetrics>, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig)")]
         [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
                      "Each metric is evaluated by multiplying the values for each phase by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]
@@ -204,11 +233,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this IEnvironmentalMetricsProvider epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (epd == null)
             {
-                Base.Compute.RecordError($"Cannot evaluate a null {nameof(EnvironmentalProductDeclaration)}.");
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(IEnvironmentalMetricsProvider)}.");
                 return null;
             }
 
@@ -374,7 +403,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods - Validation              ****/
         /***************************************************/
 
-        private static bool IValidateConfig(IEvaluationConfig config, EnvironmentalProductDeclaration epd)
+        private static bool IValidateConfig(IEvaluationConfig config, IEnvironmentalMetricsProvider epd)
         {
             if (config == null) //Null config is valid, as default case of evaluation is assumed for provided null config.
                 return true;
@@ -384,7 +413,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static bool ValidateConfig(IStructEEvaluationConfig config, EnvironmentalProductDeclaration epd)
+        private static bool ValidateConfig(IStructEEvaluationConfig config, IEnvironmentalMetricsProvider epd)
         {
             bool valid = epd.QuantityType == QuantityType.Mass;
 
@@ -397,7 +426,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods - Validation - Fallback   ****/
         /***************************************************/
 
-        private static bool ValidateConfig(IEvaluationConfig config, EnvironmentalProductDeclaration epd)
+        private static bool ValidateConfig(IEvaluationConfig config, IEnvironmentalMetricsProvider epd)
         {
             return true;    //Default to true for fallback
         }

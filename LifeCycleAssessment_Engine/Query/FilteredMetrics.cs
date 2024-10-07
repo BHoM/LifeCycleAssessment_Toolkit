@@ -38,12 +38,19 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.FilteredMetrics(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.EnvironmentalMetrics>)")]
         [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD are returned.")]
         [Input("epd", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
         [Input("metricFilter", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the EPD are returned.")]
         [Output("materics", "The metrics on the EnvironmentalProductDeclaration corresponding to the provided filter, or all metrics on the epd if no metricType filters are provided.")]
-        public static List<EnvironmentalMetric> FilteredMetrics(this EnvironmentalProductDeclaration epd, List<EnvironmentalMetrics> metricFilter = null)
+        public static List<EnvironmentalMetric> FilteredMetrics(this IEnvironmentalMetricsProvider epd, List<EnvironmentalMetrics> metricFilter = null)
         {
+            if(epd == null) 
+            {
+                BH.Engine.Base.Compute.RecordError($"Cannot extract null metrics from a null {nameof(IEnvironmentalMetricsProvider)}.");
+                return new List<EnvironmentalMetric>();
+            }
+
             if (metricFilter == null || metricFilter.Count == 0)
                 return epd.EnvironmentalMetrics;
 
@@ -55,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (metric != null)
                     metrics.Add(metric);
                 else
-                    Base.Compute.RecordError($"{nameof(EnvironmentalProductDeclaration)} named {epd.Name} does not contain a {nameof(EnvironmentalMetric)} of type {type}.");
+                    Base.Compute.RecordError($"{epd.GetType().Name} named {epd.Name} does not contain a {nameof(EnvironmentalMetric)} of type {type}.");
             }
 
             return metrics;
