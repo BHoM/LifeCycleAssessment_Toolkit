@@ -38,12 +38,12 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Method takes an EnvironmentalProductDeclaration or an CalculatedMaterialLifeCycleEnvironmentalImpactFactors and sets the A4 value to selected CLimateChange metrics. A new CalculatedMaterialLifeCycleEnvironmentalImpactFactors is returned with the modified metrics assigned.")]
-        [Input("metricsProvider", "")]
-        [Input("a4Value", "The value for the A4 stage to be assigned to relevant climateChange metrics on the Metrics provider.", typeof(ClimateChangePerQuantity))]
+        [Description("Method takes an EnvironmentalProductDeclaration or an CalculatedMaterialLifeCycleEnvironmentalImpactFactors and sets the A4 value to selected metrics. A new CalculatedMaterialLifeCycleEnvironmentalImpactFactors is returned with the modified metrics assigned.")]
+        [Input("metricsProvider", "EPD or impact factors object to set A4 values to.")]
+        [Input("a4Value", "The value for the A4 stage to be assigned to relevant metrics on the Metrics provider.")]
         [Input("metricType", "Metric filter to assign A4 value to. For default undefined case, ClimateChangeFossilMetric, ClimateChangeTotalMetric and ClimateChangeTotalNoBiogenicMetric will have their values updated to the provided value.")]
         [Output("lcaImpactFactors", "CalculatedMaterialLifeCycleEnvironmentalImpactFactors with metrics copied from the provided metricsProvider, with a4 value updated to the provided A4 value.")]
-        public static CalculatedMaterialLifeCycleEnvironmentalImpactFactors SetClimateChangeA4(this IEnvironmentalMetricsProvider metricsProvider, double a4Value, EnvironmentalMetrics metricType = EnvironmentalMetrics.Undefined)
+        public static CalculatedMaterialLifeCycleEnvironmentalImpactFactors SetA4(this IEnvironmentalMetricsProvider metricsProvider, double a4Value, EnvironmentalMetrics metricType = EnvironmentalMetrics.Undefined)
         {
             if (metricsProvider == null)
             {
@@ -54,35 +54,11 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<EnvironmentalMetrics> applicableMetricsTypes;
 
-            switch (metricType)
-            {
-                case EnvironmentalMetrics.Undefined:
-                    applicableMetricsTypes = new List<EnvironmentalMetrics> { EnvironmentalMetrics.ClimateChangeFossil, EnvironmentalMetrics.ClimateChangeTotal, EnvironmentalMetrics.ClimateChangeTotalNoBiogenic };
-                    break;
-                case EnvironmentalMetrics.ClimateChangeBiogenic:
-                case EnvironmentalMetrics.ClimateChangeFossil:
-                case EnvironmentalMetrics.ClimateChangeLandUse:
-                case EnvironmentalMetrics.ClimateChangeTotal:
-                case EnvironmentalMetrics.ClimateChangeTotalNoBiogenic:
-                    applicableMetricsTypes = new List<EnvironmentalMetrics> { metricType };
-                    break;
-                case EnvironmentalMetrics.AbioticDepletionFossilResources:
-                case EnvironmentalMetrics.AbioticDepletionMineralsAndMetals:
-                case EnvironmentalMetrics.Acidification:
-                case EnvironmentalMetrics.EutrophicationCML:
-                case EnvironmentalMetrics.EutrophicationAquaticFreshwater:
-                case EnvironmentalMetrics.EutrophicationAquaticMarine:
-                case EnvironmentalMetrics.EutrophicationTerrestrial:
-                case EnvironmentalMetrics.EutrophicationTRACI:
-                case EnvironmentalMetrics.OzoneDepletion:
-                case EnvironmentalMetrics.PhotochemicalOzoneCreation:
-                case EnvironmentalMetrics.PhotochemicalOzoneCreationCML:
-                case EnvironmentalMetrics.PhotochemicalOzoneCreationTRACI:
-                case EnvironmentalMetrics.WaterDeprivation:
-                default:
-                    BH.Engine.Base.Compute.RecordError($"Metric of type {metricType} is not supported. For A4 climate change assignement.");
-                    return null;
-            }
+            if (metricType == EnvironmentalMetrics.Undefined)
+                applicableMetricsTypes = new List<EnvironmentalMetrics> { EnvironmentalMetrics.ClimateChangeFossil, EnvironmentalMetrics.ClimateChangeTotal, EnvironmentalMetrics.ClimateChangeTotalNoBiogenic };
+            else
+                applicableMetricsTypes = new List<EnvironmentalMetrics> { metricType };
+
 
             CalculatedMaterialLifeCycleEnvironmentalImpactFactors impactFactors = new CalculatedMaterialLifeCycleEnvironmentalImpactFactors()
             {
