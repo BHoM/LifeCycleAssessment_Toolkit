@@ -43,12 +43,12 @@ namespace BH.Engine.LifeCycleAssessment
         + "An EPD can host multiple EnvironmentalMetrics to describe the overall impact which will be used in any LCA calculation.")]
         public static List<List<EnvironmentalMetric>> ElementEnvironmentalMetrics(this IElementM elementM)
         {
-            List<IEnvironmentalMetricsProvider> epd = elementM.ElementEpds();
+            List<IEnvironmentalMetricsProvider> metricsProvider = elementM.ElementEnvironmentalMetricProviders();
 
-            if (epd == null || epd.Count == 0)
+            if (metricsProvider == null || metricsProvider.Count == 0)
                 return new List<List<EnvironmentalMetric>>();
 
-            List<List<EnvironmentalMetric>> metric = epd.Select(x => x.EnvironmentalMetrics).ToList();
+            List<List<EnvironmentalMetric>> metric = metricsProvider.Select(x => x.EnvironmentalMetrics).ToList();
 
             if (metric.Count() <= 0)
             {

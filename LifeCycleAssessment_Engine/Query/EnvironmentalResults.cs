@@ -212,7 +212,7 @@ namespace BH.Engine.LifeCycleAssessment
                 }
 
                 if (double.IsNaN(quantityValue))
-                    BH.Engine.Base.Compute.RecordError($"{metricProvider.QuantityType} is NaN on MaterialTakeoff and will result in NaN result when evaluating epd named {metricProvider.Name}");
+                    BH.Engine.Base.Compute.RecordError($"{metricProvider.QuantityType} is NaN on MaterialTakeoff and will result in NaN result when evaluating {metricProvider.GetType().Name} named {metricProvider.Name}");
 
                 materialResults.AddRange(EnvironmentalResults(metricProvider, quantityValue, material.Name, metricFilter, evaluationConfig));
             }
@@ -222,33 +222,34 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousInputNames("metricsProvider", "epd")]
         [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.EnvironmentalResults(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, System.Double, System.String, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.EnvironmentalMetrics>, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig)")]
         [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
                      "Each metric is evaluated by multiplying the values for each phase by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]
-        [Input("epd", "The EnvironmentalProductDeclaration to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
+        [Input("metricsProvider", "The EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this IEnvironmentalMetricsProvider epd, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this IEnvironmentalMetricsProvider metricsProvider, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
-            if (epd == null)
+            if (metricsProvider == null)
             {
                 Base.Compute.RecordError($"Cannot evaluate a null {nameof(IEnvironmentalMetricsProvider)}.");
                 return null;
             }
 
-            if (!IValidateConfig(evaluationConfig, epd))
+            if (!IValidateConfig(evaluationConfig, metricsProvider))
                 return new List<MaterialResult>();
 
             List<MaterialResult> results = new List<MaterialResult>();
 
-            foreach (EnvironmentalMetric metric in epd.FilteredMetrics(metricFilter))
+            foreach (EnvironmentalMetric metric in metricsProvider.FilteredMetrics(metricFilter))
             {
-                results.Add(EnvironmentalResults(metric, epd.Name, materialName, quantityValue, evaluationConfig));
+                results.Add(EnvironmentalResults(metric, metricsProvider.Name, materialName, quantityValue, evaluationConfig));
             }
 
             return results;
@@ -259,7 +260,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Evaluates the EnvironmentalMetric and returns a MaterialResult of a type corresponding to the metric. The evaluation is done by multiplying all phase data on the metric by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
         [Input("metric", "The EnvironmentalMetric to evaluate. Returned result will be a MaterialResult of a type corresponding to the metric.")]
-        [Input("epdName", "The name of the EnvironmentalProductDeclaration that owns the EnvironmentalMetric. Stored as an identifier on the returned result class.")]
+        [Input("epdName", "The name of the IEnvironmentalMetricsProvider (EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors) that owns the EnvironmentalMetric. Stored as an identifier on the returned result class.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result class.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times quantity.")]
@@ -403,22 +404,22 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods - Validation              ****/
         /***************************************************/
 
-        private static bool IValidateConfig(IEvaluationConfig config, IEnvironmentalMetricsProvider epd)
+        private static bool IValidateConfig(IEvaluationConfig config, IEnvironmentalMetricsProvider metricsProvider)
         {
             if (config == null) //Null config is valid, as default case of evaluation is assumed for provided null config.
                 return true;
 
-            return ValidateConfig(config, epd);
+            return ValidateConfig(config, metricsProvider);
         }
 
         /***************************************************/
 
-        private static bool ValidateConfig(IStructEEvaluationConfig config, IEnvironmentalMetricsProvider epd)
+        private static bool ValidateConfig(IStructEEvaluationConfig config, IEnvironmentalMetricsProvider metricsProvider)
         {
-            bool valid = epd.QuantityType == QuantityType.Mass;
+            bool valid = metricsProvider.QuantityType == QuantityType.Mass;
 
             if (!valid)
-                BH.Engine.Base.Compute.RecordError($"{nameof(IStructEEvaluationConfig)} is only valid to be used with epds with quantity type mass.");
+                BH.Engine.Base.Compute.RecordError($"{nameof(IStructEEvaluationConfig)} is only valid to be used with {metricsProvider.GetType().Name} with quantity type mass.");
             return valid;
         }
 
@@ -426,7 +427,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods - Validation - Fallback   ****/
         /***************************************************/
 
-        private static bool ValidateConfig(IEvaluationConfig config, IEnvironmentalMetricsProvider epd)
+        private static bool ValidateConfig(IEvaluationConfig config, IEnvironmentalMetricsProvider metricsProvider)
         {
             return true;    //Default to true for fallback
         }

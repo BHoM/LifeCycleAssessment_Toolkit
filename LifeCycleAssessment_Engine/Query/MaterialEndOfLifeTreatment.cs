@@ -36,20 +36,22 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.MaterialEndOfLifeTreatment(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration)")]
+        [PreviousInputNames("metricsProvider", "epd")]
         [Description("Returns End of Life processing information contained within an EPD dataset.")]
-        [Input("epd", "Environmental Product Declaration of a specific material from an EPD Dataset.")]
+        [Input("metricsProvider", "The EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors of a specific material from an EPD Dataset.")]
         [Output("materialEndOfLifeTreatment", "End of Life treatment per material. This includes all data collected for LCA stages C1-C4 within a provided EPD dataset.")]
-        public static string MaterialEndOfLifeTreatment(this IEnvironmentalMetricsProvider epd)
+        public static string MaterialEndOfLifeTreatment(this IEnvironmentalMetricsProvider metricsProvider)
         {
             // EPD null check
-            if (epd == null)
+            if (metricsProvider == null)
             {
                 BH.Engine.Base.Compute.RecordError("No EPD has been provided.");
                 return null;
             }
 
             // AdditionalEPDData fragment
-            AdditionalEPDData dataFragment = epd.FindFragment<AdditionalEPDData>();
+            AdditionalEPDData dataFragment = metricsProvider.FindFragment<AdditionalEPDData>();
 
             // AdditionalEPDData fragment null check
             if (dataFragment == null)

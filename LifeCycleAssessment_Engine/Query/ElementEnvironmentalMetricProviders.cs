@@ -37,10 +37,11 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
+        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.ElementEpds(BH.oM.Dimensional.IElementM)")]
+        [Description("Query the EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors from any IElementM with a MaterialComposition composed of IEPD materials.")]
         [Input("elementM", "A IElementM from which to query the EPD.")]
-        [Output("epd", "The EPD or EPDs used to define the material makeup of an object.")]
-        public static List<IEnvironmentalMetricsProvider> ElementEpds(this IElementM elementM)
+        [Output("epd", "The EnvironmentalProductDeclarations or CalculatedMaterialLifeCycleEnvironmentalImpactFactors used to define the material makeup of an object.")]
+        public static List<IEnvironmentalMetricsProvider> ElementEnvironmentalMetricProviders(this IElementM elementM)
         {
             if (elementM == null)
             {
