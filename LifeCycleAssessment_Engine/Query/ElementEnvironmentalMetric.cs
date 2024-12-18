@@ -48,7 +48,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (metricsProvider == null || metricsProvider.Count == 0)
                 return new List<List<EnvironmentalMetric>>();
 
-            List<List<EnvironmentalMetric>> metric = metricsProvider.Select(x => x.EnvironmentalMetrics).ToList();
+            List<List<EnvironmentalMetric>> metric = metricsProvider.Select(x => x.IMetrics()).ToList();
 
             if (metric.Count() <= 0)
             {
