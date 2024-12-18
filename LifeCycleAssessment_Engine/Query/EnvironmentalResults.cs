@@ -29,6 +29,7 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Materials;
 using System;
@@ -116,108 +117,74 @@ namespace BH.Engine.LifeCycleAssessment
 
             for (int i = 0; i < mappedTakeoff.MaterialTakeoffItems.Count; i++)
             {
-                TakeoffItem takeoffItem = mappedTakeoff.MaterialTakeoffItems[i];
-                Material material = takeoffItem.Material;
-                List<IEnvironmentalMetricsProvider> metricProviders = material.Properties.OfType<IEnvironmentalMetricsProvider>().ToList();
-
-                if (metricProviders.Count == 0)
-                {
-                    Base.Compute.RecordError($"{nameof(EnvironmentalProductDeclaration)} or {nameof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors)} not set to material {material.Name}. Unable to evaluate element.");
-                    return null;
-                }
-
-                IEnvironmentalMetricsProvider metricProvider;
-                if (metricProviders.Count == 1)
-                {
-                    metricProvider = metricProviders[0];
-                }
-                else
-                {
-                    //If more than one metric provider is present, check if any CalculatedMaterialLifeCycleEnvironmentalImpactFactors exists. If at least one does, use it over any potential EPD.
-                    //If no CalculatedMaterialLifeCycleEnvironmentalImpactFactors exist, simply take the first avilable
-                    CalculatedMaterialLifeCycleEnvironmentalImpactFactors calcImpactFactors = metricProviders.OfType<CalculatedMaterialLifeCycleEnvironmentalImpactFactors>().FirstOrDefault();
-                    if (calcImpactFactors != null)
-                    {
-                        metricProvider = calcImpactFactors;
-                    }
-                    else
-                    {
-                        metricProvider = metricProviders.First();
-                    }
-                    BH.Engine.Base.Compute.RecordNote($"More than one EnvironmentalMetricsProvider found on material named {material.Name}. Metric provider of type {metricProvider.GetType().Name} with name {metricProvider.Name} used for evaluation.");
-                }
-
-
-                if (metricProvider == null)
-                {
-                    Base.Compute.RecordError($"EPD not set to material {material.Name}. Unable to evaluate element.");
-                    return null;
-                }
-
-                double quantityValue;
-                switch (metricProvider.QuantityType)
-                {
-                    case QuantityType.Volume:
-                        quantityValue = takeoffItem.Volume;
-                        break;
-                    case QuantityType.Mass:
-                        quantityValue = takeoffItem.Mass;
-                        if (double.IsNaN(quantityValue) || quantityValue == 0)
-                        {
-                            double vol = takeoffItem.Volume;
-                            if (vol == 0)
-                                quantityValue = 0;
-                            else if (!double.IsNaN(vol))
-                            {
-                                double density = material.Density;
-                                if (double.IsNaN(density) || density == 0)
-                                {
-                                    //Keeping support for backwards compability for old workflows relying epd density assigned as fragments to EPDS
-                                    //Generally not recomended to work with this fragment
-                                    EPDDensity epdDensity = metricProvider.FindFragment<EPDDensity>();
-                                    if (epdDensity != null)
-                                        density = epdDensity.Density;
-                                }
-                                if (!double.IsNaN(density))
-                                    quantityValue = vol * density;
-                            }
-                        }
-                        break;
-                    case QuantityType.Length:
-                        quantityValue = takeoffItem.Length;
-                        break;
-                    case QuantityType.Area:
-                        quantityValue = takeoffItem.Area;
-                        break;
-                    case QuantityType.Item:
-                        quantityValue = takeoffItem.NumberItem;
-                        break;
-                    case QuantityType.Ampere:
-                        quantityValue = takeoffItem.ElectricCurrent;
-                        break;
-                    case QuantityType.VoltAmps:
-                    case QuantityType.Watt:
-                        quantityValue = takeoffItem.Power;
-                        break;
-                    case QuantityType.VolumetricFlowRate:
-                        quantityValue = takeoffItem.VolumetricFlowRate;
-                        break;
-                    case QuantityType.Energy:
-                        quantityValue = takeoffItem.Energy;
-                        break;
-                    case QuantityType.Undefined:
-                    default:
-                        Base.Compute.RecordError($"{metricProvider.QuantityType} QuantityType is currently not supported.");
-                        return null;
-                }
-
-                if (double.IsNaN(quantityValue))
-                    BH.Engine.Base.Compute.RecordError($"{metricProvider.QuantityType} is NaN on MaterialTakeoff and will result in NaN result when evaluating {metricProvider.GetType().Name} named {metricProvider.Name}");
-
-                materialResults.AddRange(EnvironmentalResults(metricProvider, quantityValue, material.Name, metricFilter, evaluationConfig));
+                materialResults.AddRange(EnvironmentalResults(mappedTakeoff.MaterialTakeoffItems[i], metricFilter, evaluationConfig));
             }
 
             return materialResults;
+        }
+
+        /***************************************************/
+
+
+
+        [Description("Evaluates the materials in the VolumetricMaterialTakeoff and returns a MaterialResult per material in the takeoff. Requires the materials in the Takeoff to have EPDs assigned. Please use the AssignTemplate methods before calling this method.")]
+        [Input("materialTakeoff", "The volumetric material takeoff to evaluate.")]
+        [Input("templateMaterials", "Template materials to match to and assign properties from onto the model materials. Should generally have unique names. EPDs should be assigned to these materials and will be mapped over to the materials on the element with the same name and used in the evaluation.")]
+        [Input("prioritiseTemplate", "Controls if main material or map material should be prioritised when conflicting information is found on both in terms of Density and/or Properties. If true, map is prioritised, if false, main material is prioritised.")]
+        [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
+        [Output("result", "A MaterialResult per material and per metric that contains the LifeCycleAssessment data for the input takeoff.")]
+        public static List<MaterialResult> EnvironmentalResults(this TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        {
+            if (takeoffItem == null || takeoffItem.Material == null)
+            {
+                BH.Engine.Base.Compute.RecordError($"Cannot evaluate a null {nameof(TakeoffItem)} or a {nameof(TakeoffItem)} with a null {nameof(TakeoffItem.Material)}.");
+                return new List<MaterialResult>();
+            }
+
+            List<MaterialResult> materialResults = new List<MaterialResult>();
+
+            Material material = takeoffItem.Material;
+            List<IEnvironmentalMetricsProvider> metricProviders = material.Properties.OfType<IEnvironmentalMetricsProvider>().ToList();
+
+            if (metricProviders.Count == 0)
+            {
+                Base.Compute.RecordError($"No {nameof(EnvironmentalProductDeclaration)}, {nameof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors)} or {nameof(CombinedLifeCycleAssessmentFactors)} set to material {material.Name}. Unable to evaluate element.");
+                return new List<MaterialResult>();
+            }
+
+            IEnvironmentalMetricsProvider metricProvider;
+            if (metricProviders.Count == 1)
+            {
+                metricProvider = metricProviders[0];
+            }
+            else
+            {
+                //If more than one metric provider is present, check the one with highest priority. Pririty list in order:
+                List<Type> priorityOrder = new List<Type>()
+                {
+                    typeof(CombinedLifeCycleAssessmentFactors),
+                    typeof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors),
+                    typeof(EnvironmentalProductDeclaration),
+                    typeof(DistanceTransportModeScenario),
+                    typeof(TypicalTransportScenario)
+                };
+
+                metricProvider = null;
+                foreach (Type type in priorityOrder)
+                {
+                    metricProvider = metricProviders.FirstOrDefault(x => x.GetType() == type);
+                    if (metricProvider != null)
+                        break;
+                }
+
+                if (metricProvider == null)
+                    metricProvider = metricProviders.First();
+
+                BH.Engine.Base.Compute.RecordNote($"More than one EnvironmentalMetricsProvider found on material named {material.Name}. Metric provider of type {metricProvider.GetType().Name} with name {metricProvider.Name} used for evaluation.");
+            }
+
+            return IEnvironmentalResults(metricProvider, takeoffItem, metricFilter, evaluationConfig);
         }
 
         /***************************************************/
@@ -234,7 +201,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this IEnvironmentalMetricsProvider metricsProvider, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this IBasicEnvironmentalMetricsProvider metricsProvider, double quantityValue, string materialName = "", List<EnvironmentalMetrics> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (metricsProvider == null)
             {
@@ -286,12 +253,129 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+        /**** Private Methods - Metric providers        ****/
+        /***************************************************/
+
+        private static List<MaterialResult> IEnvironmentalResults(this IEnvironmentalMetricsProvider metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        {
+            return EnvironmentalResults(metricsProvider as dynamic, takeoffItem, metricFilter, evaluationConfig);
+        }
+
+        /***************************************************/
+
+        private static List<MaterialResult> EnvironmentalResults(this IBasicEnvironmentalMetricsProvider metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        {
+            return EnvironmentalResults(metricsProvider, takeoffItem.QuantityValue(metricsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig);
+        }
+
+        /***************************************************/
+
+        private static List<MaterialResult> EnvironmentalResults(this TypicalTransportScenario metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        {
+            double mass = takeoffItem.QuantityValue(QuantityType.Mass);
+
+            List<MaterialResult> results = new List<MaterialResult>();
+
+            List<EnvironmentalMetric> metrics = metricsProvider.EnvironmentalMetrics;
+            if (metricFilter != null && metricFilter.Count != 0)
+                metrics = metrics.FilterMetrics(metricFilter).Cast<EnvironmentalMetric>().ToList();
+
+            foreach (EnvironmentalMetric metric in metrics)
+            {
+                results.Add(EnvironmentalResults(metric, metricsProvider.Name, takeoffItem.Material.Name, mass, evaluationConfig));
+            }
+
+            return results;
+        }
+
+        /***************************************************/
+
+        private static List<MaterialResult> EnvironmentalResults(this DistanceTransportModeScenario metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        {
+            double mass = takeoffItem.QuantityValue(QuantityType.Mass);
+
+            List<MaterialResult> results = new List<MaterialResult>();
+
+            foreach (var singleJourney in metricsProvider.SingleTransportModeImpacts)
+            {
+                List<EnvironmentalMetric> metrics = singleJourney.VehicleEmissions.EnvironmentalMetrics;
+                if (metricFilter != null && metricFilter.Count != 0)
+                    metrics = metrics.FilterMetrics(metricFilter).Cast<EnvironmentalMetric>().ToList();
+
+                foreach (EnvironmentalMetric metric in metrics)
+                {
+                    double quantity = mass * singleJourney.DistanceTraveled * (1 + singleJourney.VehicleEmissions.ReturnTripFactor);
+                    results.Add(EnvironmentalResults(metric, metricsProvider.Name, takeoffItem.Material.Name, quantity, evaluationConfig));
+                }
+            }
+            
+            //Sum values and return
+            return results.TotalMaterialBreakdown(true);
+        }
+
+        /***************************************************/
+
+        private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        {
+
+            List<MaterialResult> epdResults = metricsProvider.EnvironmentalProductDeclaration.EnvironmentalResults(takeoffItem, metricFilter, evaluationConfig);
+            List<MaterialResult> transportResults = metricsProvider.TransportFactors.IEnvironmentalResults(takeoffItem, metricFilter, evaluationConfig);
+
+            List<MaterialResult> combinedResults = new List<MaterialResult>();
+
+            foreach (MaterialResult epdRes in epdResults)
+            {
+                MaterialResult transRes = transportResults.FirstOrDefault(x => x.GetType() == epdRes.GetType());
+                if (transRes == null)
+                    combinedResults.Add(epdRes);
+                else
+                {
+                    transportResults.Remove(transRes);
+
+                    List<double> combinedValues = new List<double>();
+                    List<double> epdValues = epdRes.PhaseDataValues();
+                    List<double> transportValues = transRes.PhaseDataValues();
+                    for (int i = 0; i < epdValues.Count; i++)
+                    {
+                        if (i == 4 && metricsProvider.TransportFactorsOverideEPDA4Factors)
+                            combinedValues.Add(transportValues[i]);
+                        else
+                        {
+                            double total = epdValues[i];
+                            if (double.IsNaN(total))
+                                total = transportValues[i];
+                            else
+                            {
+                                if (!double.IsNaN(transportValues[i]))
+                                    total += transportValues[i];
+                            }
+                            combinedValues.Add(total);
+                        }
+                    }
+
+                    combinedResults.Add(Create.MaterialResult(epdRes.GetType(), epdRes.MaterialName, metricsProvider.Name, combinedValues));
+                }
+            }
+
+            combinedResults.AddRange(transportResults); //Add any leftovers that was not comibined with any EPD results
+            return combinedResults;
+        }
+
+        /***************************************************/
+
+        private static List<MaterialResult> EnvironmentalResults(this IEnvironmentalMetricsProvider metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        {
+            BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for metric providers of type {metricsProvider.GetType().Name}");
+            return new List<MaterialResult>();
+        }
+
+        /***************************************************/
         /**** Private Methods - Evaluation              ****/
         /***************************************************/
 
         [Description("Gets the resulting values for each phase of the provided EnvironmentalMetric given the provided quantityValue.\n" +
-                     "The resulting values are computed based on provided config, defaulting to the values on the metric for each phase multiplied by the quantity value.\n" +
-                     "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
+                 "The resulting values are computed based on provided config, defaulting to the values on the metric for each phase multiplied by the quantity value.\n" +
+                 "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
@@ -416,7 +500,13 @@ namespace BH.Engine.LifeCycleAssessment
 
         private static bool ValidateConfig(IStructEEvaluationConfig config, IEnvironmentalMetricsProvider metricsProvider)
         {
-            bool valid = metricsProvider.QuantityType == QuantityType.Mass;
+            bool valid;
+            if (metricsProvider is IBasicEnvironmentalMetricsProvider basicEnvironmentalMetricsProvider)
+                valid = basicEnvironmentalMetricsProvider.QuantityType == QuantityType.Mass;
+            else if (metricsProvider is ITransportFactors)
+                return valid = true;
+            else
+                valid = false;
 
             if (!valid)
                 BH.Engine.Base.Compute.RecordError($"{nameof(IStructEEvaluationConfig)} is only valid to be used with {metricsProvider.GetType().Name} with quantity type mass.");
