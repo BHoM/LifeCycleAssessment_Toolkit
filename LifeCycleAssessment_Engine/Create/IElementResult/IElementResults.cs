@@ -80,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
             List<T> castResults = materialResults.Cast<T>().ToList();
 
             //Compute the result values for the element as sum of all material results
-            List<double> resultValues = castResults.SumPhaseDataValues();
+            List<double> resultValues = castResults.SumPhaseDataValues(false);
 
             //Call final create
             return Create.ElementResult<T>(objectId, scope, category, castResults, resultValues);
