@@ -43,7 +43,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("epd", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
         [Input("metricFilter", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the EPD are returned.")]
         [Output("materics", "The metrics on the EnvironmentalProductDeclaration corresponding to the provided filter, or all metrics on the epd if no metricType filters are provided.")]
-        public static List<EnvironmentalMetric> FilteredMetrics(this IEnvironmentalMetricsProvider epd, List<EnvironmentalMetrics> metricFilter = null)
+        public static List<EnvironmentalMetric> FilteredMetrics(this IBasicEnvironmentalMetricsProvider epd, List<EnvironmentalMetrics> metricFilter = null)
         {
             if(epd == null) 
             {
