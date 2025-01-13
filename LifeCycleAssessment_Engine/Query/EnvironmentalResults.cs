@@ -165,7 +165,7 @@ namespace BH.Engine.LifeCycleAssessment
                     typeof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors),
                     typeof(EnvironmentalProductDeclaration),
                     typeof(DistanceTransportModeScenario),
-                    typeof(TypicalTransportScenario)
+                    typeof(FullTransportScenario)
                 };
 
                 metricProvider = null;
@@ -268,7 +268,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static List<MaterialResult> EnvironmentalResults(this TypicalTransportScenario metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this FullTransportScenario metricsProvider, TakeoffItem takeoffItem, List<EnvironmentalMetrics> metricFilter, IEvaluationConfig evaluationConfig)
         {
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
 

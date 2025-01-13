@@ -55,7 +55,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets all EnvironmentalMetrics stored on the IEnvironmentalMetricsProvider. Please note that the quantity type relating to these metrics in not stored on the metric, hence care needs to be taken if metrics are compared with metrics extracted from another metrics provider.")]
         [Input("metricsProvider", "The IEnvironmentalMetricsProvider to extract metrics from.")]
         [Output("metrics", "The list of EnvironmentalMetrics stored on the metrics provider.")]
-        public static List<EnvironmentalMetric> Metrics(this TypicalTransportScenario metricsProvider)
+        public static List<EnvironmentalMetric> Metrics(this FullTransportScenario metricsProvider)
         {
             if (metricsProvider == null)
             {

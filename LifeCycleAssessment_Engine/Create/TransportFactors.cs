@@ -40,13 +40,13 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Creates transport factors to be used for LCA evaluation. Type of transport factors returned depends on the type of methodology provided.")]
         [Input("methodology", "The methodology used to create the trnsport factors. Will control which of the provided parameter that will be used.")]
-        [Input("typicalScenario", "A typical transport scenario, generally grabbed from a dataset. Used in the methodology is set to TypicalTransportScenario.")]
+        [Input("typicalScenario", "A full transport scenario, generally grabbed from a dataset. Used in the methodology is set to TypicalTransportScenario.")]
         [Input("vehicleEmissions", "Emissions for the vehicle used to transport the goods. Used in the methodology is set to DistanceTransportMode.")]
         [Input("distanceTraveled", "The distance traveled using the vehicle defined in the Vehicle emssions. Used in the methodology is set to DistanceTransportMode.")]
         [Input("lengthUnits", "Units for distance traveled. Supported units are metres, kilometres and miles (m, km and mi). Distance set on the created object will be in the SI unit meters. Used in the methodology is set to DistanceTransportMode.")]
-        [Input("customFactor", "Custom factor for explicitly setting the climate change transport emissions. Value should be per mass (kg). Will create new metrics for ClimateChangeFossil, ClimateChangeTotal and ClimateCHangeTotalNoBiogenic and set the A4 value to this value, and return a custom typical transport scenario with the metrics set.")]
+        [Input("customFactor", "Custom factor for explicitly setting the climate change transport emissions. Value should be per mass (kg). Will create new metrics for ClimateChangeFossil, ClimateChangeTotal and ClimateCHangeTotalNoBiogenic and set the A4 value to this value, and return a custom full transport scenario with the metrics set.")]
         [Output("transportFactors", "The created transport factors, type depending on provided methodology.")]
-        public static ITransportFactors TransportFactors(TransportMethodology methodology, TypicalTransportScenario typicalScenario = null, VehicleEmissions vehicleEmissions = null, double distanceTraveled = double.NaN, string lengthUnits = "m", double customFactor = double.NaN)
+        public static ITransportFactors TransportFactors(TransportMethodology methodology, FullTransportScenario typicalScenario = null, VehicleEmissions vehicleEmissions = null, double distanceTraveled = double.NaN, string lengthUnits = "m", double customFactor = double.NaN)
         {
             switch (methodology)
             {
@@ -62,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
                         Base.Compute.RecordError($"Cannot create custom transport factors given a unset {nameof(customFactor)}.");
                         return null;
                     }
-                    return new TypicalTransportScenario
+                    return new FullTransportScenario
                     {
                         Name = "User custom scenario",
                         EnvironmentalMetrics = new List<EnvironmentalMetric>
