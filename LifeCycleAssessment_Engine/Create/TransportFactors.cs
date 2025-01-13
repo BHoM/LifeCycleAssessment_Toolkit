@@ -62,16 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
                         Base.Compute.RecordError($"Cannot create custom transport factors given a unset {nameof(customFactor)}.");
                         return null;
                     }
-                    return new FullTransportScenario
-                    {
-                        Name = "User custom scenario",
-                        EnvironmentalMetrics = new List<EnvironmentalMetric>
-                        {
-                            Create.ClimateChangeFossilMetric(double.NaN, customFactor, double.NaN, double.NaN, double.NaN, double.NaN),
-                            Create.ClimateChangeTotalMetric(double.NaN, customFactor, double.NaN, double.NaN, double.NaN, double.NaN),
-                            Create.ClimateChangeTotalNoBiogenicMetric(double.NaN, customFactor, double.NaN, double.NaN, double.NaN, double.NaN),
-                        }
-                    };
+                    return Create.FullTransportScenario(customFactor, "User custom scenario");
                 case TransportMethodology.Undefined:
                 default:
                     Base.Compute.RecordError($"Unable to create transport factors with the methodology set to {methodology}");
