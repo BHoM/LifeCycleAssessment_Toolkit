@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
@@ -20,47 +20,43 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.Engine.Matter;
-using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.Quantities.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using BH.oM.LifeCycleAssessment;
+using System.Runtime.InteropServices;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Query
+    public static partial class Create
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Query the Environmental Product Declarations from any IElementM with a MaterialComposition composed of IEPD materials.")]
-        [Input("elementM", "A IElementM from which to query the EPD.")]
-        [Output("environmentalMetric", "An Environmental Metric is used to store data regarding the environmental impacts of a given Environmental Product Declaration. \n"
-        + "An EPD can host multiple EnvironmentalMetrics to describe the overall impact which will be used in any LCA calculation.")]
-        public static List<List<EnvironmentalMetric>> ElementEnvironmentalMetrics(this IElementM elementM)
+        [Description("Creates a full transport scenario given an emmisons factor. Method creates new metrics and assigns the emissions factor to the A4 stage for climate change (fossil, total and total no biogenic) and assigns them to the returned full transport scenario.")]
+        [Input("emmissionsFactor", "Emissions factor for explicitly setting the climate change transport emissions. Value should be per mass (kg). Will create new metrics for ClimateChangeFossil, ClimateChangeTotal and ClimateChangeTotalNoBiogenic and set the A4 value to this value, and return a custom full transport scenario with the metrics set.", typeof(ClimateChangePerQuantity))]
+        [InputFromProperty("name")]
+        [Output("transportScenario", "The created full transport scenario.")]
+        public static FullTransportScenario FullTransportScenario(double emmissionsFactor, string name = "")
         {
-            List<IEnvironmentalMetricsProvider> metricsProvider = elementM.ElementEnvironmentalMetricProviders();
-
-            if (metricsProvider == null || metricsProvider.Count == 0)
-                return new List<List<EnvironmentalMetric>>();
-
-            List<List<EnvironmentalMetric>> metric = metricsProvider.Select(x => x.IMetrics()).ToList();
-
-            if (metric.Count() <= 0)
+            return new FullTransportScenario
             {
-                BH.Engine.Base.Compute.RecordError("No Environmental Metrics could be found.");
-            }
-
-            return metric;
+                Name = name,
+                EnvironmentalMetrics = new List<EnvironmentalMetric>
+                {
+                    Create.ClimateChangeFossilMetric(double.NaN, emmissionsFactor, double.NaN, double.NaN, double.NaN, double.NaN),
+                    Create.ClimateChangeTotalMetric(double.NaN, emmissionsFactor, double.NaN, double.NaN, double.NaN, double.NaN),
+                    Create.ClimateChangeTotalNoBiogenicMetric(double.NaN, emmissionsFactor, double.NaN, double.NaN, double.NaN, double.NaN),
+                }
+            };
         }
 
         /***************************************************/
     }
 }
-
-
-

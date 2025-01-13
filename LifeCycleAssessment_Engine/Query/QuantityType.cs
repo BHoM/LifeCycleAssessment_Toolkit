@@ -28,6 +28,7 @@ using BH.oM.Dimensional;
 using System.Collections.Generic;
 using BH.Engine.Matter;
 using System.Linq;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -38,8 +39,8 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Query the QuantityType values from any IElementM object's MaterialComposition.")]
-        [Input("elementM", "The IElementM object from which to query the EPD's QuantityType values.")]
-        [Output("quantityType", "The quantityType values from the IEnvironmentalProductDeclarationData objects found within the Element's MaterialComposition.")]
+        [Input("elementM", "The IElementM object from which to query the EnvironmentalProductDeclaration's or CalculatedMaterialLifeCycleEnvironmentalImpactFactors's QuantityType values.")]
+        [Output("quantityType", "The quantityType values from the EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors objects found within the Element's MaterialComposition.")]
         public static List<QuantityType> QuantityTypes(this IElementM elementM)
         {
             List<QuantityType> qt = new List<QuantityType>();
@@ -50,8 +51,27 @@ namespace BH.Engine.LifeCycleAssessment
                 return new List<QuantityType> { oM.LifeCycleAssessment.QuantityType.Undefined };
             }
 
-            return elementM.ElementEpds().Select(x => x == null ? oM.LifeCycleAssessment.QuantityType.Undefined : x.QuantityType).ToList();
+            List<QuantityType> quantityTypes = new List<QuantityType>();
 
+            foreach (IEnvironmentalMetricsProvider metricsProvider in elementM.ElementEnvironmentalMetricProviders())
+            {
+                if (metricsProvider is IBasicEnvironmentalMetricsProvider basicProvider)
+                    quantityTypes.Add(basicProvider.QuantityType);
+                else if (metricsProvider is ITransportFactors)
+                    quantityTypes.Add(QuantityType.Mass);
+                else if (metricsProvider is CombinedLifeCycleAssessmentFactors combinedFactors)
+                {
+                    if (combinedFactors.EnvironmentalProductDeclaration != null)
+                        quantityTypes.Add(combinedFactors.EnvironmentalProductDeclaration.QuantityType);
+                    if (combinedFactors.TransportFactors != null)
+                        quantityTypes.Add(QuantityType.Mass);
+                }
+                else
+                {
+                    BH.Engine.Base.Compute.RecordWarning($"Unable to get quantity type for metric providers of type {metricsProvider.GetType().Name}");
+                }
+            }
+            return quantityTypes;
 
         }
 
