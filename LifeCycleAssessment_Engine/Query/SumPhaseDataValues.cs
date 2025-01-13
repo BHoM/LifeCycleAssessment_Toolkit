@@ -39,7 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.SumPhaseDataValues(System.Collections.Generic.IReadOnlyList<BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData>)")]
+        [PreviousVersion("8.1", "BH.Engine.LifeCycleAssessment.Query.SumPhaseDataValues(System.Collections.Generic.IReadOnlyList<BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData>)")]
         [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided ILifeCycleAssessmentPhaseData, i.e. the first value will be the sum of A1 for all the provided ILifeCycleAssessmentPhaseDatas.")]
         [Input("phaseData", "List of ILifeCycleAssessmentPhaseData to get the sum data from.")]
         [Input("treatNanAsZero", "If true NaN values will be treated as zero if there is a non-NaN value for the same phase present, in other words, 1 + NaN will be treated as 1. If false, no check for NaN values will be done, and if a NaN value is present for a particular phase, the whole sum will be treated as NaN.")]

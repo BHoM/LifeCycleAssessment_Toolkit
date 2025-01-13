@@ -41,7 +41,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.IElementResult<BH.oM.LifeCycleAssessment.Results.MaterialResult>>)")]
+        [PreviousVersion("8.1", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.IElementResult<BH.oM.LifeCycleAssessment.Results.MaterialResult>>)")]
         [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("elementResults", "The element results to extract the material breakdown from.")]
         [Input("treatNanAsZero", "If true NaN values will be treated as zero if there is a non-NaN value for the same phase present, in other words, 1 + NaN will be treated as 1. If false, no check for NaN values will be done, and if a NaN value is present for a particular phase, the whole sum will be treated as NaN.")]
@@ -56,7 +56,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("8.0", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.MaterialResult>)")]
+        [PreviousVersion("8.1", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.MaterialResult>)")]
         [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
         [Input("treatNanAsZero", "If true NaN values will be treated as zero if there is a non-NaN value for the same phase present, in other words, 1 + NaN will be treated as 1. If false, no check for NaN values will be done, and if a NaN value is present for a particular phase, the whole sum will be treated as NaN.")]
