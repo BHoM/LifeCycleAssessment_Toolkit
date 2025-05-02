@@ -22,9 +22,12 @@
 
 using BH.Engine.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.LifeCycleAssessment.Results.MetricsValues;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,104 +43,69 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a MaterialResult of a type matched to the provided Type.")]
-        [Input("type", "Type used to find which type of MaterialResult to create. Should be a type of EnvironmentalMetric, a type of MaterialResult or a type of ElementResult.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
         [Input("epdName", "The name of the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
         [Input("resultValues", "The resulting values to be stored on the result. Important that the order of the metrics extracted corresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmingPotential will have an additional property corresponding to BiogenicCarbon.")]
         [Output("result", "The created MaterialResult.")]
-        public static MaterialResult MaterialResult(Type type, string materialName, string epdName, List<double> resultValues)
+        public static IMaterialResult IMaterialResult(string materialName, string environmentalProductDeclarationName, MetricType metricType, IDictionary metrics)
         {
-            //Get the constructor for the material result of the type corresponding to the metric currently being evaluated
-            //This is done by finding the MaterialResult with matching name and exatracting the constructor from it
-            //The constructor is pre-compiled to a function to speed up the execution of the particular method
-            Func<object[], MaterialResult> cst = MaterialResultConstructor(type);
-
-            //Collect all the relevant data for constructor (essentailly, all properties for the result in correct order)
-            //First two parameters of all MaterialResults should always be name of the material and name of the EPD
-            List<object> parameters = new List<object> { materialName, epdName };
-            //Add the rest of the evaluation metrics
-            //For most cases this will be the phases 
-            //Imporant that the order of the metrics extracted cooresponds to the order of the constructor
-            //General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated
-            //For example, GlobalWarmpingPotential will have an additional property corresponding to BiogenicCarbon
-            parameters.AddRange(resultValues.Cast<object>());  //Gets the resulting final metrics for each phase from the metric
-
-            //Call the constructor function
-            return cst(parameters.ToArray());
+            return MaterialResult(materialName, environmentalProductDeclarationName, metricType, metrics as dynamic);
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Gets a function corresponding to the constructor for a Material result corresponding to the provided type.\n" +
-                   "If a type of MaterialResult is provided, then the returned constructor will be corresponding to the provided type.\n" +
-                   "If a type of EnvironmentalMetric is provided, the constructor will correspond to the MaterialResult corresponding to this type.\n" +
-                   "For all other types, null is returned.")]
-        [Input("t", "The type to find a matching constructor for. Should be a type of MaterialResult or a type of EnvironmentalMetric.")]
-        [Output("cstFunc", "The function correpsonding to the constructor of the MaterialResult related to the type.")]
-        private static Func<object[], MaterialResult> MaterialResultConstructor(this Type t)
+        [Description("Creates a MaterialResult of a type matched to the provided Type.")]
+        [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
+        [Input("epdName", "The name of the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
+        [Input("resultValues", "The resulting values to be stored on the result. Important that the order of the metrics extracted corresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmingPotential will have an additional property corresponding to BiogenicCarbon.")]
+        [Output("result", "The created MaterialResult.")]
+        private static MaterialResult<T> MaterialResult<T>(string materialName, string environmentalProductDeclarationName, MetricType metricType, IReadOnlyDictionary<LifeCycleAssessmentModule, T> metrics)
+            where T : IMetricValue, new()
         {
-            Func<object[], MaterialResult> cstFunc;
+            return new MaterialResult<T>(materialName, environmentalProductDeclarationName, metricType, metrics.ComputeAndAddTotalModules());
+        }
 
-            //Try get chached constructor func
-            if (!m_MaterialResultConstructors.TryGetValue(t, out cstFunc))
+        /***************************************************/
+
+        private static IReadOnlyDictionary<LifeCycleAssessmentModule, T> ComputeAndAddTotalModules<T>(this IReadOnlyDictionary<LifeCycleAssessmentModule, T> metrics)
+            where T : IMetricValue, new()
+        {
+            Dictionary<LifeCycleAssessmentModule, T> metricsWithTotals = metrics.ToDictionary(x => x.Key, x => x.Value);
+
+            //Try to add all "Sum" modules to be computed as the sum of the parts
+            //Important to make sure combining results coming from EPDs set up in slightly different fashion possible, for example
+            //Should be able to combine results from one EPD that has A1, A2 and A3 set up with one that has A1toA3 set up.
+            foreach (var combinationModules in Query.CombinationModules())
             {
-                //Get out constructor info matching the type
-                ConstructorInfo constructor = GetMaterialResultConstructorInfo(t);
-                if (constructor != null)
-                {
-                    //Pre-compile the constructor info to a function to increase performance
-                    Func<object[], object> genericFunc = constructor.ToFunc();
-                    cstFunc = x => (MaterialResult)genericFunc(x);
-                }
-                else
-                    cstFunc = null;
-
-                m_MaterialResultConstructors[t] = cstFunc;
+                AddIfNotPresent(metricsWithTotals, combinationModules.Key, combinationModules.Value);
             }
 
-            if (cstFunc == null)
-                Base.Compute.RecordError($"Unable to find a constructor for a type of {nameof(MaterialResult)} based on provided type {t}");
-
-            return cstFunc;
+            return metricsWithTotals;
         }
 
         /***************************************************/
 
-        [Description("Gets a ConstructorInfo from a MaterialResult type matcheching the provided type t.")]
-        private static ConstructorInfo GetMaterialResultConstructorInfo(Type t)
-        {
-            Type materialResultType = null;
-            if (typeof(MaterialResult).IsAssignableFrom(t))    //Type of material result -> simply use it
-                materialResultType = t;
-            else if (typeof(EnvironmentalMetric).IsAssignableFrom(t))  //Type of metric -> match by name
-                materialResultType = MaterialResultTypeFromMetric(t);
-            else if (typeof(IElementResult<MaterialResult>).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)    //Type of element reuslt, get generic argument from base class
-                materialResultType = t.BaseType?.GenericTypeArguments.FirstOrDefault();
+        private static void AddIfNotPresent<T>(this Dictionary<LifeCycleAssessmentModule, T> metricsWithTotal, LifeCycleAssessmentModule moduleToAdd, IReadOnlyList<LifeCycleAssessmentModule> modulesToSum)
+            where T : IMetricValue, new()
+        { 
+            if (metricsWithTotal.ContainsKey(moduleToAdd))
+                return; //Allready present
 
-            if (materialResultType == null)
-                return null;
+            double total = 0;
 
-            return materialResultType.GetConstructors().OrderByDescending(x => x.GetParameters().Count()).First();
+            foreach (LifeCycleAssessmentModule module in modulesToSum)
+            {
+                if (metricsWithTotal.TryGetValue(module, out T a))
+                    total += a.Value;
+                else
+                    return;     //Required part not found. Not able to add
+            }
+
+            //Compute new metric value as sum of parts
+            metricsWithTotal[moduleToAdd] = new T { Value = total };
         }
-
-        /***************************************************/
-
-        [Description("Gets a MaterialResult type matching the metric type by name.")]
-        private static Type MaterialResultTypeFromMetric(Type metricType)
-        {
-            string metric = metricType.Name.Replace("Metric", "");
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name == metric + "MaterialResult");
-            return materialResultType;
-        }
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        //Storage of the pre-compiled functions for future usage
-        private static ConcurrentDictionary<Type, Func<object[], MaterialResult>> m_MaterialResultConstructors = new ConcurrentDictionary<Type, Func<object[], MaterialResult>>();
 
         /***************************************************/
     }

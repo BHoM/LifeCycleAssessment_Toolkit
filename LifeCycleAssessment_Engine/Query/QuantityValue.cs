@@ -67,7 +67,7 @@ namespace BH.Engine.LifeCycleAssessment
                             {
                                 //Keeping support for backwards compability for old workflows relying epd density assigned as fragments to EPDS
                                 //Generally not recomended to work with this fragment
-                                EPDDensity epdDensity = materialTakeoffItem.Material.Properties.OfType<IEnvironmentalMetricsProvider>().Select(x => x.FindFragment<EPDDensity>()).Where(x => x != null).FirstOrDefault();
+                                EPDDensity epdDensity = materialTakeoffItem.Material.Properties.OfType<IEnvironmentalFactorsProvider>().Select(x => x.FindFragment<EPDDensity>()).Where(x => x != null).FirstOrDefault();
                                 if (epdDensity != null)
                                     density = epdDensity.Density;
                             }

@@ -43,22 +43,22 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("epd", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
         [Input("metricFilter", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the EPD are returned.")]
         [Output("materics", "The metrics on the EnvironmentalProductDeclaration corresponding to the provided filter, or all metrics on the epd if no metricType filters are provided.")]
-        public static List<EnvironmentalMetric> FilteredMetrics(this IBasicEnvironmentalMetricsProvider epd, List<EnvironmentalMetrics> metricFilter = null)
+        public static List<IEnvironmentalMetricFactors> FilteredFactors(this IBaseLevelEnvironalmentalFactorsProvider epd, List<MetricType> metricFilter = null)
         {
             if(epd == null) 
             {
-                BH.Engine.Base.Compute.RecordError($"Cannot extract null metrics from a null {nameof(IEnvironmentalMetricsProvider)}.");
-                return new List<EnvironmentalMetric>();
+                BH.Engine.Base.Compute.RecordError($"Cannot extract null metrics from a null {nameof(IBaseLevelEnvironalmentalFactorsProvider)}.");
+                return new List<IEnvironmentalMetricFactors>();
             }
 
             if (metricFilter == null || metricFilter.Count == 0)
-                return epd.EnvironmentalMetrics;
+                return epd.EnvironmentalFactors;
 
-            var metricLookup = epd.EnvironmentalMetrics.ToLookup(x => x.MetricType);
-            List<EnvironmentalMetric> metrics = new List<EnvironmentalMetric>();
-            foreach (EnvironmentalMetrics type in metricFilter)
+            var metricLookup = epd.EnvironmentalFactors.ToLookup(x => x.MetricType);
+            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+            foreach (MetricType type in metricFilter)
             {
-                EnvironmentalMetric metric = metricLookup[type].FirstOrDefault();
+                IEnvironmentalMetricFactors metric = metricLookup[type].FirstOrDefault();
                 if (metric != null)
                     metrics.Add(metric);
                 else

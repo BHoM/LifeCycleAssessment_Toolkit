@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
@@ -20,45 +20,46 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
+using BH.Engine.Matter;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Configs;
+using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalFactors;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.LifeCycleAssessment.Results.MetricsValues;
-using BH.oM.Quantities.Attributes;
+using BH.oM.Physical.Materials;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a full transport scenario given an emmisons factor. Method creates new metrics and assigns the emissions factor to the A4 stage for climate change (fossil, total and total no biogenic) and assigns them to the returned full transport scenario.")]
-        [Input("emmissionsFactor", "Emissions factor for explicitly setting the climate change transport emissions. Value should be per mass (kg). Will create new metrics for ClimateChangeFossil, ClimateChangeTotal and ClimateChangeTotalNoBiogenic and set the A4 value to this value, and return a custom full transport scenario with the metrics set.", typeof(ClimateChangePerQuantity))]
-        [InputFromProperty("name")]
-        [Output("transportScenario", "The created full transport scenario.")]
-        public static FullTransportScenario FullTransportScenario(double emmissionsFactor, string name = "")
+        [Description("Gets the factors for each module as a dictioanry.")]
+        [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
+        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
+        public static T Sum<T>(this T a, T b)
+            where T : IMetricValue, new()
         {
-            return new FullTransportScenario
-            {
-                Name = name,
-                EnvironmentalFactors = new List<IEnvironmentalFactor>
-                {
-                    new ClimateChangeFossilFactor{ Value = emmissionsFactor },
-                    new ClimateChangeTotalFactor{ Value = emmissionsFactor },
-                    new ClimateChangeTotalNoBiogenicFactor{ Value = emmissionsFactor },
-                }
-            };
+            return new T { Value = a.Value + b.Value };
         }
 
         /***************************************************/
+       
     }
 }
+
+

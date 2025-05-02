@@ -55,15 +55,15 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("a5CarbonFactor", "Factor for A5 evaluation for additional carbon to be added for element based on project totals. Default value provided is generally recomended to be used.", typeof(ClimateChangePerQuantity))]
         [Input("c1CarbonFactor", "Factor on C1 evaluation for all elements. Default value provided is generally recomended to be used.", typeof(ClimateChangePerQuantity))]
         [Output("result", "Result containing the embodied carbon of the element as well as a breakdown per material in the element.")]
-        public static List<IElementResult<MaterialResult>> ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, double projectCost = 0, double floorArea = 0, double totalWeight = 0, double a5CarbonFactor = 0.007, double c1CarbonFactor = 3.4)
+        public static List<IElementResult2> ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, double projectCost = 0, double floorArea = 0, double totalWeight = 0, double a5CarbonFactor = 0.007, double c1CarbonFactor = 3.4)
         {
-            List<EnvironmentalMetrics> metricsFilter = new List<EnvironmentalMetrics>
+            List<MetricType> metricsFilter = new List<MetricType>
             {
-                EnvironmentalMetrics.ClimateChangeTotal,
-                EnvironmentalMetrics.ClimateChangeTotalNoBiogenic,
-                EnvironmentalMetrics.ClimateChangeFossil,
-                EnvironmentalMetrics.ClimateChangeLandUse,
-                EnvironmentalMetrics.ClimateChangeBiogenic
+                MetricType.ClimateChangeTotal,
+                MetricType.ClimateChangeTotalNoBiogenic,
+                MetricType.ClimateChangeFossil,
+                MetricType.ClimateChangeLandUse,
+                MetricType.ClimateChangeBiogenic
             };
 
             IStructEEvaluationConfig config = new IStructEEvaluationConfig

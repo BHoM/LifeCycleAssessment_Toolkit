@@ -1,0 +1,82 @@
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.Engine.Base;
+using BH.Engine.Matter;
+using BH.oM.Base;
+using BH.oM.Base.Attributes;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Configs;
+using BH.oM.LifeCycleAssessment.Fragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalFactors;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.LifeCycleAssessment.Results.MetricsValues;
+using BH.oM.Physical.Materials;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+
+namespace BH.Engine.LifeCycleAssessment
+{
+    public static partial class Query
+    {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Gets all the combined modules and the parts they consist of. All combinations that can be made up of other combinations are, e.g. B1toB5 is set to be a combination of B1toB3 and B4toB5.")]
+        [Output("combinationModules", "All combinationModules and their parts.")]
+        public static IReadOnlyDictionary<LifeCycleAssessmentModule, IReadOnlyList<LifeCycleAssessmentModule>> CombinationModules()
+        {
+            if (m_CombinationModules == null)
+            {
+                Dictionary<LifeCycleAssessmentModule, IReadOnlyList<LifeCycleAssessmentModule>> modules = new Dictionary<LifeCycleAssessmentModule, IReadOnlyList<LifeCycleAssessmentModule>>();
+                modules[LifeCycleAssessmentModule.A1toA3] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.A1, LifeCycleAssessmentModule.A2, LifeCycleAssessmentModule.A3 };
+                modules[LifeCycleAssessmentModule.A5] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.A5a, LifeCycleAssessmentModule.A5w };
+                modules[LifeCycleAssessmentModule.B1toB3] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.B1, LifeCycleAssessmentModule.B2, LifeCycleAssessmentModule.B3 };
+                modules[LifeCycleAssessmentModule.B4toB5] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.B4, LifeCycleAssessmentModule.B5 };
+                modules[LifeCycleAssessmentModule.B1toB5] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.B1toB3, LifeCycleAssessmentModule.B4toB5 };
+                modules[LifeCycleAssessmentModule.B1toB7] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.B1toB5, LifeCycleAssessmentModule.B6, LifeCycleAssessmentModule.B7 };
+                modules[LifeCycleAssessmentModule.C3toC4] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.C3, LifeCycleAssessmentModule.C4 };
+                modules[LifeCycleAssessmentModule.C1toC4] = new List<LifeCycleAssessmentModule>() { LifeCycleAssessmentModule.C1, LifeCycleAssessmentModule.C2, LifeCycleAssessmentModule.C3toC4 };
+                m_CombinationModules = modules;
+            }
+
+            return m_CombinationModules;
+        }
+
+        /***************************************************/
+        /**** Private Feilds                            ****/
+        /***************************************************/
+
+        private static IReadOnlyDictionary<LifeCycleAssessmentModule, IReadOnlyList<LifeCycleAssessmentModule>> m_CombinationModules = null;
+
+        /***************************************************/
+    }
+}
+
+

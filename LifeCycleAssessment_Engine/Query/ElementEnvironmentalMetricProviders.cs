@@ -41,7 +41,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Query the EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors from any IElementM with a MaterialComposition composed of IEPD materials.")]
         [Input("elementM", "A IElementM from which to query the EPD.")]
         [Output("epd", "The EnvironmentalProductDeclarations or CalculatedMaterialLifeCycleEnvironmentalImpactFactors used to define the material makeup of an object.")]
-        public static List<IEnvironmentalMetricsProvider> ElementEnvironmentalMetricProviders(this IElementM elementM)
+        public static List<IEnvironmentalFactorsProvider> ElementEnvironmentalMetricProviders(this IElementM elementM)
         {
             if (elementM == null)
             {
@@ -53,7 +53,7 @@ namespace BH.Engine.LifeCycleAssessment
                 BH.Engine.Base.Compute.RecordError("The provided element does not have a MaterialComposition.");
             }
             //Prioritise CalculatedMaterialLifeCycleEnvironmentalImpactFactors over EnvironmentalProductDeclaration
-            return elementM.IMaterialComposition().Materials.Select(x => x.Properties.OfType<IEnvironmentalMetricsProvider>().OrderBy(e => e.GetType() == typeof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors) ? 1 : 2).FirstOrDefault()).ToList();
+            return elementM.IMaterialComposition().Materials.Select(x => x.Properties.OfType<IEnvironmentalFactorsProvider>().OrderBy(e => e.GetType() == typeof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors) ? 1 : 2).FirstOrDefault()).ToList();
         }
 
         /***************************************************/
