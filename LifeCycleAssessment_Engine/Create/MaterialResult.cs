@@ -32,7 +32,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
+
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -61,7 +61,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("epdName", "The name of the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
         [Input("resultValues", "The resulting values to be stored on the result. Important that the order of the metrics extracted corresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmingPotential will have an additional property corresponding to BiogenicCarbon.")]
         [Output("result", "The created MaterialResult.")]
-        private static MaterialResult<T> MaterialResult<T>(string materialName, string environmentalProductDeclarationName, MetricType metricType, IReadOnlyDictionary<LifeCycleAssessmentModule, T> metrics)
+        private static MaterialResult<T> MaterialResult<T>(string materialName, string environmentalProductDeclarationName, MetricType metricType, IReadOnlyDictionary<Module, T> metrics)
             where T : IMetricValue, new()
         {
             return new MaterialResult<T>(materialName, environmentalProductDeclarationName, metricType, metrics.ComputeAndAddTotalModules());
@@ -69,10 +69,10 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static IReadOnlyDictionary<LifeCycleAssessmentModule, T> ComputeAndAddTotalModules<T>(this IReadOnlyDictionary<LifeCycleAssessmentModule, T> metrics)
+        private static IReadOnlyDictionary<Module, T> ComputeAndAddTotalModules<T>(this IReadOnlyDictionary<Module, T> metrics)
             where T : IMetricValue, new()
         {
-            Dictionary<LifeCycleAssessmentModule, T> metricsWithTotals = metrics.ToDictionary(x => x.Key, x => x.Value);
+            Dictionary<Module, T> metricsWithTotals = metrics.ToDictionary(x => x.Key, x => x.Value);
 
             //Try to add all "Sum" modules to be computed as the sum of the parts
             //Important to make sure combining results coming from EPDs set up in slightly different fashion possible, for example
@@ -87,7 +87,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static void AddIfNotPresent<T>(this Dictionary<LifeCycleAssessmentModule, T> metricsWithTotal, LifeCycleAssessmentModule moduleToAdd, IReadOnlyList<LifeCycleAssessmentModule> modulesToSum)
+        private static void AddIfNotPresent<T>(this Dictionary<Module, T> metricsWithTotal, Module moduleToAdd, IReadOnlyList<Module> modulesToSum)
             where T : IMetricValue, new()
         { 
             if (metricsWithTotal.ContainsKey(moduleToAdd))
@@ -95,7 +95,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             double total = 0;
 
-            foreach (LifeCycleAssessmentModule module in modulesToSum)
+            foreach (Module module in modulesToSum)
             {
                 if (metricsWithTotal.TryGetValue(module, out T a))
                     total += a.Value;

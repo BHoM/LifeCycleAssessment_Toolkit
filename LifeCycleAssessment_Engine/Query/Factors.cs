@@ -51,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets the factors for each module as a dictioanry.")]
         [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static IReadOnlyDynamicProperties<LifeCycleAssessmentModule, IEnvironmentalFactor> IFactors(this IEnvironmentalMetricFactors moduleFactors)
+        public static IReadOnlyDynamicProperties<Module, IEnvironmentalFactor> IFactors(this IEnvironmentalMetricFactors moduleFactors)
         {
             return Factors(moduleFactors as dynamic);
         }
@@ -63,7 +63,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets the factors for each module as a dictioanry.")]
         [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static IReadOnlyDynamicProperties<LifeCycleAssessmentModule, IEnvironmentalFactor> Factors<T>(this EnvironmentalMetricFactors<T> moduleFactors)
+        public static IReadOnlyDynamicProperties<Module, IEnvironmentalFactor> Factors<T>(this EnvironmentalMetricFactors<T> moduleFactors)
             where T : class, IEnvironmentalFactor, new()
         {
             return moduleFactors.Factors;
@@ -73,11 +73,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets the factors for each module as a dictioanry.")]
         [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static IReadOnlyDictionary<LifeCycleAssessmentModule, IEnvironmentalFactor> Factors(this IEnvironmentalMetricFactors moduleFactors)
+        public static IReadOnlyDictionary<Module, IEnvironmentalFactor> Factors(this IEnvironmentalMetricFactors moduleFactors)
         {
-            if (BH.Engine.Base.Compute.TryRunExtensionMethod(moduleFactors, "Factors", out object result) && result != null && result is IReadOnlyDictionary<LifeCycleAssessmentModule, IEnvironmentalFactor>)
+            if (BH.Engine.Base.Compute.TryRunExtensionMethod(moduleFactors, "Factors", out object result) && result != null && result is IReadOnlyDictionary<Module, IEnvironmentalFactor>)
             { 
-                return result as IReadOnlyDictionary<LifeCycleAssessmentModule, IEnvironmentalFactor>;
+                return result as IReadOnlyDictionary<Module, IEnvironmentalFactor>;
             }
 
             BH.Engine.Base.Compute.RecordError($"Unable to extract factors dictionary from module factors of type {moduleFactors.GetType()}.");

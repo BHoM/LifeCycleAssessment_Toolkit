@@ -32,7 +32,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
+
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -80,11 +80,11 @@ namespace BH.Engine.LifeCycleAssessment
             //Cast the material results to the actual type
             List<MaterialResult<T>> castResults = materialResults.Cast<MaterialResult<T>>().ToList();
 
-            Dictionary<LifeCycleAssessmentModule, T> totalMetrics = new Dictionary<LifeCycleAssessmentModule, T>();
+            Dictionary<Module, T> totalMetrics = new Dictionary<Module, T>();
 
             //Get modules existing in all results
-            List<LifeCycleAssessmentModule> allModules = castResults.SelectMany(x => x.Metrics.Keys).Distinct().ToList();
-            List<LifeCycleAssessmentModule> modules = allModules.ToList();
+            List<Module> allModules = castResults.SelectMany(x => x.Metrics.Keys).Distinct().ToList();
+            List<Module> modules = allModules.ToList();
 
             foreach (var matResult in castResults)  
             {

@@ -72,10 +72,10 @@ namespace BH.Engine.LifeCycleAssessment
                                            $"Resulting values for the metrics can only be compared with other evaluated metrics from the exact same standard.");
             }
 
-            IReadOnlyDynamicProperties<LifeCycleAssessmentModule, IEnvironmentalFactor> moduleFactors = metric.IFactors();
+            IReadOnlyDynamicProperties<Module, IEnvironmentalFactor> moduleFactors = metric.IFactors();
 
             if (moduleFactors.Count == 0)
-                return new Dictionary<LifeCycleAssessmentModule, IMetricValue>();
+                return new Dictionary<Module, IMetricValue>();
 
 
 
@@ -86,7 +86,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Dictionary<LifeCycleAssessmentModule, TMetricValue> IResultingModuleValues<TFactor, TMetricValue>(this Dictionary<LifeCycleAssessmentModule, TFactor> moduleFactors, double quantityValue, TMetricValue template, IEvaluationConfig evaluationConfig)
+        private static Dictionary<Module, TMetricValue> IResultingModuleValues<TFactor, TMetricValue>(this Dictionary<Module, TFactor> moduleFactors, double quantityValue, TMetricValue template, IEvaluationConfig evaluationConfig)
             where TFactor : IEnvironmentalFactor
             where TMetricValue : IMetricValue, new()
         {
@@ -104,7 +104,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static Dictionary<LifeCycleAssessmentModule, TMetricValue> ResultingModuleValues<TFactor, TMetricValue>(this Dictionary<LifeCycleAssessmentModule, TFactor> moduleFactors, double quantityValue)
+        private static Dictionary<Module, TMetricValue> ResultingModuleValues<TFactor, TMetricValue>(this Dictionary<Module, TFactor> moduleFactors, double quantityValue)
             where TFactor : IEnvironmentalFactor
             where TMetricValue : IMetricValue, new()
         {
@@ -114,7 +114,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            Dictionary<LifeCycleAssessmentModule, TMetricValue> resultingValues = new Dictionary<LifeCycleAssessmentModule, TMetricValue>();
+            Dictionary<Module, TMetricValue> resultingValues = new Dictionary<Module, TMetricValue>();
             foreach (var moduleData in moduleFactors)
             {
                 resultingValues[moduleData.Key] = new TMetricValue() { Value = moduleData.Value.Value * quantityValue };  //Evaluation value is base phase data multiplied by quantity value
@@ -130,7 +130,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static Dictionary<LifeCycleAssessmentModule, TMetricValue> ResultingModuleValues<TFactor, TMetricValue>(this Dictionary<LifeCycleAssessmentModule, TFactor> moduleFactors, double quantityValue, IStructEEvaluationConfig evaluationConfig)
+        private static Dictionary<Module, TMetricValue> ResultingModuleValues<TFactor, TMetricValue>(this Dictionary<Module, TFactor> moduleFactors, double quantityValue, IStructEEvaluationConfig evaluationConfig)
             where TFactor : IEnvironmentalFactor
             where TMetricValue : IMetricValue, new()
         {
@@ -140,7 +140,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            //Specific evaluation method using the config only applicable for evaluatingResultingModuleValues<TFactor, TMetricValue>(this Dictionary < LifeCycleAssessmentModule, TFactor > moduleFactors climate change totals
+            //Specific evaluation method using the config only applicable for evaluatingResultingModuleValues<TFactor, TMetricValue>(this Dictionary < Module, TFactor > moduleFactors climate change totals
             MetricType metricType = moduleFactors.First().Value.MetricType;
             List<oM.LifeCycleAssessment.MetricType> applicableTypes = new List<MetricType> { oM.LifeCycleAssessment.MetricType.ClimateChangeTotal, oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic, oM.LifeCycleAssessment.MetricType.ClimateChangeFossil };
             if (!applicableTypes.Any(x => x == metricType))
@@ -153,7 +153,7 @@ namespace BH.Engine.LifeCycleAssessment
             double weight = quantityValue;
             double weightFactor = (evaluationConfig.TotalWeight == 0 || evaluationConfig.TotalWeight < weight) ? 0 : weight / evaluationConfig.TotalWeight;
 
-            Dictionary<LifeCycleAssessmentModule, TMetricValue> resultingValues = new Dictionary<LifeCycleAssessmentModule, TMetricValue>();
+            Dictionary<Module, TMetricValue> resultingValues = new Dictionary<Module, TMetricValue>();
             foreach (var moduleData in moduleFactors)
             {
                 //Initial value is base phase data multiplied by quantity value
@@ -161,30 +161,30 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             //Special handling of A5 module with additional project factor
-            if (moduleFactors.TryGetValue(LifeCycleAssessmentModule.A5, out TFactor a5Factor))
+            if (moduleFactors.TryGetValue(Module.A5, out TFactor a5Factor))
             {
-                resultingValues[LifeCycleAssessmentModule.A5] = new TMetricValue() { Value = a5Factor.Value * quantityValue + evaluationConfig.ProjectCost * evaluationConfig.A5CarbonFactor * weightFactor };
+                resultingValues[Module.A5] = new TMetricValue() { Value = a5Factor.Value * quantityValue + evaluationConfig.ProjectCost * evaluationConfig.A5CarbonFactor * weightFactor };
             }
 
             //C1 evaluated based on project level values
-            resultingValues[LifeCycleAssessmentModule.C1] = new TMetricValue { Value = weightFactor * evaluationConfig.FloorArea * evaluationConfig.C1CarbonFactor };
+            resultingValues[Module.C1] = new TMetricValue { Value = weightFactor * evaluationConfig.FloorArea * evaluationConfig.C1CarbonFactor };
 
             //Check if C1toC4 was computed and needs to be udpated given the explicit computation of C1
-            if (resultingValues.ContainsKey(LifeCycleAssessmentModule.C1toC4))
+            if (resultingValues.ContainsKey(Module.C1toC4))
             {
                 //If contains all parts -> update the total
-                if (resultingValues.ContainsKey(LifeCycleAssessmentModule.C2) && resultingValues.ContainsKey(LifeCycleAssessmentModule.C3) && resultingValues.ContainsKey(LifeCycleAssessmentModule.C4))
+                if (resultingValues.ContainsKey(Module.C2) && resultingValues.ContainsKey(Module.C3) && resultingValues.ContainsKey(Module.C4))
                 {
-                    resultingValues[LifeCycleAssessmentModule.C1toC4] = new TMetricValue
+                    resultingValues[Module.C1toC4] = new TMetricValue
                     {
-                        Value = resultingValues[LifeCycleAssessmentModule.C1].Value +
-                                resultingValues[LifeCycleAssessmentModule.C2].Value +
-                                resultingValues[LifeCycleAssessmentModule.C3].Value +
-                                resultingValues[LifeCycleAssessmentModule.C4].Value
+                        Value = resultingValues[Module.C1].Value +
+                                resultingValues[Module.C2].Value +
+                                resultingValues[Module.C3].Value +
+                                resultingValues[Module.C4].Value
                     };
                 }
                 else
-                    resultingValues.Remove(LifeCycleAssessmentModule.C1toC4);   //If not, remove as total will be different than parts
+                    resultingValues.Remove(Module.C1toC4);   //If not, remove as total will be different than parts
             }
 
             return resultingValues;
@@ -198,7 +198,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each phase.")]
-        private static Dictionary<LifeCycleAssessmentModule, TMetricValue> ResultingModuleValues<TFactor, TMetricValue>(this Dictionary<LifeCycleAssessmentModule, TFactor> moduleFactors, double quantityValue, IEvaluationConfig evaluationConfig)
+        private static Dictionary<Module, TMetricValue> ResultingModuleValues<TFactor, TMetricValue>(this Dictionary<Module, TFactor> moduleFactors, double quantityValue, IEvaluationConfig evaluationConfig)
             where TFactor : IEnvironmentalFactor
             where TMetricValue : IMetricValue, new()
         {

@@ -255,10 +255,10 @@ namespace BH.Engine.LifeCycleAssessment
                 {
                     IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig);
                     if (a4TransportResults.Count > 0)
-                        AddModule(resultingValues as dynamic, a4TransportResults, LifeCycleAssessmentModule.A4);
+                        AddModule(resultingValues as dynamic, a4TransportResults, Module.A4);
 
                     if (c2TransportResults.Count > 0)
-                        AddModule(resultingValues as dynamic, c2TransportResults, LifeCycleAssessmentModule.C2);
+                        AddModule(resultingValues as dynamic, c2TransportResults, Module.C2);
 
                     results.Add(Create.IMaterialResult(materialName, factorsProvider.Name, metric.MetricType, resultingValues));
                 }
@@ -271,19 +271,19 @@ namespace BH.Engine.LifeCycleAssessment
                 //If any transport factors not already part of results in base factors, add them as single item results
                 foreach (IMetricValue res in a4TransportResults)
                 {
-                    transportDicts.Add(SingleModuleDictionary(res as dynamic, LifeCycleAssessmentModule.A4));
+                    transportDicts.Add(SingleModuleDictionary(res as dynamic, Module.A4));
                 }
 
                 //Try adding C2 results to the A4 results
                 foreach (IDictionary transRes in transportDicts)
                 {
-                    AddModule(transRes as dynamic, c2TransportResults, LifeCycleAssessmentModule.C2);
+                    AddModule(transRes as dynamic, c2TransportResults, Module.C2);
                 }
 
                 //If still C2 resutls left over, create as new results
                 foreach (IMetricValue res in c2TransportResults)
                 {
-                    transportDicts.Add(SingleModuleDictionary(res as dynamic, LifeCycleAssessmentModule.A4));
+                    transportDicts.Add(SingleModuleDictionary(res as dynamic, Module.A4));
                 }
 
                 foreach (IDictionary transRes in transportDicts)
@@ -357,7 +357,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Dictionary<LifeCycleAssessmentModule, T> AddModule<T>(this Dictionary<LifeCycleAssessmentModule, T> resultingValues, List<IMetricValue> toAddFrom, LifeCycleAssessmentModule module)
+        private static Dictionary<Module, T> AddModule<T>(this Dictionary<Module, T> resultingValues, List<IMetricValue> toAddFrom, Module module)
         {
             T toBeAdded = toAddFrom.OfType<T>().FirstOrDefault();
             if (toBeAdded != null)
@@ -371,9 +371,9 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static Dictionary<LifeCycleAssessmentModule, T> SingleModuleDictionary<T>(this T metricValue, LifeCycleAssessmentModule module)
+        private static Dictionary<Module, T> SingleModuleDictionary<T>(this T metricValue, Module module)
         {
-            Dictionary<LifeCycleAssessmentModule, T> dict = new Dictionary<LifeCycleAssessmentModule, T>();
+            Dictionary<Module, T> dict = new Dictionary<Module, T>();
             dict[module] = metricValue;
             return dict;
         }

@@ -77,24 +77,24 @@ namespace BH.Engine.LifeCycleAssessment
             double c4 = double.NaN,
             double d = double.NaN) where T : class, IEnvironmentalFactor, new()
         {
-            DynamicProperties<LifeCycleAssessmentModule, T> factors = new DynamicProperties<LifeCycleAssessmentModule, T>();
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A1, a1);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A2, a2);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A3, a3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A4, a4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A5, a5);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B1, b1);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B2, b2);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B3, b3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B4, b4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B5, b5);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B6, b6);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B7, b7);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C1, c1);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C2, c2);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C3, c3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C4, c4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.D, d);
+            DynamicProperties<Module, T> factors = new DynamicProperties<Module, T>();
+            factors.AddIfNotNan(Module.A1, a1);
+            factors.AddIfNotNan(Module.A2, a2);
+            factors.AddIfNotNan(Module.A3, a3);
+            factors.AddIfNotNan(Module.A4, a4);
+            factors.AddIfNotNan(Module.A5, a5);
+            factors.AddIfNotNan(Module.B1, b1);
+            factors.AddIfNotNan(Module.B2, b2);
+            factors.AddIfNotNan(Module.B3, b3);
+            factors.AddIfNotNan(Module.B4, b4);
+            factors.AddIfNotNan(Module.B5, b5);
+            factors.AddIfNotNan(Module.B6, b6);
+            factors.AddIfNotNan(Module.B7, b7);
+            factors.AddIfNotNan(Module.C1, c1);
+            factors.AddIfNotNan(Module.C2, c2);
+            factors.AddIfNotNan(Module.C3, c3);
+            factors.AddIfNotNan(Module.C4, c4);
+            factors.AddIfNotNan(Module.D, d);
 
             return new EnvironmentalMetricFactors<T>() { Factors = factors };
         }
@@ -136,22 +136,22 @@ namespace BH.Engine.LifeCycleAssessment
                 double c4 = double.NaN,
                 double d = double.NaN) where T : class, IEnvironmentalFactor, new()
         {
-            DynamicProperties<LifeCycleAssessmentModule, T> factors = new DynamicProperties<LifeCycleAssessmentModule, T>();
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A1toA3, a1toa3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A4, a4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A5, a5);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B1, b1);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B2, b2);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B3, b3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B4, b4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B5, b5);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B6, b6);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B7, b7);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C1, c1);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C2, c2);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C3, c3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C4, c4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.D, d);
+            DynamicProperties<Module, T> factors = new DynamicProperties<Module, T>();
+            factors.AddIfNotNan(Module.A1toA3, a1toa3);
+            factors.AddIfNotNan(Module.A4, a4);
+            factors.AddIfNotNan(Module.A5, a5);
+            factors.AddIfNotNan(Module.B1, b1);
+            factors.AddIfNotNan(Module.B2, b2);
+            factors.AddIfNotNan(Module.B3, b3);
+            factors.AddIfNotNan(Module.B4, b4);
+            factors.AddIfNotNan(Module.B5, b5);
+            factors.AddIfNotNan(Module.B6, b6);
+            factors.AddIfNotNan(Module.B7, b7);
+            factors.AddIfNotNan(Module.C1, c1);
+            factors.AddIfNotNan(Module.C2, c2);
+            factors.AddIfNotNan(Module.C3, c3);
+            factors.AddIfNotNan(Module.C4, c4);
+            factors.AddIfNotNan(Module.D, d);
 
             return new EnvironmentalMetricFactors<T>() { Factors = factors };
         }
@@ -175,13 +175,13 @@ namespace BH.Engine.LifeCycleAssessment
                 double c1toc4 = double.NaN,
                 double d = double.NaN) where T : class, IEnvironmentalFactor, new()
         {
-            DynamicProperties<LifeCycleAssessmentModule, T> factors = new DynamicProperties<LifeCycleAssessmentModule, T>();
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A1toA3, a1toa3);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A4, a4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.A5, a5);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.B1toB7, b1tob7);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.C1toC4, c1toc4);
-            factors.AddIfNotNan(LifeCycleAssessmentModule.D, d);
+            DynamicProperties<Module, T> factors = new DynamicProperties<Module, T>();
+            factors.AddIfNotNan(Module.A1toA3, a1toa3);
+            factors.AddIfNotNan(Module.A4, a4);
+            factors.AddIfNotNan(Module.A5, a5);
+            factors.AddIfNotNan(Module.B1toB7, b1tob7);
+            factors.AddIfNotNan(Module.C1toC4, c1toc4);
+            factors.AddIfNotNan(Module.D, d);
 
             return new EnvironmentalMetricFactors<T>() { Factors = factors };
         }
@@ -190,7 +190,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AddIfNotNan<T>(this Dictionary<LifeCycleAssessmentModule, T> factors, LifeCycleAssessmentModule module, double factor)
+        private static void AddIfNotNan<T>(this Dictionary<Module, T> factors, Module module, double factor)
             where T : IEnvironmentalFactor, new()
         {
             if (!double.IsNaN(factor))
