@@ -58,7 +58,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("result", "A List of ElementResults, one per metric type, that contains the LifeCycleAssessment data for the input object(s).")]
-        public static List<IElementResult2> EnvironmentalResults(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<IElementResult<MaterialResult>> EnvironmentalResults(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (elementM == null)
             {
@@ -78,10 +78,10 @@ namespace BH.Engine.LifeCycleAssessment
             if (takeoff.MaterialTakeoffItems.Count == 0)
             {
                 BH.Engine.Base.Compute.RecordWarning($"The {nameof(GeneralMaterialTakeoff)} from the provided {elementM.GetType().Name} does not contain any {nameof(Material)}s. Nothing to evaluate.");
-                return new List<IElementResult2>();
+                return new List<IElementResult<MaterialResult>>();
             }
 
-            List<IMaterialResult> materialResults = EnvironmentalResults(takeoff, templateMaterials, prioritiseTemplate, metricFilter, evaluationConfig);
+            List<MaterialResult> materialResults = EnvironmentalResults(takeoff, templateMaterials, prioritiseTemplate, metricFilter, evaluationConfig);
 
             //Get out id as BHoM_Guid
             IComparable objectId = "";
@@ -101,12 +101,12 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("result", "A MaterialResult per material and per metric that contains the LifeCycleAssessment data for the input takeoff.")]
-        public static List<IMaterialResult> EnvironmentalResults(this GeneralMaterialTakeoff materialTakeoff, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this GeneralMaterialTakeoff materialTakeoff, List<Material> templateMaterials = null, bool prioritiseTemplate = true, List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (materialTakeoff == null)
             {
                 Base.Compute.RecordError($"Cannot evaluate a null {nameof(GeneralMaterialTakeoff)}.");
-                return new List<IMaterialResult>();
+                return new List<MaterialResult>();
             }
 
             GeneralMaterialTakeoff mappedTakeoff;
@@ -115,7 +115,7 @@ namespace BH.Engine.LifeCycleAssessment
             else
                 mappedTakeoff = Matter.Modify.AssignTemplate(materialTakeoff, templateMaterials, prioritiseTemplate);
 
-            List<IMaterialResult> materialResults = new List<IMaterialResult>();
+            List<MaterialResult> materialResults = new List<MaterialResult>();
 
             for (int i = 0; i < mappedTakeoff.MaterialTakeoffItems.Count; i++)
             {
@@ -134,12 +134,12 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("result", "A MaterialResult per material and per metric that contains the LifeCycleAssessment data for the input takeoff.")]
-        public static List<IMaterialResult> EnvironmentalResults(this TakeoffItem takeoffItem, List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this TakeoffItem takeoffItem, List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (takeoffItem == null || takeoffItem.Material == null)
             {
                 BH.Engine.Base.Compute.RecordError($"Cannot evaluate a null {nameof(TakeoffItem)} or a {nameof(TakeoffItem)} with a null {nameof(TakeoffItem.Material)}.");
-                return new List<IMaterialResult>();
+                return new List<MaterialResult>();
             }
 
             List<IMaterialResult> materialResults = new List<IMaterialResult>();
@@ -150,7 +150,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (metricProviders.Count == 0)
             {
                 Base.Compute.RecordError($"No {nameof(EnvironmentalProductDeclaration)}, {nameof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors)} or {nameof(CombinedLifeCycleAssessmentFactors)} set to material {material.Name}. Unable to evaluate element.");
-                return new List<IMaterialResult>();
+                return new List<MaterialResult>();
             }
 
             IEnvironmentalFactorsProvider metricProvider;
@@ -199,7 +199,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<IMaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (factorsProvider == null)
             {
@@ -208,9 +208,9 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             if (!IValidateConfig(evaluationConfig, factorsProvider))
-                return new List<IMaterialResult>();
+                return new List<MaterialResult>();
 
-            List<IMaterialResult> results = new List<IMaterialResult>();
+            List<MaterialResult> results = new List<MaterialResult>();
 
             foreach (IEnvironmentalMetricFactors metric in factorsProvider.FilteredFactors(metricFilter))
             {
@@ -233,7 +233,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<IMaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, double quantityValue, double mass, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, double quantityValue, double mass, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
         {
             if (factorsProvider == null)
             {
@@ -241,54 +241,64 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            List<IMetricValue> a4TransportResults = factorsProvider.A4TransportFactors?.ITransportResults(mass, metricFilter) ?? new List<IMetricValue>();
-            List<IMetricValue> c2TransportResults = factorsProvider.C2TransportFactors?.ITransportResults(mass, metricFilter) ?? new List<IMetricValue>();
+            Dictionary<MetricType, double> a4TransportResults = factorsProvider.A4TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
+            Dictionary<MetricType, double> c2TransportResults = factorsProvider.C2TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
 
-            List<IMaterialResult> results = new List<IMaterialResult>();
+            List<MaterialResult> results = new List<MaterialResult>();
 
             if (factorsProvider.BaseFactors != null)
             {
                 if (!IValidateConfig(evaluationConfig, factorsProvider.BaseFactors))
-                    return new List<IMaterialResult>();
+                    return new List<MaterialResult>();
 
                 foreach (IEnvironmentalMetricFactors metric in factorsProvider.BaseFactors.FilteredFactors(metricFilter))
                 {
-                    IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig);
-                    if (a4TransportResults.Count > 0)
-                        AddModule(resultingValues as dynamic, a4TransportResults, Module.A4);
+                    MetricType type = metric.IMetricType();
+                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig);
 
-                    if (c2TransportResults.Count > 0)
-                        AddModule(resultingValues as dynamic, c2TransportResults, Module.C2);
+                    //Check if C2 and A4 results are defined explicitly, and override them if they are
+                    if (a4TransportResults.TryGetValue(type, out double a4))
+                    {
+                        resultingValues[Module.A4] = a4;
+                        a4TransportResults.Remove(type);    //Remove as used up
+                    }
 
-                    results.Add(Create.IMaterialResult(materialName, factorsProvider.Name, metric.MetricType, resultingValues));
+                    if (c2TransportResults.TryGetValue(type, out double c2))
+                    {
+                        resultingValues[Module.C2] = a4;
+                        c2TransportResults.Remove(type);    //Remove as used up
+
+                        if (resultingValues.ContainsKey(Module.C1toC4))
+                            resultingValues.Remove(Module.C1toC4);  //Remove C1toC4 as no longer ensured valid
+                    }
+
+                    results.Add(Create.MaterialResult(materialName, factorsProvider.Name, type, resultingValues));
                 }
             }
 
             if (a4TransportResults.Count != 0 || c2TransportResults.Count != 0)
             {
-                List<IDictionary> transportDicts = new List<IDictionary>();
+                Dictionary<MetricType, Dictionary<Module, double>> fullTransportFactors = new Dictionary<MetricType, Dictionary<Module, double>>();
 
                 //If any transport factors not already part of results in base factors, add them as single item results
-                foreach (IMetricValue res in a4TransportResults)
+                foreach (var res in a4TransportResults)
                 {
-                    transportDicts.Add(SingleModuleDictionary(res as dynamic, Module.A4));
+                    fullTransportFactors[res.Key] = new Dictionary<Module, double> { {  Module.A4, res.Value } };
                 }
 
-                //Try adding C2 results to the A4 results
-                foreach (IDictionary transRes in transportDicts)
-                {
-                    AddModule(transRes as dynamic, c2TransportResults, Module.C2);
-                }
 
                 //If still C2 resutls left over, create as new results
-                foreach (IMetricValue res in c2TransportResults)
+                foreach (var res in c2TransportResults)
                 {
-                    transportDicts.Add(SingleModuleDictionary(res as dynamic, Module.A4));
+                    if(fullTransportFactors.TryGetValue(res.Key, out var fullResults))
+                        fullResults[Module.C2] = res.Value;
+                    else
+                        fullTransportFactors[res.Key] = new Dictionary<Module, double> { { Module.C2, res.Value } };
                 }
 
-                foreach (IDictionary transRes in transportDicts)
+                foreach (var transRes in fullTransportFactors)
                 {
-                    results.Add(Create.IMaterialResult(materialName, factorsProvider.Name, (MetricType)(-1), transRes));
+                    results.Add(Create.MaterialResult(materialName, factorsProvider.Name, transRes.Key, transRes.Value));
                 }
             }
 
@@ -306,7 +316,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times quantity.")]
         [Output("result", "A MaterialResult of a type corresponding to the evaluated metric with phase data calculated as data on metric multiplied by the provided quantity value.")]
-        public static IMaterialResult EnvironmentalResults(this IEnvironmentalMetricFactors metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null)
+        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetricFactors metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null)
         {
             if (metric == null)
             {
@@ -316,28 +326,28 @@ namespace BH.Engine.LifeCycleAssessment
 
             IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig);
 
-            return Create.IMaterialResult(materialName, epdName, metric.MetricType, resultingValues as dynamic);
+            return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues as dynamic);
         }
 
         /***************************************************/
         /**** Private Methods - Metric providers        ****/
         /***************************************************/
 
-        private static List<IMaterialResult> IEnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> IEnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
             return EnvironmentalResults(factorsProvider as dynamic, takeoffItem, metricFilter, evaluationConfig);
         }
 
         /***************************************************/
 
-        private static List<IMaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
             return EnvironmentalResults(factorsProvider, takeoffItem.QuantityValue(factorsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig);
         }
 
         /***************************************************/
 
-        private static List<IMaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
             double quantityValue = takeoffItem.QuantityValue(factorsProvider.BaseFactors.QuantityType);
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
@@ -347,35 +357,10 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
 
-        private static List<IMaterialResult> EnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
             BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for metric providers of type {factorsProvider.GetType().Name}");
-            return new List<IMaterialResult>();
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static Dictionary<Module, T> AddModule<T>(this Dictionary<Module, T> resultingValues, List<IMetricValue> toAddFrom, Module module)
-        {
-            T toBeAdded = toAddFrom.OfType<T>().FirstOrDefault();
-            if (toBeAdded != null)
-            {
-                resultingValues[module] = toBeAdded;
-                toAddFrom.Remove(toBeAdded as IMetricValue);
-            }
-
-            return resultingValues;
-        }
-
-        /***************************************************/
-
-        private static Dictionary<Module, T> SingleModuleDictionary<T>(this T metricValue, Module module)
-        {
-            Dictionary<Module, T> dict = new Dictionary<Module, T>();
-            dict[module] = metricValue;
-            return dict;
+            return new List<MaterialResult>();
         }
 
         /***************************************************/

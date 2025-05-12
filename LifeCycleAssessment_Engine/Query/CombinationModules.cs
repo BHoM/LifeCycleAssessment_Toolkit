@@ -29,7 +29,6 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalFactors;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.LifeCycleAssessment.Results.MetricsValues;

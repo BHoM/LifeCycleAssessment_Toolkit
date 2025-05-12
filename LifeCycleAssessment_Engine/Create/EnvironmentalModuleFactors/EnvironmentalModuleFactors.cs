@@ -24,7 +24,6 @@ using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalFactors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -57,8 +56,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c4")]
         [InputFromProperty("d")]
         [Output("apMetric", "Created ClimateChangeFossilMetric.")]
-        private static EnvironmentalMetricFactors<T> EnvironmentalMetricFactors<T>(
-            MetricType metricType,
+        private static Dictionary<Module, double> FactorsDictionary(
             double a1 = double.NaN,
             double a2 = double.NaN,
             double a3 = double.NaN,
@@ -75,9 +73,9 @@ namespace BH.Engine.LifeCycleAssessment
             double c2 = double.NaN,
             double c3 = double.NaN,
             double c4 = double.NaN,
-            double d = double.NaN) where T : class, IEnvironmentalFactor, new()
+            double d = double.NaN)
         {
-            DynamicProperties<Module, T> factors = new DynamicProperties<Module, T>();
+            Dictionary<Module, double> factors = new Dictionary<Module, double>();
             factors.AddIfNotNan(Module.A1, a1);
             factors.AddIfNotNan(Module.A2, a2);
             factors.AddIfNotNan(Module.A3, a3);
@@ -96,7 +94,7 @@ namespace BH.Engine.LifeCycleAssessment
             factors.AddIfNotNan(Module.C4, c4);
             factors.AddIfNotNan(Module.D, d);
 
-            return new EnvironmentalMetricFactors<T>() { Factors = factors };
+            return factors;
         }
 
         /***************************************************/
@@ -118,8 +116,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c4")]
         [InputFromProperty("d")]
         [Output("apMetric", "Created ClimateChangeFossilMetric.")]
-        private static EnvironmentalMetricFactors<T> EnvironmentalMetricFactors<T>(
-            MetricType metricType,
+        private static Dictionary<Module, double> FactorsDictionary(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
                 double a5 = double.NaN,
@@ -134,9 +131,9 @@ namespace BH.Engine.LifeCycleAssessment
                 double c2 = double.NaN,
                 double c3 = double.NaN,
                 double c4 = double.NaN,
-                double d = double.NaN) where T : class, IEnvironmentalFactor, new()
+                double d = double.NaN)
         {
-            DynamicProperties<Module, T> factors = new DynamicProperties<Module, T>();
+            Dictionary<Module, double> factors = new Dictionary<Module, double>();
             factors.AddIfNotNan(Module.A1toA3, a1toa3);
             factors.AddIfNotNan(Module.A4, a4);
             factors.AddIfNotNan(Module.A5, a5);
@@ -153,7 +150,7 @@ namespace BH.Engine.LifeCycleAssessment
             factors.AddIfNotNan(Module.C4, c4);
             factors.AddIfNotNan(Module.D, d);
 
-            return new EnvironmentalMetricFactors<T>() { Factors = factors };
+            return factors;
         }
 
         /***************************************************/
@@ -166,16 +163,15 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("c1toc4", "C1toC4")]
         [InputFromProperty("d")]
         [Output("apMetric", "Created ClimateChangeFossilMetric.")]
-        private static EnvironmentalMetricFactors<T> EnvironmentalMetricFactors<T>(
-            MetricType metricType,
+        private static Dictionary<Module, double> FactorsDictionary(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
                 double a5 = double.NaN,
                 double b1tob7 = double.NaN,
                 double c1toc4 = double.NaN,
-                double d = double.NaN) where T : class, IEnvironmentalFactor, new()
+                double d = double.NaN)
         {
-            DynamicProperties<Module, T> factors = new DynamicProperties<Module, T>();
+            Dictionary<Module, double> factors = new Dictionary<Module, double>();
             factors.AddIfNotNan(Module.A1toA3, a1toa3);
             factors.AddIfNotNan(Module.A4, a4);
             factors.AddIfNotNan(Module.A5, a5);
@@ -183,18 +179,17 @@ namespace BH.Engine.LifeCycleAssessment
             factors.AddIfNotNan(Module.C1toC4, c1toc4);
             factors.AddIfNotNan(Module.D, d);
 
-            return new EnvironmentalMetricFactors<T>() { Factors = factors };
+            return factors;
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void AddIfNotNan<T>(this Dictionary<Module, T> factors, Module module, double factor)
-            where T : IEnvironmentalFactor, new()
+        private static void AddIfNotNan(this Dictionary<Module, double> factors, Module module, double factor)
         {
             if (!double.IsNaN(factor))
-                factors[module] = new T { Value = factor };
+                factors[module] = factor;
             
         }
 

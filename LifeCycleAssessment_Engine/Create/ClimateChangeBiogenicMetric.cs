@@ -74,10 +74,7 @@ namespace BH.Engine.LifeCycleAssessment
             double c4 = double.NaN,
             double d = double.NaN)
         {
-            double a1toa3 = a1 + a2 + a3;
-            double b1tob7 = b1 + b2 + b3 + b4 + b5 + b6 + b7;
-            double c1toc4 = c1 + c2 + c3 + c4;
-            return new ClimateChangeBiogenicMetric(a1, a2, a3, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
+            return new ClimateChangeBiogenicMetric() { Factors = FactorsDictionary(a1, a2, a3, a4, a5, b1, b2, b3, b4, b5, b6, b7, c1, c2, c3, c4, d) };
         }
 
         /***************************************************/
@@ -116,9 +113,8 @@ namespace BH.Engine.LifeCycleAssessment
                 double c4 = double.NaN,
                 double d = double.NaN)
         {
-            double b1tob7 = b1 + b2 + b3 + b4 + b5 + b6 + b7;
-            double c1toc4 = c1 + c2 + c3 + c4;
-            return new ClimateChangeBiogenicMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, b1tob7, c1, c2, c3, c4, c1toc4, d);
+
+            return new ClimateChangeBiogenicMetric() { Factors = FactorsDictionary(a1toa3, a4, a5, b1, b2, b3, b4, b5, b6, b7, c1, c2, c3, c4, d) };
         }
 
         /***************************************************/
@@ -140,7 +136,7 @@ namespace BH.Engine.LifeCycleAssessment
                 double d = double.NaN)
         {
 
-            return new ClimateChangeBiogenicMetric(double.NaN, double.NaN, double.NaN, a1toa3, a4, a5, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, b1tob7, double.NaN, double.NaN, double.NaN, double.NaN, c1toc4, d);
+            return new ClimateChangeBiogenicMetric() { Factors = FactorsDictionary(a1toa3, a4, a5, b1tob7, c1toc4, d) };
         }
 
         /***************************************************/

@@ -22,6 +22,7 @@
 
 using BH.Engine.Base;
 using BH.Engine.Matter;
+using BH.oM.Analytical.Results;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
@@ -29,7 +30,6 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalFactors;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.LifeCycleAssessment.Results.MetricsValues;
@@ -51,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets the factors for each module as a dictioanry.")]
         [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static List<IMetricValue> ITransportResults(this ITransportFactors transportFactors, TakeoffItem takeoffItem, List<MetricType> metricFilter)
+        public static Dictionary<MetricType, double> ITransportResults(this ITransportFactors transportFactors, TakeoffItem takeoffItem, List<MetricType> metricFilter)
         {
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
             return ITransportResults(transportFactors, mass, metricFilter);
@@ -62,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets the factors for each module as a dictioanry.")]
         [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static List<IMetricValue> ITransportResults(this ITransportFactors moduleFactors, double mass, List<MetricType> metricFilter)
+        public static Dictionary<MetricType, double> ITransportResults(this ITransportFactors moduleFactors, double mass, List<MetricType> metricFilter)
         {
             return TransportResults(moduleFactors as dynamic, mass, metricFilter);
         }
@@ -72,20 +72,27 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets the factors for each module as a dictioanry.")]
-        [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
+        [Input("transportScenario", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static List<IMetricValue> TransportResults(this FullTransportScenario transportScenario, double mass, List<MetricType> metricFilter)
+        public static Dictionary<MetricType, double> TransportResults(this FullTransportScenario transportScenario, double mass, List<MetricType> metricFilter)
         {
-            List<IMetricValue> results = new List<IMetricValue>();
+            Dictionary<MetricType, double> results = new Dictionary<MetricType, double>();
 
             List<IEnvironmentalFactor> factors = transportScenario.EnvironmentalFactors;
-            //TODO: filter
-            //if (metricFilter != null && metricFilter.Count != 0)
-            //    metrics = metrics.FilterMetrics(metricFilter).Cast<EnvironmentalMetric>().ToList();
+
+            if (metricFilter != null && metricFilter.Count != 0)
+                factors = factors.Where(x => metricFilter.Contains(x.IMetricType())).ToList();
 
             foreach (IEnvironmentalFactor factor in factors)
             {
-                results.Add(factor.IMetricValue(mass));
+                MetricType type = factor.IMetricType();
+
+                double resultingValue = mass * factor.Value;
+                if (results.ContainsKey(type))
+                    results[type] += resultingValue;
+                else
+                    results[type] = resultingValue;
+
             }
 
             return results;
@@ -96,31 +103,33 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets the factors for each module as a dictioanry.")]
         [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
         [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static List<IMetricValue> TransportResults(this DistanceTransportModeScenario transportScenario, double mass, List<MetricType> metricFilter)
+        public static Dictionary<MetricType, double> TransportResults(this DistanceTransportModeScenario transportScenario, double mass, List<MetricType> metricFilter)
         {
-            Dictionary<Type, IMetricValue> results = new Dictionary<Type, IMetricValue>();
+            Dictionary<MetricType, double> results = new Dictionary<MetricType, double>();
             //List<IMetricValue> results = new List<IMetricValue>();
 
             foreach (var singleJourney in transportScenario.SingleTransportModeImpacts)
             {
                 List<IEnvironmentalFactor> factors = singleJourney.VehicleEmissions.EnvironmentalFactors;
-                //TODO: Filter
-                //if (metricFilter != null && metricFilter.Count != 0)
-                //    metrics = metrics.FilterMetrics(metricFilter).Cast<EnvironmentalMetric>().ToList();
+
+                if (metricFilter != null && metricFilter.Count != 0)
+                    factors = factors.Where(x => metricFilter.Contains(x.IMetricType())).ToList();
+
+                double quantity = mass * singleJourney.DistanceTraveled * (1 + singleJourney.VehicleEmissions.ReturnTripFactor);
 
                 foreach (IEnvironmentalFactor factor in factors)
                 {
-                    double quantity = mass * singleJourney.DistanceTraveled * (1 + singleJourney.VehicleEmissions.ReturnTripFactor);
-                    IMetricValue value = factor.IMetricValue(quantity);
-                    Type t = value.GetType();
-                    if (results.ContainsKey(t))
-                        results[value.GetType()] = Sum(value as dynamic, results[t] as dynamic);
+                    MetricType type = factor.IMetricType();
+
+                    double resultingValue = quantity * factor.Value;
+                    if (results.ContainsKey(type))
+                        results[type] += resultingValue;
                     else
-                        results[t] = value;
+                        results[type] = resultingValue;
                         
                 }
             }
-            return results.Values.ToList();
+            return results;
         }
 
         /***************************************************/
