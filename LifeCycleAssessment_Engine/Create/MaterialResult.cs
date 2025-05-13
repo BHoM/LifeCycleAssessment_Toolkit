@@ -151,22 +151,12 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets a ConstructorInfo from a MaterialResult type matcheching the provided type t.")]
         private static System.Reflection.ConstructorInfo GetMaterialResultConstructorInfo(MetricType t)
         {
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name == t.ToString() + "MaterialResult");
+            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).FirstOrDefault(x => x.Name == t.ToString() + "MaterialResult");
 
             if(materialResultType == null)
                 return null;
 
             return materialResultType.GetConstructors().OrderByDescending(x => x.GetParameters().Count()).First();
-        }
-
-        /***************************************************/
-
-        [Description("Gets a MaterialResult type matching the metric type by name.")]
-        private static Type MaterialResultTypeFromMetric(Type metricType)
-        {
-            string metric = metricType.Name.Replace("Metric", "");
-            Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name == metric + "MaterialResult");
-            return materialResultType;
         }
 
         /***************************************************/

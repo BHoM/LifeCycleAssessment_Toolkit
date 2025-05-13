@@ -122,6 +122,9 @@ namespace BH.Engine.LifeCycleAssessment
             //The constructor is pre-compiled to a function to speed up the execution of the particular method
             Func<object[], IElementResult<MaterialResult>> cst = ElementResultConstructor<T>();
 
+            if (cst == null)
+                return null;
+
             //Set up parameters for the constructor.
             //This always begin with objectId, scope, category and the list of the material results, and last is the result values
             object[] parameters = new object[] { objectId, scope, category, new ReadOnlyCollection<T>(materialResults), resultValues };
@@ -170,7 +173,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets a ConstructorInfo from a ElementResult type matching the provided type t.")]
         private static System.Reflection.ConstructorInfo GetElementResultConstructorInfo<T>() where T : MaterialResult
         {
-            Type elementResultType = BH.Engine.Base.Query.BHoMTypeList().First(x => typeof(IElementResult<T>).IsAssignableFrom(x));
+            Type elementResultType = BH.Engine.Base.Query.BHoMTypeList().FirstOrDefault(x => typeof(IElementResult<T>).IsAssignableFrom(x));
 
             if (elementResultType == null)
                 return null;
