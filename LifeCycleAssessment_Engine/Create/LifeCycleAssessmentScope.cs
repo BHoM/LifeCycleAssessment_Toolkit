@@ -62,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
             GravityStructuralMaterial gravityStructuralMaterial = GravityStructuralMaterial.Undefined, 
             LateralStructuralMaterial lateralStructuralMaterial = LateralStructuralMaterial.Undefined, 
             LevelOfDevelopment levelOfDevelopment = LevelOfDevelopment.Undefined, 
-            List<LifeCycleAssessmentPhases> lifeCycleAssessmentPhases = null, 
+            List<Module> lifeCycleAssessmentPhases = null, 
             ProjectType projectType = ProjectType.Undefined, 
             string projectName = "", 
             double projectArea = 0, 
