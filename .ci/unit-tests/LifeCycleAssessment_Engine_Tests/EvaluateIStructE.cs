@@ -44,85 +44,37 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Test]
-        public void EvaluateIStructEMetricTest()
+
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, true })]
+        public void EvaluateIStructEMetricTest(IEnvironmentalMetricFactors metric)
         {
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
-
-            double v = 1.234;
-            double inc = 0.1432;
-            foreach (Type type in MetricTypes())
-            {
-                metrics.Add(DummyMetric(type, ref v, inc));
-            }
-
             IStructEEvaluationConfig config = DummyConfig();
             double quantity = 50;
-            foreach (IEnvironmentalMetricFactors metric in metrics)
-            {
-                MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity, DummyConfig());
-                ValidateMetricAndResult(metric, result, quantity, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor);
-            }
+
+            MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity, DummyConfig());
+            ValidateMetricAndResult(metric, result, quantity, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor);
 
         }
 
-        /***************************************************/
-
-        [Test]
-        public void EvaluateIStructEEPDTest()
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.0002, true })]
+        public void EvaluateIStructEEPDTest(EnvironmentalProductDeclaration epd)
         {
-            int count = 3;
-
-            double v = 1.2321;
-            double inc = 0.0002;
-            List<EnvironmentalProductDeclaration> epds = new List<EnvironmentalProductDeclaration>();
-
-            for (int i = 0; i < count; i++)
-            {
-                epds.Add(DummyEPD(ref v, inc));
-            }
-
             IStructEEvaluationConfig config = DummyConfig();
-
             double eval = 32.22;
-            foreach (EnvironmentalProductDeclaration epd in epds)
+            List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval, "", null, config);
+            for (int i = 0; i < materialResults.Count; i++)
             {
-                List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval, "", null, config);
-                for (int i = 0; i < materialResults.Count; i++)
-                {
-                    ValidateMetricAndResult(epd.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name);
-                }
+                ValidateMetricAndResult(epd.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name);
             }
-
         }
 
 
         /***************************************************/
 
-        [Test]
-        public void EvaluateIStructETakeoff()
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffs), new object[] { 1.2321, 0.0002, true })]
+        public void EvaluateIStructETakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates)
         {
-            List<string> names = new List<string>() { "Concrete", "Steel", "Glass" };
-
-            double v = 1.2321;
-            double inc = 0.0002;
-            List<Material> templates = new List<Material>();
-
-            foreach (string matName in names)
-            {
-                templates.Add(new Material
-                {
-                    Name = matName,
-                    Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, matName + "EPD NAME", QuantityType.Volume) }
-                });
-            }
-
             IStructEEvaluationConfig config = DummyConfig();
-
-            GeneralMaterialTakeoff takeoff = new GeneralMaterialTakeoff
-            {
-                MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x }, Volume = (i + 1) * 42.543 }).ToList(),
-            };
 
             List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates, true, null, config);
 
@@ -191,41 +143,6 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     result.Indicators[evaluatedMetric.Key].Should().BeApproximately(evaluatedMetric.Value * quantity, tolerance, message);
                 }
             }
-
-
-            //result.A1.Should().BeApproximately(metric.A1 * quantity, tolerance, message);
-            //result.A2.Should().BeApproximately(metric.A2 * quantity, tolerance, message);
-            //result.A3.Should().BeApproximately(metric.A3 * quantity, tolerance, message);
-            //result.A4.Should().BeApproximately(metric.A4 * quantity, tolerance, message);
-            //result.A1toA3.Should().BeApproximately(metric.A1toA3 * quantity, tolerance, message);
-
-            //result.B1.Should().BeApproximately(metric.B1 * quantity, tolerance, message);
-            //result.B2.Should().BeApproximately(metric.B2 * quantity, tolerance, message);
-            //result.B3.Should().BeApproximately(metric.B3 * quantity, tolerance, message);
-            //result.B4.Should().BeApproximately(metric.B4 * quantity, tolerance, message);
-            //result.B5.Should().BeApproximately(metric.B5 * quantity, tolerance, message);
-            //result.B6.Should().BeApproximately(metric.B6 * quantity, tolerance, message);
-            //result.B7.Should().BeApproximately(metric.B7 * quantity, tolerance, message);
-            //result.B1toB7.Should().BeApproximately(metric.B1toB7 * quantity, tolerance, message);
-
-            //result.C2.Should().BeApproximately(metric.C2 * quantity, tolerance, message);
-            //result.C3.Should().BeApproximately(metric.C3 * quantity, tolerance, message);
-            //result.C4.Should().BeApproximately(metric.C4 * quantity, tolerance, message);
-
-            //result.D.Should().BeApproximately(metric.D * quantity, tolerance, message);
-
-            //if (metric.MetricType == EnvironmentalMetrics.ClimateChangeTotalNoBiogenic || metric.MetricType == EnvironmentalMetrics.ClimateChangeTotal)
-            //{
-            //    result.A5.Should().BeApproximately(metric.A5 * quantity + quantity / totalWeight * a5CarbonFactor * projectCost, tolerance, message);
-            //    result.C1.Should().BeApproximately(quantity / totalWeight * floorArea * c1CarbonFactor, tolerance, message);
-            //    result.C1toC4.Should().BeApproximately(result.C1 + result.C2 + result.C3 + result.C4, tolerance, message);
-            //}
-            //else
-            //{
-            //    result.A5.Should().BeApproximately(metric.A5 * quantity, tolerance, message);
-            //    result.C1.Should().BeApproximately(metric.C1 * quantity, tolerance, message);
-            //    result.C1toC4.Should().BeApproximately(metric.C1toC4 * quantity, tolerance, message);
-            //}
         }
 
         /***************************************************/
@@ -242,88 +159,6 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static EnvironmentalProductDeclaration DummyEPD(ref double v, double inc, string name = "", QuantityType quantityType = (QuantityType)(-1))
-        {
-            if (string.IsNullOrEmpty(name))
-                name = new AutoBogus.AutoFaker<string>().Generate();
-
-            if ((int)quantityType == -1)
-            {
-                Array values = Enum.GetValues(typeof(QuantityType));
-                Random random = new Random();
-                quantityType = (QuantityType)values.GetValue(random.Next(values.Length));
-            }
-
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
-
-            foreach (Type type in MetricTypes())
-            {
-                metrics.Add(DummyMetric(type, ref v, inc));
-            }
-
-            return new EnvironmentalProductDeclaration
-            {
-                Name = name,
-                QuantityType = quantityType,
-                EnvironmentalFactors = metrics
-            };
-        }
-
-        /***************************************************/
-
-        private static IEnvironmentalMetricFactors DummyMetric(Type type, ref double v, double inc)
-        {
-            MethodInfo create = typeof(BH.Engine.LifeCycleAssessment.Create).GetMethods().Where(x => x.ReturnType == type).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
-
-            if (create == null)
-                return null;
-
-            object[] para = new object[create.GetParameters().Length];
-
-            for (int i = 0; i < para.Length; i++)
-            {
-                para[i] = v;
-                v += inc;
-            }
-
-            IEnvironmentalMetricFactors metric = create.Invoke(null, para) as IEnvironmentalMetricFactors;
-
-            if (metric is ClimateChangeFossilMetric || metric is ClimateChangeTotalMetric || metric is ClimateChangeTotalNoBiogenicMetric)
-            {
-                metric.Indicators[oM.LifeCycleAssessment.Module.A5w] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
-                metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
-            }
-            return metric;
-        }
-
-        /***************************************************/
-
-        private static List<Type> MetricTypes()
-        {
-            return new List<Type>
-            {
-                //typeof(AbioticDepletionFossilResourcesMetric),
-                //typeof(AbioticDepletionMineralsAndMetalsMetric),
-                //typeof(AcidificationMetric),
-                typeof(ClimateChangeBiogenicMetric),
-                typeof(ClimateChangeFossilMetric),
-                typeof(ClimateChangeLandUseMetric),
-                typeof(ClimateChangeTotalMetric),
-                typeof(ClimateChangeTotalNoBiogenicMetric),
-                //typeof(EutrophicationAquaticFreshwaterMetric),
-                //typeof(EutrophicationAquaticMarineMetric),
-                //typeof(EutrophicationTerrestrialMetric),
-                //typeof(EutrophicationCMLMetric),
-                //typeof(EutrophicationTRACIMetric),
-                //typeof(OzoneDepletionMetric),
-                //typeof(PhotochemicalOzoneCreationMetric),
-                //typeof(PhotochemicalOzoneCreationCMLMetric),
-                //typeof(PhotochemicalOzoneCreationTRACIMetric),
-                //typeof(WaterDeprivationMetric)
-            };
-        }
-
-        /***************************************************/
     }
 }
 
