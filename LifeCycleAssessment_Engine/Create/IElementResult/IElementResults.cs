@@ -79,28 +79,11 @@ namespace BH.Engine.LifeCycleAssessment
             //Cast the material results to the actual type
             List<T> castResults = materialResults.Cast<T>().ToList();
 
-            Dictionary<Module, double> totalResults = new Dictionary<Module, double>();
+            Dictionary<Module, double> totalResults = castResults.SumModuleDataValues(true);
 
-            //Get modules existing in all results
-            List<Module> allModules = castResults.SelectMany(x => x.Indicators.Keys).Distinct().ToList();
-            List<Module> modules = allModules.ToList();
-
-            foreach (var matResult in castResults)
-            {
-                modules = modules.Intersect(matResult.Indicators.Keys).ToList();
-            }
-
-            //Only include total for modules defined for all parts
-            foreach (var module in modules.Distinct())
-            {
-                totalResults[module] = castResults.Sum(x => x.Indicators[module]);
-            }
-
-            var nonCombinedModules = allModules.Except(modules).ToList();
+            var nonCombinedModules = castResults.SelectMany(x => x.Indicators.Keys).Distinct().Except(totalResults.Keys).ToList();
             if (nonCombinedModules.Count > 0)
                 BH.Engine.Base.Compute.RecordNote($"MaterialResults that make up ElementResult of type {typeof(T).Name} contains modules not present in all material results. These are ommited when creating the Combined results for the element. The information about these modules can be found on the {nameof(BH.oM.LifeCycleAssessment.Results.ElementResult<T>.MaterialResults)}");
-
-
 
             //Call final create
             return Create.ElementResult<T>(objectId, scope, category, castResults, totalResults);
