@@ -51,21 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return new List<IEnvironmentalMetricFactors>();
             }
 
-            if (metricFilter == null || metricFilter.Count == 0)
-                return epd.EnvironmentalFactors;
-
-            var metricLookup = epd.EnvironmentalFactors.ToLookup(x => x.IMetricType());
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
-            foreach (MetricType type in metricFilter)
-            {
-                IEnvironmentalMetricFactors metric = metricLookup[type].FirstOrDefault();
-                if (metric != null)
-                    metrics.Add(metric);
-                else
-                    Base.Compute.RecordError($"{epd.GetType().Name} named {epd.Name} does not contain a {nameof(EnvironmentalMetric)} of type {type}.");
-            }
-
-            return metrics;
+            return epd.EnvironmentalFactors.FilterIndicators(metricFilter);
         }
 
         /***************************************************/

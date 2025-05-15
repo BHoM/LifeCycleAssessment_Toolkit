@@ -28,6 +28,7 @@ using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.Fragments;
+using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
@@ -43,17 +44,12 @@ namespace BH.Engine.LifeCycleAssessment
 {
     public static partial class Query
     {
+
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static MetricType IMetricType(this IEnvironmentalFactor factor)
-        {
-            return MetricType(factor as dynamic);
-        }
-        /***************************************************/
-
-        public static MetricType IMetricType(this IEnvironmentalMetricFactors factor)
+        public static MetricType IMetricType(this ILifeCycleAssemsmentIndicator factor)
         {
             return MetricType(factor as dynamic);
         }
@@ -69,13 +65,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static MetricType MetricType(this ClimateChangeTotalMetric singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
-        }
-
-        /***************************************************/
-
         private static MetricType MetricType(this ClimateChangeFossilMetric singleFactor)
         {
             return oM.LifeCycleAssessment.MetricType.ClimateChangeFossil;
@@ -86,6 +75,13 @@ namespace BH.Engine.LifeCycleAssessment
         private static MetricType MetricType(this ClimateChangeLandUseMetric singleFactor)
         {
             return oM.LifeCycleAssessment.MetricType.ClimateChangeLandUse;
+        }
+
+        /***************************************************/
+
+        private static MetricType MetricType(this ClimateChangeTotalMetric singleFactor)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
         }
 
         /***************************************************/
@@ -106,13 +102,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static MetricType MetricType(this ClimateChangeTotalFactor singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
-        }
-
-        /***************************************************/
-
         private static MetricType MetricType(this ClimateChangeFossilFactor singleFactor)
         {
             return oM.LifeCycleAssessment.MetricType.ClimateChangeFossil;
@@ -127,9 +116,65 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        private static MetricType MetricType(this ClimateChangeTotalFactor singleFactor)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
+        }
+
+        /***************************************************/
+
         private static MetricType MetricType(this ClimateChangeTotalNoBiogenicFactor singleFactor)
         {
             return oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic;
+        }
+
+        /***************************************************/
+        /**** Private Methods - Material results        ****/
+        /***************************************************/
+
+        private static MetricType MetricType(this ClimateChangeBiogenicMaterialResult materialResult)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeBiogenic;
+        }
+
+        /***************************************************/
+
+        private static MetricType MetricType(this ClimateChangeFossilMaterialResult materialResult)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeFossil;
+        }
+
+        /***************************************************/
+
+        private static MetricType MetricType(this ClimateChangeLandUseMaterialResult materialResult)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeLandUse;
+        }
+
+        /***************************************************/
+
+        private static MetricType MetricType(this ClimateChangeTotalMaterialResult materialResult)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
+        }
+
+        /***************************************************/
+
+        private static MetricType MetricType(this ClimateChangeTotalNoBiogenicMaterialResult materialResult)
+        {
+            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic;
+        }
+
+        /***************************************************/
+        /**** Private Methods - Element results         ****/
+        /***************************************************/
+
+        private static MetricType MetricType(this IElementResult<MaterialResult> elementResult)
+        {
+            if (elementResult.MaterialResults.Count == 0)
+                return oM.LifeCycleAssessment.MetricType.Undefined;
+
+            return elementResult.MaterialResults[0].IMetricType();
         }
 
         /***************************************************/

@@ -82,18 +82,18 @@ namespace BH.Engine.LifeCycleAssessment
             Dictionary<Module, double> totalResults = new Dictionary<Module, double>();
 
             //Get modules existing in all results
-            List<Module> allModules = castResults.SelectMany(x => x.Results.Keys).Distinct().ToList();
+            List<Module> allModules = castResults.SelectMany(x => x.Indicators.Keys).Distinct().ToList();
             List<Module> modules = allModules.ToList();
 
             foreach (var matResult in castResults)
             {
-                modules = modules.Intersect(matResult.Results.Keys).ToList();
+                modules = modules.Intersect(matResult.Indicators.Keys).ToList();
             }
 
             //Only include total for modules defined for all parts
             foreach (var module in modules.Distinct())
             {
-                totalResults[module] = castResults.Sum(x => x.Results[module]);
+                totalResults[module] = castResults.Sum(x => x.Indicators[module]);
             }
 
             var nonCombinedModules = allModules.Except(modules).ToList();

@@ -28,6 +28,7 @@ using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.Fragments;
+using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
@@ -63,20 +64,14 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            MetricType type = metric.IMetricType();
-
-            switch (type)
+            if (metric is IDeprecatedStandard)
             {
-                case oM.LifeCycleAssessment.MetricType.EutrophicationCML:
-                case oM.LifeCycleAssessment.MetricType.EutrophicationTRACI:
-                case oM.LifeCycleAssessment.MetricType.PhotochemicalOzoneCreationCML:
-                case oM.LifeCycleAssessment.MetricType.PhotochemicalOzoneCreationTRACI:
-                    Base.Compute.RecordWarning($"Please note that the metric of type {type} that is evaluated comes from an older standard and that the resulting values are incompatible in terms of quantity and unit to metrics from the EN 15804+A2 standard.\n" +
-                           $"Resulting values for the metrics can only be compared with other evaluated metrics from the exact same standard.");
+                MetricType type = metric.IMetricType();
+                Base.Compute.RecordWarning($"Please note that the metric of type {type} that is evaluated comes from an older standard and that the resulting values are incompatible in terms of quantity and unit to metrics from the EN 15804+A2 standard.\n" +
+                       $"Resulting values for the metrics can only be compared with other evaluated metrics from the exact same standard.");
 
-                    break;
             }
-            if (metric.Factors.Count == 0)
+            if (metric.Indicators.Count == 0)
                 return new Dictionary<Module, double>();
 
 
@@ -100,7 +95,7 @@ namespace BH.Engine.LifeCycleAssessment
         private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetricFactors metric, double quantityValue)
         {
             Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
-            foreach (var moduleData in metric.Factors)
+            foreach (var moduleData in metric.Indicators)
             {
                 resultingValues[moduleData.Key] =  moduleData.Value * quantityValue ;  //Evaluation value is base phase data multiplied by quantity value
             }
@@ -132,7 +127,7 @@ namespace BH.Engine.LifeCycleAssessment
             double weightFactor = (evaluationConfig.TotalWeight == 0 || evaluationConfig.TotalWeight < weight) ? 0 : weight / evaluationConfig.TotalWeight;
 
             Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
-            foreach (var moduleData in metric.Factors)
+            foreach (var moduleData in metric.Indicators)
             {
                 //Initial value is base phase data multiplied by quantity value
                 resultingValues[moduleData.Key] = moduleData.Value * quantityValue;

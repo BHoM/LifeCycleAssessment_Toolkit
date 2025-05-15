@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.Results;
 using System;
 using System.Collections.Generic;
@@ -38,18 +39,18 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets the total sum of values from all phases with a set value (all values not NaN).")]
-        [Input("phaseData", "LCA phase data object to get the total from.")]
+        [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("total", "The sum of all non-NaN properties on the provided phase data object.")]
-        public static double Total(this ILifeCycleAssessmentPhaseData phaseData)
+        public static double Total(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
-            double total = ATotal(phaseData, included);
-            total += BTotal(phaseData, included);
-            total += CTotal(phaseData, included);
-            if (!double.IsNaN(phaseData.D))
-            {
-                total += phaseData.D;
-                included.Add(nameof(phaseData.D));
+            double total = ATotal(moduleData, included);
+            total += BTotal(moduleData, included);
+            total += CTotal(moduleData, included);
+            if(moduleData.Indicators.ContainsKey(Module.D))
+            { 
+                total += moduleData.Indicators[Module.D];
+                included.Add(nameof(Module.D));
             }
             IncludedMessage(included, nameof(Total));
             return total;
@@ -58,12 +59,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets the total sum of values from all A-phases (A1-A5) with a set value (all values not NaN).")]
-        [Input("phaseData", "LCA phase data object to get the total from.")]
+        [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("Atotal", "The sum of all non-NaN properties on the provided phase data object.")]
-        public static double ATotal(this ILifeCycleAssessmentPhaseData phaseData)
+        public static double ATotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
-            double total = ATotal(phaseData, included);
+            double total = ATotal(moduleData, included);
             IncludedMessage(included, nameof(ATotal));
             return total;
         }
@@ -71,12 +72,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets the total sum of values from all B-phases (B1-B7) with a set value (all values not NaN).")]
-        [Input("phaseData", "LCA phase data object to get the total from.")]
+        [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("BTotal", "The sum of all non-NaN properties on the provided phase data object.")]
-        public static double BTotal(this ILifeCycleAssessmentPhaseData phaseData)
+        public static double BTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
-            double total = BTotal(phaseData, included);
+            double total = BTotal(moduleData, included);
             IncludedMessage(included, nameof(BTotal));
             return total;
         }
@@ -84,12 +85,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets the total sum of values from all C-phases (C1-C4) with a set value (all values not NaN).")]
-        [Input("phaseData", "LCA phase data object to get the total from.")]
+        [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("CTotal", "The sum of all non-NaN properties on the provided phase data object.")]
-        public static double CTotal(this ILifeCycleAssessmentPhaseData phaseData)
+        public static double CTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
-            double total = CTotal(phaseData, included);
+            double total = CTotal(moduleData, included);
             IncludedMessage(included, nameof(CTotal));
             return total;
         }
@@ -111,58 +112,59 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets out all A-phases, and stores the non-NaN properties in the included list.")]
-        private static double ATotal(this ILifeCycleAssessmentPhaseData phaseData, List<string> included)
+        private static double ATotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
+            return SumModules(moduleData, m_AModules, included);
             double total = 0;
 
-            if (double.IsNaN(phaseData.A1toA3))
+            if (!moduleData.Indicators.ContainsKey(Module.A1toA3))
             {
-                if (!double.IsNaN(phaseData.A1))
+                if (moduleData.Indicators.ContainsKey(Module.A1))
                 {
-                    total += phaseData.A1;
-                    included.Add(nameof(phaseData.A1));
+                    total += moduleData.Indicators[Module.A1];
+                    included.Add(nameof(Module.A1));
                 }
 
-                if (!double.IsNaN(phaseData.A2))
+                if (moduleData.Indicators.ContainsKey(Module.A2))
                 {
-                    total += phaseData.A2;
-                    included.Add(nameof(phaseData.A2));
+                    total += moduleData.Indicators[Module.A2];
+                    included.Add(nameof(Module.A2));
                 }
 
-                if (!double.IsNaN(phaseData.A3))
+                if (moduleData.Indicators.ContainsKey(Module.A3))
                 {
-                    total += phaseData.A3;
-                    included.Add(nameof(phaseData.A3));
+                    total += moduleData.Indicators[Module.A3];
+                    included.Add(nameof(Module.A3));
                 }
             }
             else
             {
-                if (!double.IsNaN(phaseData.A1) && 
-                    !double.IsNaN(phaseData.A2) && 
-                    !double.IsNaN(phaseData.A3))
+                if (moduleData.Indicators.ContainsKey(Module.A1) && 
+                    moduleData.Indicators.ContainsKey(Module.A2) && 
+                    moduleData.Indicators.ContainsKey(Module.A3))
                 {
-                    total += phaseData.A1 + phaseData.A2 + phaseData.A3;
-                    included.Add(nameof(phaseData.A1));
-                    included.Add(nameof(phaseData.A2));
-                    included.Add(nameof(phaseData.A3));
+                    total += moduleData.Indicators[Module.A1] + moduleData.Indicators[Module.A2] + moduleData.Indicators[Module.A3];
+                    included.Add(nameof(Module.A1));
+                    included.Add(nameof(Module.A2));
+                    included.Add(nameof(Module.A3));
                 }
                 else
                 {
-                    total += phaseData.A1toA3;
-                    included.Add(nameof(phaseData.A1toA3));
+                    total += moduleData.Indicators[Module.A1toA3];
+                    included.Add(nameof(Module.A1toA3));
                 }
             }
 
-            if (!double.IsNaN(phaseData.A4))
+            if (moduleData.Indicators.ContainsKey(Module.A4))
             {
-                total += phaseData.A4;
-                included.Add(nameof(phaseData.A4));
+                total += moduleData.Indicators[Module.A4];
+                included.Add(nameof(Module.A4));
             }
 
-            if (!double.IsNaN(phaseData.A5))
+            if (moduleData.Indicators.ContainsKey(Module.A5))
             {
-                total += phaseData.A5;
-                included.Add(nameof(phaseData.A5));
+                total += moduleData.Indicators[Module.A5];
+                included.Add(nameof(Module.A5));
             }
 
             return total;
@@ -171,77 +173,78 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets out all B-phases, and stores the non-NaN properties in the included list.")]
-        private static double BTotal(this ILifeCycleAssessmentPhaseData phaseData, List<string> included)
+        private static double BTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
+            return SumModules(moduleData, m_BModules, included);
             double total = 0;
 
-            if (double.IsNaN(phaseData.B1toB7))
+            if (moduleData.Indicators.ContainsKey(Module.B1toB7))
             {
-                if (!double.IsNaN(phaseData.B1))
+                if (moduleData.Indicators.ContainsKey(Module.B1))
                 {
-                    total += phaseData.B1;
-                    included.Add(nameof(phaseData.B1));
+                    total += moduleData.Indicators[Module.B1];
+                    included.Add(nameof(Module.B1));
                 }
 
-                if (!double.IsNaN(phaseData.B2))
+                if (moduleData.Indicators.ContainsKey(Module.B2))
                 {
-                    total += phaseData.B2;
-                    included.Add(nameof(phaseData.B2));
+                    total += moduleData.Indicators[Module.B2];
+                    included.Add(nameof(Module.B2));
                 }
 
-                if (!double.IsNaN(phaseData.B3))
+                if (moduleData.Indicators.ContainsKey(Module.B3))
                 {
-                    total += phaseData.B3;
-                    included.Add(nameof(phaseData.B3));
+                    total += moduleData.Indicators[Module.B3];
+                    included.Add(nameof(Module.B3));
                 }
 
-                if (!double.IsNaN(phaseData.B4))
+                if (moduleData.Indicators.ContainsKey(Module.B4))
                 {
-                    total += phaseData.B4;
-                    included.Add(nameof(phaseData.B4));
+                    total += moduleData.Indicators[Module.B4];
+                    included.Add(nameof(Module.B4));
                 }
 
-                if (!double.IsNaN(phaseData.B5))
+                if (moduleData.Indicators.ContainsKey(Module.B5))
                 {
-                    total += phaseData.B5;
-                    included.Add(nameof(phaseData.B5));
+                    total += moduleData.Indicators[Module.B5];
+                    included.Add(nameof(Module.B5));
                 }
 
-                if (!double.IsNaN(phaseData.B6))
+                if (moduleData.Indicators.ContainsKey(Module.B6))
                 {
-                    total += phaseData.B6;
-                    included.Add(nameof(phaseData.B6));
+                    total += moduleData.Indicators[Module.B6];
+                    included.Add(nameof(Module.B6));
                 }
 
-                if (!double.IsNaN(phaseData.B7))
+                if (moduleData.Indicators.ContainsKey(Module.B7))
                 {
-                    total += phaseData.B7;
-                    included.Add(nameof(phaseData.B7));
+                    total += moduleData.Indicators[Module.B7];
+                    included.Add(nameof(Module.B7));
                 }
             }
             else
             {
-                if (!double.IsNaN(phaseData.B1) && 
-                    !double.IsNaN(phaseData.B2) && 
-                    !double.IsNaN(phaseData.B3) &&
-                    !double.IsNaN(phaseData.B4) &&
-                    !double.IsNaN(phaseData.B5) &&
-                    !double.IsNaN(phaseData.B6) &&
-                    !double.IsNaN(phaseData.B7))
+                if (moduleData.Indicators.ContainsKey(Module.B1) && 
+                    !moduleData.Indicators.ContainsKey(Module.B2) && 
+                    !moduleData.Indicators.ContainsKey(Module.B3) &&
+                    !moduleData.Indicators.ContainsKey(Module.B4) &&
+                    !moduleData.Indicators.ContainsKey(Module.B5) &&
+                    !moduleData.Indicators.ContainsKey(Module.B6) &&
+                    !moduleData.Indicators.ContainsKey(Module.B7))
                 {
-                    total += phaseData.B1 + phaseData.B2 + phaseData.B3 + phaseData.B4 + phaseData.B5 + phaseData.B6 + phaseData.B7;
-                    included.Add(nameof(phaseData.B1));
-                    included.Add(nameof(phaseData.B2));
-                    included.Add(nameof(phaseData.B3));
-                    included.Add(nameof(phaseData.B4));
-                    included.Add(nameof(phaseData.B5));
-                    included.Add(nameof(phaseData.B6));
-                    included.Add(nameof(phaseData.B7));
+                    total += moduleData.Indicators[Module.B1] + moduleData.Indicators[Module.B2] + moduleData.Indicators[Module.B3] + moduleData.Indicators[Module.B4] + moduleData.Indicators[Module.B5] + moduleData.Indicators[Module.B6] + moduleData.Indicators[Module.B7];
+                    included.Add(nameof(Module.B1));
+                    included.Add(nameof(Module.B2));
+                    included.Add(nameof(Module.B3));
+                    included.Add(nameof(Module.B4));
+                    included.Add(nameof(Module.B5));
+                    included.Add(nameof(Module.B6));
+                    included.Add(nameof(Module.B7));
                 }
                 else
                 {
-                    total += phaseData.B1toB7;
-                    included.Add(nameof(phaseData.B1toB7));
+                    total += moduleData.Indicators[Module.B1toB7];
+                    included.Add(nameof(Module.B1toB7));
                 }
             }
             return total;
@@ -250,58 +253,118 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Gets out all C-phases, and stores the non-NaN properties in the included list.")]
-        private static double CTotal(this ILifeCycleAssessmentPhaseData phaseData, List<string> included)
+        private static double CTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
+            return SumModules(moduleData, m_CModules, included);
             double total = 0;
 
-            if (double.IsNaN(phaseData.C1toC4))
+            if (moduleData.Indicators.ContainsKey(Module.C1toC4))
             {
-                if (!double.IsNaN(phaseData.C1))
+                if (moduleData.Indicators.ContainsKey(Module.C1))
                 {
-                    total += phaseData.C1;
-                    included.Add(nameof(phaseData.C1));
+                    total += moduleData.Indicators[Module.C1];
+                    included.Add(nameof(Module.C1));
                 }
 
-                if (!double.IsNaN(phaseData.C2))
+                if (moduleData.Indicators.ContainsKey(Module.C2))
                 {
-                    total += phaseData.C2;
-                    included.Add(nameof(phaseData.C2));
+                    total += moduleData.Indicators[Module.C2];
+                    included.Add(nameof(Module.C2));
                 }
 
-                if (!double.IsNaN(phaseData.C3))
+                if (moduleData.Indicators.ContainsKey(Module.C3))
                 {
-                    total += phaseData.C3;
-                    included.Add(nameof(phaseData.C3));
+                    total += moduleData.Indicators[Module.C3];
+                    included.Add(nameof(Module.C3));
                 }
 
-                if (!double.IsNaN(phaseData.C4))
+                if (moduleData.Indicators.ContainsKey(Module.C4))
                 {
-                    total += phaseData.C4;
-                    included.Add(nameof(phaseData.C4));
+                    total += moduleData.Indicators[Module.C4];
+                    included.Add(nameof(Module.C4));
                 }
             }
             else
             {
-                if (!double.IsNaN(phaseData.C1) &&
-                    !double.IsNaN(phaseData.C2) &&
-                    !double.IsNaN(phaseData.C3) &&
-                    !double.IsNaN(phaseData.C4))
+                if (moduleData.Indicators.ContainsKey(Module.C1) &&
+                    moduleData.Indicators.ContainsKey(Module.C2) &&
+                    moduleData.Indicators.ContainsKey(Module.C3) &&
+                    moduleData.Indicators.ContainsKey(Module.C4))
                 {
-                    total += phaseData.C1 + phaseData.C2 + phaseData.C3 + phaseData.C4;
-                    included.Add(nameof(phaseData.C1));
-                    included.Add(nameof(phaseData.C2));
-                    included.Add(nameof(phaseData.C3));
-                    included.Add(nameof(phaseData.C4));
+                    total += moduleData.Indicators[Module.C1] + moduleData.Indicators[Module.C2] + moduleData.Indicators[Module.C3] + moduleData.Indicators[Module.C4];
+                    included.Add(nameof(Module.C1));
+                    included.Add(nameof(Module.C2));
+                    included.Add(nameof(Module.C3));
+                    included.Add(nameof(Module.C4));
                 }
                 else
                 {
-                    total += phaseData.C1toC4;
-                    included.Add(nameof(phaseData.C1toC4));
+                    total += moduleData.Indicators[Module.C1toC4];
+                    included.Add(nameof(Module.C1toC4));
                 }
             }
 
             return total;
         }
+
+        /***************************************************/
+
+        private static double SumModules(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, IEnumerable<Module> modulesToSum, List<string> included)
+        {
+            double total = 0;
+            HashSet<Module> modulesLeftToHandle = new HashSet<Module>(modulesToSum);
+            IReadOnlyDictionary<Module, IReadOnlyList<Module>> combinationModules = CombinationModules();
+
+            foreach (var combination in combinationModules.Reverse())
+            {
+                if (modulesLeftToHandle.Contains(combination.Key))
+                {
+                    if (moduleData.Indicators.TryGetValue(combination.Key, out double currentValue))
+                    {
+                        total += currentValue;
+                        included.Add(combination.Key.ToString());
+                        modulesLeftToHandle.RemoveModules(combinationModules, combination.Key);
+                    }
+                    else
+                    {
+                        modulesLeftToHandle.Remove(combination.Key);
+                    }
+                }
+            }
+
+            foreach (Module subItem in modulesLeftToHandle)
+            {
+                if (moduleData.Indicators.TryGetValue(subItem, out double subValue))
+                {
+                    total += subValue;
+                    included.Add(subItem.ToString());
+                }
+            }
+
+            return total;
+        }
+
+        /***************************************************/
+
+        private static void RemoveModules(this HashSet<Module> modules, IReadOnlyDictionary<Module, IReadOnlyList<Module>> combinationModules, Module moduleToRemove)
+        {
+            modules.Remove(moduleToRemove);
+            if (combinationModules.TryGetValue(moduleToRemove, out IReadOnlyList<Module> subModules))
+            {
+                foreach (Module subModuleToRemove in subModules)
+                {
+                    RemoveModules(modules, combinationModules, moduleToRemove);
+                }
+            }
+        }
+
+        /***************************************************/
+
+        /***************************************************/
+
+        private static List<Module> m_AModules = Enum.GetValues(typeof(Module)).Cast<Module>().Where(x => x.ToString().StartsWith("A")).ToList();
+        private static List<Module> m_BModules = Enum.GetValues(typeof(Module)).Cast<Module>().Where(x => x.ToString().StartsWith("B")).ToList();
+        private static List<Module> m_CModules = Enum.GetValues(typeof(Module)).Cast<Module>().Where(x => x.ToString().StartsWith("C")).ToList();
 
         /***************************************************/
     }

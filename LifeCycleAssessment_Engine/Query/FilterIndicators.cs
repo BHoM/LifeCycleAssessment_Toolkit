@@ -20,21 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.Engine.Matter;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
-using BH.oM.LifeCycleAssessment.Configs;
-using BH.oM.LifeCycleAssessment.Fragments;
+using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.LifeCycleAssessment.Results.MetricsValues;
-using BH.oM.Physical.Materials;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -47,17 +39,36 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the factors for each module as a dictioanry.")]
-        [Input("moduleFactors", "The factors to extract the dicitoanry from.")]
-        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static T Sum<T>(this T a, T b)
-            where T : IMetricValue, new()
+        [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD are returned.")]
+        [Input("lcaItems", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
+        [Input("metricFilter", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the EPD are returned.")]
+        [Output("materics", "The metrics on the EnvironmentalProductDeclaration corresponding to the provided filter, or all metrics on the epd if no metricType filters are provided.")]
+        public static List<T> FilterIndicators<T>(this IEnumerable<T> lcaItems, List<MetricType> metricFilter) where T : ILifeCycleAssemsmentIndicator
         {
-            return new T { Value = a.Value + b.Value };
+            if (lcaItems == null)
+            {
+                Base.Compute.RecordError("Cannot filter due to null inputs.");
+                return null;
+            }
+
+            if (metricFilter == null || metricFilter.Count == 0)
+                return lcaItems.ToList();
+
+            var metricLookup = lcaItems.ToLookup(x => x.IMetricType());
+            List<T> metrics = new List<T>();
+            foreach (MetricType type in metricFilter)
+            {
+                IEnumerable<T> metric = metricLookup[type];
+                if (metric.Any())
+                    metrics.AddRange(metric);
+                else
+                    Base.Compute.RecordWarning($"Provided items does not contain a {nameof(ILifeCycleAssemsmentIndicator)} corresponding to metric of type {type}.");
+            }
+
+            return metrics;
         }
 
         /***************************************************/
-       
     }
 }
 

@@ -38,9 +38,9 @@ namespace BH.Engine.LifeCycleAssessment
     public static partial class Create
     {
 
-            /***************************************************/
-            /**** Public Methods                            ****/
-            /***************************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
         [Description("Creates a MaterialResult of a type matched to the provided Type.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration that was evaluated and that the result being created corresponds to. Stored as an identifier on the returned result class.")]
@@ -91,7 +91,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         private static void AddIfNotPresent(this Dictionary<Module, double> metricsWithTotal, Module moduleToAdd, IReadOnlyList<Module> modulesToSum)
-        { 
+        {
             if (metricsWithTotal.ContainsKey(moduleToAdd))
                 return; //Allready present
 
@@ -153,7 +153,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             Type materialResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).FirstOrDefault(x => x.Name == t.ToString() + "MaterialResult");
 
-            if(materialResultType == null)
+            if (materialResultType == null)
                 return null;
 
             return materialResultType.GetConstructors().OrderByDescending(x => x.GetParameters().Count()).First();
