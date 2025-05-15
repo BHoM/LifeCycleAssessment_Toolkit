@@ -115,59 +115,6 @@ namespace BH.Engine.LifeCycleAssessment
         private static double ATotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
             return SumModules(moduleData, m_AModules, included);
-            double total = 0;
-
-            if (!moduleData.Indicators.ContainsKey(Module.A1toA3))
-            {
-                if (moduleData.Indicators.ContainsKey(Module.A1))
-                {
-                    total += moduleData.Indicators[Module.A1];
-                    included.Add(nameof(Module.A1));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.A2))
-                {
-                    total += moduleData.Indicators[Module.A2];
-                    included.Add(nameof(Module.A2));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.A3))
-                {
-                    total += moduleData.Indicators[Module.A3];
-                    included.Add(nameof(Module.A3));
-                }
-            }
-            else
-            {
-                if (moduleData.Indicators.ContainsKey(Module.A1) && 
-                    moduleData.Indicators.ContainsKey(Module.A2) && 
-                    moduleData.Indicators.ContainsKey(Module.A3))
-                {
-                    total += moduleData.Indicators[Module.A1] + moduleData.Indicators[Module.A2] + moduleData.Indicators[Module.A3];
-                    included.Add(nameof(Module.A1));
-                    included.Add(nameof(Module.A2));
-                    included.Add(nameof(Module.A3));
-                }
-                else
-                {
-                    total += moduleData.Indicators[Module.A1toA3];
-                    included.Add(nameof(Module.A1toA3));
-                }
-            }
-
-            if (moduleData.Indicators.ContainsKey(Module.A4))
-            {
-                total += moduleData.Indicators[Module.A4];
-                included.Add(nameof(Module.A4));
-            }
-
-            if (moduleData.Indicators.ContainsKey(Module.A5))
-            {
-                total += moduleData.Indicators[Module.A5];
-                included.Add(nameof(Module.A5));
-            }
-
-            return total;
         }
 
         /***************************************************/
@@ -176,78 +123,6 @@ namespace BH.Engine.LifeCycleAssessment
         private static double BTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
             return SumModules(moduleData, m_BModules, included);
-            double total = 0;
-
-            if (moduleData.Indicators.ContainsKey(Module.B1toB7))
-            {
-                if (moduleData.Indicators.ContainsKey(Module.B1))
-                {
-                    total += moduleData.Indicators[Module.B1];
-                    included.Add(nameof(Module.B1));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.B2))
-                {
-                    total += moduleData.Indicators[Module.B2];
-                    included.Add(nameof(Module.B2));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.B3))
-                {
-                    total += moduleData.Indicators[Module.B3];
-                    included.Add(nameof(Module.B3));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.B4))
-                {
-                    total += moduleData.Indicators[Module.B4];
-                    included.Add(nameof(Module.B4));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.B5))
-                {
-                    total += moduleData.Indicators[Module.B5];
-                    included.Add(nameof(Module.B5));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.B6))
-                {
-                    total += moduleData.Indicators[Module.B6];
-                    included.Add(nameof(Module.B6));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.B7))
-                {
-                    total += moduleData.Indicators[Module.B7];
-                    included.Add(nameof(Module.B7));
-                }
-            }
-            else
-            {
-                if (moduleData.Indicators.ContainsKey(Module.B1) && 
-                    !moduleData.Indicators.ContainsKey(Module.B2) && 
-                    !moduleData.Indicators.ContainsKey(Module.B3) &&
-                    !moduleData.Indicators.ContainsKey(Module.B4) &&
-                    !moduleData.Indicators.ContainsKey(Module.B5) &&
-                    !moduleData.Indicators.ContainsKey(Module.B6) &&
-                    !moduleData.Indicators.ContainsKey(Module.B7))
-                {
-                    total += moduleData.Indicators[Module.B1] + moduleData.Indicators[Module.B2] + moduleData.Indicators[Module.B3] + moduleData.Indicators[Module.B4] + moduleData.Indicators[Module.B5] + moduleData.Indicators[Module.B6] + moduleData.Indicators[Module.B7];
-                    included.Add(nameof(Module.B1));
-                    included.Add(nameof(Module.B2));
-                    included.Add(nameof(Module.B3));
-                    included.Add(nameof(Module.B4));
-                    included.Add(nameof(Module.B5));
-                    included.Add(nameof(Module.B6));
-                    included.Add(nameof(Module.B7));
-                }
-                else
-                {
-                    total += moduleData.Indicators[Module.B1toB7];
-                    included.Add(nameof(Module.B1toB7));
-                }
-            }
-            return total;
         }
 
         /***************************************************/
@@ -256,55 +131,6 @@ namespace BH.Engine.LifeCycleAssessment
         private static double CTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
             return SumModules(moduleData, m_CModules, included);
-            double total = 0;
-
-            if (moduleData.Indicators.ContainsKey(Module.C1toC4))
-            {
-                if (moduleData.Indicators.ContainsKey(Module.C1))
-                {
-                    total += moduleData.Indicators[Module.C1];
-                    included.Add(nameof(Module.C1));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.C2))
-                {
-                    total += moduleData.Indicators[Module.C2];
-                    included.Add(nameof(Module.C2));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.C3))
-                {
-                    total += moduleData.Indicators[Module.C3];
-                    included.Add(nameof(Module.C3));
-                }
-
-                if (moduleData.Indicators.ContainsKey(Module.C4))
-                {
-                    total += moduleData.Indicators[Module.C4];
-                    included.Add(nameof(Module.C4));
-                }
-            }
-            else
-            {
-                if (moduleData.Indicators.ContainsKey(Module.C1) &&
-                    moduleData.Indicators.ContainsKey(Module.C2) &&
-                    moduleData.Indicators.ContainsKey(Module.C3) &&
-                    moduleData.Indicators.ContainsKey(Module.C4))
-                {
-                    total += moduleData.Indicators[Module.C1] + moduleData.Indicators[Module.C2] + moduleData.Indicators[Module.C3] + moduleData.Indicators[Module.C4];
-                    included.Add(nameof(Module.C1));
-                    included.Add(nameof(Module.C2));
-                    included.Add(nameof(Module.C3));
-                    included.Add(nameof(Module.C4));
-                }
-                else
-                {
-                    total += moduleData.Indicators[Module.C1toC4];
-                    included.Add(nameof(Module.C1toC4));
-                }
-            }
-
-            return total;
         }
 
         /***************************************************/
@@ -353,13 +179,13 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 foreach (Module subModuleToRemove in subModules)
                 {
-                    RemoveModules(modules, combinationModules, moduleToRemove);
+                    RemoveModules(modules, combinationModules, subModuleToRemove);
                 }
             }
         }
 
         /***************************************************/
-
+        /**** Private Feilds                            ****/
         /***************************************************/
 
         private static List<Module> m_AModules = Enum.GetValues(typeof(Module)).Cast<Module>().Where(x => x.ToString().StartsWith("A")).ToList();
