@@ -32,7 +32,6 @@ using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.LifeCycleAssessment.Results.MetricsValues;
 using BH.oM.Physical.Materials;
 using System;
 using System.Collections;
@@ -51,131 +50,29 @@ namespace BH.Engine.LifeCycleAssessment
 
         public static MetricType IMetricType(this ILifeCycleAssemsmentIndicator factor)
         {
-            return MetricType(factor as dynamic);
-        }
-
-        /***************************************************/
-        /**** Private Methods - Factor collections      ****/
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeBiogenicMetric singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeBiogenic;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeFossilMetric singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeFossil;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeLandUseMetric singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeLandUse;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeTotalMetric singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeTotalNoBiogenicMetric singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic;
-        }
-
-        /***************************************************/
-        /**** Private Methods - Single factors          ****/
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeBiogenicFactor singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeBiogenic;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeFossilFactor singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeFossil;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeLandUseFactor singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeLandUse;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeTotalFactor singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeTotalNoBiogenicFactor singleFactor)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic;
-        }
-
-        /***************************************************/
-        /**** Private Methods - Material results        ****/
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeBiogenicMaterialResult materialResult)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeBiogenic;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeFossilMaterialResult materialResult)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeFossil;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeLandUseMaterialResult materialResult)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeLandUse;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeTotalMaterialResult materialResult)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotal;
-        }
-
-        /***************************************************/
-
-        private static MetricType MetricType(this ClimateChangeTotalNoBiogenicMaterialResult materialResult)
-        {
-            return oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic;
-        }
-
-        /***************************************************/
-        /**** Private Methods - Element results         ****/
-        /***************************************************/
-
-        private static MetricType MetricType(this IElementResult<MaterialResult> elementResult)
-        {
-            if (elementResult.MaterialResults.Count == 0)
+            if (factor == null)
                 return oM.LifeCycleAssessment.MetricType.Undefined;
 
-            return elementResult.MaterialResults[0].IMetricType();
+            Type t = factor.GetType();
+            if (m_MetricTypes.TryGetValue(t, out MetricType metricType))
+                return metricType;
+
+            //Gets the metric type that best matches the type name.
+            //In general, the metricType should start with the type name
+            //For some cases, there are some overlap, like ClimateChangeTotal vs CliamteChangeTotalNoBiogenic
+            //For this case, the longest of the two names is picked, as that should be the closer match.
+            metricType = Enum.GetValues(typeof(oM.LifeCycleAssessment.MetricType)).Cast<MetricType?>().Where(x => t.Name.StartsWith(x.ToString())).OrderByDescending(x => x.ToString().Length).FirstOrDefault() ?? oM.LifeCycleAssessment.MetricType.Undefined;
+
+            m_MetricTypes[t] = metricType;
+
+            return metricType;
         }
+
+        /***************************************************/
+        /**** Private feilds                            ****/
+        /***************************************************/
+
+        private static Dictionary<Type,MetricType> m_MetricTypes = new Dictionary<Type,MetricType>();
 
         /***************************************************/
     }
