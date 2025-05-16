@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<TargetFramework>net6.0</TargetFramework>
@@ -79,6 +79,11 @@
     </Reference>
     <Reference Include="Matter_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Physical_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_Engine.dll</HintPath>
 		<Private>True</Private>
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
