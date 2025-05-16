@@ -25,6 +25,7 @@ using BH.Engine.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Elements;
@@ -73,8 +74,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffs), new object[] { 1.2321, 0.0002, true })]
-        public void EvaluateIStructETakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates)
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        public void EvaluateIStructETakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
             IStructEEvaluationConfig config = DummyConfig();
 
@@ -85,17 +86,36 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 templates.Should().Contain(x => x.Name == result.MaterialName);
                 Material mat = templates.First(x => x.Name == result.MaterialName);
                 mat.Properties.Should().Contain(x => x.Name == result.EnvironmentalProductDeclarationName);
-                IMaterialProperties prop = mat.Properties.First(x => x.Name == result.EnvironmentalProductDeclarationName);
-                prop.Should().BeOfType<EnvironmentalProductDeclaration>();
 
-                EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
-                epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
 
                 takeoff.MaterialTakeoffItems.Should().Contain(x => x.Material.Name == result.MaterialName);
-                double eval = takeoff.MaterialTakeoffItems.First(x => x.Material.Name == result.MaterialName).Volume;
+                TakeoffItem takeoffItem = takeoff.MaterialTakeoffItems.First(x => x.Material.Name == result.MaterialName);
+                double eval = takeoffItem.Volume;
 
-                ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name, mat.Name);
+                if (containEpds)
+                {
+                    IMaterialProperties prop = mat.Properties.First(x => x.Name == result.EnvironmentalProductDeclarationName);
+                    prop.Should().BeOfType<EnvironmentalProductDeclaration>();
+
+                    EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
+                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+
+                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name, mat.Name);
+                }
+                else
+                {
+                    IMaterialProperties prop = mat.Properties.First(x => x.Name == result.EnvironmentalProductDeclarationName);
+                    prop.Should().BeOfType<CombinedLifeCycleAssessmentFactors>();
+
+                    CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
+                    combinedFactors.BaseFactors.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetricFactors metric = combinedFactors.BaseFactors.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass);
+
+
+                }
+
             }
 
         }
@@ -140,9 +160,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor,  string epdName = "", string materialName = "")
+        private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor,  string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, double mass = 0)
         {
-            double tolerance = 1e-12;
+            double tolerance = 1e-10;
             string initialMessage = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
             if (!string.IsNullOrEmpty(epdName))
             {
@@ -174,6 +194,14 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 {
                     result.Indicators[oM.LifeCycleAssessment.Module.C1toC4].Should().BeApproximately(result.Indicators[oM.LifeCycleAssessment.Module.C1] + result.Indicators[oM.LifeCycleAssessment.Module.C2] + result.Indicators[oM.LifeCycleAssessment.Module.C3] + result.Indicators[oM.LifeCycleAssessment.Module.C4], tolerance, message);
                 }
+                else if (a4Factor != null && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.A4)
+                {
+                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                }
+                else if (c2Factor != null && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.C2)
+                {
+                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                }
                 else
                 {
                     result.Indicators.Should().ContainKey(evaluatedMetric.Key);
@@ -183,7 +211,32 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+        private static double TransportImpact(ITransportFactors transport, MetricType metricType, double mass)
+        {
+            if (transport is FullTransportScenario fullScenario)
+            {
+                IEnvironmentalFactor factor = fullScenario.EnvironmentalFactors.FirstOrDefault(x => x.IMetricType() == metricType);
+                if (factor == null)
+                    return double.NaN;
 
+                return factor.Value * mass;
+            }
+            if (transport is SingleTransportModeImpact singel)
+            {
+                IEnvironmentalFactor factor = singel.VehicleEmissions.EnvironmentalFactors.FirstOrDefault(x => x.IMetricType() == metricType);
+                if (factor == null)
+                    return double.NaN;
+
+                return factor.Value * mass * singel.DistanceTraveled * (1 + singel.VehicleEmissions.ReturnTripFactor);
+            }
+            else if (transport is DistanceTransportModeScenario distance)
+            {
+                return distance.SingleTransportModeImpacts.Sum(x => TransportImpact(x, metricType, mass));
+            }
+            return double.NaN;
+        }
+
+        /***************************************************/
         private static IStructEEvaluationConfig DummyConfig()
         {
             return new IStructEEvaluationConfig

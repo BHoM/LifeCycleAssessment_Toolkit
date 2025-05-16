@@ -20,20 +20,21 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using AutoBogus;
+using BH.Engine.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Interfaces;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.Physical.Materials;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using AutoBogus;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.Results;
-using BH.Engine.LifeCycleAssessment;
-using FluentAssertions;
-using System.Reflection;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.Physical.Materials;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -43,8 +44,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyFactors), new object[] { 1, 0 })]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
-        public void MetricTypeNotUndefined(IEnvironmentalMetricFactors metricFactors)
+        public void MetricTypeNotUndefined(ILifeCycleAssemsmentIndicator metricFactors)
         {
             MetricType metricType = metricFactors.IMetricType();
             metricType.Should().NotBe(MetricType.Undefined);
@@ -52,9 +54,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyFactorsList), new object[] { 1, 0 })]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetricsList), new object[] { 1, 0, false })]
-        public void MetricTypesAllUnique(List<IEnvironmentalMetricFactors> metricFactors)
+        public void MetricTypesAllUnique(IEnumerable<ILifeCycleAssemsmentIndicator> metricFactors)
         {
             List<MetricType> metricTypes = metricFactors.Select(x => x.IMetricType()).ToList();
             metricTypes.Should().OnlyHaveUniqueItems();

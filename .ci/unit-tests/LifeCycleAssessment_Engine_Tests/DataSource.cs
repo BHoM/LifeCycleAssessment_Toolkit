@@ -37,6 +37,7 @@ using BH.oM.Physical.Materials;
 using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Physical.Constructions;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -59,6 +60,17 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        public static IEnumerable<IEnvironmentalFactor> DummyFactors(double initialV, double increace)
+        {
+            double v = initialV;
+            double inc = increace;
+            foreach (Type type in FactorTypes())
+                yield return DummyFactor(type, ref v, inc);
+
+        }
+
+        /***************************************************/
+
         public static IEnumerable<List<IEnvironmentalMetricFactors>> DummyMetricsList(double initialV, double increace, bool setA5ToWaste)
         {
             List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
@@ -69,6 +81,19 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 metrics.Add(DummyMetric(type, ref v, inc, setA5ToWaste));
 
             yield return metrics;
+        }
+
+        /***************************************************/
+
+        public static IEnumerable<List<IEnvironmentalFactor>> DummyFactorsList(double initialV, double increace)
+        {
+            List<IEnvironmentalFactor> factors = new List<IEnvironmentalFactor>();
+            double v = initialV;
+            double inc = increace;
+            foreach (Type type in FactorTypes())
+                factors.Add(DummyFactor(type, ref v, inc));
+
+            yield return factors;
         }
 
         /***************************************************/
@@ -86,12 +111,25 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IEnumerable<object[]> DummyTakeoffs(double initialV, double increace, bool setA5ToWaste)
+        public static IEnumerable<CombinedLifeCycleAssessmentFactors> DummyCombinedLCAFactors(double initialV, double increace, bool setA5ToWaste)
+        {
+            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+
+            double v = initialV;
+            double inc = increace;
+            for (int i = 0; i < 4; i++)
+                yield return DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
+
+        }
+
+        /***************************************************/
+
+        public static IEnumerable<object[]> DummyTakeoffAndTemplates(double initialV, double increace, bool setA5ToWaste)
         {
             List<string> names = new List<string>() { "Concrete", "Steel", "Glass" };
 
-            double v = 1.2321;
-            double inc = 0.0002;
+            double v = initialV;
+            double inc = increace;
             List<Material> templates = new List<Material>();
 
             foreach (string matName in names)
@@ -99,6 +137,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 templates.Add(new Material
                 {
                     Name = matName,
+                    Density = 1000,
                     Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, matName + "EPD NAME", QuantityType.Volume) }
                 });
             }
@@ -106,10 +145,25 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             GeneralMaterialTakeoff takeoff = new GeneralMaterialTakeoff
             {
-                MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x }, Volume = (i + 1) * 42.543 }).ToList(),
+                MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x, Density = 1 }, Volume = (i + 1) * 42.543, Mass = (i + 1) * 42.543 }).ToList(),
             };
 
-            yield return new object[] { takeoff, templates };
+            yield return new object[] { takeoff, templates, true };
+
+            templates = new List<Material>();
+
+            for (int i = 0; i < names.Count; i++)
+            {
+                string matName = names[i];
+                templates.Add(new Material
+                {
+                    Name = matName,
+                    Properties = new List<IMaterialProperties> { DummyCombinedFactors(ref v, inc, setA5ToWaste, i, matName + "EPD NAME", QuantityType.Volume) }
+                });
+            }
+
+
+            yield return new object[] { takeoff, templates, false };
         }
 
         /***************************************************/
@@ -171,6 +225,64 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        public static CombinedLifeCycleAssessmentFactors DummyCombinedFactors(ref double v, double inc, bool setA5ToWaste, int transportMode, string name = "", QuantityType quantityType = (QuantityType)(-1))
+        {
+            EnvironmentalProductDeclaration epd = DummyEPD(ref v, inc, setA5ToWaste, name, quantityType);
+
+            return new CombinedLifeCycleAssessmentFactors { BaseFactors = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), Name = name };
+        }
+
+        /***************************************************/
+
+        public static ITransportFactors DummyTransportFactor(ref double v, double inc, int transportMode)
+        {
+            transportMode = transportMode % 4;
+            if (transportMode == 0)
+                return null;
+            if (transportMode == 1)
+            {
+                FullTransportScenario scenario = new FullTransportScenario();
+                foreach (Type type in FactorTypes())
+                {
+                    scenario.EnvironmentalFactors.Add(DummyFactor(type, ref v, inc));
+                }
+                return scenario;
+            }
+            if (transportMode == 2)
+            {
+                SingleTransportModeImpact singleTransportModeImpact = new SingleTransportModeImpact
+                {
+                    VehicleEmissions = DummyVehicleEmissions(ref v, inc),
+                    DistanceTraveled = v * 1000,
+                };
+                return singleTransportModeImpact;
+            }
+            else
+            { 
+                DistanceTransportModeScenario scenario = new DistanceTransportModeScenario();
+                for (int i = 0; i < 2; i++)
+                {
+                    scenario.SingleTransportModeImpacts.Add(DummyTransportFactor(ref v, inc, 2) as SingleTransportModeImpact);
+                }
+                return scenario;
+            }
+        }
+
+        /***************************************************/
+
+        public static VehicleEmissions DummyVehicleEmissions(ref double v, double inc)
+        {
+            VehicleEmissions vehicleEmissions = new VehicleEmissions();
+            foreach (Type type in FactorTypes())
+            {
+                vehicleEmissions.EnvironmentalFactors.Add(DummyFactor(type, ref v, inc));
+            }
+            vehicleEmissions.ReturnTripFactor = inc;
+            return vehicleEmissions;
+        }
+
+        /***************************************************/
+
         public static IEnvironmentalMetricFactors DummyMetric(Type type, ref double v, double inc, bool setA5ToWaste)
         {
             MethodInfo create = typeof(BH.Engine.LifeCycleAssessment.Create).GetMethods().Where(x => x.ReturnType == type).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
@@ -201,6 +313,16 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        public static IEnvironmentalFactor DummyFactor(Type type, ref double v, double inc)
+        {
+            IEnvironmentalFactor factor = Activator.CreateInstance(type) as IEnvironmentalFactor;
+            factor.Value = v;
+            v += inc;
+            return factor;
+        }
+
+        /***************************************************/
+
         private static List<Type> MetricTypes()
         {
             return new List<Type>
@@ -223,6 +345,33 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 typeof(PhotochemicalOzoneCreationCMLMetric),
                 typeof(PhotochemicalOzoneCreationTRACIMetric),
                 typeof(WaterDeprivationMetric)
+            };
+        }
+
+        /***************************************************/
+
+        private static List<Type> FactorTypes()
+        {
+            return new List<Type>
+            {
+                typeof(AbioticDepletionFossilResourcesFactor),
+                typeof(AbioticDepletionMineralsAndMetalsFactor),
+                typeof(AcidificationFactor),
+                typeof(ClimateChangeBiogenicFactor),
+                typeof(ClimateChangeFossilFactor),
+                typeof(ClimateChangeLandUseFactor),
+                typeof(ClimateChangeTotalFactor),
+                typeof(ClimateChangeTotalNoBiogenicFactor),
+                typeof(EutrophicationAquaticFreshwaterFactor),
+                typeof(EutrophicationAquaticMarineFactor),
+                typeof(EutrophicationTerrestrialFactor),
+                typeof(EutrophicationCMLFactor),
+                typeof(EutrophicationTRACIFactor),
+                typeof(OzoneDepletionFactor),
+                typeof(PhotochemicalOzoneCreationFactor),
+                typeof(PhotochemicalOzoneCreationCMLFactor),
+                typeof(PhotochemicalOzoneCreationTRACIFactor),
+                typeof(WaterDeprivationFactor)
             };
         }
 
