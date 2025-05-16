@@ -34,6 +34,9 @@ using FluentAssertions;
 using System.Reflection;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Physical.Materials;
+using BH.oM.Physical.Elements;
+using BH.oM.Geometry;
+using BH.oM.Physical.Constructions;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -52,6 +55,20 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             foreach (Type type in MetricTypes())
                 yield return DummyMetric(type, ref v, inc, setA5ToWaste);
 
+        }
+
+        /***************************************************/
+
+        public static IEnumerable<List<IEnvironmentalMetricFactors>> DummyMetricsList(double initialV, double increace, bool setA5ToWaste)
+        {
+            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+
+            double v = initialV;
+            double inc = increace;
+            foreach (Type type in MetricTypes())
+                metrics.Add(DummyMetric(type, ref v, inc, setA5ToWaste));
+
+            yield return metrics;
         }
 
         /***************************************************/
@@ -93,6 +110,34 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             };
 
             yield return new object[] { takeoff, templates };
+        }
+
+        /***************************************************/
+
+        public static IEnumerable<object[]> DummyElementsAndTemplates(double initialV, double increace, bool setA5ToWaste)
+        {
+            List<string> names = new List<string>() { "Concrete", "Steel", "Glass" };
+
+            double v = 1.2321;
+            double inc = 0.0002;
+            List<Material> templates = new List<Material>();
+
+            foreach (string matName in names)
+            {
+                templates.Add(new Material
+                {
+                    Name = matName,
+                    Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, matName + "EPD NAME", QuantityType.Volume) }
+                });
+            }
+            Construction constructtion = new Construction
+            {
+                Layers = names.Select((x, i) => new Layer { Material = new Material { Name = x }, Thickness = (i + 1) * 0.1 }).ToList(),
+            };
+            Wall wall = BH.Engine.Physical.Create.Wall(constructtion, new Line { Start = new Point(), End = new Point { X = 10 } }, 10);
+
+
+            yield return new object[] { wall, 100, templates };
         }
 
         /***************************************************/
@@ -160,24 +205,24 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             return new List<Type>
             {
-                //typeof(AbioticDepletionFossilResourcesMetric),
-                //typeof(AbioticDepletionMineralsAndMetalsMetric),
-                //typeof(AcidificationMetric),
+                typeof(AbioticDepletionFossilResourcesMetric),
+                typeof(AbioticDepletionMineralsAndMetalsMetric),
+                typeof(AcidificationMetric),
                 typeof(ClimateChangeBiogenicMetric),
                 typeof(ClimateChangeFossilMetric),
                 typeof(ClimateChangeLandUseMetric),
                 typeof(ClimateChangeTotalMetric),
                 typeof(ClimateChangeTotalNoBiogenicMetric),
-                //typeof(EutrophicationAquaticFreshwaterMetric),
-                //typeof(EutrophicationAquaticMarineMetric),
-                //typeof(EutrophicationTerrestrialMetric),
-                //typeof(EutrophicationCMLMetric),
-                //typeof(EutrophicationTRACIMetric),
-                //typeof(OzoneDepletionMetric),
-                //typeof(PhotochemicalOzoneCreationMetric),
-                //typeof(PhotochemicalOzoneCreationCMLMetric),
-                //typeof(PhotochemicalOzoneCreationTRACIMetric),
-                //typeof(WaterDeprivationMetric)
+                typeof(EutrophicationAquaticFreshwaterMetric),
+                typeof(EutrophicationAquaticMarineMetric),
+                typeof(EutrophicationTerrestrialMetric),
+                typeof(EutrophicationCMLMetric),
+                typeof(EutrophicationTRACIMetric),
+                typeof(OzoneDepletionMetric),
+                typeof(PhotochemicalOzoneCreationMetric),
+                typeof(PhotochemicalOzoneCreationCMLMetric),
+                typeof(PhotochemicalOzoneCreationTRACIMetric),
+                typeof(WaterDeprivationMetric)
             };
         }
 
