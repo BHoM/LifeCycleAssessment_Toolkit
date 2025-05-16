@@ -20,19 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.Engine.Matter;
-using BH.oM.Analytical.Results;
-using BH.oM.Base;
+
 using BH.oM.Base.Attributes;
-using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
-using BH.oM.LifeCycleAssessment.Configs;
-using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
-using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,12 +38,14 @@ namespace BH.Engine.LifeCycleAssessment
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /**** Public Methods - interface                ****/
         /***************************************************/
 
-        [Description("Gets the factors for each module as a dictionary.")]
-        [Input("moduleFactors", "The factors to extract the dictionary from.")]
-        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
+        [Description("Gets the resulting values for each metric as a dictionary where the key is the metric type and the value the resulting impact of that type.")]
+        [Input("transportFactors", "The transport factors to evaluate.")]
+        [Input("takeoffItem", "The takeoff item to extract the mass from.")]
+        [Input("metricFilter", "Optional filter for the provided ITransportFactors for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("transportResults", "Resulting values for the trnsport factors as a dictionary where the key is the metric type and value the resulting value.")]
         public static Dictionary<MetricType, double> ITransportResults(this ITransportFactors transportFactors, TakeoffItem takeoffItem, List<MetricType> metricFilter)
         {
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
@@ -58,29 +54,30 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets the factors for each module as a dictionary.")]
-        [Input("moduleFactors", "The factors to extract the dictionary from.")]
-        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
-        public static Dictionary<MetricType, double> ITransportResults(this ITransportFactors moduleFactors, double mass, List<MetricType> metricFilter)
+        [Description("Gets the resulting values for each metric as a dictionary where the key is the metric type and the value the resulting impact of that type.")]
+        [Input("transportFactors", "The transport factors to evaluate.")]
+        [Input("mass", "Mass to evaluate the transport factors against.", typeof(Mass))]
+        [Input("metricFilter", "Optional filter for the provided ITransportFactors for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("transportResults", "Resulting values for the trnsport factors as a dictionary where the key is the metric type and value the resulting value.")]
+        public static Dictionary<MetricType, double> ITransportResults(this ITransportFactors transportFactors, double mass, List<MetricType> metricFilter)
         {
-            return TransportResults(moduleFactors as dynamic, mass, metricFilter);
+            return TransportResults(transportFactors as dynamic, mass, metricFilter);
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the factors for each module as a dictionary.")]
-        [Input("transportScenario", "The factors to extract the dictionary from.")]
-        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
+        [Description("Gets the resulting values for each metric as a dictionary where the key is the metric type and the value the resulting impact of that type.")]
+        [Input("transportScenario", "The FullTransportScenario to evaluate.")]
+        [Input("mass", "Mass to evaluate the transport factors against.", typeof(Mass))]
+        [Input("metricFilter", "Optional filter for the provided ITransportFactors for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("transportResults", "Resulting values for the trnsport factors as a dictionary where the key is the metric type and value the resulting value.")]
         public static Dictionary<MetricType, double> TransportResults(this FullTransportScenario transportScenario, double mass, List<MetricType> metricFilter)
         {
             Dictionary<MetricType, double> results = new Dictionary<MetricType, double>();
 
-            List<IEnvironmentalFactor> factors = transportScenario.EnvironmentalFactors;
-
-            if (metricFilter != null && metricFilter.Count != 0)
-                factors = factors.Where(x => metricFilter.Contains(x.IMetricType())).ToList();
+            List<IEnvironmentalFactor> factors = transportScenario.EnvironmentalFactors.FilterIndicators(metricFilter);
 
             foreach (IEnvironmentalFactor factor in factors)
             {
@@ -99,9 +96,11 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets the factors for each module as a dictionary.")]
-        [Input("moduleFactors", "The factors to extract the dictionary from.")]
-        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
+        [Description("Gets the resulting values for each metric as a dictionary where the key is the metric type and the value the resulting impact of that type.")]
+        [Input("transportScenario", "The DistanceTransportModeScenario to evaluate.")]
+        [Input("mass", "Mass to evaluate the transport factors against.", typeof(Mass))]
+        [Input("metricFilter", "Optional filter for the provided ITransportFactors for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("transportResults", "Resulting values for the trnsport factors as a dictionary where the key is the metric type and value the resulting value.")]
         public static Dictionary<MetricType, double> TransportResults(this DistanceTransportModeScenario transportScenario, double mass, List<MetricType> metricFilter)
         {
             if (transportScenario == null || transportScenario.SingleTransportModeImpacts == null || transportScenario.SingleTransportModeImpacts.Count == 0)
@@ -129,17 +128,16 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets the factors for each module as a dictionary.")]
-        [Input("moduleFactors", "The factors to extract the dictionary from.")]
-        [Output("FactorsDictionary", "The factors for each module stored on the metric.")]
+        [Description("Gets the resulting values for each metric as a dictionary where the key is the metric type and the value the resulting impact of that type.")]
+        [Input("transportScenario", "The SingleTransportModeImpact to evaluate.")]
+        [Input("mass", "Mass to evaluate the transport factors against.", typeof(Mass))]
+        [Input("metricFilter", "Optional filter for the provided ITransportFactors for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
+        [Output("transportResults", "Resulting values for the trnsport factors as a dictionary where the key is the metric type and value the resulting value.")]
         public static Dictionary<MetricType, double> TransportResults(this SingleTransportModeImpact transportScenario, double mass, List<MetricType> metricFilter)
         {
             Dictionary<MetricType, double> results = new Dictionary<MetricType, double>();
 
-            List<IEnvironmentalFactor> factors = transportScenario.VehicleEmissions.EnvironmentalFactors;
-
-            if (metricFilter != null && metricFilter.Count != 0)
-                factors = factors.Where(x => metricFilter.Contains(x.IMetricType())).ToList();
+            List<IEnvironmentalFactor> factors = transportScenario.VehicleEmissions.EnvironmentalFactors.FilterIndicators(metricFilter);
 
             double quantity = mass * transportScenario.DistanceTraveled * (1 + transportScenario.VehicleEmissions.ReturnTripFactor);
 

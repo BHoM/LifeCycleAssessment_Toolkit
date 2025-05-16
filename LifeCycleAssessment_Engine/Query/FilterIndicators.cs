@@ -62,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
                 if (metric.Any())
                     metrics.AddRange(metric);
                 else
-                    Base.Compute.RecordWarning($"Provided items does not contain a {nameof(ILifeCycleAssemsmentIndicator)} corresponding to metric of type {type}.");
+                    Base.Compute.RecordWarning($"Provided items does not contain a {typeof(T).Name} corresponding to metric of type {type}.");
             }
 
             return metrics;
