@@ -264,7 +264,7 @@ namespace BH.Engine.LifeCycleAssessment
 
                     if (c2TransportResults.TryGetValue(type, out double c2))
                     {
-                        resultingValues[Module.C2] = a4;
+                        resultingValues[Module.C2] = c2;
                         c2TransportResults.Remove(type);    //Remove as used up
 
                         if (resultingValues.ContainsKey(Module.C1toC4))
