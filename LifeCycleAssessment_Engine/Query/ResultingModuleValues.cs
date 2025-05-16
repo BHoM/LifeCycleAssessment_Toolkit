@@ -20,22 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.Engine.Matter;
+
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
-using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
-using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.LifeCycleAssessment.Results.MetricsValues;
-using BH.oM.Physical.Materials;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -60,7 +51,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (metric == null)
             {
-                Base.Compute.RecordError($"Cannot evaluate a null {nameof(EnvironmentalMetric)}.");
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(IEnvironmentalMetricFactors)}.");
                 return null;
             }
 

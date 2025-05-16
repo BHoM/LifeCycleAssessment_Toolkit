@@ -31,7 +31,6 @@ using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.LifeCycleAssessment.Results.MetricsValues;
 using BH.oM.Physical.Materials;
 using System;
 using System.Collections;
