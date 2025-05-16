@@ -40,7 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.IElementResult<BH.oM.LifeCycleAssessment.Results.MaterialResult>>)")]
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.IElementResult<BH.oM.LifeCycleAssessment.Results.MaterialResult>>)")]
         [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("elementResults", "The element results to extract the material breakdown from.")]
         [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]
@@ -55,7 +55,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.MaterialResult>)")]
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.TotalMaterialBreakdown(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.Results.MaterialResult>)")]
         [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
         [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
         [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]

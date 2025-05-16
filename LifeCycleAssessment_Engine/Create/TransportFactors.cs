@@ -43,7 +43,6 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("typicalScenario", "A full transport scenario, generally grabbed from a dataset. Used in the methodology is set to TypicalTransportScenario.")]
         [Input("vehicleEmissions", "Emissions for the vehicle used to transport the goods. Used in the methodology is set to DistanceTransportMode.")]
         [Input("distanceTraveled", "The distance traveled using the vehicle defined in the Vehicle emssions. Used in the methodology is set to DistanceTransportMode.")]
-        [Input("lengthUnits", "Units for distance traveled. Supported units are metres, kilometres and miles (m, km and mi). Distance set on the created object will be in the SI unit meters. Used in the methodology is set to DistanceTransportMode.")]
         [Input("customFactor", "Custom factor for explicitly setting the climate change transport emissions. Value should be per mass (kg). Will create new metrics for ClimateChangeFossil, ClimateChangeTotal and ClimateCHangeTotalNoBiogenic and set the A4 value to this value, and return a custom full transport scenario with the metrics set.")]
         [Output("transportFactors", "The created transport factors, type depending on provided methodology.")]
         public static ITransportFactors TransportFactors(TransportMethodology methodology, FullTransportScenario typicalScenario = null, VehicleEmissions vehicleEmissions = null, double distanceTraveled = double.NaN, double customFactor = double.NaN)

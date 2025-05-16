@@ -36,7 +36,7 @@ namespace BH.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.LifeCycleAssessment.Query.MaterialEndOfLifeTreatment(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration)")]
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.MaterialEndOfLifeTreatment(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration)")]
         [PreviousInputNames("factorsProvider", "epd")]
         [Description("Returns End of Life processing information contained within an EPD dataset.")]
         [Input("factorsProvider", "The EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors of a specific material from an EPD Dataset.")]

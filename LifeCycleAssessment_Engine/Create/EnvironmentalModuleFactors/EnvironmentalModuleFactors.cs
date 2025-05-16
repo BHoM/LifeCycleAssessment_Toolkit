@@ -37,25 +37,8 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a ClimateChangeFossilMetric to be applied as part of an EnvironmentalProductDeclaration. Values of A1toA3, B1toB7 and C1toC4 will be computed as the sum of the relevant phases.")]
-        [InputFromProperty("a1")]
-        [InputFromProperty("a2")]
-        [InputFromProperty("a3")]
-        [InputFromProperty("a4")]
-        [InputFromProperty("a5")]
-        [InputFromProperty("b1")]
-        [InputFromProperty("b2")]
-        [InputFromProperty("b3")]
-        [InputFromProperty("b4")]
-        [InputFromProperty("b5")]
-        [InputFromProperty("b6")]
-        [InputFromProperty("b7")]
-        [InputFromProperty("c1")]
-        [InputFromProperty("c2")]
-        [InputFromProperty("c3")]
-        [InputFromProperty("c4")]
-        [InputFromProperty("d")]
-        [Output("apMetric", "Created ClimateChangeFossilMetric.")]
+        [Description("Creates a dictioanry of factors for all non-NaN entries")]
+        [Output("factors", "Created Factors dictionary.")]
         private static Dictionary<Module, double> FactorsDictionary(
             double a1 = double.NaN,
             double a2 = double.NaN,
@@ -99,23 +82,8 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Creates a ClimateChangeFossilMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. Values of B1toB7 and C1toC4 will be computed as the sum of the relevant phases.")]
-        [InputFromProperty("a1toa3", "A1toA3")]
-        [InputFromProperty("a4")]
-        [InputFromProperty("a5")]
-        [InputFromProperty("b1")]
-        [InputFromProperty("b2")]
-        [InputFromProperty("b3")]
-        [InputFromProperty("b4")]
-        [InputFromProperty("b5")]
-        [InputFromProperty("b6")]
-        [InputFromProperty("b7")]
-        [InputFromProperty("c1")]
-        [InputFromProperty("c2")]
-        [InputFromProperty("c3")]
-        [InputFromProperty("c4")]
-        [InputFromProperty("d")]
-        [Output("apMetric", "Created ClimateChangeFossilMetric.")]
+        [Description("Creates a dictioanry of factors for all non-NaN entries")]
+        [Output("factors", "Created Factors dictionary.")]
         private static Dictionary<Module, double> FactorsDictionary(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
@@ -155,14 +123,8 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Creates a ClimateChangeFossilMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available.")]
-        [InputFromProperty("a1toa3", "A1toA3")]
-        [InputFromProperty("a4")]
-        [InputFromProperty("a5")]
-        [InputFromProperty("b1tob7", "B1toB7")]
-        [InputFromProperty("c1toc4", "C1toC4")]
-        [InputFromProperty("d")]
-        [Output("apMetric", "Created ClimateChangeFossilMetric.")]
+        [Description("Creates a dictioanry of factors for all non-NaN entries")]
+        [Output("factors", "Created Factors dictionary.")]
         private static Dictionary<Module, double> FactorsDictionary(
                 double a1toa3 = double.NaN,
                 double a4 = double.NaN,
