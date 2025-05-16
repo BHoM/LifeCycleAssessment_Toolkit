@@ -34,6 +34,9 @@ using FluentAssertions;
 using System.Reflection;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Physical.Materials;
+using BH.oM.Dimensional;
+using BH.oM.Physical.Elements;
+using BH.oM.Physical.Constructions;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -122,6 +125,42 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
+        /***************************************************/
+
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, false })]
+        public void EvaluateElement(Wall element, double area, List<Material> templates)
+        {
+            List<IElementResult<MaterialResult>> elementResults = Query.EnvironmentalResults(element, templates);
+
+            Construction construction = element.Construction as Construction;
+
+            foreach (IElementResult<MaterialResult> elementResult in elementResults)
+            {
+                foreach (var indicator in elementResult.Indicators)
+                {
+                    indicator.Value.Should().BeApproximately(elementResult.MaterialResults.SelectMany(x => x.Indicators.Where(y => y.Key == indicator.Key).Select(y => y.Value)).Sum(), 1e-12, indicator.Key + " element result should be equal to sum of parts");
+                }
+
+                foreach (MaterialResult result in elementResult.MaterialResults)
+                {
+                    result.IMetricType().Should().Be(elementResult.IMetricType());
+                    templates.Should().Contain(x => x.Name == result.MaterialName);
+                    Material mat = templates.First(x => x.Name == result.MaterialName);
+                    mat.Properties.Should().Contain(x => x.Name == result.EnvironmentalProductDeclarationName);
+                    IMaterialProperties prop = mat.Properties.First(x => x.Name == result.EnvironmentalProductDeclarationName);
+                    prop.Should().BeOfType<EnvironmentalProductDeclaration>();
+
+                    EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
+                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+
+                    construction.Layers.Should().Contain(x => x.Material.Name == result.MaterialName);
+                    double eval = construction.Layers.First(x => x.Material.Name == result.MaterialName).Thickness * area;
+
+                    ValidateMetricAndResult(metric, result, eval, epd.Name, mat.Name);
+                }
+            }
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -146,7 +185,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             foreach (var evaluatedMetric in metric.Indicators)
             {
                 result.Indicators.Should().ContainKey(evaluatedMetric.Key);
-                result.Indicators[evaluatedMetric.Key].Should().BeApproximately(evaluatedMetric.Value*quantity, tolerance, message);
+                result.Indicators[evaluatedMetric.Key].Should().BeApproximately(evaluatedMetric.Value*quantity, tolerance, $"{evaluatedMetric.Key} failed while {message}");
             }
 
         }

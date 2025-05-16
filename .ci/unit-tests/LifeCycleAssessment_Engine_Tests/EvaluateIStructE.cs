@@ -20,21 +20,23 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using AutoBogus;
+using BH.Engine.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Configs;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.Physical.Constructions;
+using BH.oM.Physical.Elements;
+using BH.oM.Physical.Materials;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using AutoBogus;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.Results;
-using BH.Engine.LifeCycleAssessment;
-using FluentAssertions;
-using System.Reflection;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.Physical.Materials;
-using BH.oM.LifeCycleAssessment.Configs;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -98,6 +100,41 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        public void EvaluateElement(Wall element, double area, List<Material> templates)
+        {
+            IStructEEvaluationConfig config = DummyConfig();
+            List<IElementResult<MaterialResult>> elementResults = Query.EnvironmentalResults(element, templates,true, null, config);
+
+            Construction construction = element.Construction as Construction;
+
+            foreach (IElementResult<MaterialResult> elementResult in elementResults)
+            {
+                foreach (var indicator in elementResult.Indicators)
+                {
+                    indicator.Value.Should().BeApproximately(elementResult.MaterialResults.SelectMany(x => x.Indicators.Where(y => y.Key == indicator.Key).Select(y => y.Value)).Sum(), 1e-12, indicator.Key + " element result should be equal to sum of parts");
+                }
+
+                foreach (MaterialResult result in elementResult.MaterialResults)
+                {
+                    result.IMetricType().Should().Be(elementResult.IMetricType());
+                    templates.Should().Contain(x => x.Name == result.MaterialName);
+                    Material mat = templates.First(x => x.Name == result.MaterialName);
+                    mat.Properties.Should().Contain(x => x.Name == result.EnvironmentalProductDeclarationName);
+                    IMaterialProperties prop = mat.Properties.First(x => x.Name == result.EnvironmentalProductDeclarationName);
+                    prop.Should().BeOfType<EnvironmentalProductDeclaration>();
+
+                    EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
+                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+
+                    construction.Layers.Should().Contain(x => x.Material.Name == result.MaterialName);
+                    double eval = construction.Layers.First(x => x.Material.Name == result.MaterialName).Thickness * area;
+
+                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name, mat.Name);
+                }
+            }
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/
