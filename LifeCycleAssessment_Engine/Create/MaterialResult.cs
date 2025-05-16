@@ -25,7 +25,6 @@ using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
-using BH.oM.LifeCycleAssessment.Results.MetricsValues;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
