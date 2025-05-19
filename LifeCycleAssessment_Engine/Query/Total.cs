@@ -38,6 +38,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.Total(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all phases with a set value (all values not NaN).")]
         [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("total", "The sum of all non-NaN properties on the provided phase data object.")]
@@ -58,6 +59,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.ATotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all A-phases (A1-A5) with a set value (all values not NaN).")]
         [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("Atotal", "The sum of all non-NaN properties on the provided phase data object.")]
@@ -71,6 +73,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.BTotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all B-phases (B1-B7) with a set value (all values not NaN).")]
         [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("BTotal", "The sum of all non-NaN properties on the provided phase data object.")]
@@ -84,6 +87,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.CTotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all C-phases (C1-C4) with a set value (all values not NaN).")]
         [Input("moduleData", "LCA phase data object to get the total from.")]
         [Output("CTotal", "The sum of all non-NaN properties on the provided phase data object.")]

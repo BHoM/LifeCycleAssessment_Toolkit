@@ -39,6 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.FilterMetrics(System.Collections.Generic.IEnumerable<BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData>, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.EnvironmentalMetrics>)")]
         [Description("Filters out the metrics on the EPD based on the provided metric types. If no types are provided, then all metrics on the EPD are returned.")]
         [Input("lcaItems", "The EnvironmentalProductDeclaration to get the EnvironmentalMetrics from.")]
         [Input("metricFilter", "Filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the EPD are returned.")]
