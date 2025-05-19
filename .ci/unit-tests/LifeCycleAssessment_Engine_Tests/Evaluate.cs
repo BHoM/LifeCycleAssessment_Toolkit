@@ -31,7 +31,6 @@ using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.Engine.LifeCycleAssessment;
 using FluentAssertions;
-using System.Reflection;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.Physical.Materials;
 using BH.oM.Dimensional;
@@ -78,7 +77,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             List<MaterialResult> materialResults = Query.EnvironmentalResults(factors, eval, mass);
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(factors.BaseFactors.EnvironmentalFactors[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass);
+                ValidateMetricAndResult(factors.BaseFactors?.EnvironmentalFactors[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass);
             }
         }
 
@@ -218,7 +217,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0)
         {
             double tolerance = 1e-10;
-            string message = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
+
+            string message;
+            if (metric != null)
+                message = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
+            else
+                message = $"Checking result of type {result.GetType().Name}";
+
             if (!string.IsNullOrEmpty(epdName))
             {
                 result.EnvironmentalProductDeclarationName.Should().Be(epdName, message);
@@ -229,22 +234,32 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 result.MaterialName.Should().Be(materialName, message);
             }
 
-            result.IMetricType().Should().Be(metric.IMetricType(), message);
+            if(metric != null)
+                result.IMetricType().Should().Be(metric.IMetricType(), message);
 
-            foreach (var evaluatedMetric in metric.Indicators)
+            List<Module> evaluatedModules = metric?.Indicators?.Keys.ToList() ?? new List<Module>();
+
+            if (a4Factor != null)
+                evaluatedModules.Add(Module.A4);
+            if (c2Factor != null)
+                evaluatedModules.Add(Module.C2);
+
+            evaluatedModules = evaluatedModules.OrderBy(x => x).Distinct().ToList();
+
+            foreach (Module module in evaluatedModules)
             {
-                result.Indicators.Should().ContainKey(evaluatedMetric.Key);
-                if (a4Factor != null && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.A4)
+                result.Indicators.Should().ContainKey(module);
+                if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                    result.Indicators[module].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
                 }
-                else if (c2Factor != null && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.C2)
+                else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                    result.Indicators[module].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
                 }
                 else
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(evaluatedMetric.Value * quantity, tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                    result.Indicators[module].Should().BeApproximately(metric.Indicators[module] * quantity, tolerance, $"{module} failed while {message}");
                 }
             }
 

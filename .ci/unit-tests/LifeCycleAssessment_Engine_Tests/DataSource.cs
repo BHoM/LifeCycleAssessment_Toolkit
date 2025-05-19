@@ -120,6 +120,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             for (int i = 0; i < 4; i++)
                 yield return DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
 
+
+            for (int i = 0; i < 4; i++)
+            {
+                CombinedLifeCycleAssessmentFactors combFactors = DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
+                combFactors.BaseFactors = null;
+                yield return combFactors;
+            }
         }
 
         /***************************************************/

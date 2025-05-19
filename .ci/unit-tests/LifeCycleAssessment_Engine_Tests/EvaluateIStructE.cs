@@ -35,7 +35,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -68,6 +67,22 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             for (int i = 0; i < materialResults.Count; i++)
             {
                 ValidateMetricAndResult(epd.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name);
+            }
+        }
+
+
+        /***************************************************/
+
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.0002, true })]
+        public void EvaluateIStructECombinedFactorsTest(CombinedLifeCycleAssessmentFactors combinedFactors)
+        {
+            IStructEEvaluationConfig config = DummyConfig();
+            double eval = 32.22;
+            double mass = 22.4;
+            List<MaterialResult> materialResults = Query.EnvironmentalResults(combinedFactors, eval,mass, "", null, config);
+            for (int i = 0; i < materialResults.Count; i++)
+            {
+                ValidateMetricAndResult(combinedFactors.BaseFactors?.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, mass);
             }
         }
 
@@ -163,7 +178,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor,  string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, double mass = 0)
         {
             double tolerance = 1e-10;
-            string initialMessage = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
+
+            string initialMessage;
+            if (metric != null)
+                initialMessage = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
+            else
+                initialMessage = $"Checking result of type {result.GetType().Name}";
+
             if (!string.IsNullOrEmpty(epdName))
             {
                 result.EnvironmentalProductDeclarationName.Should().Be(epdName, initialMessage);
@@ -174,38 +195,52 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 result.MaterialName.Should().Be(materialName, initialMessage);
             }
 
-            result.IMetricType().Should().Be(metric.IMetricType(), initialMessage);
+            if (metric != null)
+                result.IMetricType().Should().Be(metric.IMetricType(), initialMessage);
 
+            List<Module> evaluatedModules = metric?.Indicators?.Keys.ToList() ?? new List<Module>();
+
+            if (a4Factor != null)
+                evaluatedModules.Add(Module.A4);
+            if (c2Factor != null)
+                evaluatedModules.Add(Module.C2);
             List<MetricType> specialMetrics = new List<MetricType> { MetricType.ClimateChangeTotal, MetricType.ClimateChangeTotalNoBiogenic, MetricType.ClimateChangeFossil };
-            bool specialTreatment = specialMetrics.Contains(result.IMetricType());
+            bool specialTreatment = metric == null ? false : specialMetrics.Contains(result.IMetricType());
 
-            foreach (var evaluatedMetric in metric.Indicators)
+            if(specialTreatment)
             {
-                string message = $"Module: {evaluatedMetric.Key.ToString()} {initialMessage}";
-                if (specialTreatment && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.C1)
+                evaluatedModules.Add(Module.A5);
+                evaluatedModules.Add(Module.C1);
+            }
+            
+            evaluatedModules = evaluatedModules.OrderBy(x => x).Distinct().ToList();
+            foreach (Module module in evaluatedModules)
+            {
+                result.Indicators.Should().ContainKey(module);
+                string message = $"Module: {module.ToString()} {initialMessage}";
+                if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1)
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(quantity / totalWeight * floorArea * c1CarbonFactor, tolerance, message);
+                    result.Indicators[module].Should().BeApproximately(quantity / totalWeight * floorArea * c1CarbonFactor, tolerance, message);
                 }
-                else if (specialTreatment && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.A5)
+                else if (specialTreatment && module == oM.LifeCycleAssessment.Module.A5)
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(metric.Indicators[oM.LifeCycleAssessment.Module.A5] * quantity + quantity / totalWeight * a5CarbonFactor * projectCost, tolerance, message);
+                    result.Indicators[module].Should().BeApproximately(metric.Indicators[oM.LifeCycleAssessment.Module.A5w] * quantity + quantity / totalWeight * a5CarbonFactor * projectCost, tolerance, message);
                 }
-                else if (specialTreatment && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.C1toC4)
+                else if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1toC4)
                 {
                     result.Indicators[oM.LifeCycleAssessment.Module.C1toC4].Should().BeApproximately(result.Indicators[oM.LifeCycleAssessment.Module.C1] + result.Indicators[oM.LifeCycleAssessment.Module.C2] + result.Indicators[oM.LifeCycleAssessment.Module.C3] + result.Indicators[oM.LifeCycleAssessment.Module.C4], tolerance, message);
                 }
-                else if (a4Factor != null && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.A4)
+                else if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                    result.Indicators[module].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
                 }
-                else if (c2Factor != null && evaluatedMetric.Key == oM.LifeCycleAssessment.Module.C2)
+                else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
                 {
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{evaluatedMetric.Key} failed while {message}");
+                    result.Indicators[module].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
                 }
                 else
                 {
-                    result.Indicators.Should().ContainKey(evaluatedMetric.Key);
-                    result.Indicators[evaluatedMetric.Key].Should().BeApproximately(evaluatedMetric.Value * quantity, tolerance, message);
+                    result.Indicators[module].Should().BeApproximately(metric.Indicators[module] * quantity, tolerance, message);
                 }
             }
         }
