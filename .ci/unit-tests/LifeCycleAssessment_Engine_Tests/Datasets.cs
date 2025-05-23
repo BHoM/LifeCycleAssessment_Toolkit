@@ -34,54 +34,37 @@ using BH.oM.Base;
 using BH.oM.Graphics;
 using FluentAssertions;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Versioning;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
     public class Datasets
     {
-        [Test]
-        public void DatasetsAllDeserialiseing()
+        [TestCaseSource(nameof(DatasetFilePaths))]
+        public void DatasetsAllDeserialiseing(string f)
         {
+            BH.Engine.Base.Compute.ClearCurrentEvents();
+            string json = System.IO.File.ReadAllText(f);
+            object back = BH.Engine.Serialiser.Convert.FromJson(json);
+            BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
+
+            Assert.That(dataset, Is.Not.Null);
+            Assert.That(dataset.Data, Is.Not.Null);
+            Assert.That(dataset.Data, Has.All.Not.Null);
+            Assert.That(dataset.Data, Has.All.Not.TypeOf<CustomObject>());
+
+            List<VersioningEvent> versioningEvents = BH.Engine.Base.Query.CurrentEvents().OfType<VersioningEvent>().ToList();
+
+            Warn.Unless(versioningEvents, Is.Empty, "Verisoning required");
+
+        }
+
+        private static IEnumerable<string> DatasetFilePaths()
+        {
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration();
             string folder = @"C:\ProgramData\BHoM\Datasets\LifeCycleAssessment\";
 
-            string[] files = Directory.GetFiles(folder, "*.json", SearchOption.AllDirectories);
-
-            List<string> failures = new List<string>();
-            List<string> successes = new List<string>();
-
-            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration();
-
-            foreach (string f in files)
-            {
-                try
-                {
-                    string json = System.IO.File.ReadAllText(f);
-                    object back = BH.Engine.Serialiser.Convert.FromJson(json);
-                    BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
-                    if (dataset == null || dataset.Data.Any(x => x == null || x is CustomObject))
-                        failures.Add(f);
-                    else
-                        successes.Add(f);
-                }
-                catch (Exception)
-                {
-                    failures.Add(f);
-                }
-            }
-            Console.WriteLine("Fail upgrade:");
-            foreach (string f in failures)
-            {
-                Console.WriteLine(f);
-            }
-
-            Console.WriteLine("");
-            Console.WriteLine("Success upgrade:");
-            foreach (string s in successes)
-            {
-                Console.WriteLine(s);
-            }
-
-            failures.Should().BeEmpty();
+            return Directory.GetFiles(folder, "*.json", SearchOption.AllDirectories);
         }
     }
 }

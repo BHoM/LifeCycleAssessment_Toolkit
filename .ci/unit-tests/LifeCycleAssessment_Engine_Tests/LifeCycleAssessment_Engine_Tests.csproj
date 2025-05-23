@@ -127,6 +127,11 @@
 		  <Private>True</Private>
 		  <SpecificVersion>False</SpecificVersion>
 	  </Reference>
+	  <Reference Include="Versioning_oM">
+	    <HintPath>$(ProgramData)\BHoM\Assemblies\Versioning_oM.dll</HintPath>
+		  <Private>True</Private>
+		  <SpecificVersion>False</SpecificVersion>
+	  </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
