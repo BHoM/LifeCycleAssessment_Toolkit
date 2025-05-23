@@ -245,23 +245,27 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 evaluatedModules.Add(Module.C2);
 
             evaluatedModules = evaluatedModules.OrderBy(x => x).Distinct().ToList();
-
-            foreach (Module module in evaluatedModules)
+            
+            Assert.Multiple(() =>
             {
-                result.Indicators.Should().ContainKey(module);
-                if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
+                foreach (Module module in evaluatedModules)
                 {
-                    result.Indicators[module].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
+                    Console.WriteLine($"{result.IMetricType()}: {module}");
+                    Assert.That(result.Indicators, Contains.Key(module), $"{module} missing while {metric}");
+                    if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(TransportImpact(a4Factor, result.IMetricType(), mass)).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(TransportImpact(c2Factor, result.IMetricType(), mass)).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[module] * quantity).Within(tolerance), $"{module} failed while {message}");
+                    }
                 }
-                else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
-                {
-                    result.Indicators[module].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
-                }
-                else
-                {
-                    result.Indicators[module].Should().BeApproximately(metric.Indicators[module] * quantity, tolerance, $"{module} failed while {message}");
-                }
-            }
+            });
 
         }
 

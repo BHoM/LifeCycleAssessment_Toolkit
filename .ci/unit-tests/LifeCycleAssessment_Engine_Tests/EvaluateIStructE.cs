@@ -214,35 +214,40 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             }
             
             evaluatedModules = evaluatedModules.OrderBy(x => x).Distinct().ToList();
-            foreach (Module module in evaluatedModules)
+
+            Assert.Multiple(() =>
             {
-                result.Indicators.Should().ContainKey(module);
-                string message = $"Module: {module.ToString()} {initialMessage}";
-                if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1)
+                foreach (Module module in evaluatedModules)
                 {
-                    result.Indicators[module].Should().BeApproximately(quantity / totalWeight * floorArea * c1CarbonFactor, tolerance, message);
+                    Console.WriteLine($"{result.IMetricType()}: {module}");
+                    Assert.That(result.Indicators, Contains.Key(module), $"{module} missing while {metric}");
+                    string message = $"Module: {module.ToString()} {initialMessage}";
+                    if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(quantity / totalWeight * floorArea * c1CarbonFactor).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else if (specialTreatment && module == oM.LifeCycleAssessment.Module.A5)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[oM.LifeCycleAssessment.Module.A5w] * quantity + quantity / totalWeight * a5CarbonFactor * projectCost).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1toC4)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(result.Indicators[oM.LifeCycleAssessment.Module.C1] + result.Indicators[oM.LifeCycleAssessment.Module.C2] + result.Indicators[oM.LifeCycleAssessment.Module.C3] + result.Indicators[oM.LifeCycleAssessment.Module.C4]).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(TransportImpact(a4Factor, result.IMetricType(), mass)).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(TransportImpact(c2Factor, result.IMetricType(), mass)).Within(tolerance), $"{module} failed while {message}");
+                    }
+                    else
+                    {
+                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[module] * quantity).Within(tolerance), $"{module} failed while {message}");
+                    }
                 }
-                else if (specialTreatment && module == oM.LifeCycleAssessment.Module.A5)
-                {
-                    result.Indicators[module].Should().BeApproximately(metric.Indicators[oM.LifeCycleAssessment.Module.A5w] * quantity + quantity / totalWeight * a5CarbonFactor * projectCost, tolerance, message);
-                }
-                else if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1toC4)
-                {
-                    result.Indicators[oM.LifeCycleAssessment.Module.C1toC4].Should().BeApproximately(result.Indicators[oM.LifeCycleAssessment.Module.C1] + result.Indicators[oM.LifeCycleAssessment.Module.C2] + result.Indicators[oM.LifeCycleAssessment.Module.C3] + result.Indicators[oM.LifeCycleAssessment.Module.C4], tolerance, message);
-                }
-                else if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
-                {
-                    result.Indicators[module].Should().BeApproximately(TransportImpact(a4Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
-                }
-                else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
-                {
-                    result.Indicators[module].Should().BeApproximately(TransportImpact(c2Factor, result.IMetricType(), mass), tolerance, $"{module} failed while {message}");
-                }
-                else
-                {
-                    result.Indicators[module].Should().BeApproximately(metric.Indicators[module] * quantity, tolerance, message);
-                }
-            }
+            });
         }
 
         /***************************************************/
