@@ -110,7 +110,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             //Set up parameters for the constructor.
             //This always begin with objectId, scope, category and the list of the material results, and last is the result values
-            object[] parameters = new object[] { objectId, scope, category, new ReadOnlyCollection<T>(materialResults), resultValues };
+            object[] parameters = new object[] { objectId, scope, category, materialResults, resultValues };
 
             //Call constructor
             return cst(parameters);
