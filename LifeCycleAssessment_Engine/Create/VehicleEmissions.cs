@@ -54,7 +54,8 @@ namespace BH.Engine.LifeCycleAssessment
                     new ClimateChangeFossilFactor{ Value = emmissionsFactor },
                     new ClimateChangeTotalFactor{ Value = emmissionsFactor },
                     new ClimateChangeTotalNoBiogenicFactor{ Value = emmissionsFactor },
-                }
+                },
+                ReturnTripFactor = returnTripFactor
             };
         }
 
