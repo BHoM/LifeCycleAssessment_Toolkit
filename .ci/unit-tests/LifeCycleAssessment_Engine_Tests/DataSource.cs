@@ -133,67 +133,54 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         public static IEnumerable<object[]> DummyTakeoffAndTemplates(double initialV, double increace, bool setA5ToWaste)
         {
-            List<string> names = new List<string>() { "Concrete", "Steel", "Glass" };
 
             double v = initialV;
             double inc = increace;
-            List<Material> templates = new List<Material>();
-
-            foreach (string matName in names)
-            {
-                templates.Add(new Material
-                {
-                    Name = matName,
-                    Density = 1000,
-                    Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, matName + "EPD NAME", QuantityType.Volume) }
-                });
-            }
-
+            List<Material> templates = MaterialsWithEpds(ref v, inc, setA5ToWaste);
 
             GeneralMaterialTakeoff takeoff = new GeneralMaterialTakeoff
             {
-                MaterialTakeoffItems = names.Select((x, i) => new TakeoffItem { Material = new Material { Name = x, Density = 1 }, Volume = (i + 1) * 42.543, Mass = (i + 1) * 42.543 }).ToList(),
+                MaterialTakeoffItems = templates.Select((x, i) => new TakeoffItem { Material = new Material { Name = x.Name, Density = 1 }, Volume = (i + 1) * 42.543, Mass = (i + 1) * 42.543 * x.Density }).ToList(),
             };
 
             yield return new object[] { takeoff, templates, true };
 
-            templates = new List<Material>();
+            List<Material> newTemplates = new List<Material>();
 
-            for (int i = 0; i < names.Count; i++)
+            for (int i = 0; i < templates.Count; i++)
             {
-                string matName = names[i];
-                templates.Add(new Material
-                {
-                    Name = matName,
-                    Properties = new List<IMaterialProperties> { DummyCombinedFactors(ref v, inc, setA5ToWaste, i, matName + "EPD NAME", QuantityType.Volume) }
-                });
+                newTemplates.Add(new Material { Name = templates[i].Name, Density = templates[i].Density, Properties = new List<IMaterialProperties> { DummyCombinedFactors(ref v, inc, setA5ToWaste, i, templates[i].Name + "EPD NAME", templates[i].Properties.OfType<EnvironmentalProductDeclaration>().FirstOrDefault().QuantityType) } });
             }
 
+            yield return new object[] { takeoff, newTemplates, false };
+        }
 
-            yield return new object[] { takeoff, templates, false };
+        /***************************************************/
+
+        private static List<Material> MaterialsWithEpds(ref double v, double inc, bool setA5ToWaste)
+        {
+            QuantityType quantityType = setA5ToWaste ? QuantityType.Mass : QuantityType.Volume;
+            return new List<Material>
+            {
+                new Material { Name = "Concrete", Density = 2400, Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, " Concrete EPD NAME", quantityType) } },
+                new Material { Name = "Steel", Density = 7800, Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, " Steel EPD NAME", quantityType) } },
+                new Material { Name = "Timber", Density = 700, Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, " Timber EPD NAME", quantityType) } }
+            };
+
         }
 
         /***************************************************/
 
         public static IEnumerable<object[]> DummyElementsAndTemplates(double initialV, double increace, bool setA5ToWaste)
         {
-            List<string> names = new List<string>() { "Concrete", "Steel", "Glass" };
+            List<string> names = new List<string>() { "Concrete", "Steel", "Glass",  };
 
             double v = 1.2321;
             double inc = 0.0002;
-            List<Material> templates = new List<Material>();
-
-            foreach (string matName in names)
-            {
-                templates.Add(new Material
-                {
-                    Name = matName,
-                    Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, matName + "EPD NAME", QuantityType.Volume) }
-                });
-            }
+            List<Material> templates = MaterialsWithEpds(ref v, inc, setA5ToWaste);
             Construction constructtion = new Construction
             {
-                Layers = names.Select((x, i) => new Layer { Material = new Material { Name = x }, Thickness = (i + 1) * 0.1 }).ToList(),
+                Layers = templates.Select((x, i) => new Layer { Material = new Material { Name = x.Name, Density = x.Density }, Thickness = (i + 1) * 0.1 }).ToList(),
             };
             Wall wall = BH.Engine.Physical.Create.Wall(constructtion, new Line { Start = new Point(), End = new Point { X = 10 } }, 10);
 
@@ -210,9 +197,14 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             if ((int)quantityType == -1)
             {
-                Array values = Enum.GetValues(typeof(QuantityType));
-                Random random = new Random();
-                quantityType = (QuantityType)values.GetValue(random.Next(values.Length));
+                if (setA5ToWaste)
+                    quantityType = QuantityType.Mass;
+                else
+                {
+                    Array values = Enum.GetValues(typeof(QuantityType));
+                    Random random = new Random();
+                    quantityType = (QuantityType)values.GetValue(random.Next(values.Length));
+                }
             }
 
             List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();

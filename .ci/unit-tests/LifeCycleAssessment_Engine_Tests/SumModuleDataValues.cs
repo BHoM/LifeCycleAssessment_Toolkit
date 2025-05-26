@@ -49,7 +49,6 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Dictionary<Module, double> sum = moduleData.SumModuleDataValues(onlyIncludeIfAllAvailable);
 
             sum.Count.Should().Be(assumedSum.Count);
-            double tol = 1e-12;
             foreach (var sumItem in sum)
             {
                 sumItem.Value.Should().Be(assumedSum[sumItem.Key], sumItem.Key.ToString());

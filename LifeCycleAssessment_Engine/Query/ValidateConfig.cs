@@ -46,7 +46,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (config == null) //Null config is valid, as default case of evaluation is assumed for provided null config.
                 return true;
 
-            return ValidateConfig(config, factorsProvider);
+            return ValidateConfig(config as dynamic, factorsProvider);
         }
 
         /***************************************************/

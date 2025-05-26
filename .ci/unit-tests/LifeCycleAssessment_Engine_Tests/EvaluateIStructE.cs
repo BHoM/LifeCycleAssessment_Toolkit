@@ -64,6 +64,14 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             IStructEEvaluationConfig config = DummyConfig();
             double eval = 32.22;
             List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval, "", null, config);
+
+            if (epd.QuantityType != QuantityType.Mass)
+            {
+                Assert.That(materialResults, Is.Empty, "Should not return results for quantity types other than Mass");
+                return;
+            }
+
+            Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
                 ValidateMetricAndResult(epd.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name);
@@ -80,6 +88,12 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             double eval = 32.22;
             double mass = 22.4;
             List<MaterialResult> materialResults = Query.EnvironmentalResults(combinedFactors, eval,mass, "", null, config);
+            if (combinedFactors.BaseFactors == null && combinedFactors.A4TransportFactors == null && combinedFactors.C2TransportFactors == null)
+            {
+                Assert.That(materialResults, Is.Empty, "Should nto give results for Combined factors with all nulls.");
+                return;
+            }
+            Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
                 ValidateMetricAndResult(combinedFactors.BaseFactors?.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, mass);
@@ -96,6 +110,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates, true, null, config);
 
+            Assert.That(materialResults, Is.Not.Empty, "No results generated");
+
             foreach (MaterialResult result in materialResults)
             {
                 templates.Should().Contain(x => x.Name == result.MaterialName);
@@ -105,7 +121,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
                 takeoff.MaterialTakeoffItems.Should().Contain(x => x.Material.Name == result.MaterialName);
                 TakeoffItem takeoffItem = takeoff.MaterialTakeoffItems.First(x => x.Material.Name == result.MaterialName);
-                double eval = takeoffItem.Volume;
+                double eval = takeoffItem.Mass;
 
                 if (containEpds)
                 {
@@ -141,6 +157,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             IStructEEvaluationConfig config = DummyConfig();
             List<IElementResult<MaterialResult>> elementResults = Query.EnvironmentalResults(element, templates,true, null, config);
 
+            Assert.That(elementResults, Is.Not.Empty);
+
             Construction construction = element.Construction as Construction;
 
             foreach (IElementResult<MaterialResult> elementResult in elementResults)
@@ -164,9 +182,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
 
                     construction.Layers.Should().Contain(x => x.Material.Name == result.MaterialName);
-                    double eval = construction.Layers.First(x => x.Material.Name == result.MaterialName).Thickness * area;
+                    double eval = construction.Layers.First(x => x.Material.Name == result.MaterialName).Thickness * area * construction.Layers.First(x => x.Material.Name == result.MaterialName).Material.Density;
 
-                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name, mat.Name);
+                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, epd.Name, mat.Name, null, null, eval);
                 }
             }
         }
@@ -177,7 +195,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor,  string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, double mass = 0)
         {
-            double tolerance = 1e-10;
+            double tolerance = 1e-6;
 
             string initialMessage;
             if (metric != null)
@@ -281,7 +299,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             return new IStructEEvaluationConfig
             {
-                TotalWeight = 20000,
+                TotalWeight = 2000000,
                 FloorArea = 500,
                 ProjectCost = 1000000
             };

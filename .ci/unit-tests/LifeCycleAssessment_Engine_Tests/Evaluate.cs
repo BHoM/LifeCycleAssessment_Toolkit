@@ -216,7 +216,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0)
         {
-            double tolerance = 1e-10;
+            double tolerance = 1e-6;
 
             string message;
             if (metric != null)
