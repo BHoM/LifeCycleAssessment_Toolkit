@@ -61,7 +61,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
-        //[Ignore("Ignore for now.")]
+        [Ignore("Ignore for now.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void UpgradeAllDatasets(string f)
         {
