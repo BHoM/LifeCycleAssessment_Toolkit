@@ -209,7 +209,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<MaterialResult> results = new List<MaterialResult>();
 
-            foreach (IEnvironmentalMetricFactors metric in factorsProvider.FilteredFactors(metricFilter))
+            foreach (IEnvironmentalMetric metric in factorsProvider.FilteredFactors(metricFilter))
             {
                 results.Add(EnvironmentalResults(metric, factorsProvider.Name, materialName, quantityValue, evaluationConfig, configData));
             }
@@ -246,7 +246,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (factorsProvider.BaseFactors != null)
             {
-                foreach (IEnvironmentalMetricFactors metric in factorsProvider.BaseFactors.FilteredFactors(metricFilter))
+                foreach (IEnvironmentalMetric metric in factorsProvider.BaseFactors.FilteredFactors(metricFilter))
                 {
                     MetricType type = metric.IMetricType();
                     Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, configData);
@@ -312,11 +312,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times quantity.")]
         [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("result", "A MaterialResult of a type corresponding to the evaluated metric with phase data calculated as data on metric multiplied by the provided quantity value.")]
-        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetricFactors metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null, object configData = null)
+        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetric metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null, object configData = null)
         {
             if (metric == null)
             {
-                Base.Compute.RecordError($"Cannot evaluate a null {nameof(IEnvironmentalMetricFactors)}.");
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(IEnvironmentalMetric)}.");
                 return null;
             }
 

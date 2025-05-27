@@ -49,7 +49,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, true })]
-        public void EvaluateIStructEMetricTest(IEnvironmentalMetricFactors metric)
+        public void EvaluateIStructEMetricTest(IEnvironmentalMetric metric)
         {
             IStructEEvaluationConfig config = DummyConfig();
             double quantity = 50;
@@ -77,7 +77,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(epd.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, epd.Name);
+                ValidateMetricAndResult(epd.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, epd.Name);
             }
         }
 
@@ -99,7 +99,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(combinedFactors.BaseFactors?.EnvironmentalFactors[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
+                ValidateMetricAndResult(combinedFactors.BaseFactors?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
             }
         }
 
@@ -132,8 +132,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<EnvironmentalProductDeclaration>();
 
                     EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
-                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    epd.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, epd.Name, mat.Name);
                 }
@@ -143,8 +143,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<CombinedLifeCycleAssessmentFactors>();
 
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
-                    combinedFactors.BaseFactors.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = combinedFactors.BaseFactors.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    combinedFactors.BaseFactors.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = combinedFactors.BaseFactors.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
                     ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
 
 
@@ -181,8 +181,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<EnvironmentalProductDeclaration>();
 
                     EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
-                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    epd.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     construction.Layers.Should().Contain(x => x.Material.Name == result.MaterialName);
                     Layer layer = construction.Layers.First(x => x.Material.Name == result.MaterialName);
@@ -198,7 +198,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null)
         {
             double tolerance = 1e-6;
 

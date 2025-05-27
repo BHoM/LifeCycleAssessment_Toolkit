@@ -35,12 +35,13 @@ using BH.oM.Graphics;
 using FluentAssertions;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Versioning;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
     public class Datasets
     {
-        [Ignore("Ignore for now.")]
+        //[Ignore("Ignore for now.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void DatasetsAllDeserialiseing(string f)
         {
@@ -60,10 +61,58 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
+        //[Ignore("Ignore for now.")]
+        [TestCaseSource(nameof(DatasetFilePaths))]
+        public void UpgradeAllDatasets(string f)
+        {
+            BH.Engine.Base.Compute.ClearCurrentEvents();
+            string json = System.IO.File.ReadAllText(f);
+            object back = BH.Engine.Serialiser.Convert.FromJson(json);
+            BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
+
+            for (int i = 0; i < dataset.Data.Count; i++)
+            {
+                if (dataset.Data[i] is EnvironmentalProductDeclaration epd)
+                {
+                    for (int j = 0; j < epd.EnvironmentalMetrics.Count; j++)
+                    { 
+                        List<Module> keys = epd.EnvironmentalMetrics[j].Indicators.Keys.ToList();
+
+                        foreach (Module key in keys)
+                        {
+                            if (double.IsNaN(epd.EnvironmentalMetrics[j].Indicators[key]))
+                            {
+                                epd.EnvironmentalMetrics[j].Indicators.Remove(key);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            string newJson = BH.Engine.Serialiser.Convert.ToJson(back);
+            File.WriteAllText(f, newJson);
+
+        }
+
         private static IEnumerable<string> DatasetFilePaths()
         {
             EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration();
-            string folder = @"C:\ProgramData\BHoM\Datasets\LifeCycleAssessment\";
+            string currentDirectory = Environment.CurrentDirectory;
+            string[] split = currentDirectory.Split(Path.DirectorySeparatorChar);
+
+            string join = "";
+
+            int i = 0;
+            while (i < split.Length && split[i] != ".ci")
+            {
+                join = Path.Join(join, split[i]);
+                i++;
+            }
+
+            string folder = Path.Join(join, "Datasets");
+
+            //string folder = @"C:\ProgramData\BHoM\Datasets\LifeCycleAssessment\";
 
             return Directory.GetFiles(folder, "*.json", SearchOption.AllDirectories);
         }

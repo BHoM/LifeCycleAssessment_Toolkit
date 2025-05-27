@@ -45,7 +45,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
-        public void Total(IEnvironmentalMetricFactors metricFactors)
+        public void Total(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
             metricFactors.Total().Should().BeApproximately(17, tol, "Initial value");
@@ -77,7 +77,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
-        public void TotalA(IEnvironmentalMetricFactors metricFactors)
+        public void TotalA(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
             metricFactors.ATotal().Should().BeApproximately(5, tol, "Initial value");
@@ -89,7 +89,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
-        public void TotalB(IEnvironmentalMetricFactors metricFactors)
+        public void TotalB(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
             metricFactors.BTotal().Should().BeApproximately(7, tol, "Initial value");
@@ -109,7 +109,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
-        public void TotalC(IEnvironmentalMetricFactors metricFactors)
+        public void TotalC(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
             metricFactors.CTotal().Should().BeApproximately(4, tol, "Initial value");

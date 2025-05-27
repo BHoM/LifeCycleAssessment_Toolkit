@@ -48,7 +48,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, false })]
-        public void EvaluateMetricTest(IEnvironmentalMetricFactors metric)
+        public void EvaluateMetricTest(IEnvironmentalMetric metric)
         {
             double quantity = 4;
             MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity);
@@ -64,7 +64,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval);
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(epd.EnvironmentalFactors[i], materialResults[i], eval, epd.Name);
+                ValidateMetricAndResult(epd.EnvironmentalMetrics[i], materialResults[i], eval, epd.Name);
             }
         }
 
@@ -78,7 +78,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             List<MaterialResult> materialResults = Query.EnvironmentalResults(factors, eval, mass);
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(factors.BaseFactors?.EnvironmentalFactors[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass);
+                ValidateMetricAndResult(factors.BaseFactors?.EnvironmentalMetrics[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass);
             }
         }
 
@@ -106,8 +106,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<EnvironmentalProductDeclaration>();
 
                     EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
-                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    epd.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     ValidateMetricAndResult(metric, result, eval, epd.Name, mat.Name);
                 }
@@ -117,8 +117,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<CombinedLifeCycleAssessmentFactors>();
 
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
-                    combinedFactors.BaseFactors.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = combinedFactors.BaseFactors.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    combinedFactors.BaseFactors.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = combinedFactors.BaseFactors.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     ValidateMetricAndResult(metric, result, eval, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass);
                 }
@@ -154,8 +154,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<EnvironmentalProductDeclaration>();
 
                     EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
-                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    epd.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     ValidateMetricAndResult(metric, result, eval, epd.Name, mat.Name);
                 }
@@ -165,8 +165,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<CombinedLifeCycleAssessmentFactors>();
 
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
-                    combinedFactors.BaseFactors.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = combinedFactors.BaseFactors.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    combinedFactors.BaseFactors.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = combinedFactors.BaseFactors.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     ValidateMetricAndResult(metric, result, eval, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass);
                 }
@@ -200,8 +200,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<EnvironmentalProductDeclaration>();
 
                     EnvironmentalProductDeclaration epd = prop as EnvironmentalProductDeclaration;
-                    epd.EnvironmentalFactors.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetricFactors metric = epd.EnvironmentalFactors.First(x => x.IMetricType() == result.IMetricType());
+                    epd.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = epd.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
                     construction.Layers.Should().Contain(x => x.Material.Name == result.MaterialName);
                     double eval = construction.Layers.First(x => x.Material.Name == result.MaterialName).Thickness * area;
@@ -215,7 +215,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetricFactors metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0)
         {
             double tolerance = 1e-6;
 

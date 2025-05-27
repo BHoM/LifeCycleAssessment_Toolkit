@@ -99,14 +99,14 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             ClimateChangeFossilMetric metric1 = new ClimateChangeFossilMetric() { Indicators = dict1 };
             ClimateChangeFossilMetric metric2 = new ClimateChangeFossilMetric(){ Indicators = dict2 };
 
-            yield return new object[] { new List<IEnvironmentalMetricFactors> { metric1, metric2 }, true, sum1 };   //Check for only including modules present in both results
+            yield return new object[] { new List<IEnvironmentalMetric> { metric1, metric2 }, true, sum1 };   //Check for only including modules present in both results
 
             Dictionary<Module, double> sum2 = new Dictionary<Module, double>(sum1);
             sum2[Module.C1] = 1;
             sum2[Module.A4] = 4;
             sum2[Module.A5] = 5;
 
-            yield return new object[] { new List<IEnvironmentalMetricFactors> { metric1, metric2 }, false, sum2 };  //Check for including all
+            yield return new object[] { new List<IEnvironmentalMetric> { metric1, metric2 }, false, sum2 };  //Check for including all
 
             ClimateChangeFossilMaterialResult res1 = new ClimateChangeFossilMaterialResult("", "", dict1);
             ClimateChangeFossilMaterialResult res2 = new ClimateChangeFossilMaterialResult("", "", dict2);
@@ -119,8 +119,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             ClimateChangeBiogenicMetric metricOtherType = new ClimateChangeBiogenicMetric() { Indicators = dict2 };
 
             //Check that differing types give no results
-            yield return new object[] { new List<IEnvironmentalMetricFactors> { metric1, metricOtherType }, true, new Dictionary<Module, double>() };
-            yield return new object[] { new List<IEnvironmentalMetricFactors> { metric1, metricOtherType }, false, new Dictionary<Module, double>() };
+            yield return new object[] { new List<IEnvironmentalMetric> { metric1, metricOtherType }, true, new Dictionary<Module, double>() };
+            yield return new object[] { new List<IEnvironmentalMetric> { metric1, metricOtherType }, false, new Dictionary<Module, double>() };
         }
 
         /***************************************************/

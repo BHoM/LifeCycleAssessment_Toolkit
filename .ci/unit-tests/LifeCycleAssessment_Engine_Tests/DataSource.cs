@@ -47,9 +47,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        public static IEnumerable<IEnvironmentalMetricFactors> DummyMetrics(double initialV, double increace, bool setA5ToWaste)
+        public static IEnumerable<IEnvironmentalMetric> DummyMetrics(double initialV, double increace, bool setA5ToWaste)
         {
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+            List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
 
             double v = initialV;
             double inc = increace;
@@ -71,9 +71,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IEnumerable<List<IEnvironmentalMetricFactors>> DummyMetricsList(double initialV, double increace, bool setA5ToWaste)
+        public static IEnumerable<List<IEnvironmentalMetric>> DummyMetricsList(double initialV, double increace, bool setA5ToWaste)
         {
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+            List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
 
             double v = initialV;
             double inc = increace;
@@ -100,7 +100,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         public static IEnumerable<EnvironmentalProductDeclaration> DummyEPDs(double initialV, double increace, bool setA5ToWaste)
         {
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+            List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
 
             double v = initialV;
             double inc = increace;
@@ -113,7 +113,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         public static IEnumerable<CombinedLifeCycleAssessmentFactors> DummyCombinedLCAFactors(double initialV, double increace, bool setA5ToWaste)
         {
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+            List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
 
             double v = initialV;
             double inc = increace;
@@ -207,7 +207,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 }
             }
 
-            List<IEnvironmentalMetricFactors> metrics = new List<IEnvironmentalMetricFactors>();
+            List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
 
             foreach (Type type in MetricTypes())
             {
@@ -218,7 +218,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             {
                 Name = name,
                 QuantityType = quantityType,
-                EnvironmentalFactors = metrics,
+                EnvironmentalMetrics = metrics,
             };
         }
 
@@ -282,7 +282,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        public static IEnvironmentalMetricFactors DummyMetric(Type type, ref double v, double inc, bool setA5ToWaste)
+        public static IEnvironmentalMetric DummyMetric(Type type, ref double v, double inc, bool setA5ToWaste)
         {
             MethodInfo create = typeof(BH.Engine.LifeCycleAssessment.Create).GetMethods().Where(x => x.ReturnType == type).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
 
@@ -297,7 +297,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 v += inc;
             }
 
-            IEnvironmentalMetricFactors metric = create.Invoke(null, para) as IEnvironmentalMetricFactors;
+            IEnvironmentalMetric metric = create.Invoke(null, para) as IEnvironmentalMetric;
 
             if (setA5ToWaste)
             {

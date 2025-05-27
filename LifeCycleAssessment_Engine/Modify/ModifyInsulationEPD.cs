@@ -70,7 +70,7 @@ namespace BH.Engine.Facade
             }
 
             insulationEPD = insulationEPD.DeepClone();
-            foreach (IEnvironmentalMetricFactors environmentalMetric in insulationEPD.EnvironmentalFactors)
+            foreach (IEnvironmentalMetric environmentalMetric in insulationEPD.EnvironmentalMetrics)
             {
                 foreach (Module module in environmentalMetric.Indicators.Keys)
                 {
