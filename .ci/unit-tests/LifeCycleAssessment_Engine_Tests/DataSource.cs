@@ -159,7 +159,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static List<Material> MaterialsWithEpds(ref double v, double inc, bool setA5ToWaste)
         {
-            QuantityType quantityType = setA5ToWaste ? QuantityType.Mass : QuantityType.Volume;
+            QuantityType quantityType = QuantityType.Volume;
             return new List<Material>
             {
                 new Material { Name = "Concrete", Density = 2400, Properties = new List<IMaterialProperties> { DummyEPD(ref v, inc, setA5ToWaste, " Concrete EPD NAME", quantityType) } },

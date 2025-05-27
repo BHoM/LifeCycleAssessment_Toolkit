@@ -82,6 +82,16 @@
 		<Private>True</Private>
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="NUnit_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+	</Reference>
+	<Reference Include="NUnit_oM">
+		<HintPath>$(ProgramData)\BHoM\Assemblies\NUnit_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Physical_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_Engine.dll</HintPath>
 		<Private>True</Private>

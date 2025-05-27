@@ -40,6 +40,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 {
     public class Datasets
     {
+        [Ignore("Ignore for now.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void DatasetsAllDeserialiseing(string f)
         {

@@ -20,27 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using AutoBogus;
+using BH.Engine.LifeCycleAssessment;
+using BH.oM.Dimensional;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.LifeCycleAssessment.Results;
+using BH.oM.Physical.Constructions;
+using BH.oM.Physical.Elements;
+using BH.oM.Physical.Materials;
+using BH.oM.Test.NUnit;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoBogus;
-using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.Results;
-using BH.Engine.LifeCycleAssessment;
-using FluentAssertions;
-using BH.oM.LifeCycleAssessment;
-using BH.oM.Physical.Materials;
-using BH.oM.Dimensional;
-using BH.oM.Physical.Elements;
-using BH.oM.Physical.Constructions;
-using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
-    public class Evaluate
+    public class Evaluate : NUnitTest
     {
         /***************************************************/
         /****   Public Methods                          ****/

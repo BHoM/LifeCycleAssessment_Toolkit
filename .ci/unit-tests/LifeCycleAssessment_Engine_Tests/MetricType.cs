@@ -27,6 +27,7 @@ using BH.oM.LifeCycleAssessment.Interfaces;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Materials;
+using BH.oM.Test.NUnit;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
@@ -38,7 +39,7 @@ using System.Threading.Tasks;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
-    public class MetricTypeTests
+    public class MetricTypeTests : NUnitTest
     {
         /***************************************************/
         /****   Public Methods                          ****/
