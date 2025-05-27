@@ -196,9 +196,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
+        [Input("configData", "Additional data required for evaluation with the provided config. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null, object configData = null)
         {
             if (factorsProvider == null)
             {
@@ -206,14 +207,11 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            if (!IValidateConfig(evaluationConfig, factorsProvider))
-                return new List<MaterialResult>();
-
             List<MaterialResult> results = new List<MaterialResult>();
 
             foreach (IEnvironmentalMetricFactors metric in factorsProvider.FilteredFactors(metricFilter))
             {
-                results.Add(EnvironmentalResults(metric, factorsProvider.Name, materialName, quantityValue, evaluationConfig));
+                results.Add(EnvironmentalResults(metric, factorsProvider.Name, materialName, quantityValue, evaluationConfig, configData));
             }
 
             return results;
@@ -230,9 +228,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
+        [Input("configData", "Additional data required for evaluation with the provided config. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, double quantityValue, double mass, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null)
+        public static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, double quantityValue, double mass, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null, object configData = null)
         {
             if (factorsProvider == null)
             {
@@ -247,13 +246,10 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (factorsProvider.BaseFactors != null)
             {
-                if (!IValidateConfig(evaluationConfig, factorsProvider.BaseFactors))
-                    return new List<MaterialResult>();
-
                 foreach (IEnvironmentalMetricFactors metric in factorsProvider.BaseFactors.FilteredFactors(metricFilter))
                 {
                     MetricType type = metric.IMetricType();
-                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig);
+                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, configData);
 
                     //Check if C2 and A4 results are defined explicitly, and override them if they are
                     if (a4TransportResults.TryGetValue(type, out double a4))
@@ -314,8 +310,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result class.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times quantity.")]
+        [Input("configData", "Additional data required for evaluation with the provided config. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("result", "A MaterialResult of a type corresponding to the evaluated metric with phase data calculated as data on metric multiplied by the provided quantity value.")]
-        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetricFactors metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null)
+        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetricFactors metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null, object configData = null)
         {
             if (metric == null)
             {
@@ -323,7 +320,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig);
+            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, configData);
 
             return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues as dynamic);
         }
@@ -334,36 +331,80 @@ namespace BH.Engine.LifeCycleAssessment
 
         private static List<MaterialResult> IEnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
-            return EnvironmentalResults(factorsProvider as dynamic, takeoffItem, metricFilter, evaluationConfig);
+            if (ITryGetConfigData(evaluationConfig, takeoffItem, out object configData))
+            {
+                return EnvironmentalResults(factorsProvider as dynamic, takeoffItem, metricFilter, evaluationConfig, configData);
+            }
+            return new List<MaterialResult>();
         }
 
         /***************************************************/
 
-        private static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
         {
-            return EnvironmentalResults(factorsProvider, takeoffItem.QuantityValue(factorsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig);
+            return EnvironmentalResults(factorsProvider, takeoffItem.QuantityValue(factorsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig, configData);
         }
 
         /***************************************************/
 
-        private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
         {
             double quantityValue = takeoffItem.QuantityValue(factorsProvider.BaseFactors.QuantityType);
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
-            return EnvironmentalResults(factorsProvider, quantityValue, mass, takeoffItem.Material.Name, metricFilter, evaluationConfig);
+            return EnvironmentalResults(factorsProvider, quantityValue, mass, takeoffItem.Material.Name, metricFilter, evaluationConfig, configData);
         }
 
         /***************************************************/
 
 
-        private static List<MaterialResult> EnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
+        private static List<MaterialResult> EnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
         {
             BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for metric providers of type {factorsProvider.GetType().Name}");
             return new List<MaterialResult>();
         }
 
         /***************************************************/
+        /**** Private Methods - Extract config data     ****/
+        /***************************************************/
 
+        private static bool ITryGetConfigData(this IEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
+        {
+            if (evaluationConfig == null)
+            { 
+                configData = null;
+                return true;
+            }
+
+            return TryGetConfigData(evaluationConfig as dynamic, takeoffItem, out configData);
+        }
+
+        /***************************************************/
+
+        private static bool TryGetConfigData(this IStructEEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
+        {
+            double mass = takeoffItem.QuantityValue(QuantityType.Mass);
+
+            configData = mass;
+            if (double.IsNaN(mass) || mass == 0)
+            {
+                BH.Engine.Base.Compute.RecordError($"Unable to extract required mass required to evaluate with the {nameof(IStructEEvaluationConfig)}.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        private static bool TryGetConfigData(this IEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
+        {
+            //Fallback method
+            BH.Engine.Base.Compute.RecordWarning($"No method exists to extract config data for config of type {evaluationConfig.GetType().Name}.");
+            configData = null;
+            return true;    //Return true to continue evaluation
+        }
+
+        /***************************************************/
     }
 }
 
