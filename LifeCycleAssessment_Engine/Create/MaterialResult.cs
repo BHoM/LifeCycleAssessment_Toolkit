@@ -89,19 +89,20 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static void AddIfNotPresent(this Dictionary<Module, double> metricsWithTotal, Module moduleToAdd, IReadOnlyList<Module> modulesToSum)
+        private static void AddIfNotPresent(this Dictionary<Module, double> metricsWithTotal, Module moduleToAdd, IReadOnlyList<(Module, bool)> modulesToSum)
         {
             if (metricsWithTotal.ContainsKey(moduleToAdd))
                 return; //Allready present
 
             double total = 0;
 
-            foreach (Module module in modulesToSum)
+            foreach ((Module, bool) moduleRequired in modulesToSum)
             {
+                Module module = moduleRequired.Item1;
                 if (metricsWithTotal.TryGetValue(module, out double val))
                     total += val;
-                else
-                    return;     //Required part not found. Not able to add
+                else if(moduleRequired.Item2)
+                    return;     //Required part not found and marked as required. Not able to add
             }
 
             //Compute new metric value as sum of parts

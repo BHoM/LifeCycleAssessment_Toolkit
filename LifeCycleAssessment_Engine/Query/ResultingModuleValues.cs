@@ -139,7 +139,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (evaluationConfig.TotalWeight == 0 || evaluationConfig.TotalWeight < mass)
             {
-                BH.Engine.Base.Compute.RecordWarning($"The total weight is 0 or smaller than the mass of the element. The weightfactor has been set to 0. This has an influence on the {nameof(Module.A5a)} and {nameof(Module.C1)} modules, which will be given 0 value results");
+                BH.Engine.Base.Compute.RecordWarning($"The total weight is 0 or smaller than the mass of the element. The weightfactor has been set to 0. This has an influence on the {nameof(Module.A5_2)} and {nameof(Module.C1)} modules, which will be given 0 value results");
                 weightFactor = 0;
             }
             else
@@ -153,12 +153,12 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             //Special handling of A5 for site activities module with additional project factor
-            resultingValues[Module.A5a] = evaluationConfig.ProjectCost * evaluationConfig.A5CarbonFactor * weightFactor;
+            resultingValues[Module.A5_2] = evaluationConfig.ProjectCost * evaluationConfig.A5CarbonFactor * weightFactor;
             
-            //Set A5 as sum of A5w and A5a
-            if(resultingValues.TryGetValue(Module.A5w, out double a5w))
+            //Set A5 as sum of A5_2 and A5_3
+            if(resultingValues.TryGetValue(Module.A5_3, out double a5_2))
             {
-                resultingValues[Module.A5] = resultingValues[Module.A5a] + a5w;
+                resultingValues[Module.A5] = resultingValues[Module.A5_2] + a5_2;
             }
 
             //C1 evaluated based on project level values

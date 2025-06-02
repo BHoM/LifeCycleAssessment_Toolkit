@@ -143,7 +143,7 @@ namespace BH.Engine.LifeCycleAssessment
         {
             double total = 0;
             HashSet<Module> modulesLeftToHandle = new HashSet<Module>(modulesToSum);
-            IReadOnlyDictionary<Module, IReadOnlyList<Module>> combinationModules = CombinationModules();
+            IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules = CombinationModules();
 
             foreach (var combination in combinationModules.Reverse())
             {
@@ -176,14 +176,14 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static void RemoveModules(this HashSet<Module> modules, IReadOnlyDictionary<Module, IReadOnlyList<Module>> combinationModules, Module moduleToRemove)
+        private static void RemoveModules(this HashSet<Module> modules, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules, Module moduleToRemove)
         {
             modules.Remove(moduleToRemove);
-            if (combinationModules.TryGetValue(moduleToRemove, out IReadOnlyList<Module> subModules))
+            if (combinationModules.TryGetValue(moduleToRemove, out IReadOnlyList<(Module, bool)> subModules))
             {
-                foreach (Module subModuleToRemove in subModules)
+                foreach ((Module, bool) subModuleToRemove in subModules)
                 {
-                    RemoveModules(modules, combinationModules, subModuleToRemove);
+                    RemoveModules(modules, combinationModules, subModuleToRemove.Item1);
                 }
             }
         }

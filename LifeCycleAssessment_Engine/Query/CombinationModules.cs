@@ -42,19 +42,19 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Gets all the combined modules and the parts they consist of. All combinations that can be made up of other combinations are, e.g. B1toB5 is set to be a combination of B1toB3 and B4toB5.")]
         [Output("combinationModules", "All combinationModules and their parts.")]
-        public static IReadOnlyDictionary<Module, IReadOnlyList<Module>> CombinationModules()
+        public static IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> CombinationModules()
         {
             if (m_CombinationModules == null)
             {
-                Dictionary<Module, IReadOnlyList<Module>> modules = new Dictionary<Module, IReadOnlyList<Module>>();
-                modules[Module.A1toA3] = new List<Module>() { Module.A1, Module.A2, Module.A3 };
-                modules[Module.A5] = new List<Module>() { Module.A5a, Module.A5w };
-                modules[Module.B1toB3] = new List<Module>() { Module.B1, Module.B2, Module.B3 };
-                modules[Module.B4toB5] = new List<Module>() { Module.B4, Module.B5 };
-                modules[Module.B1toB5] = new List<Module>() { Module.B1toB3, Module.B4toB5 };
-                modules[Module.B1toB7] = new List<Module>() { Module.B1toB5, Module.B6, Module.B7 };
-                modules[Module.C3toC4] = new List<Module>() { Module.C3, Module.C4 };
-                modules[Module.C1toC4] = new List<Module>() { Module.C1, Module.C2, Module.C3toC4 };
+                Dictionary<Module, IReadOnlyList<(Module, bool)>> modules = new Dictionary<Module, IReadOnlyList<(Module, bool)>>();
+                modules[Module.A1toA3] = new List<(Module, bool)>() { (Module.A1, true), (Module.A2,true), (Module.A3, true) };
+                modules[Module.A5] = new List<(Module, bool)>() { (Module.A5_1, false), (Module.A5_2, true), (Module.A5_3, true), (Module.A5_4, false) };
+                modules[Module.B1toB3] = new List<(Module, bool)>() { (Module.B1, true), (Module.B2, true), (Module.B3, true) };
+                modules[Module.B4toB5] = new List<(Module, bool)>() { (Module.B4, true), (Module.B5, true) };
+                modules[Module.B1toB5] = new List<(Module, bool)>() { (Module.B1toB3, true), (Module.B4toB5, true) };
+                modules[Module.B1toB7] = new List<(Module, bool)>() { (Module.B1toB5, true), (Module.B6, true), (Module.B7, true) };
+                modules[Module.C3toC4] = new List<(Module, bool)>() { (Module.C3, true), (Module.C4, true) };
+                modules[Module.C1toC4] = new List<(Module, bool)>() { (Module.C1, true), (Module.C2, true), (Module.C3toC4, true) };
                 m_CombinationModules = modules;
             }
 
@@ -65,7 +65,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Feilds                            ****/
         /***************************************************/
 
-        private static IReadOnlyDictionary<Module, IReadOnlyList<Module>> m_CombinationModules = null;
+        private static IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> m_CombinationModules = null;
 
         /***************************************************/
     }

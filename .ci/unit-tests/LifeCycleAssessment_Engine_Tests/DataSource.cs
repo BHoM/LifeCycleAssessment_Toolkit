@@ -303,7 +303,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             {
                 if (metric is ClimateChangeFossilMetric || metric is ClimateChangeTotalMetric || metric is ClimateChangeTotalNoBiogenicMetric)
                 {
-                    metric.Indicators[oM.LifeCycleAssessment.Module.A5w] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
+                    metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
                     metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
                 }
             }

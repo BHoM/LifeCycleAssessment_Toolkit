@@ -84,6 +84,14 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             metricFactors.Indicators[oM.LifeCycleAssessment.Module.A1toA3] = 3;
             metricFactors.ATotal().Should().BeApproximately(5, tol, "A1toA3");
+
+            metricFactors.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
+            metricFactors.Indicators[oM.LifeCycleAssessment.Module.A5_1] = 1;
+            metricFactors.Indicators[oM.LifeCycleAssessment.Module.A5_2] = 1;
+            metricFactors.Indicators[oM.LifeCycleAssessment.Module.A5_3] = 1;
+            metricFactors.Indicators[oM.LifeCycleAssessment.Module.A5_4] = 1;
+
+            metricFactors.ATotal().Should().BeApproximately(8, tol, "A5 sub modules");
         }
 
         /***************************************************/

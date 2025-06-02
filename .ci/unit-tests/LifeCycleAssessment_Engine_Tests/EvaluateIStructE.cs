@@ -251,7 +251,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     }
                     else if (specialTreatment && module == oM.LifeCycleAssessment.Module.A5)
                     {
-                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[oM.LifeCycleAssessment.Module.A5w] * quantity + mass / totalWeight * a5CarbonFactor * projectCost).Within(tolerance), $"{module} failed while {message}");
+                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] * quantity + mass / totalWeight * a5CarbonFactor * projectCost).Within(tolerance), $"{module} failed while {message}");
                     }
                     else if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1toC4)
                     {
