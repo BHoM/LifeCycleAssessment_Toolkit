@@ -22,6 +22,7 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Quantities.Attributes;
 using System;
@@ -38,24 +39,24 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a WaterDeprivationMetric to be applied as part of an EnvironmentalProductDeclaration. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1", "Raw Material Supply module in the Product stage.", typeof(VolumePerQuantity))]
-        [Input("a2", "Transport module in the Product stage.", typeof(VolumePerQuantity))]
-        [Input("a3", "Manufacturing module in the Product stage.", typeof(VolumePerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(VolumePerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(VolumePerQuantity))]
-        [Input("b1", "Use module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b2", "Maintenance module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b3", "Repair module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b4", "Replacement module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b5", "Refurbishment module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b6", "Operational Energy Use module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b7", "Operational Water Use module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("c1", "De-construction Demolition module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("c2", "Transport module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("c3", "Waste Processing module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("c4", "Disposal module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(VolumePerQuantity))]
-        [Output("metric", "Created WaterDeprivationMetric.", typeof(VolumePerQuantity))]
+        [InputFromDescription("a1", Module.A1, typeof(VolumePerQuantity))]
+        [InputFromDescription("a2", Module.A2, typeof(VolumePerQuantity))]
+        [InputFromDescription("a3", Module.A3, typeof(VolumePerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(VolumePerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(VolumePerQuantity))]
+        [InputFromDescription("b1", Module.B1, typeof(VolumePerQuantity))]
+        [InputFromDescription("b2", Module.B2, typeof(VolumePerQuantity))]
+        [InputFromDescription("b3", Module.B3, typeof(VolumePerQuantity))]
+        [InputFromDescription("b4", Module.B4, typeof(VolumePerQuantity))]
+        [InputFromDescription("b5", Module.B5, typeof(VolumePerQuantity))]
+        [InputFromDescription("b6", Module.B6, typeof(VolumePerQuantity))]
+        [InputFromDescription("b7", Module.B7, typeof(VolumePerQuantity))]
+        [InputFromDescription("c1", Module.C1, typeof(VolumePerQuantity))]
+        [InputFromDescription("c2", Module.C2, typeof(VolumePerQuantity))]
+        [InputFromDescription("c3", Module.C3, typeof(VolumePerQuantity))]
+        [InputFromDescription("c4", Module.C4, typeof(VolumePerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(VolumePerQuantity))]
+        [Output("metric", "Created WaterDeprivationMetric.")]
         public static WaterDeprivationMetric WaterDeprivationMetric(
             double a1 = double.NaN,
             double a2 = double.NaN,
@@ -81,21 +82,21 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a WaterDeprivationMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1toa3", "Full Product stage.", typeof(VolumePerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(VolumePerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(VolumePerQuantity))]
-        [Input("b1", "Use module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b2", "Maintenance module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b3", "Repair module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b4", "Replacement module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b5", "Refurbishment module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b6", "Operational Energy Use module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("b7", "Operational Water Use module in the Use stage.", typeof(VolumePerQuantity))]
-        [Input("c1", "De-construction Demolition module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("c2", "Transport module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("c3", "Waste Processing module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("c4", "Disposal module in the End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(VolumePerQuantity))]
+        [InputFromDescription("a1toa3", Module.A1toA3, typeof(VolumePerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(VolumePerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(VolumePerQuantity))]
+        [InputFromDescription("b1", Module.B1, typeof(VolumePerQuantity))]
+        [InputFromDescription("b2", Module.B2, typeof(VolumePerQuantity))]
+        [InputFromDescription("b3", Module.B3, typeof(VolumePerQuantity))]
+        [InputFromDescription("b4", Module.B4, typeof(VolumePerQuantity))]
+        [InputFromDescription("b5", Module.B5, typeof(VolumePerQuantity))]
+        [InputFromDescription("b6", Module.B6, typeof(VolumePerQuantity))]
+        [InputFromDescription("b7", Module.B7, typeof(VolumePerQuantity))]
+        [InputFromDescription("c1", Module.C1, typeof(VolumePerQuantity))]
+        [InputFromDescription("c2", Module.C2, typeof(VolumePerQuantity))]
+        [InputFromDescription("c3", Module.C3, typeof(VolumePerQuantity))]
+        [InputFromDescription("c4", Module.C4, typeof(VolumePerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(VolumePerQuantity))]
         [Output("metric", "Created WaterDeprivationMetric.")]
         public static WaterDeprivationMetric WaterDeprivationMetric(
                 double a1toa3 = double.NaN,
@@ -120,12 +121,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a WaterDeprivationMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1toa3", "Full Product stage.", typeof(VolumePerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(VolumePerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(VolumePerQuantity))]
-        [Input("b1tob7", "Full Use Stage.", typeof(VolumePerQuantity))]
-        [Input("c1toc4", "Full End of Life stage.", typeof(VolumePerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(VolumePerQuantity))]
+        [InputFromDescription("a1toa3", Module.A1toA3, typeof(VolumePerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(VolumePerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(VolumePerQuantity))]
+        [InputFromDescription("b1tob7", Module.B1toB7, typeof(VolumePerQuantity))]
+        [InputFromDescription("c1toc4", Module.C1toC4, typeof(VolumePerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(VolumePerQuantity))]
         [Output("metric", "Created WaterDeprivationMetric.")]
         public static WaterDeprivationMetric WaterDeprivationMetric(
                 double a1toa3 = double.NaN,

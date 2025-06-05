@@ -22,6 +22,7 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Quantities.Attributes;
 using System;
@@ -38,24 +39,22 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a EutrophicationAquaticFreshwaterMetric to be applied as part of an EnvironmentalProductDeclaration. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1", "Raw Material Supply module in the Product stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a2", "Transport module in the Product stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a3", "Manufacturing module in the Product stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b1", "Use module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b2", "Maintenance module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b3", "Repair module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b4", "Replacement module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b5", "Refurbishment module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b6", "Operational Energy Use module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b7", "Operational Water Use module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c1", "De-construction Demolition module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c2", "Transport module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c3", "Waste Processing module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c4", "Disposal module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Output("metric", "Created EutrophicationAquaticFreshwaterMetric.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a1", Module.A1, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a2", Module.A2, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a3", Module.A3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b1", Module.B1, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b2", Module.B2, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b3", Module.B3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b4", Module.B4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b5", Module.B5, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b6", Module.B6, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b7", Module.B7, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c1", Module.C1, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c2", Module.C2, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c3", Module.C3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c4", Module.C4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
         public static EutrophicationAquaticFreshwaterMetric EutrophicationAquaticFreshwaterMetric(
             double a1 = double.NaN,
             double a2 = double.NaN,
@@ -81,21 +80,21 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a EutrophicationAquaticFreshwaterMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1toa3", "Full Product stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b1", "Use module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b2", "Maintenance module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b3", "Repair module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b4", "Replacement module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b5", "Refurbishment module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b6", "Operational Energy Use module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b7", "Operational Water Use module in the Use stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c1", "De-construction Demolition module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c2", "Transport module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c3", "Waste Processing module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c4", "Disposal module in the End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a1toa3", Module.A1toA3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b1", Module.B1, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b2", Module.B2, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b3", Module.B3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b4", Module.B4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b5", Module.B5, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b6", Module.B6, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b7", Module.B7, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c1", Module.C1, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c2", Module.C2, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c3", Module.C3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c4", Module.C4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
         [Output("metric", "Created EutrophicationAquaticFreshwaterMetric.")]
         public static EutrophicationAquaticFreshwaterMetric EutrophicationAquaticFreshwaterMetric(
                 double a1toa3 = double.NaN,
@@ -120,12 +119,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a EutrophicationAquaticFreshwaterMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1toa3", "Full Product stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("b1tob7", "Full Use Stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("c1toc4", "Full End of Life stage.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a1toa3", Module.A1toA3, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("b1tob7", Module.B1toB7, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("c1toc4", Module.C1toC4, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(EutrophicationAquaticFreshwaterPerQuantity))]
         [Output("metric", "Created EutrophicationAquaticFreshwaterMetric.")]
         public static EutrophicationAquaticFreshwaterMetric EutrophicationAquaticFreshwaterMetric(
                 double a1toa3 = double.NaN,

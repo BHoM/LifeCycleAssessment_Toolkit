@@ -20,8 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Quantities.Attributes;
 using System;
@@ -38,24 +40,24 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a AbioticDepletionMineralsAndMetalsMetric to be applied as part of an EnvironmentalProductDeclaration. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1", "Raw Material Supply module in the Product stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a2", "Transport module in the Product stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a3", "Manufacturing module in the Product stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b1", "Use module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b2", "Maintenance module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b3", "Repair module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b4", "Replacement module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b5", "Refurbishment module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b6", "Operational Energy Use module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b7", "Operational Water Use module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c1", "De-construction Demolition module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c2", "Transport module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c3", "Waste Processing module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c4", "Disposal module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Output("metric", "Created AbioticDepletionMineralsAndMetalsMetric.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a1", Module.A1, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a2", Module.A2, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a3", Module.A3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b1", Module.B1, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b2", Module.B2, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b3", Module.B3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b4", Module.B4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b5", Module.B5, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b6", Module.B6, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b7", Module.B7, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c1", Module.C1, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c2", Module.C2, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c3", Module.C3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c4", Module.C4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [Output("metric", "Created AbioticDepletionMineralsAndMetalsMetric.")]
         public static AbioticDepletionMineralsAndMetalsMetric AbioticDepletionMineralsAndMetalsMetric(
             double a1 = double.NaN,
             double a2 = double.NaN,
@@ -81,21 +83,21 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a AbioticDepletionMineralsAndMetalsMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1toa3", "Full Product stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b1", "Use module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b2", "Maintenance module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b3", "Repair module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b4", "Replacement module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b5", "Refurbishment module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b6", "Operational Energy Use module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b7", "Operational Water Use module in the Use stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c1", "De-construction Demolition module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c2", "Transport module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c3", "Waste Processing module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c4", "Disposal module in the End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a1toa3", Module.A1toA3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b1", Module.B1, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b2", Module.B2, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b3", Module.B3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b4", Module.B4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b5", Module.B5, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b6", Module.B6, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b7", Module.B7, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c1", Module.C1, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c2", Module.C2, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c3", Module.C3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c4", Module.C4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
         [Output("metric", "Created AbioticDepletionMineralsAndMetalsMetric.")]
         public static AbioticDepletionMineralsAndMetalsMetric AbioticDepletionMineralsAndMetalsMetric(
                 double a1toa3 = double.NaN,
@@ -120,12 +122,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Creates a AbioticDepletionMineralsAndMetalsMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available. If no values are provided (NaN), the module will not be added to the created metric.")]
-        [Input("a1toa3", "Full Product stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a4", "Transport module in the Construction Process stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("a5", "Construction Installation Process module in the Construction Process stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("b1tob7", "Full Use Stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("c1toc4", "Full End of Life stage.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
-        [Input("d", "Benefits and loads beyond the system boundary.", typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a1toa3", Module.A1toA3, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a4", Module.A4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("a5", Module.A5, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("b1tob7", Module.B1toB7, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("c1toc4", Module.C1toC4, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
+        [InputFromDescription("d", Module.D, typeof(AbioticDepletionMineralsAndMetalsPerQuantity))]
         [Output("metric", "Created AbioticDepletionMineralsAndMetalsMetric.")]
         public static AbioticDepletionMineralsAndMetalsMetric AbioticDepletionMineralsAndMetalsMetric(
                 double a1toa3 = double.NaN,
@@ -142,4 +144,3 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
     }
 }
-
