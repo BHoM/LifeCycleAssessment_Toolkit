@@ -39,9 +39,9 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.Total(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
-        [Description("Gets the total sum of values from all phases with a set value (all values not NaN).")]
-        [Input("moduleData", "LCA phase data object to get the total from.")]
-        [Output("total", "The sum of all non-NaN properties on the provided phase data object.")]
+        [Description("Gets the total sum of values from all modules with a set value (all values not NaN).")]
+        [Input("moduleData", "LCA module data object to get the total from.")]
+        [Output("total", "The sum of all existing module data properties on the provided module data object.")]
         public static double Total(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
@@ -60,9 +60,9 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.ATotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
-        [Description("Gets the total sum of values from all A-phases (A1-A5) with a set value (all values not NaN).")]
-        [Input("moduleData", "LCA phase data object to get the total from.")]
-        [Output("Atotal", "The sum of all non-NaN properties on the provided phase data object.")]
+        [Description("Gets the total sum of values from all A-modules (A1-A5) with a set value (all values not NaN).")]
+        [Input("moduleData", "LCA module data object to get the total from.")]
+        [Output("Atotal", "The sum of all existing module data properties from all of the A modules on the provided module data object.")]
         public static double ATotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
@@ -74,9 +74,9 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.BTotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
-        [Description("Gets the total sum of values from all B-phases (B1-B7) with a set value (all values not NaN).")]
-        [Input("moduleData", "LCA phase data object to get the total from.")]
-        [Output("BTotal", "The sum of all non-NaN properties on the provided phase data object.")]
+        [Description("Gets the total sum of values from all B-modules (B1-B7) with a set value (all values not NaN).")]
+        [Input("moduleData", "LCA module data object to get the total from.")]
+        [Output("Btotal", "The sum of all existing module data properties from all of the B modules on the provided module data object.")]
         public static double BTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
@@ -88,9 +88,9 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.CTotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
-        [Description("Gets the total sum of values from all C-phases (C1-C4) with a set value (all values not NaN).")]
-        [Input("moduleData", "LCA phase data object to get the total from.")]
-        [Output("CTotal", "The sum of all non-NaN properties on the provided phase data object.")]
+        [Description("Gets the total sum of values from all C-modules (C1-C4) with a set value (all values not NaN).")]
+        [Input("moduleData", "LCA module data object to get the total from.")]
+        [Output("Ctotal", "The sum of all existing module data properties from all of the C modules on the provided module data object.")]
         public static double CTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData)
         {
             List<string> included = new List<string>();
@@ -103,11 +103,11 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Raises a message corresponding to which phases that were included when computing the total.")]
+        [Description("Raises a message corresponding to which modules that were included when computing the total.")]
         private static void IncludedMessage(List<string> included, string totalType)
         {
             if(included.Count == 0)
-                Base.Compute.RecordWarning($"No phases contains any values for when evaluating {totalType}.");
+                Base.Compute.RecordWarning($"No modules contains any values for when evaluating {totalType}.");
 
             else
                 Base.Compute.RecordNote($"Phases {string.Join(", ", included)} where included when evaluating {totalType}.");
@@ -115,7 +115,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets out all A-phases, and stores the non-NaN properties in the included list.")]
+        [Description("Gets out all A-modules, and stores the non-NaN properties in the included list.")]
         private static double ATotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
             return SumModules(moduleData, m_AModules, included);
@@ -123,7 +123,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets out all B-phases, and stores the non-NaN properties in the included list.")]
+        [Description("Gets out all B-modules, and stores the non-NaN properties in the included list.")]
         private static double BTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
             return SumModules(moduleData, m_BModules, included);
@@ -131,7 +131,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets out all C-phases, and stores the non-NaN properties in the included list.")]
+        [Description("Gets out all C-modules, and stores the non-NaN properties in the included list.")]
         private static double CTotal(this ILifeCycleAssessmentModuleData<IDictionary<Module, double>> moduleData, List<string> included)
         {
             return SumModules(moduleData, m_CModules, included);

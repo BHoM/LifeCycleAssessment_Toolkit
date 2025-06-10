@@ -45,7 +45,8 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("objectId")]
         [InputFromProperty("scope")]
         [InputFromProperty("category")]
-        [Input("materialResults", "Material results used to create the element result. Results will first be grouped by type, and a single element result created per type. The phase values of the element result will be the sum of the MaterialResult values.")]
+        [Input("materialResults", "Material results used to create the element result. Results will first be grouped by type, and a single element result created per type. The resulting values for each module of the element result will be the sum of the MaterialResult values for which results are available for every material result.\n" +
+                                  "This means that if two material results of the same type is used to generate an ElementResult, and the first has modules A1, A2 and A3 defined, but the second only has A1 defined, then the only total available on the element result will be the sum for module A1.")]
         [Output("results", "Created element results")]
         public static List<IElementResult<MaterialResult>> IElementResults(IComparable objectId, ScopeType scope, ObjectCategory category, IEnumerable<MaterialResult> materialResults)
         {
@@ -69,7 +70,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Creates an ElementResult<T> with a type matching that of the provided MaterialResult. Element result values are computed as the sum of the values on the material results.")]
         [Input("first", "First material result in the list. Provided to enable dynamic casting of the material results to their concrete type.")]
-        [Input("materialResults", "The list of material results to evaluate. All should be of the same type T (same as first). The returned element result will have its result values computed as the sum of the phase values for all provided material results.")]
+        [Input("materialResults", "The list of material results to evaluate. All should be of the same type T (same as first). The returned element result will have its result values computed as the sum of the module values for all provided material results.")]
         [InputFromProperty("objectId")]
         [InputFromProperty("scope")]
         [InputFromProperty("category")]
@@ -96,7 +97,7 @@ namespace BH.Engine.LifeCycleAssessment
         [InputFromProperty("scope")]
         [InputFromProperty("category")]
         [InputFromProperty("materialResults")]
-        [Input("resultValues", "The resuling values to be stored on the result. Important that the order of the metrics extracted corresponds to the order of the constructor. General order should always be all the default phases (A1-A5, B1-B7, C1-C4 and D) followed by any additional phases corresponding to the metric currently being evaluated. For example, GlobalWarmingPotential will have an additional property corresponding to BiogenicCarbon.")]
+        [Input("resultValues", "The resuling values to be stored on the result.")]
         [Output("result", "The created element result.")]
         private static IElementResult<MaterialResult> ElementResult<T>(IComparable objectId, ScopeType scope, ObjectCategory category, List<T> materialResults, Dictionary<Module, double> resultValues) where T : MaterialResult
         {

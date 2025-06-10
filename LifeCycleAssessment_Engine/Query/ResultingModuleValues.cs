@@ -40,14 +40,14 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the resulting values for each phase of the provided EnvironmentalMetric given the provided quantityValue.\n" +
-         "The resulting values are computed based on provided config, defaulting to the values on the metric for each phase multiplied by the quantity value.\n" +
+        [Description("Gets the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
+         "The resulting values are computed based on provided config, defaulting to the values on the metric for each module multiplied by the quantity value.\n" +
          "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
-        [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
+        [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
-        [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting phase values as metric value times applicable quantity.")]
+        [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting module values as metric value times applicable quantity.")]
         [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
-        [Output("resultValues", "The resulting values for each phase.")]
+        [Output("resultValues", "The resulting values for each module.")]
         public static Dictionary<Module, double> IResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig, object configData)
         {
             if (metric == null)
@@ -68,7 +68,7 @@ namespace BH.Engine.LifeCycleAssessment
 
 
 
-            if (evaluationConfig == null)   //For case of null config, use default evaluation methodology of phase data value * quantity for each phase
+            if (evaluationConfig == null)   //For case of null config, use default evaluation methodology of module data value * quantity for each module
                 return ResultingModuleValues(metric, quantityValue);
             else
                 return ResultingModuleValues(metric, quantityValue, evaluationConfig as dynamic, configData);
@@ -78,31 +78,31 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Default methodology for getting the resulting values for each phase of the provided EnvironmentalMetric given the provided quantityValue.\n" +
-                     "The resulting values are computed as the values on the metric for each phase multiplied by the quantity value.\n" +
+        [Description("Default methodology for getting the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
+                     "The resulting values are computed as the values on the metric for each module multiplied by the quantity value.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
-        [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
+        [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
-        [Output("resultValues", "The resulting values for each phase.")]
+        [Output("resultValues", "The resulting values for each module.")]
         private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue)
         {
             Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
             foreach (var moduleData in metric.Indicators)
             {
-                resultingValues[moduleData.Key] =  moduleData.Value * quantityValue ;  //Evaluation value is base phase data multiplied by quantity value
+                resultingValues[moduleData.Key] =  moduleData.Value * quantityValue ;  //Evaluation value is base module data multiplied by quantity value
             }
             return resultingValues;
         }
 
         /***************************************************/
 
-        [Description("IStructE Evaluation methodology for getting the resulting values for each phase of the provided EnvironmentalMetric given the provided quantityValue.\n" +
+        [Description("IStructE Evaluation methodology for getting the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
                      "Evaluation method only applicable for the two CLimateChangeTotal metric types - all other metrics are evaluated using the default mechanism.\n" +
-                     "Method works for most phases works the same as default evaluation mechanism, with exception for the C1 and A5 phase where project totals are acounted for.")]
-        [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
+                     "Method works for most modules works the same as default evaluation mechanism, with exception for the C1 and A5 module where project totals are acounted for.")]
+        [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
-        [Output("resultValues", "The resulting values for each phase.")]
+        [Output("resultValues", "The resulting values for each module.")]
         private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IStructEEvaluationConfig evaluationConfig, object configData)
         {
 
@@ -112,7 +112,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (!applicableTypes.Any(x => x == metricType))
             {
                 Base.Compute.RecordNote($"The {nameof(IStructEEvaluationConfig)} evaluation is only applicable for evaluating metrics of type {string.Join(",", applicableTypes)}." +
-                                  $"All other metrics are evaluated based on standard evaluation procedure of phase times quantity for all phases.");
+                                  $"All other metrics are evaluated based on standard evaluation procedure of module times quantity for all modules.");
                 return ResultingModuleValues(metric, quantityValue);
             }
 
@@ -148,7 +148,7 @@ namespace BH.Engine.LifeCycleAssessment
             Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
             foreach (var moduleData in metric.Indicators)
             {
-                //Initial value is base phase data multiplied by quantity value
+                //Initial value is base module data multiplied by quantity value
                 resultingValues[moduleData.Key] = moduleData.Value * quantityValue;
             }
 
@@ -185,12 +185,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Fallback method for unkown config provided, raising warning and calling the defautl evaluation mechanism. Please note that this method is not triggered for null config, which also calls default mechism, but without warning.")]
-        [Input("metric", "The EnvironmentalMetric to get resulting values for. All phase values on the metric will be extracted and multiplied by the qunatityValue.")]
+        [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
-        [Output("resultValues", "The resulting values for each phase.")]
+        [Output("resultValues", "The resulting values for each module.")]
         private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig, object configData)
         {
-            BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for evaluation config of type {evaluationConfig}. Results returned are based on default evaluation method of phase values times quantity.");
+            BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for evaluation config of type {evaluationConfig}. Results returned are based on default evaluation method of module values times quantity.");
 
             return ResultingModuleValues(metric, quantityValue);
         }

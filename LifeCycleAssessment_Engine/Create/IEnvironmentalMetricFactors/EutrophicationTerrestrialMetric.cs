@@ -80,7 +80,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Creates a EutrophicationTerrestrialMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 phases. If no values are provided (NaN), the module will not be added to the created metric.")]
+        [Description("Creates a EutrophicationTerrestrialMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for A1, A2 and A3 are available, but only a total value for those 3 modules. If no values are provided (NaN), the module will not be added to the created metric.")]
         [InputFromDescription("a1toa3", Module.A1toA3, typeof(EutrophicationTerrestrialPerQuantity))]
         [InputFromDescription("a4", Module.A4, typeof(EutrophicationTerrestrialPerQuantity))]
         [InputFromDescription("a5", Module.A5, typeof(EutrophicationTerrestrialPerQuantity))]
@@ -119,7 +119,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Creates a EutrophicationTerrestrialMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the phases in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the phases in those stages are available. If no values are provided (NaN), the module will not be added to the created metric.")]
+        [Description("Creates a EutrophicationTerrestrialMetric to be applied as part of an EnvironmentalProductDeclaration. Create method to be used when no discrete values for the modules in the Product stage (A1 - A3), use stage (B1-B7) or end of life stage (C1-C4) is given, but only the total value for the modules in those stages are available. If no values are provided (NaN), the module will not be added to the created metric.")]
         [InputFromDescription("a1toa3", Module.A1toA3, typeof(EutrophicationTerrestrialPerQuantity))]
         [InputFromDescription("a4", Module.A4, typeof(EutrophicationTerrestrialPerQuantity))]
         [InputFromDescription("a5", Module.A5, typeof(EutrophicationTerrestrialPerQuantity))]
