@@ -48,7 +48,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static MetricType IMetricType(this ILifeCycleAssemsmentIndicator factor)
+        public static MetricType IMetricType(this ILifeCycleAssessmentIndicator factor)
         {
             if (factor == null)
                 return oM.LifeCycleAssessment.MetricType.Undefined;
