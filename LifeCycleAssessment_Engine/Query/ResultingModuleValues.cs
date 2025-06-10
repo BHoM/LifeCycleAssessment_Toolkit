@@ -156,9 +156,9 @@ namespace BH.Engine.LifeCycleAssessment
             resultingValues[Module.A5_2] = evaluationConfig.ProjectCost * evaluationConfig.A5CarbonFactor * weightFactor;
             
             //Set A5 as sum of A5_2 and A5_3
-            if(resultingValues.TryGetValue(Module.A5_3, out double a5_2))
+            if(resultingValues.TryGetValue(Module.A5_3, out double a5_3))
             {
-                resultingValues[Module.A5] = resultingValues[Module.A5_2] + a5_2;
+                resultingValues[Module.A5] = resultingValues[Module.A5_2] + a5_3;
             }
 
             //C1 evaluated based on project level values
