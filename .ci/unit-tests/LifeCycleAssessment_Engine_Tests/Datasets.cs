@@ -36,12 +36,13 @@ using FluentAssertions;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Versioning;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Fragments;
+using BH.Engine.Base;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
     public class Datasets
     {
-        //[Ignore("Ignore for now.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void DatasetsAllDeserialiseing(string f)
         {
@@ -61,7 +62,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
-        [Ignore("Ignore for now.")]
+        [Ignore("Method not run generally. Uncomment this ignore to help upgrade datasets.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void UpgradeAllDatasets(string f)
         {
@@ -84,8 +85,20 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                             {
                                 epd.EnvironmentalMetrics[j].Indicators.Remove(key);
                             }
-
+                            else if (key == Module.A5 && f.Contains("Boverket"))
+                            {
+                                epd.EnvironmentalMetrics[j].Indicators[Module.A5_3] = epd.EnvironmentalMetrics[j].Indicators[key];  //Stored values for A5 in Boverket relates to the waste, which is A5_3
+                                epd.EnvironmentalMetrics[j].Indicators.Remove(key);
+                            }
                         }
+
+                        epd.EnvironmentalMetrics[j].CustomData = new Dictionary<string, object>();
+                    }
+
+                    AdditionalEPDData additionalData = epd.FindFragment<AdditionalEPDData>();
+                    if(additionalData != null)
+                    {
+                        additionalData.IndustryStandards = additionalData.IndustryStandards.Where(x => x != null).Distinct().ToList();
                     }
                 }
             }
@@ -93,6 +106,32 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             string newJson = BH.Engine.Serialiser.Convert.ToJson(back);
             File.WriteAllText(f, newJson);
 
+        }
+
+        [TestCaseSource(nameof(DatasetFilePaths))]
+        public void GetModulesInDatasets(string f)
+        {
+            BH.Engine.Base.Compute.ClearCurrentEvents();
+            string json = System.IO.File.ReadAllText(f);
+            object back = BH.Engine.Serialiser.Convert.FromJson(json);
+            BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
+
+            Assume.That(dataset, Is.Not.Null);
+            Assume.That(dataset.Data, Is.Not.Null);
+            Assume.That(dataset.Data, Has.All.Not.Null);
+            Assume.That(dataset.Data, Has.All.TypeOf<EnvironmentalProductDeclaration>());
+
+            List<Module> modules = dataset.Data
+                .OfType<EnvironmentalProductDeclaration>()
+                .SelectMany(epd => epd.EnvironmentalMetrics.SelectMany(metric => metric.Indicators.Keys))
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            foreach (var item in modules)
+            {
+                Console.WriteLine(item);
+            }
         }
 
         private static IEnumerable<string> DatasetFilePaths()
