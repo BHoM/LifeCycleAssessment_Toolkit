@@ -95,18 +95,23 @@ namespace BH.Engine.LifeCycleAssessment
                 return; //Allready present
 
             double total = 0;
-
+            bool hasAnyPart = false;
             foreach ((Module, bool) moduleRequired in modulesToSum)
             {
                 Module module = moduleRequired.Item1;
                 if (metricsWithTotal.TryGetValue(module, out double val))
+                {
+                    hasAnyPart = true; //At least one part is present
                     total += val;
-                else if(moduleRequired.Item2)
+                }
+                else if (moduleRequired.Item2)
                     return;     //Required part not found and marked as required. Not able to add
             }
 
             //Compute new metric value as sum of parts
-            metricsWithTotal[moduleToAdd] = total;
+            if(hasAnyPart)
+                metricsWithTotal[moduleToAdd] = total;
+
         }
 
         /***************************************************/

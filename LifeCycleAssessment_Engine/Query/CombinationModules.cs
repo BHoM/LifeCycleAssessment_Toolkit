@@ -46,15 +46,23 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (m_CombinationModules == null)
             {
+                // Define the combinations of modules and their parts.
+                // The bool indicates whether the module is a combination or not, i.e. true for combinations and false for parts.
+                // The order of the parts is important, as it defines the order in which they are combined and caluculated. Parts lower down the lift can be made up of parts from above in the list
                 Dictionary<Module, IReadOnlyList<(Module, bool)>> modules = new Dictionary<Module, IReadOnlyList<(Module, bool)>>();
                 modules[Module.A1toA3] = new List<(Module, bool)>() { (Module.A1, true), (Module.A2,true), (Module.A3, true) };
                 modules[Module.A5] = new List<(Module, bool)>() { (Module.A5_1, false), (Module.A5_2, true), (Module.A5_3, true), (Module.A5_4, false) };
+                modules[Module.B1] = new List<(Module, bool)>() { (Module.B1_1, true), (Module.B1_2, true) };
                 modules[Module.B1toB3] = new List<(Module, bool)>() { (Module.B1, true), (Module.B2, true), (Module.B3, true) };
+                modules[Module.B4] = new List<(Module, bool)>() { (Module.B4_1, true), (Module.B4_2, true) };
                 modules[Module.B4toB5] = new List<(Module, bool)>() { (Module.B4, true), (Module.B5, true) };
                 modules[Module.B1toB5] = new List<(Module, bool)>() { (Module.B1toB3, true), (Module.B4toB5, true) };
+                modules[Module.B7] = new List<(Module, bool)>() { (Module.B7_1, true), (Module.B7_2, true), (Module.B7_3, true) };
                 modules[Module.B1toB7] = new List<(Module, bool)>() { (Module.B1toB5, true), (Module.B6, true), (Module.B7, true) };
+                modules[Module.B8] = new List<(Module, bool)>() { (Module.B8_1, false), (Module.B8_2, false), (Module.B8_3, false) };
                 modules[Module.C3toC4] = new List<(Module, bool)>() { (Module.C3, true), (Module.C4, true) };
                 modules[Module.C1toC4] = new List<(Module, bool)>() { (Module.C1, true), (Module.C2, true), (Module.C3toC4, true) };
+                modules[Module.D] = new List<(Module, bool)>() { (Module.D_1, true), (Module.D_2, true) };
                 m_CombinationModules = modules;
             }
 
