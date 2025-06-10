@@ -141,7 +141,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return new List<MaterialResult>();
             }
 
-            List<IMaterialResult> materialResults = new List<IMaterialResult>();
+            List<MaterialResult> materialResults = new List<MaterialResult>();
 
             Material material = takeoffItem.Material;
             List<IEnvironmentalFactorsProvider> metricProviders = material.Properties.OfType<IEnvironmentalFactorsProvider>().ToList();
