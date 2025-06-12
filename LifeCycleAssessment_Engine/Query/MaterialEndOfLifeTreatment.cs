@@ -39,7 +39,7 @@ namespace BH.Engine.LifeCycleAssessment
         [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.MaterialEndOfLifeTreatment(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration)")]
         [PreviousInputNames("factorsProvider", "epd")]
         [Description("Returns End of Life processing information contained within an EPD dataset.")]
-        [Input("factorsProvider", "The EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors of a specific material from an EPD Dataset.")]
+        [Input("factorsProvider", "The EnvironmentalProductDeclaration of a specific material from an EPD Dataset.")]
         [Output("materialEndOfLifeTreatment", "End of Life treatment per material. This includes all data collected for LCA stages C1-C4 within a provided EPD dataset.")]
         public static string MaterialEndOfLifeTreatment(this IEnvironmentalFactorsProvider factorsProvider)
         {

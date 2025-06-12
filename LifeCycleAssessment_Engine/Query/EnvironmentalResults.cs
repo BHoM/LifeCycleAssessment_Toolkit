@@ -148,7 +148,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             if (metricProviders.Count == 0)
             {
-                Base.Compute.RecordError($"No {nameof(EnvironmentalProductDeclaration)}, {nameof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors)} or {nameof(CombinedLifeCycleAssessmentFactors)} set to material {material.Name}. Unable to evaluate element.");
+                Base.Compute.RecordError($"No {nameof(EnvironmentalProductDeclaration)}, or {nameof(CombinedLifeCycleAssessmentFactors)} set to material {material.Name}. Unable to evaluate element.");
                 return new List<MaterialResult>();
             }
 
@@ -163,7 +163,6 @@ namespace BH.Engine.LifeCycleAssessment
                 List<Type> priorityOrder = new List<Type>()
                 {
                     typeof(CombinedLifeCycleAssessmentFactors),
-                    typeof(CalculatedMaterialLifeCycleEnvironmentalImpactFactors),
                     typeof(EnvironmentalProductDeclaration),
                 };
 
@@ -186,12 +185,11 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousInputNames("factorsProvider", "epd")]
         [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.EnvironmentalResults(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, System.Double, System.String, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.EnvironmentalMetrics>, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig)")]
         [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
                      "Each metric is evaluated by multiplying the values for each module by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]
-        [Input("factorsProvider", "The EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
+        [Input("epd", "The EnvironmentalProductDeclaration to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
@@ -199,19 +197,19 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null, object configData = null)
+        public static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null, object configData = null)
         {
-            if (factorsProvider == null)
+            if (epd == null)
             {
-                Base.Compute.RecordError($"Cannot evaluate a null {nameof(IBaseLevelEnvironalmentalFactorsProvider)}.");
+                Base.Compute.RecordError($"Cannot evaluate a null {nameof(EnvironmentalProductDeclaration)}.");
                 return null;
             }
 
             List<MaterialResult> results = new List<MaterialResult>();
 
-            foreach (IEnvironmentalMetric metric in factorsProvider.FilteredFactors(metricFilter))
+            foreach (IEnvironmentalMetric metric in epd.FilteredFactors(metricFilter))
             {
-                results.Add(EnvironmentalResults(metric, factorsProvider.Name, materialName, quantityValue, evaluationConfig, configData));
+                results.Add(EnvironmentalResults(metric, epd.Name, materialName, quantityValue, evaluationConfig, configData));
             }
 
             return results;
@@ -244,9 +242,9 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<MaterialResult> results = new List<MaterialResult>();
 
-            if (factorsProvider.BaseFactors != null)
+            if (factorsProvider.EnvironmentalProductDeclaration != null)
             {
-                foreach (IEnvironmentalMetric metric in factorsProvider.BaseFactors.FilteredFactors(metricFilter))
+                foreach (IEnvironmentalMetric metric in factorsProvider.EnvironmentalProductDeclaration.FilteredFactors(metricFilter))
                 {
                     MetricType type = metric.IMetricType();
                     Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, configData);
@@ -307,7 +305,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Evaluates the EnvironmentalMetric and returns a MaterialResult of a type corresponding to the metric. The evaluation is done by multiplying all module data on the metric by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
         [Input("metric", "The EnvironmentalMetric to evaluate. Returned result will be a MaterialResult of a type corresponding to the metric.")]
-        [Input("epdName", "The name of the IEnvironmentalfactorsProvider (EnvironmentalProductDeclaration or CalculatedMaterialLifeCycleEnvironmentalImpactFactors) that owns the EnvironmentalMetric. Stored as an identifier on the returned result class.")]
+        [Input("epdName", "The name of the EnvironmentalProductDeclaration that owns the EnvironmentalMetric. Stored as an identifier on the returned result class.")]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result class.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting module values as metric value times quantity.")]
@@ -341,7 +339,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        private static List<MaterialResult> EnvironmentalResults(this IBaseLevelEnvironalmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
+        private static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
         {
             return EnvironmentalResults(factorsProvider, takeoffItem.QuantityValue(factorsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig, configData);
         }
@@ -350,7 +348,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
         {
-            double quantityValue = takeoffItem.QuantityValue(factorsProvider.BaseFactors.QuantityType);
+            double quantityValue = takeoffItem.QuantityValue(factorsProvider.EnvironmentalProductDeclaration.QuantityType);
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
             return EnvironmentalResults(factorsProvider, quantityValue, mass, takeoffItem.Material.Name, metricFilter, evaluationConfig, configData);
         }

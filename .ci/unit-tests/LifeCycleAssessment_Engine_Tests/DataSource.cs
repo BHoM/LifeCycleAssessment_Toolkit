@@ -124,7 +124,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             for (int i = 0; i < 4; i++)
             {
                 CombinedLifeCycleAssessmentFactors combFactors = DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
-                combFactors.BaseFactors = null;
+                combFactors.EnvironmentalProductDeclaration = null;
                 yield return combFactors;
             }
         }
@@ -228,7 +228,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             EnvironmentalProductDeclaration epd = DummyEPD(ref v, inc, setA5ToWaste, name, quantityType);
 
-            return new CombinedLifeCycleAssessmentFactors { BaseFactors = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), Name = name };
+            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), Name = name };
         }
 
         /***************************************************/

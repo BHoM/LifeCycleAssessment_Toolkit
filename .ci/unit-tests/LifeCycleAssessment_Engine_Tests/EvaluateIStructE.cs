@@ -91,7 +91,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             double eval = 32.22;
             double mass = 22.4;
             List<MaterialResult> materialResults = Query.EnvironmentalResults(combinedFactors, eval,mass, "", null, config, mass);
-            if (combinedFactors.BaseFactors == null && combinedFactors.A4TransportFactors == null && combinedFactors.C2TransportFactors == null)
+            if (combinedFactors.EnvironmentalProductDeclaration == null && combinedFactors.A4TransportFactors == null && combinedFactors.C2TransportFactors == null)
             {
                 Assert.That(materialResults, Is.Empty, "Should nto give results for Combined factors with all nulls.");
                 return;
@@ -99,7 +99,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(combinedFactors.BaseFactors?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
+                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
             }
         }
 
@@ -143,8 +143,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     prop.Should().BeOfType<CombinedLifeCycleAssessmentFactors>();
 
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
-                    combinedFactors.BaseFactors.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
-                    IEnvironmentalMetric metric = combinedFactors.BaseFactors.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
+                    combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
+                    IEnvironmentalMetric metric = combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
                     ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
 
 
