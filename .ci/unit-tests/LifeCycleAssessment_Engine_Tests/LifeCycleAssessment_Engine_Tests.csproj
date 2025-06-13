@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<TargetFramework>net6.0</TargetFramework>
@@ -82,8 +82,28 @@
 		<Private>True</Private>
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="NUnit_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\NUnit_Engine.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+	</Reference>
+	<Reference Include="NUnit_oM">
+		<HintPath>$(ProgramData)\BHoM\Assemblies\NUnit_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Physical_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_Engine.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Physical_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Physical_oM.dll</HintPath>
+		<Private>True</Private>
+		<SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Quantities_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Quantities_oM.dll</HintPath>
 		<Private>True</Private>
 		<SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -114,6 +134,11 @@
 	  </Reference>
 	  <Reference Include="UnitTest_Engine">
 		  <HintPath>$(ProgramData)\BHoM\Assemblies\UnitTest_Engine.dll</HintPath>
+		  <Private>True</Private>
+		  <SpecificVersion>False</SpecificVersion>
+	  </Reference>
+	  <Reference Include="Versioning_oM">
+	    <HintPath>$(ProgramData)\BHoM\Assemblies\Versioning_oM.dll</HintPath>
 		  <Private>True</Private>
 		  <SpecificVersion>False</SpecificVersion>
 	  </Reference>

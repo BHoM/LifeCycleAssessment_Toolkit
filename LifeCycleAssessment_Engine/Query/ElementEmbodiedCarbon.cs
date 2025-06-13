@@ -57,13 +57,13 @@ namespace BH.Engine.LifeCycleAssessment
         [Output("result", "Result containing the embodied carbon of the element as well as a breakdown per material in the element.")]
         public static List<IElementResult<MaterialResult>> ElementEmbodiedCarbon(this IElementM elementM, List<Material> templateMaterials = null, bool prioritiseTemplate = true, double projectCost = 0, double floorArea = 0, double totalWeight = 0, double a5CarbonFactor = 0.007, double c1CarbonFactor = 3.4)
         {
-            List<EnvironmentalMetrics> metricsFilter = new List<EnvironmentalMetrics>
+            List<MetricType> metricsFilter = new List<MetricType>
             {
-                EnvironmentalMetrics.ClimateChangeTotal,
-                EnvironmentalMetrics.ClimateChangeTotalNoBiogenic,
-                EnvironmentalMetrics.ClimateChangeFossil,
-                EnvironmentalMetrics.ClimateChangeLandUse,
-                EnvironmentalMetrics.ClimateChangeBiogenic
+                oM.LifeCycleAssessment.MetricType.ClimateChangeTotal,
+                oM.LifeCycleAssessment.MetricType.ClimateChangeTotalNoBiogenic,
+                oM.LifeCycleAssessment.MetricType.ClimateChangeFossil,
+                oM.LifeCycleAssessment.MetricType.ClimateChangeLandUse,
+                oM.LifeCycleAssessment.MetricType.ClimateChangeBiogenic
             };
 
             IStructEEvaluationConfig config = new IStructEEvaluationConfig

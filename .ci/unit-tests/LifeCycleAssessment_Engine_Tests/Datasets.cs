@@ -34,54 +34,126 @@ using BH.oM.Base;
 using BH.oM.Graphics;
 using FluentAssertions;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.Versioning;
+using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.Fragments;
+using BH.Engine.Base;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
     public class Datasets
     {
-        [Test]
-        public void DatasetsAllDeserialiseing()
+        [TestCaseSource(nameof(DatasetFilePaths))]
+        public void DatasetsAllDeserialiseing(string f)
         {
-            string folder = @"C:\ProgramData\BHoM\Datasets\LifeCycleAssessment\";
+            BH.Engine.Base.Compute.ClearCurrentEvents();
+            string json = System.IO.File.ReadAllText(f);
+            object back = BH.Engine.Serialiser.Convert.FromJson(json);
+            BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
 
-            string[] files = Directory.GetFiles(folder, "*.json", SearchOption.AllDirectories);
+            Assert.That(dataset, Is.Not.Null);
+            Assert.That(dataset.Data, Is.Not.Null);
+            Assert.That(dataset.Data, Has.All.Not.Null);
+            Assert.That(dataset.Data, Has.All.Not.TypeOf<CustomObject>());
 
-            List<string> failures = new List<string>();
-            List<string> successes = new List<string>();
+            List<VersioningEvent> versioningEvents = BH.Engine.Base.Query.CurrentEvents().OfType<VersioningEvent>().ToList();
 
+            Warn.Unless(versioningEvents, Is.Empty, "Verisoning required");
+
+        }
+
+        [Ignore("Method not run generally. Uncomment this ignore to help upgrade datasets.")]
+        [TestCaseSource(nameof(DatasetFilePaths))]
+        public void UpgradeAllDatasets(string f)
+        {
+            BH.Engine.Base.Compute.ClearCurrentEvents();
+            string json = System.IO.File.ReadAllText(f);
+            object back = BH.Engine.Serialiser.Convert.FromJson(json);
+            BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
+
+            for (int i = 0; i < dataset.Data.Count; i++)
+            {
+                if (dataset.Data[i] is EnvironmentalProductDeclaration epd)
+                {
+                    for (int j = 0; j < epd.EnvironmentalMetrics.Count; j++)
+                    { 
+                        List<Module> keys = epd.EnvironmentalMetrics[j].Indicators.Keys.ToList();
+
+                        foreach (Module key in keys)
+                        {
+                            if (double.IsNaN(epd.EnvironmentalMetrics[j].Indicators[key]))
+                            {
+                                epd.EnvironmentalMetrics[j].Indicators.Remove(key);
+                            }
+                            else if (key == Module.A5 && f.Contains("Boverket"))
+                            {
+                                epd.EnvironmentalMetrics[j].Indicators[Module.A5_3] = epd.EnvironmentalMetrics[j].Indicators[key];  //Stored values for A5 in Boverket relates to the waste, which is A5_3
+                                epd.EnvironmentalMetrics[j].Indicators.Remove(key);
+                            }
+                        }
+
+                        epd.EnvironmentalMetrics[j].CustomData = new Dictionary<string, object>();
+                    }
+
+                    AdditionalEPDData additionalData = epd.FindFragment<AdditionalEPDData>();
+                    if(additionalData != null)
+                    {
+                        additionalData.IndustryStandards = additionalData.IndustryStandards.Where(x => x != null).Distinct().ToList();
+                    }
+                }
+            }
+
+            string newJson = BH.Engine.Serialiser.Convert.ToJson(back);
+            File.WriteAllText(f, newJson);
+
+        }
+
+        [TestCaseSource(nameof(DatasetFilePaths))]
+        public void GetModulesInDatasets(string f)
+        {
+            BH.Engine.Base.Compute.ClearCurrentEvents();
+            string json = System.IO.File.ReadAllText(f);
+            object back = BH.Engine.Serialiser.Convert.FromJson(json);
+            BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
+
+            Assume.That(dataset, Is.Not.Null);
+            Assume.That(dataset.Data, Is.Not.Null);
+            Assume.That(dataset.Data, Has.All.Not.Null);
+            Assume.That(dataset.Data, Has.All.TypeOf<EnvironmentalProductDeclaration>());
+
+            List<Module> modules = dataset.Data
+                .OfType<EnvironmentalProductDeclaration>()
+                .SelectMany(epd => epd.EnvironmentalMetrics.SelectMany(metric => metric.Indicators.Keys))
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            foreach (var item in modules)
+            {
+                Console.WriteLine(item);
+            }
+        }
+
+        private static IEnumerable<string> DatasetFilePaths()
+        {
             EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration();
+            string currentDirectory = Environment.CurrentDirectory;
+            string[] split = currentDirectory.Split(Path.DirectorySeparatorChar);
 
-            foreach (string f in files)
+            string join = "";
+
+            int i = 0;
+            while (i < split.Length && split[i] != ".ci")
             {
-                try
-                {
-                    string json = System.IO.File.ReadAllText(f);
-                    object back = BH.Engine.Serialiser.Convert.FromJson(json);
-                    BH.oM.Data.Library.Dataset dataset = back as BH.oM.Data.Library.Dataset;
-                    if (dataset == null || dataset.Data.Any(x => x == null || x is CustomObject))
-                        failures.Add(f);
-                    else
-                        successes.Add(f);
-                }
-                catch (Exception)
-                {
-                    failures.Add(f);
-                }
-            }
-            Console.WriteLine("Fail upgrade:");
-            foreach (string f in failures)
-            {
-                Console.WriteLine(f);
+                join = Path.Join(join, split[i]);
+                i++;
             }
 
-            Console.WriteLine("");
-            Console.WriteLine("Success upgrade:");
-            foreach (string s in successes)
-            {
-                Console.WriteLine(s);
-            }
+            string folder = Path.Join(join, "Datasets");
 
-            failures.Should().BeEmpty();
+            //string folder = @"C:\ProgramData\BHoM\Datasets\LifeCycleAssessment\";
+
+            return Directory.GetFiles(folder, "*.json", SearchOption.AllDirectories);
         }
     }
 }
