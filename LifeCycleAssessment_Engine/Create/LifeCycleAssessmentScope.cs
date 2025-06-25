@@ -44,7 +44,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("gravityStructuralMaterial", "The primary structural system providing gravity support for the building.")]
         [Input("lateralStructuralMaterial", "The primary structural system providing lateral support for the building.")]
         [Input("levelOfDevelopment", "Typically a term utilised in BIM practices to clearly identify the scope of work being account for. Equivalents for LOD classifications can offen times be linked to design and construction phases common to the projects locale.")]
-        [Input("lifeCycleAssessmentPhases", "This is a list of life cycle assessment phases to be accounted for within this assessment. These values are for categorisation purposes only and will not effect the overall results.")]
+        [Input("modules", "This is a list of life cycle assessment modules to be accounted for within this assessment. These values are for categorisation purposes only and will not effect the overall results.")]
         [Input("projectType", "A general classification of the buildings primary function. This value is for categorisation purposes only and will not effect the overall results.")]
         [Input("projectName", "The Project Name denotes the name of the project for reporting purposes.")]
         [Input("projectArea", "The Project Area (m2) denotes the more precise project area which will allow assessment of kgCO2eq/m2 metrics.")]
@@ -62,7 +62,7 @@ namespace BH.Engine.LifeCycleAssessment
             GravityStructuralMaterial gravityStructuralMaterial = GravityStructuralMaterial.Undefined, 
             LateralStructuralMaterial lateralStructuralMaterial = LateralStructuralMaterial.Undefined, 
             LevelOfDevelopment levelOfDevelopment = LevelOfDevelopment.Undefined, 
-            List<LifeCycleAssessmentPhases> lifeCycleAssessmentPhases = null, 
+            List<Module> modules = null, 
             ProjectType projectType = ProjectType.Undefined, 
             string projectName = "", 
             double projectArea = 0, 
@@ -81,7 +81,7 @@ namespace BH.Engine.LifeCycleAssessment
                 GravityStructuralMaterial = gravityStructuralMaterial,
                 LateralStructuralMaterial = lateralStructuralMaterial,
                 LevelOfDevelopment = levelOfDevelopment,
-                LifeCycleAssessmentPhases = lifeCycleAssessmentPhases,
+                LifeCycleAssessmentPhases = modules,
                 ProjectType = projectType,
                 ProjectName = projectName,
                 ProjectArea = projectArea,

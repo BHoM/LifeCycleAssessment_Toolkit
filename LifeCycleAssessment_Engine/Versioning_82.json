@@ -1,0 +1,31 @@
+{
+  "Namespace": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Type": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "Property": {
+    "ToNew": {
+    },
+    "ToOld": {
+    }
+  },
+  "MessageForDeleted": {
+    "BH.Engine.LifeCycleAssessment.Query.TotalFieldQuantity(System.Collections.Generic.List<BH.oM.Dimensional.IElementM>)": "This method has been removed as a part of the legacy code cleanup. Please contact the developers if you still need it.",
+    "BH.Engine.LifeCycleAssessment.Query.TotalFieldQuantity(System.Collections.Generic.List<BH.oM.LifeCycleAssessment.Results.IEnvironmentalResult>)": "This method has been removed as a part of the legacy code cleanup. Please contact the developers if you still need it.",
+    "BH.Engine.LifeCycleAssessment.Query.QuantityTypes(BH.oM.Dimensional.IElementM)": "This method has been removed as a part of the legacy code cleanup. Please contact the developers if you still need it.",
+    "BH.Engine.LifeCycleAssessment.Query.ElementEpds(BH.oM.Dimensional.IElementM)": "This method has been removed as a part of the legacy code cleanup. Please contact the developers if you still need it.",
+    "BH.Engine.LifeCycleAssessment.Query.ElementEnvironmentalMetrics(BH.oM.Dimensional.IElementM)": "This method has been removed as a part of the legacy code cleanup. Please contact the developers if you still need it.",
+    "BH.Engine.LifeCycleAssessment.Query.IPhaseDataValues(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)": "This method has been removed as a part of the legacy code cleanup. Please contact the developers if you still need it."
+  },
+  "MessageForNoUpgrade": {
+  }
+}
+

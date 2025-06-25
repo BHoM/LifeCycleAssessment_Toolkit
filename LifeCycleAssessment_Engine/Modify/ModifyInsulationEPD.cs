@@ -35,7 +35,7 @@ using BH.oM.Base.Attributes;
 using System.ComponentModel;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Quantities.Attributes;
-using System.Reflection;
+using BH.oM.LifeCycleAssessment;
 
 namespace BH.Engine.Facade
 {
@@ -69,12 +69,12 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            foreach (EnvironmentalMetric environmentalMetric in insulationEPD.EnvironmentalMetrics)
+            insulationEPD = insulationEPD.DeepClone();
+            foreach (IEnvironmentalMetric environmentalMetric in insulationEPD.EnvironmentalMetrics)
             {
-                foreach (PropertyInfo property in environmentalMetric.GetType().GetProperties().ToList())
+                foreach (Module module in environmentalMetric.Indicators.Keys)
                 {
-                    if (property.PropertyType == typeof(double))
-                        environmentalMetric.SetPropertyValue(property.Name, (double)property.GetValue(environmentalMetric) * rSI);
+                    environmentalMetric.Indicators[module] = environmentalMetric.Indicators[module] * rSI;
                 }
             }
 
