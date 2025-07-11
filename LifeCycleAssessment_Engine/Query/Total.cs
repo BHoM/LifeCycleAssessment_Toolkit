@@ -38,7 +38,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.Total(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all modules with a set value (all values not NaN).")]
         [Input("moduleData", "LCA module data object to get the total from.")]
         [Output("total", "The sum of all existing module data properties on the provided module data object.")]
@@ -59,7 +58,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.ATotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all A-modules (A1-A5) with a set value (all values not NaN).")]
         [Input("moduleData", "LCA module data object to get the total from.")]
         [Output("Atotal", "The sum of all existing module data properties from all of the A modules on the provided module data object.")]
@@ -73,7 +71,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.BTotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all B-modules (B1-B7) with a set value (all values not NaN).")]
         [Input("moduleData", "LCA module data object to get the total from.")]
         [Output("Btotal", "The sum of all existing module data properties from all of the B modules on the provided module data object.")]
@@ -87,7 +84,6 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.CTotal(BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData)")]
         [Description("Gets the total sum of values from all C-modules (C1-C4) with a set value (all values not NaN).")]
         [Input("moduleData", "LCA module data object to get the total from.")]
         [Output("Ctotal", "The sum of all existing module data properties from all of the C modules on the provided module data object.")]
