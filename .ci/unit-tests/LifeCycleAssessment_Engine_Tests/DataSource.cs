@@ -38,6 +38,7 @@ using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Physical.Constructions;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -228,7 +229,16 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             EnvironmentalProductDeclaration epd = DummyEPD(ref v, inc, setA5ToWaste, name, quantityType);
 
-            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), Name = name };
+            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), A5ConstructionEmissions = DummyConstructionsFactor(v, inc), Name = name };
+        }
+
+        private static ConstructionEmissions DummyConstructionsFactor(double v, double inc)
+        {
+            return new ConstructionEmissions
+            {
+                ResuedOnSite = ((int)Math.Round(v)) % 2 == 0,
+                WasteRate = new WasteRate { Rate = 0.5 },
+            };
         }
 
         /***************************************************/
@@ -301,11 +311,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             if (setA5ToWaste)
             {
-                if (metric is ClimateChangeFossilMetric || metric is ClimateChangeTotalMetric || metric is ClimateChangeTotalNoBiogenicMetric)
-                {
-                    metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
-                    metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
-                }
+                metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
+                metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
             }
             return metric;
         }
