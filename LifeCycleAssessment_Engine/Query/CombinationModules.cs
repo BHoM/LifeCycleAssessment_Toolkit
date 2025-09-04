@@ -29,6 +29,7 @@ using BH.oM.LifeCycleAssessment;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 
@@ -69,11 +70,53 @@ namespace BH.Engine.LifeCycleAssessment
             return m_CombinationModules;
         }
 
+        [Description("Gets all the combined modules and the parts they consist of. All combinations that can be made up of other combinations are, e.g. B1toB5 is set to be a combination of B1toB3 and B4toB5.")]
+        [Output("combinationModules", "All combinationModules and their parts.")]
+        public static IReadOnlyDictionary<Module, IReadOnlyList<Module>> PartOfCombinationModules()
+        {
+            if (m_PartOfCombinationModules == null)
+            {
+                
+                IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules = CombinationModules();
+                Dictionary<Module, IReadOnlyList<Module>> partCombinations = new Dictionary<Module, IReadOnlyList<Module>>();
+                foreach (Module module in Enum.GetValues(typeof(Module)))
+                {
+                    List<Module> parts = CollectParts(module, combinationModules);
+                    if (parts.Any())
+                        partCombinations[module] = parts;
+                }
+                m_PartOfCombinationModules = partCombinations;
+            }
+
+            return m_PartOfCombinationModules;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<Module> CollectParts(Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules)
+        { 
+            List<Module> parts = new List<Module>();
+
+            foreach (var combinations in combinationModules)
+            {
+                if(combinations.Value.Any(x => x.Item1 == module))
+                {
+                    parts.Add(combinations.Key);
+                    parts.AddRange(CollectParts(combinations.Key, combinationModules));
+                }
+            }
+
+            return parts.Distinct().OrderBy(x => x).ToList();
+        }
+
         /***************************************************/
         /**** Private Feilds                            ****/
         /***************************************************/
 
         private static IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> m_CombinationModules = null;
+        private static IReadOnlyDictionary<Module, IReadOnlyList<Module>> m_PartOfCombinationModules = null;
 
         /***************************************************/
     }

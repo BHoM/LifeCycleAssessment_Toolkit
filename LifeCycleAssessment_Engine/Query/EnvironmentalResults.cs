@@ -29,6 +29,7 @@ using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.Fragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Materials;
@@ -239,6 +240,13 @@ namespace BH.Engine.LifeCycleAssessment
             Dictionary<MetricType, double> a4TransportResults = factorsProvider.A4TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
             Dictionary<MetricType, double> c2TransportResults = factorsProvider.C2TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
 
+            Dictionary<Module, PrecomputedModuleValues> precomputedModules = new Dictionary<Module, PrecomputedModuleValues>();
+
+            if (a4TransportResults.Any())
+                precomputedModules[Module.A4] = new PrecomputedModuleValues() { ModuleValues = a4TransportResults, OverwriteExistingValues = true };
+            if(c2TransportResults.Any())
+                precomputedModules[Module.C2] = new PrecomputedModuleValues() { ModuleValues = c2TransportResults, OverwriteExistingValues = true };
+
             List<MaterialResult> results = new List<MaterialResult>();
 
             if (factorsProvider.EnvironmentalProductDeclaration != null)
@@ -246,23 +254,14 @@ namespace BH.Engine.LifeCycleAssessment
                 foreach (IEnvironmentalMetric metric in factorsProvider.EnvironmentalProductDeclaration.FilteredFactors(metricFilter))
                 {
                     MetricType type = metric.IMetricType();
-                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, configData);
+                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, precomputedModules, configData);
 
                     //Check if C2 and A4 results are defined explicitly, and override them if they are
-                    if (a4TransportResults.TryGetValue(type, out double a4))
-                    {
-                        resultingValues[Module.A4] = a4;
-                        a4TransportResults.Remove(type);    //Remove as used up
-                    }
+                    a4TransportResults.Remove(type);    //Remove as used up
+                    c2TransportResults.Remove(type);    //Remove as used up
 
-                    if (c2TransportResults.TryGetValue(type, out double c2))
-                    {
-                        resultingValues[Module.C2] = c2;
-                        c2TransportResults.Remove(type);    //Remove as used up
-
-                        if (resultingValues.ContainsKey(Module.C1toC4))
-                            resultingValues.Remove(Module.C1toC4);  //Remove C1toC4 as no longer ensured valid
-                    }
+                    if (factorsProvider.A5ConstructionEmissions != null)
+                        resultingValues.AddConstructionEmissions(factorsProvider.A5ConstructionEmissions, type);
 
                     results.Add(Create.MaterialResult(materialName, factorsProvider.Name, type, resultingValues));
                 }
@@ -317,7 +316,7 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, configData);
+            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, null, configData);
 
             return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues as dynamic);
         }

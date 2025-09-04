@@ -40,6 +40,7 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("8.3", "BH.Engine.LifeCycleAssessment.Query.IResultingModuleValues(BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalMetric, System.Double, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig, System.Object)")]
         [Description("Gets the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
          "The resulting values are computed based on provided config, defaulting to the values on the metric for each module multiplied by the quantity value.\n" +
          "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
@@ -48,7 +49,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting module values as metric value times applicable quantity.")]
         [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("resultValues", "The resulting values for each module.")]
-        public static Dictionary<Module, double> IResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig, object configData)
+        public static Dictionary<Module, double> IResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig, Dictionary<Module, PrecomputedModuleValues> precomputedValues, object configData)
         {
             if (metric == null)
             {
@@ -69,9 +70,9 @@ namespace BH.Engine.LifeCycleAssessment
 
 
             if (evaluationConfig == null)   //For case of null config, use default evaluation methodology of module data value * quantity for each module
-                return ResultingModuleValues(metric, quantityValue);
+                return ResultingModuleValues(metric, quantityValue, precomputedValues);
             else
-                return ResultingModuleValues(metric, quantityValue, evaluationConfig as dynamic, configData);
+                return ResultingModuleValues(metric, quantityValue, evaluationConfig as dynamic, precomputedValues, configData);
         }
 
         /***************************************************/
@@ -84,12 +85,35 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each module.")]
-        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue)
+        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, Dictionary<Module, PrecomputedModuleValues> precomputedValues)
         {
             Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
             foreach (var moduleData in metric.Indicators)
             {
                 resultingValues[moduleData.Key] =  moduleData.Value * quantityValue ;  //Evaluation value is base module data multiplied by quantity value
+            }
+
+            if (precomputedValues != null)
+            {
+                var partModules = PartOfCombinationModules();   //Get a dictionary that for each modules lists the combinations it is part of
+                foreach (var precomputed in precomputedValues)
+                {
+                    bool setValue = precomputed.Value.OverwriteExistingValues || !resultingValues.ContainsKey(precomputed.Key); //Only set value if overwrite is true or if no value exists yet
+                    if (!setValue)
+                        continue;
+
+                    if (precomputed.Value.ModuleValues.TryGetValue(metric.IMetricType(), out double val))   //Check if precomputed value exists for the metric type
+                    {
+                        resultingValues[precomputed.Key] = val;         //Set the precomputed value. It is assumed that the precomputed value is already evaluated for the quantity
+                        if (partModules.TryGetValue(precomputed.Key, out var combinations))
+                        {
+                            foreach(var combination in combinations)
+                            {
+                                resultingValues.Remove(combination);    //Remove any combination that includes the precomputed module as it will be different than the sum of its parts
+                            }
+                        }
+                    }
+                }
             }
             return resultingValues;
         }
@@ -103,7 +127,73 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
         [Output("resultValues", "The resulting values for each module.")]
-        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IStructEEvaluationConfig evaluationConfig, object configData)
+        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, GlobalEmissionFactors evaluationConfig, Dictionary<Module, PrecomputedModuleValues> precomputedValues, object configData)
+        {
+
+            //Specific evaluation method using the config only applicable for evaluatingResultingModuleValues(this Dictionary < Module, double > moduleFactors climate change totals
+            MetricType metricType = metric.IMetricType();
+
+            double mass = 0;
+            bool massProvided = false;
+            if (configData != null)
+            {
+                if (configData is double)
+                {
+                    mass = (double)configData;
+                    massProvided = true;
+                }
+                else if (double.TryParse(configData.ToString(), out mass))
+                    massProvided = true;
+            }
+
+            if (!massProvided)
+            {
+                Engine.Base.Compute.RecordError($"Please provide the mass of the evaluated object in the configData when evaluating metrics with the {nameof(GlobalEmissionFactors)}.");
+                return new Dictionary<Module, double>();
+            }
+
+            double weightFactor;
+
+            if (evaluationConfig.TotalBuildingMass == 0 || evaluationConfig.TotalBuildingMass < mass)
+            {
+                BH.Engine.Base.Compute.RecordWarning($"The total weight is 0 or smaller than the mass of the element. The weightfactor has been set to 0. This has an influence on the {nameof(Module.A5_1)} and {nameof(Module.A5_2)} modules, which will be given 0 value results");
+                weightFactor = 0;
+            }
+            else
+                weightFactor = mass / evaluationConfig.TotalBuildingMass;
+
+            if(evaluationConfig.StructuresOnlyMass)
+                weightFactor /= 2; //Divide weight factor by 2 if only structures mass is considered as the total building mass is for the whole building
+
+            //Set up base line factors
+            Dictionary<Module, double> resultingValues = ResultingModuleValues(metric, quantityValue, precomputedValues);
+
+            //Special handling of A5_1 for pre construction demolition module
+            IEnvironmentalFactor preConstructionFactor = evaluationConfig.PreConstructionDemolition?.EnvironmentalFactors?.FirstOrDefault(x => x.IMetricType() == metricType);
+            if(preConstructionFactor != null && evaluationConfig.PreConstructionDemolition.DemolishedFloorArea != 0)
+                resultingValues[Module.A5_1] = preConstructionFactor.Value * evaluationConfig.PreConstructionDemolition.DemolishedFloorArea * weightFactor;  //Set as portion of total project value
+
+            //Special handling of A5_2 for site activities module with additional project factor
+            IEnvironmentalFactor siteActivitiesFactor = evaluationConfig.ConstructionActivities?.EnvironmentalFactors?.FirstOrDefault(x => x.IMetricType() == metricType);
+            if(preConstructionFactor != null && evaluationConfig.ConstructionActivities.ConstructedFloorArea != 0)
+                resultingValues[Module.A5_2] = siteActivitiesFactor.Value * evaluationConfig.ConstructionActivities.ConstructedFloorArea * weightFactor;
+
+            if(preConstructionFactor != null || siteActivitiesFactor != null)
+                resultingValues.Remove(Module.A5); //Remove existing A5 value as it will be different than the sum of its parts
+
+            return resultingValues;
+        }
+
+        /***************************************************/
+
+        [Description("IStructE Evaluation methodology for getting the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
+                     "Evaluation method only applicable for the two CLimateChangeTotal metric types - all other metrics are evaluated using the default mechanism.\n" +
+                     "Method works for most modules works the same as default evaluation mechanism, with exception for the C1 and A5 module where project totals are acounted for.")]
+        [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
+        [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
+        [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
+        [Output("resultValues", "The resulting values for each module.")]
+        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IStructEEvaluationConfig evaluationConfig, Dictionary<Module, PrecomputedModuleValues> precomputedValues, object configData)
         {
 
             //Specific evaluation method using the config only applicable for evaluatingResultingModuleValues(this Dictionary < Module, double > moduleFactors climate change totals
@@ -113,7 +203,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 Base.Compute.RecordNote($"The {nameof(IStructEEvaluationConfig)} evaluation is only applicable for evaluating metrics of type {string.Join(",", applicableTypes)}." +
                                   $"All other metrics are evaluated based on standard evaluation procedure of module times quantity for all modules.");
-                return ResultingModuleValues(metric, quantityValue);
+                return ResultingModuleValues(metric, quantityValue, precomputedValues);
             }
 
             double mass = 0;
@@ -145,21 +235,17 @@ namespace BH.Engine.LifeCycleAssessment
             else
                 weightFactor = mass/ evaluationConfig.TotalWeight;
 
-            Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
-            foreach (var moduleData in metric.Indicators)
-            {
-                //Initial value is base module data multiplied by quantity value
-                resultingValues[moduleData.Key] = moduleData.Value * quantityValue;
-            }
+            //Set up base line factors
+            Dictionary<Module, double> resultingValues = ResultingModuleValues(metric, quantityValue, precomputedValues);
 
             //Special handling of A5 for site activities module with additional project factor
             resultingValues[Module.A5_2] = evaluationConfig.ProjectCost * evaluationConfig.A5CarbonFactor * weightFactor;
             
             //Set A5 as sum of A5_2 and A5_3
-            if(resultingValues.TryGetValue(Module.A5_3, out double a5_3))
-            {
-                resultingValues[Module.A5] = resultingValues[Module.A5_2] + a5_3;
-            }
+            //if(resultingValues.TryGetValue(Module.A5_3, out double a5_3))
+            //{
+            //    resultingValues[Module.A5] = resultingValues[Module.A5_2] + a5_3;
+            //}
 
             //C1 evaluated based on project level values
             resultingValues[Module.C1] = weightFactor * evaluationConfig.FloorArea * evaluationConfig.C1CarbonFactor;
@@ -188,11 +274,11 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Output("resultValues", "The resulting values for each module.")]
-        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig, object configData)
+        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, IEvaluationConfig evaluationConfig, Dictionary<Module, PrecomputedModuleValues> precomputedValues, object configData)
         {
             BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for evaluation config of type {evaluationConfig}. Results returned are based on default evaluation method of module values times quantity.");
 
-            return ResultingModuleValues(metric, quantityValue);
+            return ResultingModuleValues(metric, quantityValue, precomputedValues);
         }
 
         /***************************************************/
