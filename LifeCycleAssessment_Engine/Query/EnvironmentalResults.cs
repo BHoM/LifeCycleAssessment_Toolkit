@@ -239,6 +239,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             Dictionary<MetricType, double> a4TransportResults = factorsProvider.A4TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
             Dictionary<MetricType, double> c2TransportResults = factorsProvider.C2TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
+            Dictionary<MetricType, double> c3c4Emissions = factorsProvider.C3C4WasteAndDisposalFactors?.WasteAndDisposalResults(mass, quantityValue, factorsProvider.EnvironmentalProductDeclaration.EnvironmentalMetrics) ?? new Dictionary<MetricType, double>();
 
             Dictionary<Module, PrecomputedModuleValues> precomputedModules = new Dictionary<Module, PrecomputedModuleValues>();
 
@@ -246,6 +247,8 @@ namespace BH.Engine.LifeCycleAssessment
                 precomputedModules[Module.A4] = new PrecomputedModuleValues() { ModuleValues = a4TransportResults, OverwriteExistingValues = true };
             if(c2TransportResults.Any())
                 precomputedModules[Module.C2] = new PrecomputedModuleValues() { ModuleValues = c2TransportResults, OverwriteExistingValues = true };
+            if(c3c4Emissions.Any())
+                precomputedModules[Module.C3toC4] = new PrecomputedModuleValues() { ModuleValues = c3c4Emissions, OverwriteExistingValues = true };
 
             List<MaterialResult> results = new List<MaterialResult>();
 
@@ -377,6 +380,22 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         private static bool TryGetConfigData(this IStructEEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
+        {
+            double mass = takeoffItem.QuantityValue(QuantityType.Mass);
+
+            configData = mass;
+            if (double.IsNaN(mass) || mass == 0)
+            {
+                BH.Engine.Base.Compute.RecordError($"Unable to extract required mass required to evaluate with the {nameof(IStructEEvaluationConfig)}.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        private static bool TryGetConfigData(this GlobalEmissionFactors evaluationConfig, TakeoffItem takeoffItem, out object configData)
         {
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
 
