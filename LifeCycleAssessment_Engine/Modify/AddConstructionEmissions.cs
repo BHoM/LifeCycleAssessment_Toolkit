@@ -104,7 +104,7 @@ namespace BH.Engine.LifeCycleAssessment
             {
                 string modulesMissingNames = string.Join(", ", missingModules);
 
-                string message = $"Missing modules for waste computation of waste factors (A5.3) for metric of type {metricType}: {missingModules} (or their subparts).";
+                string message = $"Missing modules for waste computation of waste factors (A5.3) for metric of type {metricType}: {string.Join(", ", missingModules)} (or their subparts).";
                 BH.Engine.Base.Compute.RecordError(message);
                 return;
             }
