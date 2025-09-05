@@ -39,6 +39,7 @@ using BH.oM.Geometry;
 using BH.oM.Physical.Constructions;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
+using BH.oM.LifeCycleAssessment.MaterialFragments.EndOfLife;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -121,6 +122,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             for (int i = 0; i < 4; i++)
                 yield return DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
 
+            v = initialV;
+            for (int i = 0; i < 4; i++)
+            {
+                CombinedLifeCycleAssessmentFactors fact = DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
+                fact.C3C4WasteAndDisposalFactors = DummyDisposalFactors(ref v, inc, i);
+                yield return fact;
+            }
 
             for (int i = 0; i < 4; i++)
             {
@@ -128,6 +136,16 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 combFactors.EnvironmentalProductDeclaration = null;
                 yield return combFactors;
             }
+        }
+
+        private static WasteAndDisposalFactors DummyDisposalFactors(ref double v, double inc, int i)
+        {
+            return new WasteAndDisposalFactors
+            {
+                FossilWasteFactor = new FossilWasteFactor { C3toC4 = v += inc },
+                CancelOutBiogenicCarbon = i % 2 == 0,
+                OverrideEpdValue = i < 2
+            };
         }
 
         /***************************************************/
@@ -284,7 +302,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             VehicleEmissions vehicleEmissions = new VehicleEmissions();
             foreach (Type type in FactorTypes())
             {
-                vehicleEmissions.EnvironmentalFactors.Add(DummyFactor(type, ref v, inc));
+                vehicleEmissions.EnvironmentalFactors.Add(DummyFactor(type, ref v, inc, 0.01));
             }
             vehicleEmissions.ReturnTripFactor = inc;
             return vehicleEmissions;
@@ -294,6 +312,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         public static IEnvironmentalMetric DummyMetric(Type type, ref double v, double inc, bool setA5ToWaste)
         {
+            v = v % 10;
             MethodInfo create = typeof(BH.Engine.LifeCycleAssessment.Create).GetMethods().Where(x => x.ReturnType == type).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
 
             if (create == null)
@@ -314,15 +333,17 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
                 metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
             }
+
             return metric;
         }
 
         /***************************************************/
 
-        public static IEnvironmentalFactor DummyFactor(Type type, ref double v, double inc)
+        public static IEnvironmentalFactor DummyFactor(Type type, ref double v, double inc, double scale = 1)
         {
+            v = v % 10;
             IEnvironmentalFactor factor = Activator.CreateInstance(type) as IEnvironmentalFactor;
-            factor.Value = v;
+            factor.Value = v * scale;
             v += inc;
             return factor;
         }

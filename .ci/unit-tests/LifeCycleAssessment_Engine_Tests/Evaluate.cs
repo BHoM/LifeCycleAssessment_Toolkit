@@ -26,6 +26,7 @@ using BH.oM.Dimensional;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
+using BH.oM.LifeCycleAssessment.MaterialFragments.EndOfLife;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Constructions;
@@ -58,7 +59,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.0002, false })]
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.02, false })]
         public void EvaluatEPDTest(EnvironmentalProductDeclaration epd)
         {
             double eval = 32.22;
@@ -71,7 +72,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.0002, false })]
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.02, false })]
         public void EvaluatCombinedFactorsTest(CombinedLifeCycleAssessmentFactors factors)
         {
             double eval = 32.22;
@@ -79,13 +80,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             List<MaterialResult> materialResults = Query.EnvironmentalResults(factors, eval, mass);
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(factors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass, factors.A5ConstructionEmissions);
+                ValidateMetricAndResult(factors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass, factors.A5ConstructionEmissions, WasteAndDisposalImpact(factors?.C3C4WasteAndDisposalFactors, factors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
             }
         }
 
         /***************************************************/
 
-        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, false })]
+        [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.2, false })]
         public void EvaluatTakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
             List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates);
@@ -240,6 +241,29 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             if (environmentalMetric != null)
                 result.IMetricType().Should().Be(environmentalMetric.IMetricType(), message);
 
+            if (environmentalMetric != null)
+            {
+                List<Module> expectedMinimumModules = environmentalMetric.Indicators.Keys.ToList();
+
+                if (specialCases != null)
+                {
+                    foreach (var specialCase in specialCases)
+                    {
+                        if (Query.PartOfCombinationModules().TryGetValue(specialCase.Key, out var combinations))
+                        {
+                            foreach (var combination in combinations)
+                            {
+                                expectedMinimumModules.Remove(combination);
+                            }
+                        }
+                        RemoveCombinationParts(expectedMinimumModules, specialCase.Key, Query.CombinationModules());
+                    }
+                }
+
+                Assert.That(result.Indicators.Keys, Is.SupersetOf(expectedMinimumModules), "Missing expected modules");
+            }
+            List<Module> modules = new List<Module>();
+            MetricType type = result.IMetricType();
             Assert.Multiple(() =>
             {
                 foreach (var resultItem in result.Indicators.OrderBy(x => x.Key))
@@ -247,7 +271,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
                     Module module = resultItem.Key;
                     double value = resultItem.Value;
-                    Console.WriteLine($"{result.IMetricType()}: {module}");
+                    modules.Add(module);
                     bool isCombination = combinationModules.ContainsKey(module);
 
                     if (isCombination)
@@ -260,33 +284,51 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                             {
                                 sum += result.Indicators.ContainsKey(part.Item1) ? result.Indicators[part.Item1] : 0;
                             }
-                            Assert.That(value, Is.EqualTo(sum).Within(tolerance), $"{module} should be sum of parts");
+                            Assert.That(value, Is.EqualTo(sum).Within(tolerance), $"{module} should be sum of parts for {type}");
                         }
                     }
 
                     if (specialCases != null && specialCases.ContainsKey(module))
                     {
-                        Assert.That(value, Is.EqualTo(specialCases[module]).Within(tolerance), $"{module} should match special case");
+                        Assert.That(value, Is.EqualTo(specialCases[module]).Within(tolerance), $"{module} should match special case for {type}");
                     }
                     else
                     {
                         if (!isCombination)
-                            Assert.That(environmentalMetric.Indicators, Contains.Key(module), $"{module} missing in metric");
+                            Assert.That(environmentalMetric.Indicators, Contains.Key(module), $"{module} missing in metric for {type}");
 
                         if (environmentalMetric.Indicators.TryGetValue(module, out double metricValue))
                         {
-                            Assert.That(metricValue, Is.Not.NaN, $"{module} in metric is NaN");
+                            Assert.That(metricValue, Is.Not.NaN, $"{module} in metric is NaN for {type}");
                             double expected = environmentalMetric.Indicators[module] * quantity;
-                            Assert.That(value, Is.EqualTo(expected).Within(tolerance), $"{module} should match metric times quantity");
+                            Assert.That(value, Is.EqualTo(expected).Within(tolerance), $"{module} should match metric times quantity for {type}");
                         }
                     }
                 }
             });
+
+            Console.WriteLine($"{result.IMetricType()}: {string.Join(", ", modules)}");
         }
 
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0, ConstructionEmissions a53Factors = null)
+        private static void RemoveCombinationParts(List<Module> modules, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations)
+        {
+            if (combinations.TryGetValue(module, out var parts))
+            {
+                foreach (var part in parts)
+                {
+                    modules.Remove(part.Item1);
+                    RemoveCombinationParts(modules, part.Item1, combinations); //Recursively remove parts of parts
+                }
+            }
+        }
+
+        /***************************************************/
+
+
+
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0, ConstructionEmissions a53Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
 
@@ -297,6 +339,9 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 specialCases[Module.C2] = TransportImpact(c2Factor, result.IMetricType(), mass);
             if(a53Factors != null)
                 specialCases[Module.A5_3] = WasteImpact(a53Factors, result);
+            if (!double.IsNaN(c3c4Factor))
+                specialCases[Module.C3toC4] = c3c4Factor;
+               
 
             ValidateResult(result, metric, quantity, epdName, materialName, specialCases);
 
@@ -352,6 +397,50 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+
+        public static double WasteAndDisposalImpact(WasteAndDisposalFactors wasteFactors, List<IEnvironmentalMetric> metrics, double mass, double quantity, MetricType metricType)
+        {
+            if (wasteFactors == null)
+                return double.NaN;
+
+            if (!wasteFactors.OverrideEpdValue)
+                return double.NaN;
+
+            switch (metricType)
+            {
+                case MetricType.ClimateChangeBiogenic:
+                    if (wasteFactors.CancelOutBiogenicCarbon)
+                        return -metrics.FirstOrDefault(x => x.IMetricType() == metricType).Indicators[Module.A1] * quantity;
+                    else
+                        return 0;
+                case MetricType.ClimateChangeLandUse:
+                    return 0;
+                case MetricType.ClimateChangeTotal:
+                    if (wasteFactors.CancelOutBiogenicCarbon)
+                        return -metrics.FirstOrDefault(x => x.IMetricType() == MetricType.ClimateChangeBiogenic).Indicators[Module.A1] * quantity + wasteFactors.FossilWasteFactor.C3toC4 * mass;
+                    else
+                        return wasteFactors.FossilWasteFactor.C3toC4 * mass;
+                case MetricType.ClimateChangeFossil:
+                case MetricType.ClimateChangeTotalNoBiogenic:
+                    return wasteFactors.FossilWasteFactor.C3toC4 * mass;
+                case MetricType.EutrophicationCML:
+                case MetricType.EutrophicationAquaticFreshwater:
+                case MetricType.EutrophicationAquaticMarine:
+                case MetricType.EutrophicationTerrestrial:
+                case MetricType.EutrophicationTRACI:
+                case MetricType.OzoneDepletion:
+                case MetricType.PhotochemicalOzoneCreation:
+                case MetricType.PhotochemicalOzoneCreationCML:
+                case MetricType.PhotochemicalOzoneCreationTRACI:
+                case MetricType.WaterDeprivation:
+                case MetricType.Undefined:
+                case MetricType.AbioticDepletionFossilResources:
+                case MetricType.AbioticDepletionMineralsAndMetals:
+                case MetricType.Acidification:
+                default:
+                    return double.NaN;
+            }
+        }
     }
 }
 

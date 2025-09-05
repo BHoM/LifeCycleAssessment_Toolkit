@@ -100,7 +100,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5ConstructionEmissions);
+                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5ConstructionEmissions, Evaluate.WasteAndDisposalImpact(combinedFactors?.C3C4WasteAndDisposalFactors, combinedFactors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
             }
         }
 
@@ -199,7 +199,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionEmissions a5Factors = null)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionEmissions a5Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
 
@@ -208,6 +208,8 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 specialCases[Module.A4] = Evaluate.TransportImpact(a4Factor, result.IMetricType(), mass);
             if (c2Factor != null)
                 specialCases[Module.C2] = Evaluate.TransportImpact(c2Factor, result.IMetricType(), mass);
+            if (!double.IsNaN(c3c4Factor))
+                specialCases[Module.C3toC4] = c3c4Factor;
 
             List<MetricType> specialMetrics = new List<MetricType> { MetricType.ClimateChangeTotal, MetricType.ClimateChangeTotalNoBiogenic, MetricType.ClimateChangeFossil };
             bool specialTreatment = metric == null ? false : specialMetrics.Contains(result.IMetricType());
