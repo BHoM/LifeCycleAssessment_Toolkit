@@ -96,6 +96,8 @@ namespace BH.Engine.LifeCycleAssessment
             if (precomputedValues != null)
             {
                 var partModules = PartOfCombinationModules();   //Get a dictionary that for each modules lists the combinations it is part of
+                var combinationModules = CombinationModules(); //Get a dictionary that for each combination lists its parts
+                HashSet<Module> precompuedValueSet = new HashSet<Module>();
                 foreach (var precomputed in precomputedValues)
                 {
                     bool setValue = precomputed.Value.OverwriteExistingValues || !resultingValues.ContainsKey(precomputed.Key); //Only set value if overwrite is true or if no value exists yet
@@ -104,18 +106,37 @@ namespace BH.Engine.LifeCycleAssessment
 
                     if (precomputed.Value.ModuleValues.TryGetValue(metric.IMetricType(), out double val))   //Check if precomputed value exists for the metric type
                     {
+                        precompuedValueSet.Add(precomputed.Key);
                         resultingValues[precomputed.Key] = val;         //Set the precomputed value. It is assumed that the precomputed value is already evaluated for the quantity
                         if (partModules.TryGetValue(precomputed.Key, out var combinations))
                         {
                             foreach(var combination in combinations)
                             {
-                                resultingValues.Remove(combination);    //Remove any combination that includes the precomputed module as it will be different than the sum of its parts
+                                if(!precompuedValueSet.Contains(combination))   //If not explicitly set
+                                    resultingValues.Remove(combination);    //Remove any combination that includes the precomputed module as it will be different than the sum of its parts
                             }
                         }
+                        resultingValues.RemoveCombinationParts(precomputed.Key, combinationModules, precompuedValueSet); //If precomputed value is a combination, then remove all its part as they will be different than the combination value
                     }
+
                 }
             }
             return resultingValues;
+        }
+
+        /***************************************************/
+
+        private static void RemoveCombinationParts(this Dictionary<Module, double> resultingValues, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations, HashSet<Module> precompuedValueSet)
+        {
+            if (combinations.TryGetValue(module, out var parts))
+            {
+                foreach (var part in parts)
+                {
+                    if (!precompuedValueSet.Contains(part.Item1))   //If not explicitly set
+                        resultingValues.Remove(part.Item1);
+                    RemoveCombinationParts(resultingValues, part.Item1, combinations, precompuedValueSet); //Recursively remove parts of parts
+                }
+            }
         }
 
         /***************************************************/
