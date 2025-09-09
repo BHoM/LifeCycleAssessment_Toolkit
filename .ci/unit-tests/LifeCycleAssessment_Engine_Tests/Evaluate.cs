@@ -49,7 +49,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
-        [Description("Evaluates the provided metric and validates the result. Runs with no Config provided, taking all data from the metric.")]
+        [Description("Tests the EnvironmentalResults query method by evaluating a single environmental metric and validating the resulting MaterialResult. Runs without configuration, using default evaluation mechanism that computes module values as metric value times quantity.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, false })]
         public void EvaluateMetricTest(IEnvironmentalMetric metric)
         {
@@ -60,7 +60,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Evaluates the provided EnvironmentalProductDeclaration and validates the result. Runs with no Config provided, taking all data from the metrics.")]
+        [Description("Tests the EnvironmentalResults query method by evaluating an Environmental Product Declaration (EPD) and validating all resulting MaterialResults. Runs without configuration, processing all environmental metrics contained within the EPD.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.02, false })]
         public void EvaluatEPDTest(EnvironmentalProductDeclaration epd)
         {
@@ -74,7 +74,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Evaluates the provided CombinedLifeCycleAssessmentFactors and validates the result. Runs with no Config provided, taking all data from the metrics or combined factors.")]
+        [Description("Tests the EnvironmentalResults query method by evaluating CombinedLifeCycleAssessmentFactors and validating the results. Runs without configuration, processing EPD metrics along with transport factors, construction emissions, and waste disposal factors.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.02, false })]
         public void EvaluatCombinedFactorsTest(CombinedLifeCycleAssessmentFactors factors)
         {
@@ -89,7 +89,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Evaluates the provided GeneralMaterialTakeoff and validates the result. Runs with no Config provided, taking all data from the metrics or combined factors.")]
+        [Description("Tests the EnvironmentalResults query method by evaluating a GeneralMaterialTakeoff with material templates and validating the results. Runs without configuration, processing all materials in the takeoff with their associated EPDs or CombinedLifeCycleAssessmentFactors.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.2, false })]
         public void EvaluatTakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
@@ -134,7 +134,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Evaluates the provided GeneralMaterialTakeoff and validates the result. Runs with filters provided, ensuring only the asked for results are returned. Runs with no Config provided, taking all data from the metrics or combined factors.")]
+        [Description("Tests the EnvironmentalResults query method by evaluating a GeneralMaterialTakeoff with metric type filters and validating that only the requested metric types are returned. Ensures proper filtering functionality while maintaining result accuracy.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, false })]
         public void EvaluatTakeoffWithFilters(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {           
@@ -183,7 +183,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Evaluates the provided IElementM and validates the result. Runs with no Config provided, taking all data from the metrics.")]
+        [Description("Tests the EnvironmentalResults query method by evaluating a building element (Wall) and validating the element-level results. Verifies that element results correctly aggregate material-level impacts and that individual material results are accurate.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, false })]
         public void EvaluateElement(Wall element, double area, List<Material> templates)
         {
@@ -223,7 +223,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Validates the Result against the metric as well as any special cases where the resulting values are based on values from outside the metric (like transport from combined factors)")]
+        [Description("Validates a MaterialResult against an environmental metric and handles special cases where resulting values are based on external factors such as transport from combined factors. Performs comprehensive validation including module presence, combination module calculations, and value accuracy checks.")]
         public static void ValidateResult(MaterialResult result, IEnvironmentalMetric environmentalMetric, double quantity, string epdName = "", string materialName = "", Dictionary<Module, double> specialCases = null)
         {
             var combinationModules = Query.CombinationModules();
@@ -319,7 +319,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("recursivly remove combination aprts for required ")]
+        [Description("Recursively removes combination module parts from the required modules list to prevent double-counting when validating expected modules in material results.")]
         private static void RemoveCombinationParts(List<Module> modules, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations)
         {
             if (combinations.TryGetValue(module, out var parts))
@@ -334,7 +334,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("")]
+        [Description("Validates an environmental metric against a material result with optional special case handling for transport factors, construction emissions, and waste disposal factors. Prepares special case values and delegates to ValidateResult for comprehensive validation.")]
         private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0, ConstructionEmissions a53Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
@@ -356,6 +356,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Calculates the transport impact for a specific metric type based on transport factors and material mass. Supports different transport scenario types including full transport scenarios, single transport modes, and distance-based transport scenarios.")]
         public static double TransportImpact(ITransportFactors transport, MetricType metricType, double mass)
         {
             if (transport is FullTransportScenario fullScenario)
@@ -383,6 +384,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Calculates the construction waste impact (A5_3 module) based on construction emissions parameters and material result indicators. Uses IStructE guidance to compute waste factors from waste rates and applies them to relevant life cycle modules.")]
         public static double WasteImpact(ConstructionEmissions constructionEmissions, MaterialResult result)
         {
             double expected = 0;
@@ -405,6 +407,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Calculates the waste and disposal impact for end-of-life phases based on waste disposal factors. Handles different climate change metric types including biogenic carbon cancellation and fossil waste factors for C3-C4 modules.")]
         public static double WasteAndDisposalImpact(WasteAndDisposalFactors wasteFactors, List<IEnvironmentalMetric> metrics, double mass, double quantity, MetricType metricType)
         {
             if (wasteFactors == null)
