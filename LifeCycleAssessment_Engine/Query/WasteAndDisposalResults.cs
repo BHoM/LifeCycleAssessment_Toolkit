@@ -41,6 +41,12 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Calculates waste and disposal results for climate change metrics based on waste disposal factors. The method computes fossil, biogenic, land use, and total climate change impacts for end-of-life disposal phases (C3-C4 modules), with optional biogenic carbon cancellation.")]
+        [Input("disposalFactors", "Waste and disposal factors containing fossil waste factor and configuration for biogenic carbon cancellation and EPD value override settings.")]
+        [Input("mass", "Mass of the material, used to calculate fossil climate change impacts based on the disposal factor per unit mass.", typeof(Mass))]
+        [Input("quantityValue", "Quantity value used for biogenic carbon cancellation calculations when applicable (typically the same value used for cradle-to-gate calculations).")]
+        [Input("metrics", "List of environmental metrics from the EPD, used to extract biogenic carbon values for cancellation calculations and to check for existing disposal values.")]
+        [Output("results", "Dictionary mapping MetricType to calculated disposal impact values for ClimateChangeFossil, ClimateChangeBiogenic, ClimateChangeLandUse, ClimateChangeTotal, and ClimateChangeTotalNoBiogenic. Returns null if disposal factors are invalid or empty dictionary if no computation is needed.")]
         public static Dictionary<MetricType, double> WasteAndDisposalResults(this WasteAndDisposalFactors disposalFactors, double mass, double quantityValue, List<IEnvironmentalMetric> metrics)
         {
             if(disposalFactors == null || disposalFactors.FossilWasteFactor == null)

@@ -45,6 +45,11 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Calculates and adds construction waste emissions (A5_3 module) to the resulting module values dictionary based on construction emissions parameters. The method computes waste factors according to IStructE guidance and adds the A5_3 module representing construction waste impacts.")]
+        [Input("resultingValues", "Dictionary of module values to which the construction emissions will be added. Must contain required modules (A1toA3 or A1+A2+A3, A4, C3toC4 or C3 or C4, and optionally C2 if not reused on site).")]
+        [Input("constructionEmissions", "Construction emissions parameters including waste rate and whether materials are reused on site.")]
+        [Input("metricType", "The metric type being evaluated, used for error reporting when required modules are missing.")]
+        [Output("resultingValues", "The input dictionary is modified in place with the A5_3 module added, representing construction waste emissions calculated as: (cradle-to-gate + transport + disposal) × waste factor.")]
         public static void AddConstructionEmissions(this Dictionary<Module, double> resultingValues, ConstructionEmissions constructionEmissions, MetricType metricType)
         {
             List<Module> requiredWasteModules = new List<Module>() { Module.A1toA3, Module.A4 };
