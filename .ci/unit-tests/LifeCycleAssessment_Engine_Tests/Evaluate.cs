@@ -49,6 +49,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /****   Public Methods                          ****/
         /***************************************************/
 
+        [Description("Evaluates the provided metric and validates the result. Runs with no Config provided, taking all data from the metric.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, false })]
         public void EvaluateMetricTest(IEnvironmentalMetric metric)
         {
@@ -59,6 +60,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Evaluates the provided EnvironmentalProductDeclaration and validates the result. Runs with no Config provided, taking all data from the metrics.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.02, false })]
         public void EvaluatEPDTest(EnvironmentalProductDeclaration epd)
         {
@@ -72,6 +74,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Evaluates the provided CombinedLifeCycleAssessmentFactors and validates the result. Runs with no Config provided, taking all data from the metrics or combined factors.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.02, false })]
         public void EvaluatCombinedFactorsTest(CombinedLifeCycleAssessmentFactors factors)
         {
@@ -86,6 +89,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Evaluates the provided GeneralMaterialTakeoff and validates the result. Runs with no Config provided, taking all data from the metrics or combined factors.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.2, false })]
         public void EvaluatTakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
@@ -130,6 +134,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Evaluates the provided GeneralMaterialTakeoff and validates the result. Runs with filters provided, ensuring only the asked for results are returned. Runs with no Config provided, taking all data from the metrics or combined factors.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, false })]
         public void EvaluatTakeoffWithFilters(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {           
@@ -178,6 +183,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Evaluates the provided IElementM and validates the result. Runs with no Config provided, taking all data from the metrics.")]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, false })]
         public void EvaluateElement(Wall element, double area, List<Material> templates)
         {
@@ -217,6 +223,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Validates the Result against the metric as well as any special cases where the resulting values are based on values from outside the metric (like transport from combined factors)")]
         public static void ValidateResult(MaterialResult result, IEnvironmentalMetric environmentalMetric, double quantity, string epdName = "", string materialName = "", Dictionary<Module, double> specialCases = null)
         {
             var combinationModules = Query.CombinationModules();
@@ -312,6 +319,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("recursivly remove combination aprts for required ")]
         private static void RemoveCombinationParts(List<Module> modules, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations)
         {
             if (combinations.TryGetValue(module, out var parts))
@@ -326,8 +334,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-
-
+        [Description("")]
         private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0, ConstructionEmissions a53Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;

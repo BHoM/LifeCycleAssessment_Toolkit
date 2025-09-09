@@ -46,6 +46,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Test]
+        [Description("Tests the PartOfCombinationModules query method by displaying all parts of combination modules. This is a visual inspection test with no assertions to verify the method returns the expected module combinations.")]
         public void TestCombinationModuleParts()
         {
             var partOFCombinationMOdules = Query.PartOfCombinationModules();

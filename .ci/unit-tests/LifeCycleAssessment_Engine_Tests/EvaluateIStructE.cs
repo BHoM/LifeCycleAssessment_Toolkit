@@ -50,6 +50,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration by validating that IStructE-specific carbon factors (A5 and C1) are correctly applied to climate change metrics based on project cost, floor area, and total weight.")]
         public void EvaluateIStructEMetricTest(IEnvironmentalMetric metric)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -62,6 +63,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for Environmental Product Declarations (EPDs). Validates that IStructE carbon factors are properly applied to EPDs and that only Mass quantity type EPDs are processed.")]
         public void EvaluateIStructEEPDTest(EnvironmentalProductDeclaration epd)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -86,6 +88,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for CombinedLifeCycleAssessmentFactors. Validates that combined factors are properly processed alongside IStructE-specific carbon factors for construction and demolition phases.")]
         public void EvaluateIStructECombinedFactorsTest(CombinedLifeCycleAssessmentFactors combinedFactors)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -108,6 +111,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for material takeoffs. Validates that IStructE carbon factors are correctly applied to takeoff items with both EPD and CombinedLifeCycleAssessmentFactors material properties.")]
         public void EvaluateIStructETakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -156,6 +160,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for building elements (walls). Validates that element-level environmental results are correctly calculated with IStructE carbon factors applied to each material layer.")]
         public void EvaluateElement(Wall element, double area, List<Material> templates)
         {
             IStructEEvaluationConfig config = DummyConfig();

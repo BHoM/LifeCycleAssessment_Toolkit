@@ -50,6 +50,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, true })]
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration by evaluating environmental metrics and validating that global emission factors (construction activities and pre-construction demolition) are correctly applied to specific modules.")]
         public void EvaluateGlobalEmissionsFactorMetricTest(IEnvironmentalMetric metric)
         {
             GlobalEmissionFactors config = DummyConfig();
@@ -62,6 +63,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for Environmental Product Declarations (EPDs). Validates that global emission factors are properly applied and that only Mass quantity type EPDs are processed.")]
         public void EvaluateGlobalEmissionsFactorEPDTest(EnvironmentalProductDeclaration epd)
         {
             GlobalEmissionFactors config = DummyConfig();
@@ -86,6 +88,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for CombinedLifeCycleAssessmentFactors. Validates that combined factors including transport, construction emissions, and waste disposal factors are properly processed alongside global emission factors.")]
         public void EvaluateGlobalEmissionsFactorCombinedFactorsTest(CombinedLifeCycleAssessmentFactors combinedFactors)
         {
             GlobalEmissionFactors config = DummyConfig();
@@ -108,6 +111,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for material takeoffs. Validates that global emission factors are correctly applied to takeoff items with both EPD and CombinedLifeCycleAssessmentFactors material properties.")]
         public void EvaluateGlobalEmissionsFactorTakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
             GlobalEmissionFactors config = DummyConfig();
@@ -156,6 +160,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for building elements (walls). Validates that element-level environmental results are correctly calculated with global emission factors applied to each material layer.")]
         public void EvaluateElement(Wall element, double area, List<Material> templates)
         {
             GlobalEmissionFactors config = DummyConfig();

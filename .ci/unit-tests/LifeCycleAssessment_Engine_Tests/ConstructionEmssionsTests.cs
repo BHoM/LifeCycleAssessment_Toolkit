@@ -36,6 +36,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
     {
 
         [TestCaseSource(nameof(AddConstructionEmissionsTestCases))]
+        [Description("Tests the AddConstructionEmissions extension method by validating that construction waste emissions (A5_3 module) are correctly calculated based on waste rates and reuse scenarios. Tests both normal cases and edge cases where required modules are missing.")]
         public void TestAddConstructionEmissions(Dictionary<Module, double> resultingValues, ConstructionEmissions constructionEmissions, double assumedA5_3Value)
         { 
             resultingValues.AddConstructionEmissions(constructionEmissions, MetricType.ClimateChangeTotal);

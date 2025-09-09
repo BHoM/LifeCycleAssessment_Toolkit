@@ -47,6 +47,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(nameof(DummyQuantityValues))]
+        [Description("Tests the QuantityValue extension method for TakeoffItem objects by verifying that the correct quantity values are returned for different QuantityTypes. Tests various scenarios including mass calculation from volume and density, both from Material.Density and EPD density fragments.")]
         public void QuantityValue(TakeoffItem item, QuantityType quantityType, double expected)
         {
             Assert.That(item.QuantityValue(quantityType), Is.EqualTo(expected));

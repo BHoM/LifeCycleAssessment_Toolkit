@@ -43,6 +43,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 {
     public class Datasets
     {
+        [Description("Method that ensures all datasets are deserialising correctly, and warns if any verisoning is required.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void DatasetsAllDeserialiseing(string f)
         {
@@ -62,6 +63,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
+        [Description("Method that helps upgrading EPD datasets.")]
         [Ignore("Method not run generally. Uncomment this ignore to help upgrade datasets.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void UpgradeAllDatasets(string f)
@@ -108,6 +110,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         }
 
+        [Description("Method with no assertions. Just helps check the modules in all Datasets.")]
         [TestCaseSource(nameof(DatasetFilePaths))]
         public void GetModulesInDatasets(string f)
         {
