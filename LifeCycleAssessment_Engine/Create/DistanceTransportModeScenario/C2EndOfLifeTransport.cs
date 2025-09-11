@@ -42,12 +42,12 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
 
-        [Description("Creates a C2 end-of-life transport scenario for materials based on different disposal routes (landfill, recycling, and energy recovery incineration). The method calculates transport impacts for each disposal route weighted by the end-of-life route distribution factors.")]
-        [Input("transportDistanceToLandfill", "Transport distance from the building to the landfill disposal site.", typeof(Length))]
-        [Input("transportDistanceToRecycling", "Transport distance from the building to the recycling facility.", typeof(Length))]
-        [Input("transportDistanceToEnergyRecoveryIncineration", "Transport distance from the building to the energy recovery incineration facility.", typeof(Length))]
+        [Description("Creates a C2 end-of-life transport scenario for materials based on different disposal routes (landfill, recycling, reuse, and energy recovery incineration). The method calculates transport impacts for each disposal route weighted by the end-of-life route distribution factors.")]
+        [Input("transportDistanceToLandfill", "Transport distance from the building to the landfill disposal site. Average distance to two closest landfill sites.", typeof(Length))]
+        [Input("transportDistanceToRecycling", "Transport distance from the building to the recycling facility. Average distance to two closest construction waste processing sites.", typeof(Length))]
+        [Input("transportDistanceToEnergyRecoveryIncineration", "Transport distance from the building to the energy recovery incineration facility. Average distance to two closest energy-from-waste sites.", typeof(Length))]
         [Input("vehicleEmission", "Vehicle emissions data containing environmental factors per unit mass transported.")]
-        [Input("endOfLifeRoute", "End-of-life route distribution factors specifying the proportion of material going to each disposal route (waste, recycling, incineration).")]
+        [Input("endOfLifeRoute", "End-of-life route distribution factors specifying the proportion of material going to each disposal route (waste, recycling, reuse, incineration).")]
         [Input("emptyRunningFactor", "Optional factor for empty return trips. If provided, overrides the return trip factor in the vehicle emissions. Default is NaN (uses vehicle emissions return trip factor).")]
         [Output("transportScenario", "A DistanceTransportModeScenario containing weighted transport impacts for all disposal routes, named with the end-of-life route distribution name.")]
         public static DistanceTransportModeScenario C2EndOfLifeTransport(double transportDistanceToLandfill, double transportDistanceToRecycling, double transportDistanceToEnergyRecoveryIncineration, VehicleEmissions vehicleEmission, EndOfLifeRouteDistribution endOfLifeRoute, double emptyRunningFactor = double.NaN)
@@ -74,6 +74,14 @@ namespace BH.Engine.LifeCycleAssessment
                 Name = "Recycling"
             };
 
+            SingleTransportModeImpact reuse = new SingleTransportModeImpact
+            {
+                VehicleEmissions = vehicleEmission,
+                DistanceTraveled = transportDistanceToRecycling,
+                Factor = endOfLifeRoute.Reuse,
+                Name = "Reuse"
+            };
+
             SingleTransportModeImpact incineration = new SingleTransportModeImpact
             {
                 VehicleEmissions = vehicleEmission,
@@ -85,7 +93,7 @@ namespace BH.Engine.LifeCycleAssessment
             return new DistanceTransportModeScenario
             {
                 Name = $"C2 impact {endOfLifeRoute.Name}",
-                SingleTransportModeImpacts = new List<SingleTransportModeImpact> { landfill, recycling, incineration }
+                SingleTransportModeImpacts = new List<SingleTransportModeImpact> { landfill, recycling, reuse, incineration }
             };
         }
 
