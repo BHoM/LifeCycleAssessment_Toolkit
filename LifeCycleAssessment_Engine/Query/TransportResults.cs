@@ -139,7 +139,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             List<IEnvironmentalFactor> factors = transportScenario.VehicleEmissions.EnvironmentalFactors.FilterIndicators(metricFilter);
 
-            double quantity = mass * transportScenario.DistanceTraveled * (1 + transportScenario.VehicleEmissions.ReturnTripFactor);
+            double quantity = mass * transportScenario.DistanceTraveled * (1 + transportScenario.VehicleEmissions.ReturnTripFactor) * transportScenario.Factor;
 
             foreach (IEnvironmentalFactor factor in factors)
             {
