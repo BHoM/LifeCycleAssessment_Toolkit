@@ -263,8 +263,8 @@ namespace BH.Engine.LifeCycleAssessment
                     a4TransportResults.Remove(type);    //Remove as used up
                     c2TransportResults.Remove(type);    //Remove as used up
 
-                    if (factorsProvider.A5ConstructionEmissions != null)
-                        resultingValues.AddConstructionEmissions(factorsProvider.A5ConstructionEmissions, type);
+                    if (factorsProvider.A5_3ConstructionWasteEmissions != null)
+                        resultingValues.AddConstructionWasteEmissions(factorsProvider.A5_3ConstructionWasteEmissions, type);
 
                     results.Add(Create.MaterialResult(materialName, factorsProvider.Name, type, resultingValues));
                 }

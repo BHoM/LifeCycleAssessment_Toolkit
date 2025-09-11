@@ -103,7 +103,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5ConstructionEmissions, Evaluate.WasteAndDisposalImpact(combinedFactors?.C3C4WasteAndDisposalFactors, combinedFactors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
+                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions, Evaluate.WasteAndDisposalImpact(combinedFactors?.C3C4WasteAndDisposalFactors, combinedFactors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
             }
         }
 
@@ -150,7 +150,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
                     combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
                     IEnvironmentalMetric metric = combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
-                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5ConstructionEmissions);
+                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions);
 
 
                 }
@@ -204,7 +204,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionEmissions a5Factors = null, double c3c4Factor = double.NaN)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionWasteEmissions a5Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
 

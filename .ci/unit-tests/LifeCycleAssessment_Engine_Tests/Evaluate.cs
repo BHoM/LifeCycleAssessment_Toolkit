@@ -83,7 +83,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             List<MaterialResult> materialResults = Query.EnvironmentalResults(factors, eval, mass);
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(factors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass, factors.A5ConstructionEmissions, WasteAndDisposalImpact(factors?.C3C4WasteAndDisposalFactors, factors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
+                ValidateMetricAndResult(factors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, factors.Name, "", factors.A4TransportFactors, factors.C2TransportFactors, mass, factors.A5_3ConstructionWasteEmissions, WasteAndDisposalImpact(factors?.C3C4WasteAndDisposalFactors, factors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
             }
         }
 
@@ -126,7 +126,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
                     IEnvironmentalMetric metric = combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
-                    ValidateMetricAndResult(metric, result, eval, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass, combinedFactors.A5ConstructionEmissions);
+                    ValidateMetricAndResult(metric, result, eval, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass, combinedFactors.A5_3ConstructionWasteEmissions);
                 }
             }
 
@@ -175,7 +175,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
                     IEnvironmentalMetric metric = combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
-                    ValidateMetricAndResult(metric, result, eval, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass, combinedFactors.A5ConstructionEmissions);
+                    ValidateMetricAndResult(metric, result, eval, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, takeoffItem.Mass, combinedFactors.A5_3ConstructionWasteEmissions);
                 }
             }
 
@@ -335,7 +335,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Validates an environmental metric against a material result with optional special case handling for transport factors, construction emissions, and waste disposal factors. Prepares special case values and delegates to ValidateResult for comprehensive validation.")]
-        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0, ConstructionEmissions a53Factors = null, double c3c4Factor = double.NaN)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, string epdName = "", string materialName = "", ITransportFactors a4Factor= null, ITransportFactors c2Factor = null, double mass = 0, ConstructionWasteEmissions a53Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
 
@@ -385,7 +385,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Calculates the construction waste impact (A5_3 module) based on construction emissions parameters and material result indicators. Uses IStructE guidance to compute waste factors from waste rates and applies them to relevant life cycle modules.")]
-        public static double WasteImpact(ConstructionEmissions constructionEmissions, MaterialResult result)
+        public static double WasteImpact(ConstructionWasteEmissions constructionEmissions, MaterialResult result)
         {
             double expected = 0;
             if (result.Indicators.TryGetValue(Module.A1toA3, out double a1toa3) && result.Indicators.TryGetValue(Module.A4, out double a4) && result.Indicators.TryGetValue(Module.C3toC4, out double c3c4))

@@ -260,13 +260,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             EnvironmentalProductDeclaration epd = DummyEPD(ref v, inc, setA5ToWaste, name, quantityType);
 
-            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), A5ConstructionEmissions = DummyConstructionsFactor(v, inc), Name = name };
+            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), A5_3ConstructionWasteEmissions = DummyConstructionsFactor(v, inc), Name = name };
         }
 
-        [Description("Creates a dummy ConstructionEmissions with waste rate set to 50%.")]
-        private static ConstructionEmissions DummyConstructionsFactor(double v, double inc)
+        [Description("Creates a dummy ConstructionWasteEmissions with waste rate set to 50%.")]
+        private static ConstructionWasteEmissions DummyConstructionsFactor(double v, double inc)
         {
-            return new ConstructionEmissions
+            return new ConstructionWasteEmissions
             {
                 ResuedOnSite = ((int)Math.Round(v)) % 2 == 0,
                 WasteRate = new WasteRate { Rate = 0.5 },

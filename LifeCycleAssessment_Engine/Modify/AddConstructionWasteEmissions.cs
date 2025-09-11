@@ -50,7 +50,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("constructionEmissions", "Construction emissions parameters including waste rate and whether materials are reused on site.")]
         [Input("metricType", "The metric type being evaluated, used for error reporting when required modules are missing.")]
         [Output("resultingValues", "The input dictionary is modified in place with the A5_3 module added, representing construction waste emissions calculated as: (cradle-to-gate + transport + disposal) × waste factor.")]
-        public static void AddConstructionEmissions(this Dictionary<Module, double> resultingValues, ConstructionEmissions constructionEmissions, MetricType metricType)
+        public static void AddConstructionWasteEmissions(this Dictionary<Module, double> resultingValues, ConstructionWasteEmissions constructionEmissions, MetricType metricType)
         {
             List<Module> requiredWasteModules = new List<Module>() { Module.A1toA3, Module.A4 };
 
