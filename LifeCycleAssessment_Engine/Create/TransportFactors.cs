@@ -86,21 +86,6 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            //lengthUnits = lengthUnits.ToLower().Replace(" ", "");
-
-            //double scaleFactor = 1;
-            //if (lengthUnits == "m" || lengthUnits == "metre" || lengthUnits == "metres" || lengthUnits == "meter" || lengthUnits == "meters")
-            //    scaleFactor = 1;
-            //else if (lengthUnits == "km" || lengthUnits == "kilometer" || lengthUnits == "kilometers" || lengthUnits == "kilometre" || lengthUnits == "kilometres")
-            //    scaleFactor = 1000;
-            //else if (lengthUnits == "mi" || lengthUnits == "mile" || lengthUnits == "miles")
-            //    scaleFactor = 1609.344;
-            //else
-            //{
-            //    Base.Compute.RecordError("length unit is unkown. Supported values are 'm', 'meter', 'metre', 'metres' and 'meters' for metres, 'km', 'kilometer', 'kilometre', 'kilometres' and 'kilometers' for kilometres and 'mi','mile' and 'miles' for miles.");
-            //    return null;
-            //}
-
             return new DistanceTransportModeScenario
             {
                 SingleTransportModeImpacts = new List<SingleTransportModeImpact> { new SingleTransportModeImpact { VehicleEmissions = vehicleEmissions, DistanceTraveled = distanceTraveled } }

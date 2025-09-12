@@ -47,6 +47,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyFactors), new object[] { 1, 0 })]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
+        [Description("Tests that the IMetricType extension method returns a defined MetricType (not Undefined) for all life cycle assessment indicators including both environmental factors and metrics.")]
         public void MetricTypeNotUndefined(ILifeCycleAssessmentIndicator metricFactors)
         {
             MetricType metricType = metricFactors.IMetricType();
@@ -57,6 +58,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyFactorsList), new object[] { 1, 0 })]
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetricsList), new object[] { 1, 0, false })]
+        [Description("Tests that collections of life cycle assessment indicators have unique MetricTypes with no duplicates, ensuring each metric type appears only once in the collection.")]
         public void MetricTypesAllUnique(IEnumerable<ILifeCycleAssessmentIndicator> metricFactors)
         {
             List<MetricType> metricTypes = metricFactors.Select(x => x.IMetricType()).ToList();

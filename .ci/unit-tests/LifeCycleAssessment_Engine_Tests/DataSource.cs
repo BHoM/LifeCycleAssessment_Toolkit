@@ -38,15 +38,19 @@ using BH.oM.Physical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Physical.Constructions;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
+using BH.oM.LifeCycleAssessment.MaterialFragments.EndOfLife;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
+    [Description("Class that helps With setup of dummy obejcts to be tested.")]
     public class DataSource
     {
         /***************************************************/
         /****   Public Methods                          ****/
         /***************************************************/
 
+        [Description("Method that returns a metric of each type.")]
         public static IEnumerable<IEnvironmentalMetric> DummyMetrics(double initialV, double increace, bool setA5ToWaste)
         {
             List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
@@ -60,6 +64,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Method that returns a Dummy IEnvironmentalFactor of each type.")]
         public static IEnumerable<IEnvironmentalFactor> DummyFactors(double initialV, double increace)
         {
             double v = initialV;
@@ -71,6 +76,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Method that returns a full list of all metrics as dummies.")]
         public static IEnumerable<List<IEnvironmentalMetric>> DummyMetricsList(double initialV, double increace, bool setA5ToWaste)
         {
             List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
@@ -85,6 +91,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Method that returns a full list of factors as dummies.")]
         public static IEnumerable<List<IEnvironmentalFactor>> DummyFactorsList(double initialV, double increace)
         {
             List<IEnvironmentalFactor> factors = new List<IEnvironmentalFactor>();
@@ -98,6 +105,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Returns a colelction of Dummy EPDs to test evaluation.")]
         public static IEnumerable<EnvironmentalProductDeclaration> DummyEPDs(double initialV, double increace, bool setA5ToWaste)
         {
             List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
@@ -111,6 +119,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Method that returns dummy CombinedLifeCycleAssessmentFactors for testing evaluation. Items returned with various parts set or not.")]
         public static IEnumerable<CombinedLifeCycleAssessmentFactors> DummyCombinedLCAFactors(double initialV, double increace, bool setA5ToWaste)
         {
             List<IEnvironmentalMetric> metrics = new List<IEnvironmentalMetric>();
@@ -120,6 +129,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             for (int i = 0; i < 4; i++)
                 yield return DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
 
+            v = initialV;
+            for (int i = 0; i < 4; i++)
+            {
+                CombinedLifeCycleAssessmentFactors fact = DummyCombinedFactors(ref v, inc, setA5ToWaste, i);
+                fact.C3C4WasteAndDisposalFactors = DummyDisposalFactors(ref v, inc, i);
+                yield return fact;
+            }
 
             for (int i = 0; i < 4; i++)
             {
@@ -129,8 +145,20 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             }
         }
 
+        [Description("Creates a dummy disposal factors item.")]
+        private static WasteAndDisposalFactors DummyDisposalFactors(ref double v, double inc, int i)
+        {
+            return new WasteAndDisposalFactors
+            {
+                FossilWasteFactor = new FossilWasteFactor { C3toC4 = v += inc },
+                CancelOutBiogenicCarbon = i % 2 == 0,
+                OverrideEpdValue = i < 2
+            };
+        }
+
         /***************************************************/
 
+        [Description("Returns a dummy takeoff and material template to be used when testing evaluation.")]
         public static IEnumerable<object[]> DummyTakeoffAndTemplates(double initialV, double increace, bool setA5ToWaste)
         {
 
@@ -157,6 +185,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Returns a set of tempalte materials to be used for testing.")]
         private static List<Material> MaterialsWithEpds(ref double v, double inc, bool setA5ToWaste)
         {
             QuantityType quantityType = QuantityType.Volume;
@@ -171,6 +200,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Returns a dummy element to be used for evaluation testing.")]
         public static IEnumerable<object[]> DummyElementsAndTemplates(double initialV, double increace, bool setA5ToWaste)
         {
             List<string> names = new List<string>() { "Concrete", "Steel", "Glass",  };
@@ -190,6 +220,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Creates a dummy EPD to be used for testing evaluation. Will contain a metric of each type.")]
         public static EnvironmentalProductDeclaration DummyEPD(ref double v, double inc, bool setA5ToWaste, string name = "", QuantityType quantityType = (QuantityType)(-1))
         {
             if (string.IsNullOrEmpty(name))
@@ -224,15 +255,27 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Creates a dummy CombinedLifeCycleAssessmentFactors for testing. Will have EPD, A4factors, C2 factors as well as Waste factors set.")]
         public static CombinedLifeCycleAssessmentFactors DummyCombinedFactors(ref double v, double inc, bool setA5ToWaste, int transportMode, string name = "", QuantityType quantityType = (QuantityType)(-1))
         {
             EnvironmentalProductDeclaration epd = DummyEPD(ref v, inc, setA5ToWaste, name, quantityType);
 
-            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), Name = name };
+            return new CombinedLifeCycleAssessmentFactors { EnvironmentalProductDeclaration = epd, A4TransportFactors = DummyTransportFactor(ref v, inc, transportMode), C2TransportFactors = DummyTransportFactor(ref v, inc, transportMode), A5_3ConstructionWasteEmissions = DummyConstructionsFactor(v, inc), Name = name };
+        }
+
+        [Description("Creates a dummy ConstructionWasteEmissions with waste rate set to 50%.")]
+        private static ConstructionWasteEmissions DummyConstructionsFactor(double v, double inc)
+        {
+            return new ConstructionWasteEmissions
+            {
+                ResuedOnSite = ((int)Math.Round(v)) % 2 == 0,
+                WasteRate = new WasteRate { Rate = 0.5 },
+            };
         }
 
         /***************************************************/
 
+        [Description("Creates a dummy transport factors.")]
         public static ITransportFactors DummyTransportFactor(ref double v, double inc, int transportMode)
         {
             transportMode = transportMode % 4;
@@ -269,12 +312,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Creates a Dummy Vehicle emissions class to be used for testing.")]
         public static VehicleEmissions DummyVehicleEmissions(ref double v, double inc)
         {
             VehicleEmissions vehicleEmissions = new VehicleEmissions();
             foreach (Type type in FactorTypes())
             {
-                vehicleEmissions.EnvironmentalFactors.Add(DummyFactor(type, ref v, inc));
+                vehicleEmissions.EnvironmentalFactors.Add(DummyFactor(type, ref v, inc, 0.01));
             }
             vehicleEmissions.ReturnTripFactor = inc;
             return vehicleEmissions;
@@ -282,8 +326,10 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Creates a Dummy metric of the provided type. Populates the primary modules with values based on the inputs.")]
         public static IEnvironmentalMetric DummyMetric(Type type, ref double v, double inc, bool setA5ToWaste)
         {
+            v = v % 10;
             MethodInfo create = typeof(BH.Engine.LifeCycleAssessment.Create).GetMethods().Where(x => x.ReturnType == type).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault();
 
             if (create == null)
@@ -301,27 +347,28 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
             if (setA5ToWaste)
             {
-                if (metric is ClimateChangeFossilMetric || metric is ClimateChangeTotalMetric || metric is ClimateChangeTotalNoBiogenicMetric)
-                {
-                    metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
-                    metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
-                }
+                metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] = metric.Indicators[oM.LifeCycleAssessment.Module.A5];
+                metric.Indicators.Remove(oM.LifeCycleAssessment.Module.A5);
             }
+
             return metric;
         }
 
         /***************************************************/
 
-        public static IEnvironmentalFactor DummyFactor(Type type, ref double v, double inc)
+        [Description("Creates a dummy IEnvironmentalFactor of the provided type.")]
+        public static IEnvironmentalFactor DummyFactor(Type type, ref double v, double inc, double scale = 1)
         {
+            v = v % 10;
             IEnvironmentalFactor factor = Activator.CreateInstance(type) as IEnvironmentalFactor;
-            factor.Value = v;
+            factor.Value = v * scale;
             v += inc;
             return factor;
         }
 
         /***************************************************/
 
+        [Description("Gets all IEnvironmental metric types.")]
         private static List<Type> MetricTypes()
         {
             return new List<Type>
@@ -349,6 +396,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Returns all IEnvironmentalFactor types.")]
         private static List<Type> FactorTypes()
         {
             return new List<Type>

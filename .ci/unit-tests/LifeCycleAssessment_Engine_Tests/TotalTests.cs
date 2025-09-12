@@ -45,6 +45,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
+        [Description("Tests the Total extension method for environmental metrics by verifying that the total value correctly handles combination modules and avoids double-counting. Tests various combination scenarios including A1toA3, B-modules, and C-modules.")]
         public void Total(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
@@ -77,6 +78,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
+        [Description("Tests the ATotal extension method by verifying that only A-phase modules (A1-A5 and their sub-modules) are included in the total calculation. Tests proper handling of A1toA3 combinations and A5 sub-modules (A5_1 through A5_4).")]
         public void TotalA(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
@@ -97,6 +99,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
+        [Description("Tests the BTotal extension method by verifying that only B-phase modules (B1-B7 and their combinations) are included in the total calculation. Tests proper handling of B1toB3, B4toB5, B1toB5, and B1toB7 combination modules.")]
         public void TotalB(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;
@@ -117,6 +120,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1, 0, false })]
+        [Description("Tests the CTotal extension method by verifying that only C-phase modules (C1-C4 and their combinations) are included in the total calculation. Tests proper handling of C3toC4 and C1toC4 combination modules.")]
         public void TotalC(IEnvironmentalMetric metricFactors)
         {
             double tol = 1e-12;

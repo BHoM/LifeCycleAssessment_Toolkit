@@ -45,6 +45,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(nameof(SumTestCases))]
+        [Description("Tests the SumModuleDataValues extension method by verifying that module data values are correctly summed across multiple life cycle assessment items. Tests both scenarios where only common modules are included and where all modules are included, ensuring proper handling of different metric types.")]
         public void SumTest(IReadOnlyList<ILifeCycleAssessmentModuleData<IDictionary<Module, double>>> moduleData, bool onlyIncludeIfAllAvailable, Dictionary<Module, double> assumedSum)
         {
             Dictionary<Module, double> sum = moduleData.SumModuleDataValues(onlyIncludeIfAllAvailable);

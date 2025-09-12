@@ -25,8 +25,8 @@ using BH.Engine.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
-using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Constructions;
 using BH.oM.Physical.Elements;
@@ -42,7 +42,7 @@ using System.Threading.Tasks;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
-    public class EvaluateIStructE : NUnitTest
+    public class EvaluateGlobalEmissionsFactor : NUnitTest
     {
         /***************************************************/
         /****   Public Methods                          ****/
@@ -50,23 +50,23 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, true })]
-        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration by validating that IStructE-specific carbon factors (A5 and C1) are correctly applied to climate change metrics based on project cost, floor area, and total weight.")]
-        public void EvaluateIStructEMetricTest(IEnvironmentalMetric metric)
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration by evaluating environmental metrics and validating that global emission factors (construction activities and pre-construction demolition) are correctly applied to specific modules.")]
+        public void EvaluateGlobalEmissionsFactorMetricTest(IEnvironmentalMetric metric)
         {
-            IStructEEvaluationConfig config = DummyConfig();
+            GlobalEmissionFactors config = DummyConfig();
             double quantity = 50;
             double mass = 12;
 
-            MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity, DummyConfig(), mass);
-            ValidateMetricAndResult(metric, result, quantity, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass);
+            MaterialResult result = Query.EnvironmentalResults(metric, "", "", quantity, config, mass);
+            ValidateMetricAndResult(metric, result, quantity, config.ConstructionActivities.ConstructedFloorArea, config.PreConstructionDemolition.DemolishedFloorArea, config.TotalBuildingMass, config.PreConstructionDemolition.EnvironmentalFactors, config.ConstructionActivities.EnvironmentalFactors, mass);
 
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.0002, true })]
-        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for Environmental Product Declarations (EPDs). Validates that IStructE carbon factors are properly applied to EPDs and that only Mass quantity type EPDs are processed.")]
-        public void EvaluateIStructEEPDTest(EnvironmentalProductDeclaration epd)
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for Environmental Product Declarations (EPDs). Validates that global emission factors are properly applied and that only Mass quantity type EPDs are processed.")]
+        public void EvaluateGlobalEmissionsFactorEPDTest(EnvironmentalProductDeclaration epd)
         {
-            IStructEEvaluationConfig config = DummyConfig();
+            GlobalEmissionFactors config = DummyConfig();
             double eval = 32.22;
             double mass = 23.3;
             List<MaterialResult> materialResults = Query.EnvironmentalResults(epd, eval, "", null, config, mass);
@@ -80,7 +80,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(epd.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, epd.Name);
+                ValidateMetricAndResult(epd.EnvironmentalMetrics[i], materialResults[i], eval, config.ConstructionActivities.ConstructedFloorArea, config.PreConstructionDemolition.DemolishedFloorArea, config.TotalBuildingMass, config.PreConstructionDemolition.EnvironmentalFactors, config.ConstructionActivities.EnvironmentalFactors, mass, epd.Name);
             }
         }
 
@@ -88,13 +88,13 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.0002, true })]
-        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for CombinedLifeCycleAssessmentFactors. Validates that combined factors are properly processed alongside IStructE-specific carbon factors for construction and demolition phases.")]
-        public void EvaluateIStructECombinedFactorsTest(CombinedLifeCycleAssessmentFactors combinedFactors)
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for CombinedLifeCycleAssessmentFactors. Validates that combined factors including transport, construction emissions, and waste disposal factors are properly processed alongside global emission factors.")]
+        public void EvaluateGlobalEmissionsFactorCombinedFactorsTest(CombinedLifeCycleAssessmentFactors combinedFactors)
         {
-            IStructEEvaluationConfig config = DummyConfig();
+            GlobalEmissionFactors config = DummyConfig();
             double eval = 32.22;
             double mass = 22.4;
-            List<MaterialResult> materialResults = Query.EnvironmentalResults(combinedFactors, eval,mass, "", null, config, mass);
+            List<MaterialResult> materialResults = Query.EnvironmentalResults(combinedFactors, eval, mass, "", null, config, mass);
             if (combinedFactors.EnvironmentalProductDeclaration == null && combinedFactors.A4TransportFactors == null && combinedFactors.C2TransportFactors == null)
             {
                 Assert.That(materialResults, Is.Empty, "Should nto give results for Combined factors with all nulls.");
@@ -103,7 +103,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions, Evaluate.WasteAndDisposalImpact(combinedFactors?.C3C4WasteAndDisposalFactors, combinedFactors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
+                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ConstructionActivities.ConstructedFloorArea, config.PreConstructionDemolition.DemolishedFloorArea, config.TotalBuildingMass, config.PreConstructionDemolition.EnvironmentalFactors, config.ConstructionActivities.EnvironmentalFactors, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions, Evaluate.WasteAndDisposalImpact(combinedFactors?.C3C4WasteAndDisposalFactors, combinedFactors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
             }
         }
 
@@ -111,10 +111,10 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, true })]
-        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for material takeoffs. Validates that IStructE carbon factors are correctly applied to takeoff items with both EPD and CombinedLifeCycleAssessmentFactors material properties.")]
-        public void EvaluateIStructETakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for material takeoffs. Validates that global emission factors are correctly applied to takeoff items with both EPD and CombinedLifeCycleAssessmentFactors material properties.")]
+        public void EvaluateGlobalEmissionsFactorTakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
-            IStructEEvaluationConfig config = DummyConfig();
+            GlobalEmissionFactors config = DummyConfig();
 
             List<MaterialResult> materialResults = Query.EnvironmentalResults(takeoff, templates, true, null, config);
 
@@ -140,7 +140,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     epd.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
                     IEnvironmentalMetric metric = epd.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
 
-                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, epd.Name, mat.Name);
+                    ValidateMetricAndResult(metric, result, eval, config.ConstructionActivities.ConstructedFloorArea, config.PreConstructionDemolition.DemolishedFloorArea, config.TotalBuildingMass, config.PreConstructionDemolition.EnvironmentalFactors, config.ConstructionActivities.EnvironmentalFactors, takeoffItem.Mass, epd.Name, mat.Name);
                 }
                 else
                 {
@@ -150,7 +150,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
                     combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
                     IEnvironmentalMetric metric = combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
-                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions);
+                    ValidateMetricAndResult(metric, result, eval, config.ConstructionActivities.ConstructedFloorArea, config.PreConstructionDemolition.DemolishedFloorArea, config.TotalBuildingMass, config.PreConstructionDemolition.EnvironmentalFactors, config.ConstructionActivities.EnvironmentalFactors, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions);
 
 
                 }
@@ -160,11 +160,11 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, true })]
-        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for building elements (walls). Validates that element-level environmental results are correctly calculated with IStructE carbon factors applied to each material layer.")]
+        [Description("Tests the EnvironmentalResults query method with GlobalEmissionFactors configuration for building elements (walls). Validates that element-level environmental results are correctly calculated with global emission factors applied to each material layer.")]
         public void EvaluateElement(Wall element, double area, List<Material> templates)
         {
-            IStructEEvaluationConfig config = DummyConfig();
-            List<IElementResult<MaterialResult>> elementResults = Query.EnvironmentalResults(element, templates,true, null, config);
+            GlobalEmissionFactors config = DummyConfig();
+            List<IElementResult<MaterialResult>> elementResults = Query.EnvironmentalResults(element, templates, true, null, config);
 
             Assert.That(elementResults, Is.Not.Empty);
 
@@ -195,7 +195,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     double eval = layer.Thickness * area;
                     double mass = eval * layer.Material.Density;
 
-                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, epd.Name, mat.Name);
+                    ValidateMetricAndResult(metric, result, eval, config.ConstructionActivities.ConstructedFloorArea, config.PreConstructionDemolition.DemolishedFloorArea, config.TotalBuildingMass, config.PreConstructionDemolition.EnvironmentalFactors, config.ConstructionActivities.EnvironmentalFactors, mass, epd.Name, mat.Name);
                 }
             }
         }
@@ -204,9 +204,10 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionWasteEmissions a5Factors = null, double c3c4Factor = double.NaN)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double constructedArea, double demolishedArea, double totalMass, List<IEnvironmentalFactor> preConstructionFactors, List<IEnvironmentalFactor> constructionFactors, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionWasteEmissions a5Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
+            MetricType? metricType = metric?.IMetricType();
 
             Dictionary<Module, double> specialCases = new Dictionary<Module, double>();
             if (a4Factor != null)
@@ -216,16 +217,19 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             if (!double.IsNaN(c3c4Factor))
                 specialCases[Module.C3toC4] = c3c4Factor;
 
-            List<MetricType> specialMetrics = new List<MetricType> { MetricType.ClimateChangeTotal, MetricType.ClimateChangeTotalNoBiogenic, MetricType.ClimateChangeFossil };
-            bool specialTreatment = metric == null ? false : specialMetrics.Contains(result.IMetricType());
-
-            if (specialTreatment)
+            IEnvironmentalFactor preConstrcutionFactor = preConstructionFactors?.FirstOrDefault(x => x.IMetricType() == metricType);
+            if(preConstrcutionFactor != null)
             {
-                specialCases[Module.C1] = mass / totalWeight * c1CarbonFactor * floorArea;
-                specialCases[Module.A5_2] = mass / totalWeight * a5CarbonFactor * projectCost;
+                specialCases[Module.A5_1] = mass / totalMass * demolishedArea * preConstrcutionFactor.Value;
             }
 
-            if(a5Factors != null)
+            IEnvironmentalFactor constructionFactor = constructionFactors?.FirstOrDefault(x => x.IMetricType() == metricType);
+            if(constructionFactor != null)
+            {
+                specialCases[Module.A5_2] = mass / totalMass * constructedArea * constructionFactor.Value;
+            }
+
+            if (a5Factors != null)
             {
                 double wasteImpact = Evaluate.WasteImpact(a5Factors, result);
                 specialCases[Module.A5_3] = wasteImpact;
@@ -236,14 +240,14 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
-
-        private static IStructEEvaluationConfig DummyConfig()
+        private static GlobalEmissionFactors DummyConfig()
         {
-            return new IStructEEvaluationConfig
+            return new GlobalEmissionFactors
             {
-                TotalWeight = 2000000,
-                FloorArea = 500,
-                ProjectCost = 1000000
+                TotalBuildingMass = 2000000,
+                ConstructionActivities = new ConstructionActivities { ConstructedFloorArea = 10000 },
+                PreConstructionDemolition = new PreConstructionDemolition { DemolishedFloorArea = 5000 },
+                StructuresOnlyMass = false
             };
         }
 
