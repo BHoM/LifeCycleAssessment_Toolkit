@@ -25,6 +25,7 @@ using BH.Engine.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.Configs;
 using BH.oM.LifeCycleAssessment.MaterialFragments;
+using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Constructions;
@@ -49,6 +50,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyMetrics), new object[] { 1.234, 0.1432, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration by validating that IStructE-specific carbon factors (A5 and C1) are correctly applied to climate change metrics based on project cost, floor area, and total weight.")]
         public void EvaluateIStructEMetricTest(IEnvironmentalMetric metric)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -61,6 +63,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyEPDs), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for Environmental Product Declarations (EPDs). Validates that IStructE carbon factors are properly applied to EPDs and that only Mass quantity type EPDs are processed.")]
         public void EvaluateIStructEEPDTest(EnvironmentalProductDeclaration epd)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -85,6 +88,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyCombinedLCAFactors), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for CombinedLifeCycleAssessmentFactors. Validates that combined factors are properly processed alongside IStructE-specific carbon factors for construction and demolition phases.")]
         public void EvaluateIStructECombinedFactorsTest(CombinedLifeCycleAssessmentFactors combinedFactors)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -99,7 +103,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(materialResults, Is.Not.Empty, "No results generated");
             for (int i = 0; i < materialResults.Count; i++)
             {
-                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
+                ValidateMetricAndResult(combinedFactors.EnvironmentalProductDeclaration?.EnvironmentalMetrics[i], materialResults[i], eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, mass, combinedFactors.Name, "", combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions, Evaluate.WasteAndDisposalImpact(combinedFactors?.C3C4WasteAndDisposalFactors, combinedFactors?.EnvironmentalProductDeclaration?.EnvironmentalMetrics, mass, eval, materialResults[i].IMetricType()));
             }
         }
 
@@ -107,6 +111,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyTakeoffAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for material takeoffs. Validates that IStructE carbon factors are correctly applied to takeoff items with both EPD and CombinedLifeCycleAssessmentFactors material properties.")]
         public void EvaluateIStructETakeoff(GeneralMaterialTakeoff takeoff, List<Material> templates, bool containEpds)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -145,7 +150,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                     CombinedLifeCycleAssessmentFactors combinedFactors = prop as CombinedLifeCycleAssessmentFactors;
                     combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.Should().Contain(x => x.IMetricType() == result.IMetricType());
                     IEnvironmentalMetric metric = combinedFactors.EnvironmentalProductDeclaration.EnvironmentalMetrics.First(x => x.IMetricType() == result.IMetricType());
-                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors);
+                    ValidateMetricAndResult(metric, result, eval, config.ProjectCost, config.FloorArea, config.TotalWeight, config.A5CarbonFactor, config.C1CarbonFactor, takeoffItem.Mass, combinedFactors.Name, mat.Name, combinedFactors.A4TransportFactors, combinedFactors.C2TransportFactors, combinedFactors.A5_3ConstructionWasteEmissions);
 
 
                 }
@@ -155,6 +160,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         [TestCaseSource(typeof(DataSource), nameof(DataSource.DummyElementsAndTemplates), new object[] { 1.2321, 0.0002, true })]
+        [Description("Tests the EnvironmentalResults query method with IStructE evaluation configuration for building elements (walls). Validates that element-level environmental results are correctly calculated with IStructE carbon factors applied to each material layer.")]
         public void EvaluateElement(Wall element, double area, List<Material> templates)
         {
             IStructEEvaluationConfig config = DummyConfig();
@@ -198,108 +204,39 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null)
+        private static void ValidateMetricAndResult(IEnvironmentalMetric metric, MaterialResult result, double quantity, double projectCost, double floorArea, double totalWeight, double a5CarbonFactor, double c1CarbonFactor, double mass, string epdName = "", string materialName = "", ITransportFactors a4Factor = null, ITransportFactors c2Factor = null, ConstructionWasteEmissions a5Factors = null, double c3c4Factor = double.NaN)
         {
             double tolerance = 1e-6;
 
-            string initialMessage;
-            if (metric != null)
-                initialMessage = $"Evaluating {metric.GetType().Name} comparing against {result.GetType().Name}";
-            else
-                initialMessage = $"Checking result of type {result.GetType().Name}";
-
-            if (!string.IsNullOrEmpty(epdName))
-            {
-                result.EnvironmentalProductDeclarationName.Should().Be(epdName, initialMessage);
-            }
-
-            if (!string.IsNullOrEmpty(materialName))
-            {
-                result.MaterialName.Should().Be(materialName, initialMessage);
-            }
-
-            if (metric != null)
-                result.IMetricType().Should().Be(metric.IMetricType(), initialMessage);
-
-            List<Module> evaluatedModules = metric?.Indicators?.Keys.ToList() ?? new List<Module>();
-
+            Dictionary<Module, double> specialCases = new Dictionary<Module, double>();
             if (a4Factor != null)
-                evaluatedModules.Add(Module.A4);
+                specialCases[Module.A4] = Evaluate.TransportImpact(a4Factor, result.IMetricType(), mass);
             if (c2Factor != null)
-                evaluatedModules.Add(Module.C2);
+                specialCases[Module.C2] = Evaluate.TransportImpact(c2Factor, result.IMetricType(), mass);
+            if (!double.IsNaN(c3c4Factor))
+                specialCases[Module.C3toC4] = c3c4Factor;
+
             List<MetricType> specialMetrics = new List<MetricType> { MetricType.ClimateChangeTotal, MetricType.ClimateChangeTotalNoBiogenic, MetricType.ClimateChangeFossil };
             bool specialTreatment = metric == null ? false : specialMetrics.Contains(result.IMetricType());
 
-            if(specialTreatment)
+            if (specialTreatment)
             {
-                evaluatedModules.Add(Module.A5);
-                evaluatedModules.Add(Module.C1);
+                specialCases[Module.C1] = mass / totalWeight * c1CarbonFactor * floorArea;
+                specialCases[Module.A5_2] = mass / totalWeight * a5CarbonFactor * projectCost;
             }
-            
-            evaluatedModules = evaluatedModules.OrderBy(x => x).Distinct().ToList();
 
-            Assert.Multiple(() =>
+            if(a5Factors != null)
             {
-                foreach (Module module in evaluatedModules)
-                {
-                    Console.WriteLine($"{result.IMetricType()}: {module}");
-                    Assert.That(result.Indicators, Contains.Key(module), $"{module} missing while {metric}");
-                    string message = $"Module: {module.ToString()} {initialMessage}";
-                    if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1)
-                    {
-                        Assert.That(result.Indicators[module], Is.EqualTo(mass / totalWeight * floorArea * c1CarbonFactor).Within(tolerance), $"{module} failed while {message}");
-                    }
-                    else if (specialTreatment && module == oM.LifeCycleAssessment.Module.A5)
-                    {
-                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[oM.LifeCycleAssessment.Module.A5_3] * quantity + mass / totalWeight * a5CarbonFactor * projectCost).Within(tolerance), $"{module} failed while {message}");
-                    }
-                    else if (specialTreatment && module == oM.LifeCycleAssessment.Module.C1toC4)
-                    {
-                        Assert.That(result.Indicators[module], Is.EqualTo(result.Indicators[oM.LifeCycleAssessment.Module.C1] + result.Indicators[oM.LifeCycleAssessment.Module.C2] + result.Indicators[oM.LifeCycleAssessment.Module.C3] + result.Indicators[oM.LifeCycleAssessment.Module.C4]).Within(tolerance), $"{module} failed while {message}");
-                    }
-                    else if (a4Factor != null && module == oM.LifeCycleAssessment.Module.A4)
-                    {
-                        Assert.That(result.Indicators[module], Is.EqualTo(TransportImpact(a4Factor, result.IMetricType(), mass)).Within(tolerance), $"{module} failed while {message}");
-                    }
-                    else if (c2Factor != null && module == oM.LifeCycleAssessment.Module.C2)
-                    {
-                        Assert.That(result.Indicators[module], Is.EqualTo(TransportImpact(c2Factor, result.IMetricType(), mass)).Within(tolerance), $"{module} failed while {message}");
-                    }
-                    else
-                    {
-                        Assert.That(result.Indicators[module], Is.EqualTo(metric.Indicators[module] * quantity).Within(tolerance), $"{module} failed while {message}");
-                    }
-                }
-            });
+                double wasteImpact = Evaluate.WasteImpact(a5Factors, result);
+                specialCases[Module.A5_3] = wasteImpact;
+            }
+
+            Evaluate.ValidateResult(result, metric, quantity, epdName, materialName, specialCases);
+
         }
 
         /***************************************************/
-        private static double TransportImpact(ITransportFactors transport, MetricType metricType, double mass)
-        {
-            if (transport is FullTransportScenario fullScenario)
-            {
-                IEnvironmentalFactor factor = fullScenario.EnvironmentalFactors.FirstOrDefault(x => x.IMetricType() == metricType);
-                if (factor == null)
-                    return double.NaN;
 
-                return factor.Value * mass;
-            }
-            if (transport is SingleTransportModeImpact singel)
-            {
-                IEnvironmentalFactor factor = singel.VehicleEmissions.EnvironmentalFactors.FirstOrDefault(x => x.IMetricType() == metricType);
-                if (factor == null)
-                    return double.NaN;
-
-                return factor.Value * mass * singel.DistanceTraveled * (1 + singel.VehicleEmissions.ReturnTripFactor);
-            }
-            else if (transport is DistanceTransportModeScenario distance)
-            {
-                return distance.SingleTransportModeImpacts.Sum(x => TransportImpact(x, metricType, mass));
-            }
-            return double.NaN;
-        }
-
-        /***************************************************/
         private static IStructEEvaluationConfig DummyConfig()
         {
             return new IStructEEvaluationConfig
