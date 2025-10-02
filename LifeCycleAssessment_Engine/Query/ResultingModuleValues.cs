@@ -40,7 +40,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.3", "BH.Engine.LifeCycleAssessment.Query.IResultingModuleValues(BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalMetric, System.Double, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig, System.Object)")]
         [Description("Gets the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
          "The resulting values are computed based on provided config, defaulting to the values on the metric for each module multiplied by the quantity value.\n" +
          "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
