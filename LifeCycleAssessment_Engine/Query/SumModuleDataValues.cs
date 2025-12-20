@@ -41,7 +41,6 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [PreviousVersion("8.2", "BH.Engine.LifeCycleAssessment.Query.SumPhaseDataValues(System.Collections.Generic.IReadOnlyList<BH.oM.LifeCycleAssessment.ILifeCycleAssessmentPhaseData>)")]
         [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided ILifeCycleAssessmentPhaseData, i.e. the first value will be the sum of A1 for all the provided ILifeCycleAssessmentPhaseDatas.")]
         [Input("results", "List of ILifeCycleAssessmentPhaseData to get the sum data from.")]
         [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]
