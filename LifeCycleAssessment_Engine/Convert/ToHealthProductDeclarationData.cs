@@ -22,10 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.LifeCycleAssessment;
 using BH.Engine.Base;
 
@@ -37,6 +39,9 @@ namespace BH.Engine.LifeCycleAssessment
         /****           Public Methods                  ****/
         /***************************************************/
 
+        [Description("Converts a CustomObject to a HealthProductDeclaration object by extracting hazard indicator property values.")]
+        [Input("obj", "The CustomObject to convert, expected to contain health product declaration properties such as Name, MasterFormat, Uniformats, and hazard indicator values.")]
+        [Output("healthProductDeclaration", "The HealthProductDeclaration object populated from the CustomObject properties.")]
         public static HealthProductDeclaration ToHealthProductDeclarationData(this CustomObject obj)
         {
             HealthProductDeclaration epd = new HealthProductDeclaration
