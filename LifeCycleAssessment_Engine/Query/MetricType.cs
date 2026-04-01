@@ -48,6 +48,9 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the MetricType enum value corresponding to the provided ILifeCycleAssessmentIndicator by matching the indicator's type name.")]
+        [Input("factor", "The ILifeCycleAssessmentIndicator to get the MetricType for.")]
+        [Output("metricType", "The MetricType enum value matching the provided indicator, or Undefined if no match is found.")]
         public static MetricType IMetricType(this ILifeCycleAssessmentIndicator factor)
         {
             if (factor == null)
