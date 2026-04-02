@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2026, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -48,6 +48,9 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the MetricType enum value corresponding to the provided ILifeCycleAssessmentIndicator by matching the indicator's type name.")]
+        [Input("factor", "The ILifeCycleAssessmentIndicator to get the MetricType for.")]
+        [Output("metricType", "The MetricType enum value matching the provided indicator, or Undefined if no match is found.")]
         public static MetricType IMetricType(this ILifeCycleAssessmentIndicator factor)
         {
             if (factor == null)
@@ -77,5 +80,6 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
     }
 }
+
 
 
