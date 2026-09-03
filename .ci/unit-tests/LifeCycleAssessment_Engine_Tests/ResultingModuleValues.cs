@@ -51,7 +51,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         public void ResultingModuleValuesDoesNotContainCombinationOrParts(IEnvironmentalMetric metric, Dictionary<Module, PrecomputedModuleValues> precomputedValues, List<Module> expectedModules)
         {
 
-            var resultingValues = Query.IResultingModuleValues(metric, 1, null, precomputedValues, null);
+            var resultingValues = Query.IResultingModuleValues(metric, 1, precomputedValues);
             Assert.That(resultingValues.Keys, Is.EquivalentTo(expectedModules), "Resulting module values should contain either combination modules or their parts, but not both.");
 
 
