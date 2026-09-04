@@ -152,10 +152,11 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Method - fallback                 ****/
         /***************************************************/
 
-        public static Dictionary<Module, PrecomputedModuleValues> EvaluationConfigData(this IEvaluationConfig evaluationConfig, double quantityValue, double mass)
+        [Description("Fallback method for providing pre-computed module values for unsupported evaluation configs. This will log a warning and return an empty dictionary.")]
+        private static Dictionary<Module, PrecomputedModuleValues> EvaluationConfigData(this IEvaluationConfig evaluationConfig, double quantityValue, double mass)
         {
             BH.Engine.Base.Compute.RecordWarning($"The provided evaluation config of type {evaluationConfig.GetType().Name} is not supported for pre-computation of module values. No pre-computed values will be provided for the modules.");
-            return null;
+            return new Dictionary<Module, PrecomputedModuleValues>();
         }
 
         /***************************************************/
