@@ -39,32 +39,62 @@ using System.Linq;
 
 namespace BH.Engine.LifeCycleAssessment
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates and adds construction waste emissions (A5_3 module) to the resulting module values dictionary based on construction emissions parameters. The method computes waste factors according to IStructE guidance and adds the A5_3 module representing construction waste impacts.")]
+        [Description("Calculates construction waste emissions (A5_3 module) based on construction emissions parameters. The method computes waste factors according to IStructE guidance and returns the A5_3 module representing construction waste impacts.")]
         [Input("resultingValues", "Dictionary of module values to which the construction emissions will be added. Must contain required modules (A1toA3 or A1+A2+A3, A4, C3toC4 or C3 or C4, and optionally C2 if not reused on site).")]
         [Input("constructionEmissions", "Construction emissions parameters including waste rate and whether materials are reused on site.")]
         [Input("metricType", "The metric type being evaluated, used for error reporting when required modules are missing.")]
-        [Output("resultingValues", "The input dictionary is modified in place with the A5_3 module added, representing construction waste emissions calculated as: (cradle-to-gate + transport + disposal) × waste factor.")]
-        public static void AddConstructionWasteEmissions(this Dictionary<Module, double> resultingValues, ConstructionWasteEmissions constructionEmissions, MetricType metricType)
+        [Output("constructionWasteEmissions", "The calculated construction waste emissions as a double value.")]
+        public static double ConstructionWasteEmissions(this Dictionary<Module, double> resultingValues, ConstructionWasteEmissions constructionEmissions, MetricType metricType)
         {
-            double a5_3 = resultingValues.ConstructionWasteEmissions(constructionEmissions, metricType);
-            if (double.IsNaN(a5_3))
-                return;
 
-            resultingValues[Module.A5_3] = a5_3;
+            if(resultingValues == null || constructionEmissions?.WasteRate == null)
+                return double.NaN;
 
-            if(Query.PartOfCombinationModules().TryGetValue(Module.A5_3, out var parentCombinations))
+            double total = 0;
+            List<Module> missingModules = new List<Module>();
+
+            //Get out the cradle to gate metrics
+            if (resultingValues.TryGetModuleValue(Module.A1toA3, out double a1a3))
+                total += a1a3;
+            else
+                missingModules.Add(Module.A1toA3);
+
+            //Get out the transport metrics
+            if(resultingValues.TryGetModuleValue(Module.A4, out double a4))
+                total += a4;
+            else
+                missingModules.Add(Module.A4);
+
+            //Get out the disposal metrics
+            if (!constructionEmissions.ResuedOnSite)
             {
-                foreach(var parentCombination in parentCombinations)
-                {
-                    resultingValues.Remove(parentCombination);  //Remove parent combinations to force recalculation when material results are created
-                }
+                if (resultingValues.TryGetModuleValue(Module.C2, out double c2))
+                    total += c2; //Add C2 if not re-used on site
+                else
+                    missingModules.Add(Module.C2);
             }
+
+            //Get out the disposal metrics
+            if (resultingValues.TryGetModuleValue(Module.C3toC4, out double c3c4, false))
+                total += c3c4;
+            else
+                missingModules.Add(Module.C3toC4);
+
+            if (missingModules.Any())
+            {
+                string message = $"Missing modules for waste computation of waste factors (A5.3) for metric of type {metricType}: {string.Join(", ", missingModules)} (or their subparts).";
+                BH.Engine.Base.Compute.RecordError(message);
+                return double.NaN;
+            }
+
+            return total * constructionEmissions.WasteFactor();
+
         }
 
         /***************************************************/

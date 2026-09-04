@@ -33,6 +33,7 @@ using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Transport;
 using BH.oM.LifeCycleAssessment.Results;
 using BH.oM.Physical.Materials;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -186,6 +187,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("9.3", "BH.Engine.LifeCycleAssessment.Query.EnvironmentalResults(BH.oM.LifeCycleAssessment.MaterialFragments.EnvironmentalProductDeclaration, System.Double, System.String, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.MetricType>, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig, System.Object)")]
         [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
                      "Each metric is evaluated by multiplying the values for each module by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]
@@ -194,10 +196,10 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting module values as metric value times applicable quantity.")]
-        [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
+        [Input("mass", "Additional mass data required for evaluation with the provided config. If no config is provided, this input can be left empty.", typeof(Mass))]
         [Output("results", "List of MaterialResults corresponding to the evaluated metrics on the EPD.")]
         [PreviousInputNames("quantityValue", "referenceValue")]
-        public static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null, object configData = null)
+        public static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration epd, double quantityValue, string materialName = "", List<MetricType> metricFilter = null, IEvaluationConfig evaluationConfig = null, double mass = double.NaN)
         {
             if (epd == null)
             {
@@ -209,7 +211,7 @@ namespace BH.Engine.LifeCycleAssessment
 
             foreach (IEnvironmentalMetric metric in epd.FilteredFactors(metricFilter))
             {
-                results.Add(EnvironmentalResults(metric, epd.Name, materialName, quantityValue, evaluationConfig, configData));
+                results.Add(EnvironmentalResults(metric, epd.Name, materialName, quantityValue, evaluationConfig, mass));
             }
 
             return results;
@@ -217,12 +219,13 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("9.3", "BH.Engine.LifeCycleAssessment.Query.EnvironmentalResults(BH.oM.LifeCycleAssessment.MaterialFragments.CombinedLifeCycleAssessmentFactors, System.Double, System.Double, System.String, System.Collections.Generic.List<BH.oM.LifeCycleAssessment.MetricType>, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig, System.Object)")]
         [Description("Evaluates all or selected metrics stored on the EnvironmentalProductDeclaration (EPD) and returns a result per metric.\n" +
               "Each metric is evaluated by multiplying the values for each module by the provided quantityValue.\n" +
               "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration.")]
         [Input("factorsProvider", "The CombinedLifeCycleAssessmentFactors to evaluate. Returned results will correspond to all, or selected, metrics stored on this object.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
-        [Input("mass", "The mass value to transport scenarios by. Can for the case of quantity type of the APD being mass, this should be equal to the quantityValue.")]
+        [Input("mass", "The mass value to transport scenarios by. Can for the case of quantity type of the EPD being mass, this should be equal to the quantityValue.", typeof(Mass))]
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result classes.")]
         [Input("metricFilter", "Optional filter for the provided EnvironmentalProductDeclaration for selecting one or more of the provided metrics for calculation. This method also accepts multiple metric types simultaneously. If nothing is provided then no filtering is assumed, i.e. all metrics on the found EPDS are evaluated.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting module values as metric value times applicable quantity.")]
@@ -237,11 +240,14 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
+            //Setup precomputed values based on the config
+            Dictionary<Module, PrecomputedModuleValues> precomputedModules = evaluationConfig.IEvaluationConfigData(quantityValue, mass);
+
             Dictionary<MetricType, double> a4TransportResults = factorsProvider.A4TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
             Dictionary<MetricType, double> c2TransportResults = factorsProvider.C2TransportFactors?.ITransportResults(mass, metricFilter) ?? new Dictionary<MetricType, double>();
             Dictionary<MetricType, double> c3c4Emissions = factorsProvider.C3C4WasteAndDisposalFactors?.WasteAndDisposalResults(mass, quantityValue, factorsProvider.EnvironmentalProductDeclaration.EnvironmentalMetrics) ?? new Dictionary<MetricType, double>();
 
-            Dictionary<Module, PrecomputedModuleValues> precomputedModules = new Dictionary<Module, PrecomputedModuleValues>();
+
 
             if (a4TransportResults.Any())
                 precomputedModules[Module.A4] = new PrecomputedModuleValues() { ModuleValues = a4TransportResults, OverwriteExistingValues = true };
@@ -257,7 +263,7 @@ namespace BH.Engine.LifeCycleAssessment
                 foreach (IEnvironmentalMetric metric in factorsProvider.EnvironmentalProductDeclaration.FilteredFactors(metricFilter))
                 {
                     MetricType type = metric.IMetricType();
-                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, precomputedModules, configData);
+                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, precomputedModules);
 
                     //Check if C2 and A4 results are defined explicitly, and override them if they are
                     a4TransportResults.Remove(type);    //Remove as used up
@@ -302,6 +308,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [PreviousVersion("9.3", "BH.Engine.LifeCycleAssessment.Query.EnvironmentalResults(BH.oM.LifeCycleAssessment.MaterialFragments.IEnvironmentalMetric, System.String, System.String, System.Double, BH.oM.LifeCycleAssessment.Configs.IEvaluationConfig, System.Object)")]
         [Description("Evaluates the EnvironmentalMetric and returns a MaterialResult of a type corresponding to the metric. The evaluation is done by multiplying all module data on the metric by the provided quantityValue.\n" +
                      "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
         [Input("metric", "The EnvironmentalMetric to evaluate. Returned result will be a MaterialResult of a type corresponding to the metric.")]
@@ -309,9 +316,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("materialName", "The name of the Material that owns the EnvironmentalProductDeclaration. Stored as an identifier on the returned result class.")]
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("evaluationConfig", "Config controlling how the metrics should be evaluated, may contain additional parameters for the evaluation. If no config is provided the default evaluation mechanism is used which computes resulting module values as metric value times quantity.")]
-        [Input("configData", "Additional data required for evaluation with the provided config. If no config is provided, this input can be left empty. Type of data expected depends on the config. For the IStructEEvaluationConfig the mass should be provided here.")]
+        [Input("mass", "Additional mass data required for evaluation with the provided config. If no config is provided, this input can be left empty.", typeof(Mass))]
         [Output("result", "A MaterialResult of a type corresponding to the evaluated metric with module data calculated as data on metric multiplied by the provided quantity value.")]
-        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetric metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null, object configData = null)
+        public static MaterialResult EnvironmentalResults(this IEnvironmentalMetric metric, string epdName, string materialName, double quantityValue, IEvaluationConfig evaluationConfig = null, double mass = double.NaN)
         {
             if (metric == null)
             {
@@ -319,7 +326,12 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
             }
 
-            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, evaluationConfig, null, configData);
+            Dictionary<Module, PrecomputedModuleValues> precomputedModules = null;
+
+            if (evaluationConfig != null && !double.IsNaN(mass))
+                precomputedModules = evaluationConfig.IEvaluationConfigData(quantityValue, mass);
+
+            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, precomputedModules);
 
             return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues as dynamic);
         }
@@ -330,93 +342,34 @@ namespace BH.Engine.LifeCycleAssessment
 
         private static List<MaterialResult> IEnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
-            if (ITryGetConfigData(evaluationConfig, takeoffItem, out object configData))
-            {
-                return EnvironmentalResults(factorsProvider as dynamic, takeoffItem, metricFilter, evaluationConfig, configData);
-            }
-            return new List<MaterialResult>();
+
+            return EnvironmentalResults(factorsProvider as dynamic, takeoffItem, metricFilter, evaluationConfig);
+
         }
 
         /***************************************************/
 
-        private static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
+        private static List<MaterialResult> EnvironmentalResults(this EnvironmentalProductDeclaration factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
-            return EnvironmentalResults(factorsProvider, takeoffItem.QuantityValue(factorsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig, configData);
+            return EnvironmentalResults(factorsProvider, takeoffItem.QuantityValue(factorsProvider.QuantityType), takeoffItem.Material.Name, metricFilter, evaluationConfig, takeoffItem.QuantityValue(QuantityType.Mass));
         }
 
         /***************************************************/
 
-        private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
+        private static List<MaterialResult> EnvironmentalResults(this CombinedLifeCycleAssessmentFactors factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
             double quantityValue = takeoffItem.QuantityValue(factorsProvider.EnvironmentalProductDeclaration.QuantityType);
             double mass = takeoffItem.QuantityValue(QuantityType.Mass);
-            return EnvironmentalResults(factorsProvider, quantityValue, mass, takeoffItem.Material.Name, metricFilter, evaluationConfig, configData);
+            return EnvironmentalResults(factorsProvider, quantityValue, mass, takeoffItem.Material.Name, metricFilter, evaluationConfig);
         }
 
         /***************************************************/
 
 
-        private static List<MaterialResult> EnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig, object configData)
+        private static List<MaterialResult> EnvironmentalResults(this IEnvironmentalFactorsProvider factorsProvider, TakeoffItem takeoffItem, List<MetricType> metricFilter, IEvaluationConfig evaluationConfig)
         {
             BH.Engine.Base.Compute.RecordWarning($"No evaluation method implemented for metric providers of type {factorsProvider.GetType().Name}");
             return new List<MaterialResult>();
-        }
-
-        /***************************************************/
-        /**** Private Methods - Extract config data     ****/
-        /***************************************************/
-
-        private static bool ITryGetConfigData(this IEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
-        {
-            if (evaluationConfig == null)
-            { 
-                configData = null;
-                return true;
-            }
-
-            return TryGetConfigData(evaluationConfig as dynamic, takeoffItem, out configData);
-        }
-
-        /***************************************************/
-
-        private static bool TryGetConfigData(this IStructEEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
-        {
-            double mass = takeoffItem.QuantityValue(QuantityType.Mass);
-
-            configData = mass;
-            if (double.IsNaN(mass) || mass == 0)
-            {
-                BH.Engine.Base.Compute.RecordError($"Unable to extract required mass required to evaluate with the {nameof(IStructEEvaluationConfig)}.");
-                return false;
-            }
-
-            return true;
-        }
-
-        /***************************************************/
-
-        private static bool TryGetConfigData(this GlobalEmissionFactors evaluationConfig, TakeoffItem takeoffItem, out object configData)
-        {
-            double mass = takeoffItem.QuantityValue(QuantityType.Mass);
-
-            configData = mass;
-            if (double.IsNaN(mass) || mass == 0)
-            {
-                BH.Engine.Base.Compute.RecordError($"Unable to extract required mass required to evaluate with the {nameof(IStructEEvaluationConfig)}.");
-                return false;
-            }
-
-            return true;
-        }
-
-        /***************************************************/
-
-        private static bool TryGetConfigData(this IEvaluationConfig evaluationConfig, TakeoffItem takeoffItem, out object configData)
-        {
-            //Fallback method
-            BH.Engine.Base.Compute.RecordWarning($"No method exists to extract config data for config of type {evaluationConfig.GetType().Name}.");
-            configData = null;
-            return true;    //Return true to continue evaluation
         }
 
         /***************************************************/
