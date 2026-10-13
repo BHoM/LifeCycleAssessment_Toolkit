@@ -110,7 +110,7 @@ namespace BH.Engine.LifeCycleAssessment
                     {
                         if (part.Item2) // If the part is required
                         {
-                            if (!moduleData.TryGetModuleValue(part.Item1, out double subValue))
+                            if (!moduleData.TryGetModuleValue(part.Item1, out double subValue, requireAllRequiredSubParts))
                             {
                                 value = double.NaN;
                                 return false; // Required part is missing
@@ -121,7 +121,7 @@ namespace BH.Engine.LifeCycleAssessment
                         else
                         {
                             // If the part is not required, add its value if present
-                            if (moduleData.TryGetModuleValue(part.Item1, out double subValue))
+                            if (moduleData.TryGetModuleValue(part.Item1, out double subValue, requireAllRequiredSubParts))
                             {
                                 value += subValue;
                                 atLeastOnePartPresent = true;
@@ -145,7 +145,7 @@ namespace BH.Engine.LifeCycleAssessment
                     {
 
                         // Add the value of the part if present. Pass on the setting to make sure nested combinations are also computed from available parts
-                        if (moduleData.TryGetModuleValue(part.Item1, out double subValue))
+                        if (moduleData.TryGetModuleValue(part.Item1, out double subValue, requireAllRequiredSubParts))
                         {
                             value += subValue;
                             atLeastOnePartPresent = true;
