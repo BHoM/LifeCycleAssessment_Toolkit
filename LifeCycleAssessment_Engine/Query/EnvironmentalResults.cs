@@ -263,7 +263,7 @@ namespace BH.Engine.LifeCycleAssessment
                 foreach (IEnvironmentalMetric metric in factorsProvider.EnvironmentalProductDeclaration.FilteredFactors(metricFilter))
                 {
                     MetricType type = metric.IMetricType();
-                    Dictionary<Module, double> resultingValues = metric.IResultingModuleValues(quantityValue, precomputedModules);
+                    Dictionary<Module, double> resultingValues = metric.ResultingModuleValues(quantityValue, precomputedModules);
 
                     //Check if C2 and A4 results are defined explicitly, and override them if they are
                     a4TransportResults.Remove(type);    //Remove as used up
@@ -331,7 +331,7 @@ namespace BH.Engine.LifeCycleAssessment
             if (evaluationConfig != null && !double.IsNaN(mass))
                 precomputedModules = evaluationConfig.IEvaluationConfigData(quantityValue, mass);
 
-            IDictionary resultingValues = metric.IResultingModuleValues(quantityValue, precomputedModules);
+            IDictionary resultingValues = metric.ResultingModuleValues(quantityValue, precomputedModules);
 
             return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues as dynamic);
         }

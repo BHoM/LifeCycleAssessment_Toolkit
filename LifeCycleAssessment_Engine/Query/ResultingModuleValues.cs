@@ -48,7 +48,7 @@ namespace BH.Engine.LifeCycleAssessment
         [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
         [Input("precomputedValues", "Precomputed values for particular modules and metrics where the result values have been computed by other means than taking the quantityvalue times the metric factor. This can be user set, but is also used by the internal system for IEvaluationCOnfigs as well as for pre-computed values for things like transport and waste management on the CombinedLifecycleAssessmentFactors.")]
         [Output("resultValues", "The resulting values for each module.")]
-        public static Dictionary<Module, double> IResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, Dictionary<Module, PrecomputedModuleValues> precomputedValues)
+        public static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, Dictionary<Module, PrecomputedModuleValues> precomputedValues)
         {
             if (metric == null)
             {
@@ -66,28 +66,19 @@ namespace BH.Engine.LifeCycleAssessment
             if (metric.Indicators.Count == 0)
                 return new Dictionary<Module, double>();
 
-            return ResultingModuleValues(metric, quantityValue, precomputedValues);
 
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        [Description("Default methodology for getting the resulting values for each module of the provided EnvironmentalMetric given the provided quantityValue.\n" +
-                     "The resulting values are computed as the values on the metric for each module multiplied by the quantity value.\n" +
-                     "Please be mindful that the unit of the quantityValue should match the QuantityType on the EnvironmentalProductDeclaration to which the metric belongs.")]
-        [Input("metric", "The EnvironmentalMetric to get resulting values for. All module values on the metric will be extracted and multiplied by the qunatityValue.")]
-        [Input("quantityValue", "The quantity value to evaluate all metrics by. All metric properties will be multiplied by this value. Quantity should correspond to the QuantityType on the EPD.")]
-        [Output("resultValues", "The resulting values for each module.")]
-        private static Dictionary<Module, double> ResultingModuleValues(this IEnvironmentalMetric metric, double quantityValue, Dictionary<Module, PrecomputedModuleValues> precomputedValues)
-        {
+            //Compute the resulting values for each module based on the metric and quantity value
+            //This is the main loop that computes the resulting values for each module based on the metric and quantity value and for most evaluation, this is the critical step
             Dictionary<Module, double> resultingValues = new Dictionary<Module, double>();
             foreach (var moduleData in metric.Indicators)
             {
-                resultingValues[moduleData.Key] =  moduleData.Value * quantityValue ;  //Evaluation value is base module data multiplied by quantity value
+                resultingValues[moduleData.Key] = moduleData.Value * quantityValue;  //Evaluation value is base module data multiplied by quantity value
             }
 
+            //If precomputed values are provided, then they will be used to overwrite the resulting values for the corresponding modules.
+            //This is critical to ensure that precomputed values are respected and that any combinations that include the precomputed modules are removed from the resulting values as they will be different than the sum of their parts.
+            //This is, if a precomputed value is provided for for example A5_1, then the resulting values will not include A5, as it will be different than the sum of its parts (A5_1 + A5_2 + A5_3). Similarly, if a precomputed value is provided for A1toA3, then the resulting values will not include A1, A2 or A3, as they will be different than the combination value.
+            //When called as part of generating MaterialResults, the Combination modules will be computed at the end of the evaluation, so that they are always included in the resulting values, hence do not need to be computed here.
             if (precomputedValues != null)
             {
                 var partModules = PartOfCombinationModules();   //Get a dictionary that for each modules lists the combinations it is part of
@@ -105,9 +96,9 @@ namespace BH.Engine.LifeCycleAssessment
                         resultingValues[precomputed.Key] = val;         //Set the precomputed value. It is assumed that the precomputed value is already evaluated for the quantity
                         if (partModules.TryGetValue(precomputed.Key, out var combinations))
                         {
-                            foreach(var combination in combinations)
+                            foreach (var combination in combinations)
                             {
-                                if(!precompuedValueSet.Contains(combination))   //If not explicitly set
+                                if (!precompuedValueSet.Contains(combination))   //If not explicitly set
                                     resultingValues.Remove(combination);    //Remove any combination that includes the precomputed module as it will be different than the sum of its parts
                             }
                         }
@@ -116,9 +107,12 @@ namespace BH.Engine.LifeCycleAssessment
 
                 }
             }
+
             return resultingValues;
         }
 
+        /***************************************************/
+        /**** Private Methods                           ****/
         /***************************************************/
 
         private static void RemoveCombinationParts(this Dictionary<Module, double> resultingValues, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations, HashSet<Module> precompuedValueSet)
