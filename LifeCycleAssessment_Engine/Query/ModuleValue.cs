@@ -105,6 +105,7 @@ namespace BH.Engine.LifeCycleAssessment
                 {
                     // If all required sub-parts are needed, check if all are present
                     value = 0;
+                    bool atLeastOnePartPresent = false;
                     foreach (var part in parts)
                     {
                         if (part.Item2) // If the part is required
@@ -115,15 +116,24 @@ namespace BH.Engine.LifeCycleAssessment
                                 return false; // Required part is missing
                             }
                             value += subValue;
+                            atLeastOnePartPresent = true;
                         }
                         else
                         {
                             // If the part is not required, add its value if present
                             if (moduleData.TryGetModuleValue(part.Item1, out double subValue))
+                            {
                                 value += subValue;
+                                atLeastOnePartPresent = true;
+                            }
                         }
                     }
-                    return true;
+
+                    // Combinations with only optional parts have no required part to guarantee a value, so make sure at least one part is present
+                    if (!atLeastOnePartPresent)
+                        value = double.NaN;
+
+                    return atLeastOnePartPresent;
                 }
                 else
                 {
@@ -134,13 +144,16 @@ namespace BH.Engine.LifeCycleAssessment
                     foreach (var part in parts)
                     {
 
-                        // If the part is not required, add its value if present
+                        // Add the value of the part if present. Pass on the setting to make sure nested combinations are also computed from available parts
                         if (moduleData.TryGetModuleValue(part.Item1, out double subValue))
                         {
                             value += subValue;
                             atLeastOnePartPresent = true;
                         }
                     }
+
+                    if (!atLeastOnePartPresent)
+                        value = double.NaN;
 
                     return atLeastOnePartPresent;
                 }
