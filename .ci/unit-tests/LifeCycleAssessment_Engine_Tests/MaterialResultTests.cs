@@ -157,7 +157,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static TestCaseData Case(string name, Dictionary<Module, double> indicators, Dictionary<Module, double> expected)
         {
-            return new TestCaseData(indicators, expected).SetName($"MaterialResult: {name}");
+            return new TestCaseData(indicators, expected).SetArgDisplayNames($"{name}");
         }
 
         /***************************************************/

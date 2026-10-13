@@ -125,7 +125,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         private static TestCaseData Case(string name, Dictionary<Module, double> moduleData, Module module, bool requireAllRequiredSubParts, double expected)
         {
-            return new TestCaseData(moduleData, module, requireAllRequiredSubParts, expected).SetName($"ModuleValue: {name}");
+            return new TestCaseData(moduleData, module, requireAllRequiredSubParts, expected).SetArgDisplayNames($"{name}");
         }
 
         /***************************************************/
