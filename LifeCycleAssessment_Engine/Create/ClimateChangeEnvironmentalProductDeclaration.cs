@@ -39,14 +39,14 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Creates an EnvironmentalProductDeclaration containing the climate change metrics, given the fossil, biogenic and land use and land use change (LULUC) factors per module. " +
                      "The ClimateChangeTotal (fossil + biogenic + LULUC) and ClimateChangeTotalNoBiogenic (fossil + LULUC) metrics are computed per module from the provided factors for each module.")]
         [Input("modules", "The modules the provided factors correspond to. The factor lists need to be of the same length as this list, with the factor at each index corresponding to the module at the same index.")]
-        [Input("fossil", "Climate change fossil factors per module, in the same order as the provided modules.", typeof(ClimateChangePerQuantity))]
-        [Input("biogenic", "Climate change biogenic factors per module, in the same order as the provided modules.", typeof(ClimateChangePerQuantity))]
-        [Input("luluc", "Climate change land use and land use change (LULUC) factors per module, in the same order as the provided modules.", typeof(ClimateChangePerQuantity))]
+        [Input("fossil", "Climate change fossil factors per module, in the same order as the provided modules. Values given should be per quantity set by the quantityType.", typeof(ClimateChangePerQuantity))]
+        [Input("biogenic", "Climate change biogenic factors per module, in the same order as the provided modules. Values given should be per quantity set by the quantityType.", typeof(ClimateChangePerQuantity))]
+        [Input("luluc", "Climate change land use and land use change (LULUC) factors per module, in the same order as the provided modules. Values given should be per quantity set by the quantityType.", typeof(ClimateChangePerQuantity))]
         [Input("quantityType", "The quantity type the factors are given per, for example Mass for factors given per kg.")]
         [Input("epdType", "The type of the EnvironmentalProductDeclaration.")]
         [Input("name", "Name of the created EnvironmentalProductDeclaration.")]
         [Output("epd", "The created EnvironmentalProductDeclaration containing the fossil, biogenic, LULUC, total and total without biogenic climate change metrics.")]
-        public static EnvironmentalProductDeclaration ClimateChangeEnvironmentalProductDeclaration(List<Module> modules, List<double> fossil, List<double> biogenic, List<double> luluc, QuantityType quantityType = QuantityType.Mass, EPDType epdType = EPDType.Sector, string name = "")
+        public static EnvironmentalProductDeclaration ClimateChangeEnvironmentalProductDeclaration(List<Module> modules, List<double> fossil, List<double> biogenic, List<double> luluc, QuantityType quantityType, EPDType epdType = EPDType.Undefined, string name = "")
         {
             if (modules == null || fossil == null || biogenic == null || luluc == null)
             {
