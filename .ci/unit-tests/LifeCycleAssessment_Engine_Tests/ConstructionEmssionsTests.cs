@@ -20,9 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment.MaterialFragments.Construction;
-using BH.Engine.LifeCycleAssessment;
+using BH.oM.Test.NUnit;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -32,13 +33,14 @@ using System.Threading.Tasks;
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
-    public class ConstructionEmssionsTests
+    public class ConstructionEmssionsTests : NUnitTest
     {
 
         [TestCaseSource(nameof(AddConstructionWasteEmissionsTestCases))]
         [Description("Tests the AddConstructionWasteEmissions extension method by validating that construction waste emissions (A5_3 module) are correctly calculated based on waste rates and reuse scenarios. Tests both normal cases and edge cases where required modules are missing.")]
         public void TestAddConstructionWasteEmissions(Dictionary<Module, double> resultingValues, ConstructionWasteEmissions constructionEmissions, double assumedA5_3Value)
-        { 
+        {
+            BH.Engine.Base.Compute.ClearCurrentEvents(); //Make sure events raised by previous tests can not satisfy the assertions below
             resultingValues.AddConstructionWasteEmissions(constructionEmissions, MetricType.ClimateChangeTotal);
             if(assumedA5_3Value == 0)
             {
