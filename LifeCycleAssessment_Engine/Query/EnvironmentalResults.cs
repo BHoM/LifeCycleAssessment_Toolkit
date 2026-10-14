@@ -331,9 +331,9 @@ namespace BH.Engine.LifeCycleAssessment
             if (evaluationConfig != null && !double.IsNaN(mass))
                 precomputedModules = evaluationConfig.IEvaluationConfigData(quantityValue, mass);
 
-            IDictionary resultingValues = metric.ResultingModuleValues(quantityValue, precomputedModules);
+            Dictionary<Module, double> resultingValues = metric.ResultingModuleValues(quantityValue, precomputedModules);
 
-            return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues as dynamic);
+            return Create.MaterialResult(materialName, epdName, metric.IMetricType(), resultingValues);
         }
 
         /***************************************************/
