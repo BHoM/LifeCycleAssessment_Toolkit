@@ -29,6 +29,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace BH.Engine.LifeCycleAssessment
 {
@@ -40,7 +41,7 @@ namespace BH.Engine.LifeCycleAssessment
 
         [Description("Creates an IEnvironmentalMetric of a type matched to the provided MetricType, with the provided values per module stored as its indicators.")]
         [Input("metricType", "The type of metric to create. Decides which type of IEnvironmentalMetric is returned, e.g. Acidification will return an AcidificationMetric.")]
-        [Input("indicators", "The values to be stored on the metric per each module.")]
+        [Input("indicators", "The values to be stored on the metric per each module. Values should be per quantity corresponding to the QuantityType on the epd that this metric is associated with.")]
         [Output("metric", "The created IEnvironmentalMetric.")]
         public static IEnvironmentalMetric EnvironmentalMetric(MetricType metricType, Dictionary<Module, double> indicators)
         {
@@ -51,12 +52,12 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             //Get the pre-compiled default constructor for the metric corresponding to the provided type
-            Func<object[], IEnvironmentalMetric> cst = EnvironmentalMetricConstructor(metricType);
+            Func<IEnvironmentalMetric> cst = EnvironmentalMetricConstructor(metricType);
 
             if (cst == null)
                 return null;
 
-            IEnvironmentalMetric metric = cst(new object[0]);
+            IEnvironmentalMetric metric = cst();
 
             //Indicators is get-only on the interface. Fill the dictionary of the new metric, which also means the provided dictionary is not shared with the metric.
             foreach (KeyValuePair<Module, double> indicator in indicators)
@@ -74,9 +75,9 @@ namespace BH.Engine.LifeCycleAssessment
         [Description("Gets a function corresponding to the default constructor for the IEnvironmentalMetric corresponding to the provided MetricType.")]
         [Input("metricType", "The type of metric to find a matching constructor for.")]
         [Output("cstFunc", "The function corresponding to the constructor of the IEnvironmentalMetric related to the MetricType.")]
-        private static Func<object[], IEnvironmentalMetric> EnvironmentalMetricConstructor(this MetricType metricType)
+        private static Func<IEnvironmentalMetric> EnvironmentalMetricConstructor(this MetricType metricType)
         {
-            Func<object[], IEnvironmentalMetric> cstFunc;
+            Func<IEnvironmentalMetric> cstFunc;
 
             //Try get cached constructor func
             if (!m_EnvironmentalMetricConstructors.TryGetValue(metricType, out cstFunc))
@@ -84,9 +85,9 @@ namespace BH.Engine.LifeCycleAssessment
                 System.Reflection.ConstructorInfo constructor = GetEnvironmentalMetricConstructorInfo(metricType);
                 if (constructor != null)
                 {
-                    //Pre-compile the constructor info to a function to increase performance
-                    Func<object[], object> genericFunc = constructor.ToFunc();
-                    cstFunc = x => (IEnvironmentalMetric)genericFunc(x);
+                    //Pre-compile "() => new XMetric()" to a parameterless function to increase performance.
+                    //No object[] input or cast wrapper is needed as the constructor is known to have no parameters.
+                    cstFunc = Expression.Lambda<Func<IEnvironmentalMetric>>(Expression.New(constructor)).Compile();
                 }
                 else
                     cstFunc = null;
@@ -118,7 +119,7 @@ namespace BH.Engine.LifeCycleAssessment
         /***************************************************/
 
         //Storage of the pre-compiled functions for future usage
-        private static ConcurrentDictionary<MetricType, Func<object[], IEnvironmentalMetric>> m_EnvironmentalMetricConstructors = new ConcurrentDictionary<MetricType, Func<object[], IEnvironmentalMetric>>();
+        private static ConcurrentDictionary<MetricType, Func<IEnvironmentalMetric>> m_EnvironmentalMetricConstructors = new ConcurrentDictionary<MetricType, Func<IEnvironmentalMetric>>();
 
         /***************************************************/
     }
