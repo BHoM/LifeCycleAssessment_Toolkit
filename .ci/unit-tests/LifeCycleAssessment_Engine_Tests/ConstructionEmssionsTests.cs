@@ -52,27 +52,76 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Assert.That(resultingValues[Module.A5_3], Is.EqualTo(assumedA5_3Value).Within(1e-9));
         }
 
-        private static IEnumerable<object[]> AddConstructionWasteEmissionsTestCases()
+        private static IEnumerable<TestCaseData> AddConstructionWasteEmissionsTestCases()
         {
             // Normal cases
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 140  };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 140 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A2, 20 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 23.3333333333333 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C4, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3toC4, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130 };
+            yield return Case("A1toA3 with all required modules, not reused on site, C2 included",
+                new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 140);
+
+            yield return Case("A1toA3 with all required modules, reused on site, C2 excluded",
+                new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130);
+
+            yield return Case("Separate A1, A2 and A3, not reused on site, C2 included",
+                new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 140);
+
+            yield return Case("Separate A1, A2 and A3, reused on site, C2 excluded",
+                new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130);
+
+            yield return Case("Waste rate of 0.1 gives waste factor of 1/9 of the summed modules",
+                new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A2, 20 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 23.3333333333333);
+
+            yield return Case("C4 used as disposal module in place of C3",
+                new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C4, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130);
+
+            yield return Case("C3toC4 used as disposal module in place of C3",
+                new Dictionary<Module, double> { { Module.A1, 40 }, { Module.A2, 30 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3toC4, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130);
+
+            yield return Case("C2 not required when reused on site",
+                new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = true }, 130);
 
             // Missing modules cases
-            yield return new object[] { new Dictionary<Module, double> { { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.C2, 10 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C3, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C2, 10 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A2, 20 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 0 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 0 };
-            yield return new object[] { new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A2, 20 },  { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } }, new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 0 };
+            yield return Case("Missing A1toA3 gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0);
 
+            yield return Case("Missing A4 gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.C2, 10 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0);
+
+            yield return Case("Missing C2 when not reused on site gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C3, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0);
+
+            yield return Case("Missing disposal (C3, C4 or C3toC4) gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A1toA3, 100 }, { Module.A4, 20 }, { Module.C2, 10 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.5 }, ResuedOnSite = false }, 0);
+
+            yield return Case("Missing A1 when A2 and A3 are provided gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A2, 20 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 0);
+
+            yield return Case("Missing A2 when A1 and A3 are provided gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A3, 30 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 0);
+
+            yield return Case("Missing A3 when A1 and A2 are provided gives error and no A5_3",
+                new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A2, 20 }, { Module.A4, 20 }, { Module.C2, 10 }, { Module.C3, 30 } },
+                new ConstructionWasteEmissions { WasteRate = new WasteRate { Rate = 0.1 }, ResuedOnSite = false }, 0);
+        }
+
+        /***************************************************/
+
+        private static TestCaseData Case(string name, Dictionary<Module, double> resultingValues, ConstructionWasteEmissions constructionEmissions, double assumedA5_3Value)
+        {
+            return new TestCaseData(resultingValues, constructionEmissions, assumedA5_3Value).SetArgDisplayNames(name);
         }
     }
 }
