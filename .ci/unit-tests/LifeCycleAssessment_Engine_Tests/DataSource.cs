@@ -268,7 +268,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             return new ConstructionWasteEmissions
             {
-                ResuedOnSite = ((int)Math.Round(v)) % 2 == 0,
+                ReusedOnSite = ((int)Math.Round(v)) % 2 == 0,
                 WasteRate = new WasteRate { Rate = 0.5 },
             };
         }

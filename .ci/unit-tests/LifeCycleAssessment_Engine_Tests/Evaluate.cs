@@ -393,7 +393,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             else
                 return 0;
 
-            if (!constructionEmissions.ResuedOnSite)
+            if (!constructionEmissions.ReusedOnSite)
             {
                 if (result.Indicators.ContainsKey(Module.C2))
                     expected += result.Indicators[Module.C2];

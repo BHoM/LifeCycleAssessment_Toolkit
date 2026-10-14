@@ -73,7 +73,7 @@ namespace BH.Engine.LifeCycleAssessment
                 missingModules.Add(Module.A4);
 
             //Get out the disposal metrics
-            if (!constructionEmissions.ResuedOnSite)
+            if (!constructionEmissions.ReusedOnSite)
             {
                 if (resultingValues.TryGetModuleValue(Module.C2, out double c2, true))
                     total += c2; //Add C2 if not re-used on site
