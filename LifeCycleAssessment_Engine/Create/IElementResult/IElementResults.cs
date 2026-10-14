@@ -166,16 +166,6 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
-
-        [Description("Gets an ElementResult type matching the metric type by name.")]
-        private static Type ElementResultTypeFromMetric(Type metricType)
-        {
-            string metric = metricType.Name.Replace("Metric", "");
-            Type elementResultType = BH.Engine.Base.Query.BHoMTypeList().Where(x => typeof(MaterialResult).IsAssignableFrom(x)).First(x => x.Name == metric + "ElementResult");
-            return elementResultType;
-        }
-
-        /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
