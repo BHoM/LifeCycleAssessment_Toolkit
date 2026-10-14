@@ -60,13 +60,14 @@ namespace BH.Engine.LifeCycleAssessment
             List<Module> missingModules = new List<Module>();
 
             //Get out the cradle to gate metrics
-            if (resultingValues.TryGetModuleValue(Module.A1toA3, out double a1a3))
+            //Called with require all subparts set to true, as need either the A1toA3 or all of A1, A2 and A3 to be present to compute the waste factor
+            if (resultingValues.TryGetModuleValue(Module.A1toA3, out double a1a3, true))
                 total += a1a3;
             else
                 missingModules.Add(Module.A1toA3);
 
             //Get out the transport metrics
-            if(resultingValues.TryGetModuleValue(Module.A4, out double a4))
+            if(resultingValues.TryGetModuleValue(Module.A4, out double a4, true))
                 total += a4;
             else
                 missingModules.Add(Module.A4);
@@ -74,13 +75,15 @@ namespace BH.Engine.LifeCycleAssessment
             //Get out the disposal metrics
             if (!constructionEmissions.ResuedOnSite)
             {
-                if (resultingValues.TryGetModuleValue(Module.C2, out double c2))
+                if (resultingValues.TryGetModuleValue(Module.C2, out double c2, true))
                     total += c2; //Add C2 if not re-used on site
                 else
                     missingModules.Add(Module.C2);
             }
 
             //Get out the disposal metrics
+            //Called with require all subparts set to false, as only need either C3toC4 or C3 or C4 to be present to compute the waste factor
+            //This is due to the fact that it can be quite common that you only have factors available for just C3 or just C4, hence picking up just one of them should be seen as sufficient
             if (resultingValues.TryGetModuleValue(Module.C3toC4, out double c3c4, false))
                 total += c3c4;
             else
