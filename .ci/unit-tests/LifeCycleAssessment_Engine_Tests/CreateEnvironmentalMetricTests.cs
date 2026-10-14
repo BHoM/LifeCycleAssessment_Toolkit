@@ -30,7 +30,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LCAModule = BH.oM.LifeCycleAssessment.Module;
+
 
 namespace BH.Tests.Engine.LifeCycleAssessment
 {
@@ -44,10 +44,10 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         [Description("Tests that the EnvironmentalMetric create method returns a metric of the type matching the provided MetricType, with the provided indicators stored on it.")]
         public void EnvironmentalMetricMatchesMetricType(MetricType metricType)
         {
-            Dictionary<LCAModule, double> indicators = new Dictionary<LCAModule, double>
+            Dictionary<Module, double> indicators = new Dictionary<Module, double>
             {
-                { LCAModule.A1toA3, 1.5 },
-                { LCAModule.C3toC4, 2.5 },
+                { Module.A1toA3, 1.5 },
+                { Module.C3toC4, 2.5 },
             };
 
             IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(metricType, indicators);
@@ -63,7 +63,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         [Description("Tests that the EnvironmentalMetric create method creates the expected concrete type.")]
         public void EnvironmentalMetricConcreteType()
         {
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, new Dictionary<LCAModule, double>());
+            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, new Dictionary<Module, double>());
             metric.Should().BeOfType<AcidificationMetric>();
         }
 
@@ -73,15 +73,15 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         [Description("Tests that the EnvironmentalMetric create method does not share the provided indicators dictionary with the created metric.")]
         public void EnvironmentalMetricDoesNotShareIndicators()
         {
-            Dictionary<LCAModule, double> indicators = new Dictionary<LCAModule, double> { { LCAModule.A1toA3, 1 } };
+            Dictionary<Module, double> indicators = new Dictionary<Module, double> { { Module.A1toA3, 1 } };
 
             IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, indicators);
 
-            indicators[LCAModule.A4] = 5;
-            metric.Indicators.Should().NotContainKey(LCAModule.A4);
+            indicators[Module.A4] = 5;
+            metric.Indicators.Should().NotContainKey(Module.A4);
 
-            metric.Indicators[LCAModule.C1] = 7;
-            indicators.Should().NotContainKey(LCAModule.C1);
+            metric.Indicators[Module.C1] = 7;
+            indicators.Should().NotContainKey(Module.C1);
         }
 
         /***************************************************/
@@ -90,7 +90,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         [Description("Tests that the EnvironmentalMetric create method returns a metric with no indicators for an empty dictionary.")]
         public void EnvironmentalMetricEmptyIndicators()
         {
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.OzoneDepletion, new Dictionary<LCAModule, double>());
+            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.OzoneDepletion, new Dictionary<Module, double>());
 
             metric.Should().NotBeNull();
             metric.Indicators.Should().BeEmpty();
@@ -118,7 +118,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             BH.Engine.Base.Compute.ClearCurrentEvents();
 
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Undefined, new Dictionary<LCAModule, double>());
+            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Undefined, new Dictionary<Module, double>());
 
             metric.Should().BeNull();
             ErrorCount().Should().Be(1);
