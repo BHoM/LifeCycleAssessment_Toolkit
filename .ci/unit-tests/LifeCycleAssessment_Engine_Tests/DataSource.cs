@@ -159,7 +159,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [Description("Returns a dummy takeoff and material template to be used when testing evaluation.")]
-        public static IEnumerable<object[]> DummyTakeoffAndTemplates(double initialV, double increace, bool setA5ToWaste)
+        public static IEnumerable<TestCaseData> DummyTakeoffAndTemplates(double initialV, double increace, bool setA5ToWaste)
         {
 
             double v = initialV;
@@ -171,7 +171,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 MaterialTakeoffItems = templates.Select((x, i) => new TakeoffItem { Material = new Material { Name = x.Name, Density = 1 }, Volume = (i + 1) * 42.543, Mass = (i + 1) * 42.543 * x.Density }).ToList(),
             };
 
-            yield return new object[] { takeoff, templates, true };
+            yield return new TestCaseData(new object[] { takeoff, templates, true }).SetArgDisplayNames("Takeoff and templates with EPDs");
 
             List<Material> newTemplates = new List<Material>();
 
@@ -180,7 +180,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 newTemplates.Add(new Material { Name = templates[i].Name, Density = templates[i].Density, Properties = new List<IMaterialProperties> { DummyCombinedFactors(ref v, inc, setA5ToWaste, i, templates[i].Name + "EPD NAME", templates[i].Properties.OfType<EnvironmentalProductDeclaration>().FirstOrDefault().QuantityType) } });
             }
 
-            yield return new object[] { takeoff, newTemplates, false };
+            yield return new TestCaseData(new object[] { takeoff, newTemplates, false }).SetArgDisplayNames("Takeoff and templates with CombinedFactors");
         }
 
         /***************************************************/
@@ -268,7 +268,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         {
             return new ConstructionWasteEmissions
             {
-                ResuedOnSite = ((int)Math.Round(v)) % 2 == 0,
+                ReusedOnSite = ((int)Math.Round(v)) % 2 == 0,
                 WasteRate = new WasteRate { Rate = 0.5 },
             };
         }

@@ -48,7 +48,8 @@ namespace BH.Engine.LifeCycleAssessment
             if (m_CombinationModules == null)
             {
                 // Define the combinations of modules and their parts.
-                // The bool indicates whether the module is a combination or not, i.e. true for combinations and false for parts.
+                // The bool indicates whether the part is required for the combination to be computed, i.e. true for required parts and false for optional parts.
+                // Optional parts are added to the combination if present, but their absence does not prevent the combination from being computed.
                 // The order of the parts is important, as it defines the order in which they are combined and caluculated. Parts lower down the lift can be made up of parts from above in the list
                 Dictionary<Module, IReadOnlyList<(Module, bool)>> modules = new Dictionary<Module, IReadOnlyList<(Module, bool)>>();
                 modules[Module.A1toA3] = new List<(Module, bool)>() { (Module.A1, true), (Module.A2,true), (Module.A3, true) };
