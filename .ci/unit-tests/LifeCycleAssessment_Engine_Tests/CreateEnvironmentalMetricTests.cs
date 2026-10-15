@@ -41,7 +41,7 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         /***************************************************/
 
         [TestCaseSource(nameof(DefinedMetricTypes))]
-        [Description("Tests that the EnvironmentalMetric create method returns a metric of the type matching the provided MetricType, with the provided indicators stored on it.")]
+        [Description("Tests that all overloads of the EnvironmentalMetric create method return a metric of the type matching the provided MetricType, with the provided indicators stored on it and an empty name by default.")]
         public void EnvironmentalMetricMatchesMetricType(MetricType metricType)
         {
             Dictionary<Module, double> indicators = new Dictionary<Module, double>
@@ -50,11 +50,41 @@ namespace BH.Tests.Engine.LifeCycleAssessment
                 { Module.C3toC4, 2.5 },
             };
 
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(metricType, indicators);
+            IEnvironmentalMetric typeOnly = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(metricType);
+            IEnvironmentalMetric fromDictionary = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(metricType, indicators);
+            IEnvironmentalMetric fromLists = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(metricType, indicators.Keys.ToList(), indicators.Values.ToList());
 
-            metric.Should().NotBeNull();
-            metric.IMetricType().Should().Be(metricType);
-            metric.Indicators.Should().BeEquivalentTo(indicators);
+            typeOnly.Indicators.Should().BeEmpty();
+            fromDictionary.Indicators.Should().BeEquivalentTo(indicators);
+            fromLists.Indicators.Should().BeEquivalentTo(indicators);
+
+            foreach (IEnvironmentalMetric metric in new[] { typeOnly, fromDictionary, fromLists })
+            {
+                metric.Should().NotBeNull();
+                metric.IMetricType().Should().Be(metricType);
+                metric.Name.Should().Be("");
+            }
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that all overloads of the EnvironmentalMetric create method set the provided name, and fall back to an empty name for null.")]
+        public void EnvironmentalMetricName()
+        {
+            Dictionary<Module, double> indicators = new Dictionary<Module, double> { { Module.A1toA3, 1 } };
+
+            IEnvironmentalMetric[] metrics = new[]
+            {
+                BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, "My metric"),
+                BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, indicators, "My metric"),
+                BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, indicators.Keys.ToList(), indicators.Values.ToList(), "My metric"),
+            };
+
+            metrics.Select(x => x.Name).Should().OnlyContain(x => x == "My metric");
+
+            //Cast needed to resolve the overload, as null is also a valid indicators input
+            BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, (string)null).Name.Should().Be("");
         }
 
         /***************************************************/
@@ -86,40 +116,15 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Test]
-        [Description("Tests that the EnvironmentalMetric create method returns a metric with no indicators for an empty dictionary.")]
-        public void EnvironmentalMetricEmptyIndicators()
-        {
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.OzoneDepletion, new Dictionary<Module, double>());
-
-            metric.Should().NotBeNull();
-            metric.Indicators.Should().BeEmpty();
-        }
-
-        /***************************************************/
-
-        [Test]
-        [Description("Tests that the EnvironmentalMetric create method returns null and records an error for null indicators.")]
-        public void EnvironmentalMetricNullIndicators()
+        [TestCaseSource(nameof(InvalidInputs))]
+        [Description("Tests that the EnvironmentalMetric create method returns null and records a single error for invalid inputs, without throwing.")]
+        public void EnvironmentalMetricInvalidInputs(Func<IEnvironmentalMetric> create)
         {
             BH.Engine.Base.Compute.ClearCurrentEvents();
 
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, null);
+            IEnvironmentalMetric metric = null;
 
-            metric.Should().BeNull();
-            ErrorCount().Should().Be(1);
-        }
-
-        /***************************************************/
-
-        [Test]
-        [Description("Tests that the EnvironmentalMetric create method returns null and records an error for the Undefined MetricType, which has no matching metric.")]
-        public void EnvironmentalMetricUndefinedType()
-        {
-            BH.Engine.Base.Compute.ClearCurrentEvents();
-
-            IEnvironmentalMetric metric = BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Undefined, new Dictionary<Module, double>());
-
+            create.Invoking(x => metric = x()).Should().NotThrow();
             metric.Should().BeNull();
             ErrorCount().Should().Be(1);
         }
@@ -134,6 +139,32 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+
+        private static IEnumerable<TestCaseData> InvalidInputs()
+        {
+            Dictionary<Module, double> indicators = new Dictionary<Module, double> { { Module.A1toA3, 1 } };
+            List<Module> modules = new List<Module> { Module.A1toA3 };
+            List<double> values = new List<double> { 1 };
+
+            //Cast needed to resolve the overload, as null is also a valid name
+            yield return Case("Undefined type", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Undefined));
+            yield return Case("Undefined type with indicators", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Undefined, indicators));
+            yield return Case("Undefined type with modules and indicators", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Undefined, modules, values));
+            yield return Case("Null indicators", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, (Dictionary<Module, double>)null));
+            yield return Case("Null modules", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, null, values));
+            yield return Case("Null indicators with modules", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, modules, (List<double>)null));
+            yield return Case("Modules and indicators of different lengths", () => BH.Engine.LifeCycleAssessment.Create.EnvironmentalMetric(MetricType.Acidification, new List<Module> { Module.A1toA3, Module.C3toC4 }, values));
+        }
+
+        /***************************************************/
+
+        private static TestCaseData Case(string name, Func<IEnvironmentalMetric> create)
+        {
+            return new TestCaseData(create).SetArgDisplayNames(name);
+        }
+
+        /***************************************************/
+
         private static int ErrorCount()
         {
             return BH.Engine.Base.Query.CurrentEvents().Count(x => x.Type == EventType.Error);
