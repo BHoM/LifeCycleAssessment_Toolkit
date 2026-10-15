@@ -39,15 +39,15 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates an IEnvironmentalMetric of a type matched to the provided MetricType, with the provided values per module stored as its indicators.")]
+        [Description("Creates an IEnvironmentalMetric of a type matched to the provided MetricType without any indicator values set.")]
         [Input("metricType", "The type of metric to create. Decides which type of IEnvironmentalMetric is returned, e.g. Acidification will return an AcidificationMetric.")]
-        [Input("indicators", "The values to be stored on the metric per each module. Values should be per quantity corresponding to the QuantityType on the epd that this metric is associated with.")]
+        [Input("name", "The name to give the created metric. Defaults to an empty string.")]
         [Output("metric", "The created IEnvironmentalMetric.")]
-        public static IEnvironmentalMetric EnvironmentalMetric(MetricType metricType, Dictionary<Module, double> indicators)
+        public static IEnvironmentalMetric EnvironmentalMetric(MetricType metricType, string name = "")
         {
-            if (indicators == null)
+            if (metricType == MetricType.Undefined)
             {
-                Base.Compute.RecordError($"Cannot create a {nameof(IEnvironmentalMetric)} from null indicators.");
+                Base.Compute.RecordError($"Cannot create a {nameof(IEnvironmentalMetric)} from an undefined {nameof(MetricType)}.");
                 return null;
             }
 
@@ -58,6 +58,30 @@ namespace BH.Engine.LifeCycleAssessment
                 return null;
 
             IEnvironmentalMetric metric = cst();
+            metric.Name = name ?? "";
+            return metric;
+        }
+
+        /***************************************************/
+
+        [Description("Creates an IEnvironmentalMetric of a type matched to the provided MetricType, with the provided values per module stored as its indicators.")]
+        [Input("metricType", "The type of metric to create. Decides which type of IEnvironmentalMetric is returned, e.g. Acidification will return an AcidificationMetric.")]
+        [Input("indicators", "The values to be stored on the metric per each module. Values should be per quantity corresponding to the QuantityType on the epd that this metric is associated with.")]
+        [Input("name", "The name to give the created metric. Defaults to an empty string.")]
+        [Output("metric", "The created IEnvironmentalMetric.")]
+        public static IEnvironmentalMetric EnvironmentalMetric(MetricType metricType, Dictionary<Module, double> indicators, string name = "")
+        {
+            if (indicators == null)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(IEnvironmentalMetric)} from null indicators.");
+                return null;
+            }
+
+            //Call the create method that only takes the MetricType to get the correct type of metric created.
+            IEnvironmentalMetric metric = EnvironmentalMetric(metricType, name);
+
+            if (metric == null)
+                return null;
 
             //Indicators is get-only on the interface. Fill the dictionary of the new metric, which also means the provided dictionary is not shared with the metric.
             foreach (KeyValuePair<Module, double> indicator in indicators)
@@ -66,6 +90,38 @@ namespace BH.Engine.LifeCycleAssessment
             }
 
             return metric;
+        }
+
+        /***************************************************/
+
+        [Description("Creates an IEnvironmentalMetric of a type matched to the provided MetricType, with the provided values stored as its indicators for the corresponding modules.")]
+        [Input("metricType", "The type of metric to create. Decides which type of IEnvironmentalMetric is returned, e.g. Acidification will return an AcidificationMetric.")]
+        [Input("modules", "The modules to store indicator values for. Needs to be the same length as indicators, where each module is matched to the indicator at the same index.")]
+        [Input("indicators", "The values to be stored on the metric per each module. Needs to be the same length as modules. Values should be per quantity corresponding to the QuantityType on the epd that this metric is associated with.")]
+        [Input("name", "The name to give the created metric. Defaults to an empty string.")]
+        [Output("metric", "The created IEnvironmentalMetric.")]
+        public static IEnvironmentalMetric EnvironmentalMetric(MetricType metricType, List<Module> modules, List<double> indicators, string name = "")
+        {
+            if (modules == null || indicators == null)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(IEnvironmentalMetric)} from null modules or indicators.");
+                return null;
+            }
+
+            if (modules.Count != indicators.Count)
+            {
+                Base.Compute.RecordError($"Cannot create a {nameof(IEnvironmentalMetric)} from modules and indicators of different lengths.");
+                return null;
+            }
+
+            Dictionary<Module, double> indicatorsDict = new Dictionary<Module, double>();
+
+            for (int i = 0; i < modules.Count; i++)
+            {
+                indicatorsDict[modules[i]] = indicators[i];
+            }
+
+            return EnvironmentalMetric(metricType, indicatorsDict, name);
         }
 
         /***************************************************/
