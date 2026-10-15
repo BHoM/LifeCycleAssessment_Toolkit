@@ -41,10 +41,11 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [Description("Gets a list of doubles corresponding to the sum of values for each property of the provided ILifeCycleAssessmentPhaseData, i.e. the first value will be the sum of A1 for all the provided ILifeCycleAssessmentPhaseDatas.")]
-        [Input("results", "List of ILifeCycleAssessmentPhaseData to get the sum data from.")]
-        [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]
-        [Output("values", "The values of the summed up material results as dictionary with the module as keys and resulting summed value for the module as value.")]
+        [Description("Sums the Indicators of the provided ILifeCycleAssessmentModuleData per Module, i.e. the value stored for module A1 in the returned dictionary will be the sum of the A1 values of all the provided items.\n" +
+                     "All provided items need to be of the same type. If they are not, an error is raised and an empty dictionary is returned. An empty dictionary is also returned if no items are provided.")]
+        [Input("results", "The ILifeCycleAssessmentModuleData items to sum the indicators of. All items need to be of the same type.")]
+        [Input("onlyIncludeIfAllAvailable", "If true, a module is only summed and included in the result if it is available on all provided items. If false, modules available on only some of the items are included as well, summed over the items for which they are available.")]
+        [Output("values", "The summed indicators as a dictionary with the module as key and the sum of the values for that module over all provided items as value.")]
         public static Dictionary<Module, double> SumModuleDataValues(this IReadOnlyList<ILifeCycleAssessmentModuleData<IDictionary<Module, double>>> results, bool onlyIncludeIfAllAvailable = true)
         {
             if (results.IsNullOrEmpty())

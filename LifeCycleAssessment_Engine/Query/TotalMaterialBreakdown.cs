@@ -40,10 +40,10 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets total MaterialResults for all provided element results grouped by MaterialName, EPDName and Metric, and returns a single MaterialResult for each group containing the total evaluated.")]
+        [Description("Gets the total MaterialResults for all provided element results. The material results of the element results are grouped by MaterialName, EnvironmentalProductDeclarationName and result type (metric), and a single MaterialResult is returned for each group with the indicators summed per module.")]
         [Input("elementResults", "The element results to extract the material breakdown from.")]
-        [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]
-        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        [Input("onlyIncludeIfAllAvailable", "If true, a module is only summed and included for a group if it is available on all material results in that group. If false, modules available on only some of the material results in a group are included as well, summed over the results for which they are available.")]
+        [Output("materialResults", "One MaterialResult per unique combination of material name, EPD name and result type, with the indicators summed over all material results in the group.")]
         public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<IElementResult<MaterialResult>> elementResults, bool onlyIncludeIfAllAvailable = true)
         {
             if (elementResults == null || !elementResults.Any())
@@ -54,10 +54,10 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
-        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName, EPDName and Type, and returns a single MaterialResult for each group containing the total evaluated.")]
-        [Input("materialResults", "The individual MaterialResult results to extract the total from.")]
-        [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]
-        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        [Description("Gets the total MaterialResults from a set of individual material results. The results are grouped by MaterialName, EnvironmentalProductDeclarationName and result type (metric), and a single MaterialResult is returned for each group with the indicators summed per module.")]
+        [Input("materialResults", "The individual MaterialResults to compute the totals from.")]
+        [Input("onlyIncludeIfAllAvailable", "If true, a module is only summed and included for a group if it is available on all material results in that group. If false, modules available on only some of the material results in a group are included as well, summed over the results for which they are available.")]
+        [Output("materialResults", "One MaterialResult per unique combination of material name, EPD name and result type, with the indicators summed over all material results in the group.")]
         public static List<MaterialResult> TotalMaterialBreakdown(this IEnumerable<MaterialResult> materialResults, bool onlyIncludeIfAllAvailable = true)
         {
             if (materialResults == null || !materialResults.Any())
@@ -77,10 +77,10 @@ namespace BH.Engine.LifeCycleAssessment
         /**** Private Methods                           ****/
         /***************************************************/
 
-        [Description("Gets total MaterialResults from list of individual material results grouped by MaterialName and EPDName, and returns a single MaterialResult for each group containing the total evaluated for each module.")]
-        [Input("materialResults", "The individual MaterialResult results to extract the total from All assumed to be of the same type.")]
-        [Input("onlyIncludeIfAllAvailable", "If true, only sums up values for a particular module if it is available on all items provided. If false, sum for modules where only part of the data is available is added as well.")]
-        [Output("materialResults", "Material results with the total quantity per materal type.")]
+        [Description("Gets the total MaterialResults from a set of individual material results of the same type. The results are grouped by MaterialName and EnvironmentalProductDeclarationName, and a single MaterialResult is returned for each group with the indicators summed per module.")]
+        [Input("materialResults", "The individual MaterialResults to compute the totals from. All are assumed to be of the same type.")]
+        [Input("onlyIncludeIfAllAvailable", "If true, a module is only summed and included for a group if it is available on all material results in that group. If false, modules available on only some of the material results in a group are included as well, summed over the results for which they are available.")]
+        [Output("materialResults", "One MaterialResult per unique combination of material name and EPD name, with the indicators summed over all material results in the group.")]
         private static List<MaterialResult> MaterialBreakdown(IEnumerable<MaterialResult> materialResults, bool onlyIncludeIfAllAvailable)
         {
             List<MaterialResult> breakDown = new List<MaterialResult>();
