@@ -47,24 +47,39 @@ namespace BH.Engine.LifeCycleAssessment
         {
             if (m_CombinationModules == null)
             {
-                // Define the combinations of modules and their parts.
+                // The combinations of modules and their parts are defined by the PartOf attribute on each module in the Module enum.
                 // The bool indicates whether the part is required for the combination to be computed, i.e. true for required parts and false for optional parts.
                 // Optional parts are added to the combination if present, but their absence does not prevent the combination from being computed.
-                // The order of the parts is important, as it defines the order in which they are combined and caluculated. Parts lower down the lift can be made up of parts from above in the list
+                // The order is important, and is defined by the order of the Module enum:
+                // - The parts of a combination are listed in the order they are defined in the enum.
+                // - The combinations are listed in the order they are defined in the enum. Combinations lower down the list can be made up of combinations from above in the list,
+                //   which relies on every combination being defined after the combinations it is made up of.
+                List<Module> allModules = Enum.GetValues(typeof(Module)).Cast<Module>().ToList();
+
+                // Collect the parts of each combination. The enum is looped through in order, which gives the parts in the correct order.
+                Dictionary<Module, List<(Module, bool)>> parts = new Dictionary<Module, List<(Module, bool)>>();
+                foreach (Module module in allModules)
+                {
+                    PartOfAttribute partOf = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<PartOfAttribute>(typeof(Module).GetField(module.ToString()));
+                    if (partOf == null)
+                        continue;
+
+                    if (!parts.TryGetValue(partOf.PartOf, out List<(Module, bool)> combinationParts))
+                    {
+                        combinationParts = new List<(Module, bool)>();
+                        parts[partOf.PartOf] = combinationParts;
+                    }
+                    combinationParts.Add((module, partOf.IsRequired));
+                }
+
+                // Add the combinations in the order of the enum, i.e. by the position of the combination itself, not by the position of its first part.
+                // The latter would for example put B1toB3 before B1, as B1 is defined before B1_1.
                 Dictionary<Module, IReadOnlyList<(Module, bool)>> modules = new Dictionary<Module, IReadOnlyList<(Module, bool)>>();
-                modules[Module.A1toA3] = new List<(Module, bool)>() { (Module.A1, true), (Module.A2,true), (Module.A3, true) };
-                modules[Module.A5] = new List<(Module, bool)>() { (Module.A5_1, false), (Module.A5_2, true), (Module.A5_3, true), (Module.A5_4, false) };
-                modules[Module.B1] = new List<(Module, bool)>() { (Module.B1_1, true), (Module.B1_2, true) };
-                modules[Module.B1toB3] = new List<(Module, bool)>() { (Module.B1, true), (Module.B2, true), (Module.B3, true) };
-                modules[Module.B4] = new List<(Module, bool)>() { (Module.B4_1, true), (Module.B4_2, true) };
-                modules[Module.B4toB5] = new List<(Module, bool)>() { (Module.B4, true), (Module.B5, true) };
-                modules[Module.B1toB5] = new List<(Module, bool)>() { (Module.B1toB3, true), (Module.B4toB5, true) };
-                modules[Module.B7] = new List<(Module, bool)>() { (Module.B7_1, true), (Module.B7_2, true), (Module.B7_3, true) };
-                modules[Module.B1toB7] = new List<(Module, bool)>() { (Module.B1toB5, true), (Module.B6, true), (Module.B7, true) };
-                modules[Module.B8] = new List<(Module, bool)>() { (Module.B8_1, false), (Module.B8_2, false), (Module.B8_3, false) };
-                modules[Module.C3toC4] = new List<(Module, bool)>() { (Module.C3, true), (Module.C4, true) };
-                modules[Module.C1toC4] = new List<(Module, bool)>() { (Module.C1, true), (Module.C2, true), (Module.C3toC4, true) };
-                modules[Module.D] = new List<(Module, bool)>() { (Module.D_1, true), (Module.D_2, true) };
+                foreach (Module module in allModules)
+                {
+                    if (parts.TryGetValue(module, out List<(Module, bool)> combinationParts))
+                        modules[module] = combinationParts;
+                }
                 m_CombinationModules = modules;
             }
 
