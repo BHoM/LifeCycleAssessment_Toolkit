@@ -50,10 +50,10 @@ namespace BH.Engine.LifeCycleAssessment
                 // The combinations of modules and their parts are defined by the PartOf attribute on each module in the Module enum.
                 // The bool indicates whether the part is required for the combination to be computed, i.e. true for required parts and false for optional parts.
                 // Optional parts are added to the combination if present, but their absence does not prevent the combination from being computed.
-                // The order is important, and is defined by the order of the Module enum:
-                // - The parts of a combination are listed in the order they are defined in the enum.
-                // - The combinations are listed in the order they are defined in the enum. Combinations lower down the list can be made up of combinations from above in the list,
-                //   which relies on every combination being defined after the combinations it is made up of.
+                // The order is important:
+                // - The parts of a combination are listed in the order they are defined in the Module enum.
+                // - The combinations are listed in the order they are defined in the Module enum, except that a combination is always listed after all the combinations it is made up of.
+                //   Combinations lower down the list can hence be made up of combinations from above in the list.
                 List<Module> allModules = Enum.GetValues(typeof(Module)).Cast<Module>().ToList();
 
                 // Collect the parts of each combination. The enum is looped through in order, which gives the parts in the correct order.
@@ -74,11 +74,12 @@ namespace BH.Engine.LifeCycleAssessment
 
                 // Add the combinations in the order of the enum, i.e. by the position of the combination itself, not by the position of its first part.
                 // The latter would for example put B1toB3 before B1, as B1 is defined before B1_1.
+                // For each combination, all parts that are combinations themselves are added first, so the result is correct also if the enum is not ordered that way.
                 Dictionary<Module, IReadOnlyList<(Module, bool)>> modules = new Dictionary<Module, IReadOnlyList<(Module, bool)>>();
+                HashSet<Module> inProgress = new HashSet<Module>();
                 foreach (Module module in allModules)
                 {
-                    if (parts.TryGetValue(module, out List<(Module, bool)> combinationParts))
-                        modules[module] = combinationParts;
+                    AddCombination(module, parts, modules, inProgress);
                 }
                 m_CombinationModules = modules;
             }
@@ -109,6 +110,30 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
         /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static void AddCombination(Module module, Dictionary<Module, List<(Module, bool)>> parts, Dictionary<Module, IReadOnlyList<(Module, bool)>> result, HashSet<Module> inProgress)
+        {
+            //Not a combination, or already added
+            if (!parts.TryGetValue(module, out List<(Module, bool)> combinationParts) || result.ContainsKey(module))
+                return;
+
+            if (!inProgress.Add(module))
+            {
+                BH.Engine.Base.Compute.RecordError($"The module {module} is, directly or indirectly, defined as a part of itself via the PartOf attribute. The combination is ignored.");
+                return;
+            }
+
+            //Make sure all parts that are combinations themselves are added before this one
+            foreach ((Module, bool) part in combinationParts)
+            {
+                AddCombination(part.Item1, parts, result, inProgress);
+            }
+
+            inProgress.Remove(module);
+            result[module] = combinationParts;
+        }
+
         /***************************************************/
 
         private static List<Module> CollectParts(Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules)
