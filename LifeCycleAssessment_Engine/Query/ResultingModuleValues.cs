@@ -79,53 +79,26 @@ namespace BH.Engine.LifeCycleAssessment
             //This is critical to ensure that precomputed values are respected and that any combinations that include the precomputed modules are removed from the resulting values as they will be different than the sum of their parts.
             //This is, if a precomputed value is provided for for example A5_1, then the resulting values will not include A5, as it will be different than the sum of its parts (A5_1 + A5_2 + A5_3). Similarly, if a precomputed value is provided for A1toA3, then the resulting values will not include A1, A2 or A3, as they will be different than the combination value.
             //When called as part of generating MaterialResults, the Combination modules will be computed at the end of the evaluation, so that they are always included in the resulting values, hence do not need to be computed here.
+            //The culling of combinations and parts is handled by the SetModuleValues method.
             if (precomputedValues != null)
             {
-                var partModules = PartOfCombinationModules();   //Get a dictionary that for each modules lists the combinations it is part of
-                var combinationModules = CombinationModules(); //Get a dictionary that for each combination lists its parts
-                HashSet<Module> precompuedValueSet = new HashSet<Module>();
-                foreach (var precomputed in precomputedValues)
+                List<Module> modules = new List<Module>();
+                List<double> values = new List<double>();
+                MetricType metricType = metric.IMetricType();
+                //Loop through the precomputed values and store out the modules and values for the cases where the precomputed values contain a value for the metric type.
+                foreach (var preComputed in precomputedValues)
                 {
-                    bool setValue = precomputed.Value.OverwriteExistingValues || !resultingValues.ContainsKey(precomputed.Key); //Only set value if overwrite is true or if no value exists yet
-                    if (!setValue)
-                        continue;
-
-                    if (precomputed.Value.ModuleValues.TryGetValue(metric.IMetricType(), out double val))   //Check if precomputed value exists for the metric type
+                    if (preComputed.Value.ModuleValues.TryGetValue(metricType, out double val))
                     {
-                        precompuedValueSet.Add(precomputed.Key);
-                        resultingValues[precomputed.Key] = val;         //Set the precomputed value. It is assumed that the precomputed value is already evaluated for the quantity
-                        if (partModules.TryGetValue(precomputed.Key, out var combinations))
-                        {
-                            foreach (var combination in combinations)
-                            {
-                                if (!precompuedValueSet.Contains(combination))   //If not explicitly set
-                                    resultingValues.Remove(combination);    //Remove any combination that includes the precomputed module as it will be different than the sum of its parts
-                            }
-                        }
-                        resultingValues.RemoveCombinationParts(precomputed.Key, combinationModules, precompuedValueSet); //If precomputed value is a combination, then remove all its part as they will be different than the combination value
+                        modules.Add(preComputed.Key);
+                        values.Add(val);
                     }
-
                 }
+                //Set the precomputed values on the resulting values. Called with boolean set to true which will overwrite any existing values for the modules and remove any combinations or parts that are included in the precomputed values.
+                resultingValues.SetModuleValues(modules, values, true);
             }
 
             return resultingValues;
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void RemoveCombinationParts(this Dictionary<Module, double> resultingValues, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations, HashSet<Module> precompuedValueSet)
-        {
-            if (combinations.TryGetValue(module, out var parts))
-            {
-                foreach (var part in parts)
-                {
-                    if (!precompuedValueSet.Contains(part.Item1))   //If not explicitly set
-                        resultingValues.Remove(part.Item1);
-                    RemoveCombinationParts(resultingValues, part.Item1, combinations, precompuedValueSet); //Recursively remove parts of parts
-                }
-            }
         }
 
         /***************************************************/
