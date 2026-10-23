@@ -52,7 +52,7 @@ namespace BH.Engine.LifeCycleAssessment
                 // Optional parts are added to the combination if present, but their absence does not prevent the combination from being computed.
                 // The order is important:
                 // - The parts of a combination are listed in the order they are defined in the Module enum.
-                // - The combinations are listed in the order they are defined in the Module enum, except that a combination is always listed after all the combinations it is made up of.
+                // - The combinations are listed in the order they are defined in the Module enum, except that a combination is always listed after all the parts it is made up of.
                 //   Combinations lower down the list can hence be made up of combinations from above in the list.
                 List<Module> allModules = Enum.GetValues(typeof(Module)).Cast<Module>().ToList();
 
