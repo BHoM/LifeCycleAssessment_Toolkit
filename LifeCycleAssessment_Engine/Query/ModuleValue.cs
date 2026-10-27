@@ -80,6 +80,25 @@ namespace BH.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+
+        [Description("Gets the value of a module from the metric of the provided metric type on the EPD, taking into account any combination modules and their parts.\n" +
+            "If the EPD does not contain a metric of the provided metric type, NaN is returned.")]
+        [Input("epd", "The EPD to get the module value from.")]
+        [Input("metricType", "The type of the metric on the EPD to get the module value for.")]
+        [Input("module", "The module to get the value for.")]
+        [Input("requireAllRequiredSubParts", "If true, all required sub-parts must be present in the metric for the value to be calculated. If false, the value will be calculated from the available sub-parts, requiring at least one subpart to be present.")]
+        [Output("value", "The value of the module for the metric of the provided type, or NaN if the value can not be found.")]
+        public static double ModuleValue(this EnvironmentalProductDeclaration epd, MetricType metricType, Module module, bool requireAllRequiredSubParts = true)
+        {
+            if (epd == null)
+                return double.NaN;
+
+            IEnvironmentalMetric metric = epd.EnvironmentalMetrics?.FirstOrDefault(x => x != null && x.IMetricType() == metricType);
+
+            return metric.ModuleValue(module, requireAllRequiredSubParts);
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
