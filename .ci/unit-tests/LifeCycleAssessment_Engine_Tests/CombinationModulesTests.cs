@@ -144,6 +144,104 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [TestCase(Module.A1, new[] { Module.A1toA3 })]
+        [TestCase(Module.A1toA3, new[] { Module.A1, Module.A2, Module.A3 })]
+        [TestCase(Module.A5, new[] { Module.A5_1, Module.A5_2, Module.A5_3, Module.A5_4 })]
+        [TestCase(Module.A5_1, new[] { Module.A5 })]
+        [TestCase(Module.B1_1, new[] { Module.B1, Module.B1toB3, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B1, new[] { Module.B1_1, Module.B1_2, Module.B1toB3, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B2, new[] { Module.B1toB3, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B1toB3, new[] { Module.B1, Module.B1_1, Module.B1_2, Module.B2, Module.B3, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B4, new[] { Module.B4_1, Module.B4_2, Module.B4toB5, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B4toB5, new[] { Module.B4, Module.B4_1, Module.B4_2, Module.B5, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B1toB5, new[] { Module.B1toB3, Module.B1, Module.B1_1, Module.B1_2, Module.B2, Module.B3, Module.B4toB5, Module.B4, Module.B4_1, Module.B4_2, Module.B5, Module.B1toB7 })]
+        [TestCase(Module.B7, new[] { Module.B7_1, Module.B7_2, Module.B7_3, Module.B1toB7 })]
+        [TestCase(Module.B1toB7, new[] { Module.B1toB5, Module.B1toB3, Module.B1, Module.B1_1, Module.B1_2, Module.B2, Module.B3, Module.B4toB5, Module.B4, Module.B4_1, Module.B4_2, Module.B5, Module.B6, Module.B7, Module.B7_1, Module.B7_2, Module.B7_3 })]
+        [TestCase(Module.B8, new[] { Module.B8_1, Module.B8_2, Module.B8_3 })]
+        [TestCase(Module.C3, new[] { Module.C3toC4, Module.C1toC4 })]
+        [TestCase(Module.C3toC4, new[] { Module.C3, Module.C4, Module.C1toC4 })]
+        [TestCase(Module.C1toC4, new[] { Module.C1, Module.C2, Module.C3, Module.C4, Module.C3toC4 })]
+        [TestCase(Module.D, new[] { Module.D_1, Module.D_2 })]
+        [TestCase(Module.D_2, new[] { Module.D })]
+        [Description("Tests that OverlappingModules returns every module that overlaps with a module, i.e. all combinations the module is part of and all parts it is a combination of, both directly and indirectly. E.g. B1 overlaps with B1_1, B1_2, B1toB3, B1toB5 and B1toB7. Expected values are derived by hand from the module hierarchy.")]
+        public void OverlappingModulesIncludesAllPartsAndCombinations(Module module, Module[] expectedOverlaps)
+        {
+            var overlappingModules = Query.OverlappingModules();
+
+            overlappingModules.Should().ContainKey(module);
+            overlappingModules[module].Should().BeEquivalentTo(expectedOverlaps);
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that OverlappingModules is symmetrical and never lists a module as overlapping with itself: if module A overlaps with module B, then B must also overlap with A, and the overlaps of a module must be unique.")]
+        public void OverlappingModulesAreSymmetricalAndUnique()
+        {
+            var overlappingModules = Query.OverlappingModules();
+
+            Assert.Multiple(() =>
+            {
+                foreach (var item in overlappingModules)
+                {
+                    Assert.That(item.Value, Does.Not.Contain(item.Key), $"{item.Key} is listed as overlapping with itself");
+                    Assert.That(item.Value, Is.Unique, $"{item.Key} has duplicate overlapping modules");
+
+                    foreach (Module overlap in item.Value)
+                    {
+                        Assert.That(overlappingModules.ContainsKey(overlap), Is.True, $"{overlap} should have overlapping modules, as it overlaps with {item.Key}");
+                        if (overlappingModules.TryGetValue(overlap, out var reverseOverlaps))
+                            Assert.That(reverseOverlaps, Does.Contain(item.Key), $"{overlap} should list {item.Key} as overlapping, as {item.Key} lists {overlap}");
+                    }
+                }
+            });
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that OverlappingModules is consistent with CombinationModules and PartOfCombinationModules: the overlaps of a module must be exactly the union of the combinations it is part of and, if it is a combination, all its parts, directly or indirectly.")]
+        public void OverlappingModulesConsistentWithCombinationModules()
+        {
+            var combinations = Query.CombinationModules();
+            var partOfCombinations = Query.PartOfCombinationModules();
+            var overlappingModules = Query.OverlappingModules();
+
+            Assert.Multiple(() =>
+            {
+                foreach (Module module in Enum.GetValues(typeof(Module)).Cast<Module>())
+                {
+                    HashSet<Module> expected = new HashSet<Module>();
+                    if (partOfCombinations.TryGetValue(module, out var parents))
+                        expected.UnionWith(parents);
+
+                    CollectAllParts(module, combinations, expected);
+
+
+                    Assert.That(overlappingModules.ContainsKey(module), Is.True, $"{module} should be included in the overlapping modules");
+                    if (overlappingModules.TryGetValue(module, out var overlaps))
+                        Assert.That(overlaps, Is.EquivalentTo(expected), $"Overlaps for {module} do not match the combinations and parts of the module");
+                }
+            });
+        }
+
+        /***************************************************/
+        /****   Private Methods                         ****/
+        /***************************************************/
+
+        private static void CollectAllParts(Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations, HashSet<Module> parts)
+        {
+            if (combinations.TryGetValue(module, out var directParts))
+            {
+                foreach (Module part in directParts.Select(x => x.Item1))
+                {
+                    parts.Add(part);
+                    CollectAllParts(part, combinations, parts);
+                }
+            }
+        }
+
+        /***************************************************/
 
     }
 }
