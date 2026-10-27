@@ -226,7 +226,90 @@ namespace BH.Tests.Engine.LifeCycleAssessment
         }
 
         /***************************************************/
+
+        [TestCase(Module.A1, new[] { Module.A1toA3 })]
+        [TestCase(Module.A5, new[] { Module.A5_1, Module.A5_2, Module.A5_3, Module.A5_4 })]
+        [TestCase(Module.B1, new[] { Module.B1_1, Module.B1_2, Module.B1toB3, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.B1toB3, new[] { Module.B1, Module.B1_1, Module.B1_2, Module.B2, Module.B3, Module.B1toB5, Module.B1toB7 })]
+        [TestCase(Module.C3, new[] { Module.C3toC4, Module.C1toC4 })]
+        [TestCase(Module.A0, new Module[0])]
+        [TestCase(Module.A4, new Module[0])]
+        [Description("Tests that the OverlappingModules overload for a single module returns all combinations the module is part of and all parts it is a combination of, and an empty list, not null, for modules that do not overlap with any other module.")]
+        public void OverlappingModulesForSingleModule(Module module, Module[] expectedOverlaps)
+        {
+            var overlapping = Query.OverlappingModules(module);
+
+            overlapping.Should().NotBeNull();
+            overlapping.Should().BeEquivalentTo(expectedOverlaps);
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that the OverlappingModules overload for a single module gives the same result as the corresponding entry from the dictionary of all overlapping modules, for every module.")]
+        public void OverlappingModulesForSingleModuleMatchesDictionary()
+        {
+            var overlappingModules = Query.OverlappingModules();
+
+            Assert.Multiple(() =>
+            {
+                foreach (Module module in Enum.GetValues(typeof(Module)).Cast<Module>())
+                {
+                    IEnumerable<Module> expected = overlappingModules.TryGetValue(module, out var overlaps) ? overlaps : new List<Module>();
+                    Assert.That(Query.OverlappingModules(module), Is.EquivalentTo(expected), $"Overlaps for {module} differ from the dictionary result");
+                }
+            });
+        }
+
+        /***************************************************/
+
+        [TestCaseSource(nameof(MultipleModulesOverlapCases))]
+        [Description("Tests that the OverlappingModules overload for a list of modules returns the combined overlaps of all the modules, with each overlapping module only listed once, and an empty list, not null, when none of the modules overlap with any other module.")]
+        public void OverlappingModulesForMultipleModules(List<Module> modules, List<Module> expectedOverlaps)
+        {
+            var overlapping = Query.OverlappingModules(modules);
+
+            overlapping.Should().NotBeNull();
+            overlapping.Should().BeEquivalentTo(expectedOverlaps);
+        }
+
+        /***************************************************/
         /****   Private Methods                         ****/
+        /***************************************************/
+
+        private static IEnumerable<TestCaseData> MultipleModulesOverlapCases()
+        {
+            yield return new TestCaseData(
+                new List<Module> { Module.A1, Module.C3 },
+                new List<Module> { Module.A1toA3, Module.C3toC4, Module.C1toC4 }
+            ).SetArgDisplayNames("Modules from separate hierarchies");
+
+            yield return new TestCaseData(
+                new List<Module> { Module.B1_1, Module.B1_2 },
+                new List<Module> { Module.B1, Module.B1toB3, Module.B1toB5, Module.B1toB7 }
+            ).SetArgDisplayNames("Modules sharing combinations are only listed once");
+
+            yield return new TestCaseData(
+                new List<Module> { Module.B6, Module.C4 },
+                new List<Module> { Module.B1toB7, Module.C3toC4, Module.C1toC4 }
+            ).SetArgDisplayNames("Parts from different combinations");
+
+            yield return new TestCaseData(
+                new List<Module> { Module.A0, Module.A4 },
+                new List<Module>()
+            ).SetArgDisplayNames("Standalone modules only");
+
+            yield return new TestCaseData(
+                new List<Module> { Module.A4, Module.A5 },
+                new List<Module> { Module.A5_1, Module.A5_2, Module.A5_3, Module.A5_4 }
+            ).SetArgDisplayNames("Standalone module and a combination");
+
+            yield return new TestCaseData(
+                new List<Module>(),
+                new List<Module>()
+            ).SetArgDisplayNames("Empty list");
+        }
+
         /***************************************************/
 
         private static void CollectAllParts(Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations, HashSet<Module> parts)

@@ -72,12 +72,47 @@ namespace BH.Engine.LifeCycleAssessment
             return m_OverlappingModules;
         }
 
+        /***************************************************/
+
+        [Description("Gets all the modules that overlap with the provided module, i.e. all combinations the module is part of and, if the module is a combination, all the parts it consists of, both directly and indirectly.\n" +
+            "For example, B1 overlaps with B1_1, B1_2, B1toB3, B1toB5 and B1toB7. If the module does not overlap with any other module, an empty list is returned.")]
+        [Input("module", "The module to get the overlapping modules for.")]
+        [Output("overlappingModules", "All the modules that overlap with the provided module.")]
+        public static IReadOnlyList<Module> OverlappingModules(Module module)
+        {
+            if (OverlappingModules().TryGetValue(module, out IReadOnlyList<Module> overlapping))
+                return overlapping;
+            else
+                return new List<Module>();
+        }
+
+        /***************************************************/
+
+        [Description("Gets all the modules that overlap with any of the provided modules, i.e. the combined set of all combinations the modules are part of and, for any module that is a combination, all the parts it consists of, both directly and indirectly.\n" +
+            "Each overlapping module is only listed once. If none of the modules overlap with any other module, an empty list is returned.")]
+        [Input("modules", "The modules to get the overlapping modules for.")]
+        [Output("overlappingModules", "All the modules that overlap with any of the provided modules, with duplicates removed.")]
+        public static IReadOnlyList<Module> OverlappingModules(List<Module> modules)
+        {
+            IReadOnlyDictionary<Module, IReadOnlyList<Module>> overlappingModules = OverlappingModules();
+
+            List<Module> overlapping = new List<Module>();
+
+            foreach (Module module in modules)
+            {
+                if (overlappingModules.TryGetValue(module, out IReadOnlyList<Module> moduleOverlapping))
+                {
+                    overlapping.AddRange(moduleOverlapping);
+                }
+            }
+            return overlapping.Distinct().ToList();
+        }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-       
+
         private static List<Module> AllCombinationModules(Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules)
         {
             List<Module> allCombinationModules = new List<Module>();
