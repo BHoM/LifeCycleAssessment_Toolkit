@@ -150,47 +150,19 @@ namespace BH.Engine.LifeCycleAssessment
             if (!removeOverlaps)
                 return;
 
-            IReadOnlyDictionary<Module, IReadOnlyList<Module>> partOfCombinations = Query.PartOfCombinationModules();   //For each module, all the combinations it is part of, directly or indirectly
-            IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinationModules = Query.CombinationModules(); //For each combination, its direct parts
+            //All modules that overlap with any of the modules provided, excluding the provided modues themselves
+            //The overlapping modules are either modules that the provided modules are part of, or modules that are parts of the provided modules (if they are combinations themselves)
+            List<Module> overlappingModules = Query.OverlappingModules(modules).Except(modules).ToList(); 
 
-            foreach (Module module in modules)
+            foreach (Module module in overlappingModules)
             {
-                //Remove any combination that includes the module, directly or indirectly, as its value could now be different than the sum of its parts
-                if (partOfCombinations.TryGetValue(module, out IReadOnlyList<Module> combinations))
-                {
-                    foreach (Module combination in combinations)
-                    {
-                        //Combinations that are among the modules provided are kept, as their values have just been set explicitly.
-                        //For example, when setting both C3 and C3toC4, C3toC4 is a combination that includes C3, but must be kept.
-                        if (!modules.Contains(combination))
-                            moduleValues.Remove(combination);
-                    }
-                }
-
-                //If the module is a combination, remove all its parts, directly or indirectly, as their values could now be different than the combination value
-                moduleValues.RemoveCombinationParts(module, combinationModules, modules);
+                //Remove any combination that includes the module, directly or indirectly, as its value could now be different than the sum of its parts,
+                //as well as any parts of the module if it is a combination, as their values could now be different than the combination value.
+                moduleValues.Remove(module);
             }
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static void RemoveCombinationParts(this Dictionary<Module, double> moduleValues, Module module, IReadOnlyDictionary<Module, IReadOnlyList<(Module, bool)>> combinations, List<Module> modulesSet)
-        {
-            if (combinations.TryGetValue(module, out var parts))
-            {
-                foreach (var part in parts)
-                {
-                    if (!modulesSet.Contains(part.Item1))   //Parts that have explicitly been set are kept
-                        moduleValues.Remove(part.Item1);
-                    RemoveCombinationParts(moduleValues, part.Item1, combinations, modulesSet); //Recursively remove parts of parts, also for parts that were set as their own parts would not match their value
-                }
-            }
-        }
-
-        /***************************************************/
-
     }
 }
 
