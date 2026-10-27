@@ -78,7 +78,7 @@ namespace BH.Engine.LifeCycleAssessment
             "For example, B1 overlaps with B1_1, B1_2, B1toB3, B1toB5 and B1toB7. If the module does not overlap with any other module, an empty list is returned.")]
         [Input("module", "The module to get the overlapping modules for.")]
         [Output("overlappingModules", "All the modules that overlap with the provided module.")]
-        public static IReadOnlyList<Module> OverlappingModules(Module module)
+        public static IReadOnlyList<Module> OverlappingModules(this Module module)
         {
             if (OverlappingModules().TryGetValue(module, out IReadOnlyList<Module> overlapping))
                 return overlapping;
@@ -92,7 +92,7 @@ namespace BH.Engine.LifeCycleAssessment
             "Each overlapping module is only listed once. If none of the modules overlap with any other module, an empty list is returned.")]
         [Input("modules", "The modules to get the overlapping modules for.")]
         [Output("overlappingModules", "All the modules that overlap with any of the provided modules, with duplicates removed.")]
-        public static IReadOnlyList<Module> OverlappingModules(List<Module> modules)
+        public static IReadOnlyList<Module> OverlappingModules(this IEnumerable<Module> modules)
         {
             IReadOnlyDictionary<Module, IReadOnlyList<Module>> overlappingModules = OverlappingModules();
 
