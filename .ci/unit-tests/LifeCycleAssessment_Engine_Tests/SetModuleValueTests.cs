@@ -116,6 +116,68 @@ namespace BH.Tests.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [TestCase(true)]
+        [TestCase(false)]
+        [Description("Tests that SetModuleValues for an EPD updates the indicators of the existing metric of the provided metric type in place, with the correct values, and leaves other metrics on the EPD untouched. Setting A1toA3 removes A1, A2 and A3 only when removeOverlaps is true.")]
+        public void SetModuleValuesEpdExistingMetric(bool removeOverlaps)
+        {
+            Dictionary<Module, double> indicators = AllModuleValues();
+            Dictionary<Module, double> otherIndicators = AllModuleValues();
+            IEnvironmentalMetric metric = new ClimateChangeTotalMetric { Indicators = indicators };
+            IEnvironmentalMetric otherMetric = new AcidificationMetric { Indicators = otherIndicators };
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration { EnvironmentalMetrics = new List<IEnvironmentalMetric> { otherMetric, metric } };
+
+            epd.SetModuleValues(MetricType.ClimateChangeTotal, new List<Module> { Module.A1toA3 }, new List<double> { 9 }, removeOverlaps);
+
+            Assert.Multiple(() =>
+            {
+                epd.EnvironmentalMetrics.Should().HaveCount(2, "no new metric should be added when the metric already exists");
+                epd.EnvironmentalMetrics.Should().ContainInOrder(otherMetric, metric);
+                metric.Indicators.Should().BeSameAs(indicators, "the metric should be updated in place");
+                AssertResult(indicators, AllModules(), new List<Module> { Module.A1toA3 }, new List<double> { 9 },
+                    removeOverlaps ? new[] { Module.A1, Module.A2, Module.A3 } : new Module[] { });
+                otherMetric.Indicators.Should().BeEquivalentTo(AllModuleValues(), "metrics of other types should be unchanged");
+            });
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that SetModuleValues for an EPD without a metric of the provided metric type creates a new metric of that type containing the provided values, and adds it to the EPD without changing the existing metrics.")]
+        public void SetModuleValuesEpdMissingMetric()
+        {
+            IEnvironmentalMetric existingMetric = new AcidificationMetric { Indicators = AllModuleValues() };
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration { EnvironmentalMetrics = new List<IEnvironmentalMetric> { existingMetric } };
+
+            epd.SetModuleValues(MetricType.ClimateChangeTotal, new List<Module> { Module.A1toA3, Module.B1_1 }, new List<double> { 2, 3 });
+
+            Assert.Multiple(() =>
+            {
+                epd.EnvironmentalMetrics.Should().HaveCount(2);
+                epd.EnvironmentalMetrics[0].Should().BeSameAs(existingMetric);
+                existingMetric.Indicators.Should().BeEquivalentTo(AllModuleValues(), "the existing metric should be unchanged");
+
+                IEnvironmentalMetric created = epd.EnvironmentalMetrics[1];
+                created.Should().BeOfType<ClimateChangeTotalMetric>();
+                created.Indicators.Should().BeEquivalentTo(new Dictionary<Module, double> { { Module.A1toA3, 2 }, { Module.B1_1, 3 } });
+            });
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that SetModuleValues for an EPD with a null list of metrics creates the list and adds a new metric of the provided metric type.")]
+        public void SetModuleValuesEpdNullMetrics()
+        {
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration { EnvironmentalMetrics = null };
+
+            epd.SetModuleValues(MetricType.ClimateChangeTotal, new List<Module> { Module.A1 }, new List<double> { 5 });
+
+            epd.EnvironmentalMetrics.Should().ContainSingle().Which.Indicators.Should().BeEquivalentTo(new Dictionary<Module, double> { { Module.A1, 5 } });
+        }
+
+        /***************************************************/
+
         [Test]
         [Description("Tests that SetModuleValue for a null dictionary records a single error and does not throw.")]
         public void SetModuleValueDictionaryInvalidInputs()

@@ -86,6 +86,52 @@ namespace BH.Engine.LifeCycleAssessment
 
         /***************************************************/
 
+        [Description("Sets the values of multiple modules for the metric of the provided metric type on the provided EPD. The EPD is updated in place.\n" +
+            "If the EPD does not contain a metric of the provided metric type, a new metric of that type is created from the provided modules and values and added to the EPD. In that case there are no existing values to overlap with, so removeOverlaps has no effect.\n" +
+            "Otherwise, the indicators of the existing metric are updated, and any existing combination modules the modules are part of, as well as all parts of any of the modules that are combinations, are optionally removed as these would no longer be consistent with the values set.\n" +
+            "Modules provided as inputs are never removed, so for example setting both C3 and C3toC4 results in both being present in the indicators.\n" +
+            "The modules provided must be unique. If a module is provided more than once, an error is raised and no values are set.")]
+        [Input("epd", "The EPD to set the module values on. The indicators of the metric matching the metric type are modified, or a new metric is added to the EPD if none exists.")]
+        [Input("metricType", "The type of the metric on the EPD to set the module values for. Must not be Undefined.")]
+        [Input("modules", "The modules to set the values for. All modules must be unique.")]
+        [Input("values", "The values to set for the modules. Must be the same length as the list of modules.")]
+        [Input("removeOverlaps", "If true, any existing combinations that any of the modules are part of, and any existing parts of any of the modules that are combinations, are removed from the indicators. Modules in the modules input are never removed.")]
+        public static void SetModuleValues(this EnvironmentalProductDeclaration epd, MetricType metricType, List<Module> modules, List<double> values, bool removeOverlaps = true)
+        {
+            if (epd == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Unable to set module values, epd is null.");
+                return;
+            }
+
+            if (epd.EnvironmentalMetrics == null)
+                epd.EnvironmentalMetrics = new List<IEnvironmentalMetric>();
+
+
+            if (metricType == MetricType.Undefined)
+            {
+                BH.Engine.Base.Compute.RecordError("Unable to set module values, metricType is undefined.");
+                return;
+            }
+
+            IEnvironmentalMetric metric = epd.EnvironmentalMetrics.FirstOrDefault(x => x != null && x.IMetricType() == metricType);
+            if (metric == null)
+            {
+                metric = Create.EnvironmentalMetric(metricType, modules, values);
+                if (metric != null)
+                {
+                    epd.EnvironmentalMetrics.Add(metric);
+                    BH.Engine.Base.Compute.RecordNote($"The epd did not contain a metric of type {metricType}, so a new metric was created and added to the epd.");
+                }
+
+                return;
+            }
+
+            SetModuleValues(metric, modules, values, removeOverlaps);
+        }
+
+        /***************************************************/
+
         [Description("Sets the value of a module in the provided dictionary of module values. The dictionary is updated in place.\n" +
             "Optionally removes any existing combination modules the module is part of, as well as all parts of the module if it is itself a combination, as these would no longer be consistent with the value set.\n" +
             "For example, setting A5_1 removes A5, and setting A1toA3 removes A1, A2 and A3.")]
