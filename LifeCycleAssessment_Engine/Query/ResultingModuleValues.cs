@@ -88,10 +88,16 @@ namespace BH.Engine.LifeCycleAssessment
                 //Loop through the precomputed values and store out the modules and values for the cases where the precomputed values contain a value for the metric type.
                 foreach (var preComputed in precomputedValues)
                 {
-                    if (preComputed.Value.ModuleValues.TryGetValue(metricType, out double val))
+                    Module module = preComputed.Key;
+
+                    //Check that either the precomputed value is set to overwrite existing values or that the resulting values do not already contain a value for the module. If neither is true, then the precomputed value will be ignored.
+                    if (preComputed.Value.OverwriteExistingValues || !resultingValues.ContainsKey(module))  
                     {
-                        modules.Add(preComputed.Key);
-                        values.Add(val);
+                        if (preComputed.Value.ModuleValues.TryGetValue(metricType, out double val))
+                        {
+                            modules.Add(module);
+                            values.Add(val);
+                        }
                     }
                 }
                 //Set the precomputed values on the resulting values. Called with boolean set to true which will overwrite any existing values for the modules and remove any combinations or parts that are included in the precomputed values.
