@@ -22,6 +22,7 @@
 
 using BH.Engine.LifeCycleAssessment;
 using BH.oM.LifeCycleAssessment;
+using BH.oM.LifeCycleAssessment.MaterialFragments;
 using BH.oM.Test.NUnit;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -76,6 +77,68 @@ namespace BH.Tests.Engine.LifeCycleAssessment
             Dictionary<Module, double> moduleData = new Dictionary<Module, double> { { Module.B1_1, 1 }, { Module.B2, 3 }, { Module.B3, 4 } };
 
             Assert.That(moduleData.ModuleValue(Module.B1toB3, false), Is.EqualTo(8).Within(1e-12));
+        }
+
+        /***************************************************/
+
+        [TestCase(true)]
+        [TestCase(false)]
+        [Description("Tests that ModuleValue for an EPD gets the value from the metric of the provided metric type, and not from other metrics on the EPD, including values computed from parts for combination modules.")]
+        public void ModuleValueEpd(bool requireAllRequiredSubParts)
+        {
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration
+            {
+                EnvironmentalMetrics = new List<IEnvironmentalMetric>
+                {
+                    new AcidificationMetric { Indicators = new Dictionary<Module, double> { { Module.A1, 100 }, { Module.A2, 200 }, { Module.A3, 300 }, { Module.A4, 400 } } },
+                    new ClimateChangeTotalMetric { Indicators = new Dictionary<Module, double> { { Module.A1, 1 }, { Module.A2, 2 }, { Module.A3, 3 }, { Module.A4, 4 } } }
+                }
+            };
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(epd.ModuleValue(MetricType.ClimateChangeTotal, Module.A4, requireAllRequiredSubParts), Is.EqualTo(4).Within(1e-12), "Direct value");
+                Assert.That(epd.ModuleValue(MetricType.ClimateChangeTotal, Module.A1toA3, requireAllRequiredSubParts), Is.EqualTo(6).Within(1e-12), "Combination from parts");
+                Assert.That(epd.ModuleValue(MetricType.Acidification, Module.A1toA3, requireAllRequiredSubParts), Is.EqualTo(600).Within(1e-12), "Combination from parts for other metric");
+            });
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that ModuleValue for an EPD returns NaN, rather than throwing, when the EPD is null, has no metrics, or has no metric of the provided metric type.")]
+        public void ModuleValueEpdMissingMetric()
+        {
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration
+            {
+                EnvironmentalMetrics = new List<IEnvironmentalMetric> { new AcidificationMetric { Indicators = new Dictionary<Module, double> { { Module.A1, 1 } } } }
+            };
+            EnvironmentalProductDeclaration noMetrics = new EnvironmentalProductDeclaration { EnvironmentalMetrics = null };
+            EnvironmentalProductDeclaration nullEpd = null;
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(epd.ModuleValue(MetricType.ClimateChangeTotal, Module.A1), Is.NaN, "Metric type not on EPD");
+                Assert.That(noMetrics.ModuleValue(MetricType.ClimateChangeTotal, Module.A1), Is.NaN, "Null metrics");
+                Assert.That(nullEpd.ModuleValue(MetricType.ClimateChangeTotal, Module.A1), Is.NaN, "Null EPD");
+            });
+        }
+
+        /***************************************************/
+
+        [Test]
+        [Description("Tests that ModuleValue for an EPD returns the values set with SetModuleValues for the same EPD, metric type and modules.")]
+        public void ModuleValueEpdMatchesSetModuleValues()
+        {
+            EnvironmentalProductDeclaration epd = new EnvironmentalProductDeclaration();
+
+            epd.SetModuleValues(MetricType.ClimateChangeTotal, new List<Module> { Module.A1toA3, Module.B1_1 }, new List<double> { 2, 3 });
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(epd.ModuleValue(MetricType.ClimateChangeTotal, Module.A1toA3), Is.EqualTo(2).Within(1e-12));
+                Assert.That(epd.ModuleValue(MetricType.ClimateChangeTotal, Module.B1_1), Is.EqualTo(3).Within(1e-12));
+            });
         }
 
         /***************************************************/
